@@ -1,7 +1,7 @@
 import {defineConfig} from 'vite'
 import {fileURLToPath, URL} from 'node:url'
-import autoprefixer from 'autoprefixer'
 import * as path from 'node:path'
+import autoprefixer from 'autoprefixer'
 
 const root = path.resolve(__dirname, './')
 const dir = {

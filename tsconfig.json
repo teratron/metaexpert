@@ -56,7 +56,6 @@
     "vitest.config.ts"
   ],
   "exclude": [
-    "test",
-    "src/**/__tests__/*"
+    "test"
   ]
 }

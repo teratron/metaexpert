@@ -9,18 +9,16 @@
   "homepage": "https://teratron.github.io/binance-expert",
   "scripts": {
     "dev": "vite",
-    "dev:bun": "bunx --bun vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "deploy:gh": "gh-pages-clean && gh-pages -d build"
   },
+  "dependencies": {
+    "lightweight-charts": "^4.2.0"
+  },
   "devDependencies": {
-    "@swc/cli": "^0.4.0",
-    "@swc/core": "^1.7.6",
-    "@types/bun": "^1.1.6",
     "autoprefixer": "^10.4.20",
     "gh-pages": "^6.1.1",
-    "postcss": "^8.4.41",
     "sass": "^1.77.8",
     "typescript": "^5.2.2",
     "vite": "^5.3.4"
