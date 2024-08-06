@@ -1,13 +1,8 @@
-
-@viewport {
-    min-width:   640px;
-    max-width:   800px;
-    zoom:        1;
-    min-zoom:    1;
-    max-zoom:    1;
-    user-zoom:   fixed;
-    orientation: landscape;
-}
+//**********************************************************
+// Main App Styles
+//----------------------------------------------------------
+//
+//**********************************************************
 
 // Configuration
 @import "themes/default/light";
@@ -16,6 +11,7 @@
 
 // Reset
 body {
+    margin: 0;
 }
 
 // Application

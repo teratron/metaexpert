@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "dev:bun": "bunx --bun vite",
-    "build": "swc && vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "deploy:gh": "gh-pages-clean && gh-pages -d build"
   },

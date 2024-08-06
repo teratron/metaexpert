@@ -1,14 +1,24 @@
 import {defineConfig} from 'vite'
 import {fileURLToPath, URL} from 'node:url'
 import autoprefixer from 'autoprefixer'
+import * as path from 'node:path'
+
+const root = path.resolve(__dirname, './')
+const dir = {
+    root: root,
+    env: path.resolve(root, 'env'),
+    src: path.resolve(root, 'src'),
+    build: path.resolve(root, 'build'),
+    public: path.resolve(root, 'public')
+}
 
 export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
     console.log('Config arguments:', command, mode, isSsrBuild, isPreview)
 
     return {
         base: command === 'serve' ? '/' : './',
-        root: './src',
-        publicDir: './public',
+        root: dir.src,
+        publicDir: dir.public,
         plugins: [],
         server: {
             open: true,
@@ -35,12 +45,12 @@ export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
         minify: mode === 'development' ? false : 'terser',
         sourcemap: command === 'serve' ? 'inline' : false,
         build: {
-            outDir: './build',
+            outDir: dir.build,
             emptyOutDir: true,
             manifest: command === 'build' ? 'manifest.json' : false,
             rollupOptions: {
                 input: {
-                    main: './src/index.html'
+                    main: dir.src + '/index.html'
                 },
                 output: {
                     entryFileNames: 'js/[name].[hash].js',
