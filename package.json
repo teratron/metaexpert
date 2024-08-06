@@ -2,14 +2,16 @@
   "name": "binance-expert",
   "private": true,
   "version": "0.1.0",
-  "description": "",
+  "description": "Web application for Binance expert",
   "type": "module",
+  "module": "./src/main.ts",
   "author": "Oleg Alexandrov <alexandrovoleg.ru@gmail.com>",
   "homepage": "https://teratron.github.io/binance-expert",
   "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "swc && bunx --bun vite build",
-    "preview": "bunx --bun vite preview",
+    "dev": "vite",
+    "dev:bun": "bunx --bun vite",
+    "build": "swc && vite build",
+    "preview": "vite preview",
     "deploy:gh": "gh-pages-clean && gh-pages -d build"
   },
   "devDependencies": {

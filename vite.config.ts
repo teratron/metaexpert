@@ -9,6 +9,7 @@ export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
         base: command === 'serve' ? '/' : './',
         root: './src',
         publicDir: './public',
+        plugins: [],
         server: {
             open: true,
             hmr: {
