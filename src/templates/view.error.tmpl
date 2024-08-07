@@ -1,0 +1,6 @@
+{% extends "index.html" %}
+{% block title %}404{% endblock %}
+{% block body %}
+{{ super() }}
+<p>{% block error %}{% endblock %}</p>
+{% endblock %}
