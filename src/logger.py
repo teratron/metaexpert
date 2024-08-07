@@ -13,10 +13,15 @@ NOTSET < DEBUG < INFO < WARNING < ERROR < CRITICAL
 """
 import os
 from logging import getLogger
+from dotenv_vault import load_dotenv
+
+# Dotenv
+global log_config, log_file
+if load_dotenv():
+    log_config = os.getenv("LOG_CONFIG", "logger.json")
+    log_file = os.getenv("LOG_FILE", "data.log")
 
 # Load config
-log_config = "logger.json"  # os.getenv("LOG_CONFIG", "logger.json")
-
 if os.path.isfile(log_config):
     import json
     from logging.config import dictConfig
@@ -27,7 +32,7 @@ if os.path.isfile(log_config):
     dictConfig(config)
 else:
     import sys
-    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING, ERROR
+    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING
 
     log_format = "%(asctime)s %(levelname)s: %(name)s: %(message)s"
 
@@ -36,7 +41,7 @@ else:
     stream_handler.setLevel(DEBUG)
 
     # File
-    file_handler = FileHandler("data.log", encoding="utf-8")
+    file_handler = FileHandler(log_file, encoding="utf-8")
     file_handler.setLevel(WARNING)
 
     basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, file_handler])
@@ -45,10 +50,3 @@ else:
     file_handler.close()
 
 logger = getLogger(__name__)
-
-# logger.info("start app")
-# logger.debug("test debug")
-# logger.warning("test warning")
-# logger.error("test error")
-# logger.critical("test critical")
-# logger.info("finish app")

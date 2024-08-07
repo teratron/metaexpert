@@ -6,9 +6,8 @@ from flask import Flask, render_template, request, flash, redirect, jsonify
 from dotenv_vault import load_dotenv
 
 logger = getLogger()
-_ = load_dotenv()
 app = Flask(__name__)
-
+load_dotenv()
 
 if __name__ == "__main__":
     logger.info("start app")
