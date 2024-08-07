@@ -1,11 +1,14 @@
 """Binance Expert Application
 """
+
 from logger import getLogger
 from flask import Flask, render_template, request, flash, redirect, jsonify
-
-app = Flask(__name__)
+from dotenv_vault import load_dotenv
 
 logger = getLogger()
+_ = load_dotenv()
+app = Flask(__name__)
+
 
 if __name__ == "__main__":
     logger.info("start app")
