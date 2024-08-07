@@ -73,11 +73,8 @@ export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
             extensions: ['.ts', '.scss'],
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
-                'components': fileURLToPath(new URL('./src/components', import.meta.url)),
-                'containers': fileURLToPath(new URL('./src/containers', import.meta.url)),
-                'layouts': fileURLToPath(new URL('./src/layouts', import.meta.url)),
-                'views': fileURLToPath(new URL('./src/views', import.meta.url)),
-                'assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
+                'templates': fileURLToPath(new URL('./src/templates', import.meta.url)),
+                'static': fileURLToPath(new URL('./src/static', import.meta.url))
             }
         }
     }

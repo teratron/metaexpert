@@ -25,20 +25,11 @@
       "@/*": [
         "./src/*"
       ],
-      "components/*": [
-        "./src/components/*"
+      "templates/*": [
+        "./src/templates/*"
       ],
-      "containers/*": [
-        "./src/containers/*"
-      ],
-      "layouts/*": [
-        "./src/layouts/*"
-      ],
-      "views/*": [
-        "./src/views/*"
-      ],
-      "assets/*": [
-        "./src/assets/*"
+      "static/*": [
+        "./src/static/*"
       ]
     },
 
