@@ -10,9 +10,9 @@ logger = getLogger()
 format_log = "%(asctime)s %(levelname)s: %(name)s: %(message)s"
 file_handler = FileHandler("data.log")
 file_handler.setLevel(ERROR)
-console_handler = StreamHandler()
-console_handler.setLevel(DEBUG)
-basicConfig(level=DEBUG, format=format_log, handlers=[file_handler, console_handler])
+stream_handler = StreamHandler()
+stream_handler.setLevel(DEBUG)
+basicConfig(level=DEBUG, format=format_log, handlers=[file_handler, stream_handler])
 
 if __name__ == "__main__":
     logger.info("start app")
