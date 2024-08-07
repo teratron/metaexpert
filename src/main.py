@@ -1,7 +1,7 @@
 """
 
 """
-from logger import *
+from logger import getLogger
 
 logger = getLogger()
 
