@@ -27,22 +27,26 @@ if os.path.isfile(log_config):
     dictConfig(config)
 else:
     import sys
-    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING
+    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING, ERROR
 
     log_format = "%(asctime)s %(levelname)s: %(name)s: %(message)s"
+
+    # Console
+    stream_handler = StreamHandler(stream=sys.stdout)
+    stream_handler.setLevel(DEBUG)
+
+    stream_error_handler = StreamHandler(stream=sys.stderr)
+    stream_error_handler.setLevel(ERROR)
 
     # File
     file_handler = FileHandler("data.log", encoding="utf-8")
     file_handler.setLevel(WARNING)
 
-    # Console
-    stream_handler = StreamHandler(stream=sys.stderr)
-    stream_handler.setLevel(DEBUG)
+    basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, stream_error_handler, file_handler])
 
-    basicConfig(level=DEBUG, format=log_format, handlers=[file_handler, stream_handler])
-
-    file_handler.close()
     stream_handler.close()
+    stream_error_handler.close()
+    file_handler.close()
 
 logger = getLogger(__name__)
 

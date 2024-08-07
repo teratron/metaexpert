@@ -1,7 +1,9 @@
-"""
-
+"""Binance Expert Application
 """
 from logger import getLogger
+from flask import Flask, render_template, request, flash, redirect, jsonify
+
+app = Flask(__name__)
 
 logger = getLogger()
 

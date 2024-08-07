@@ -13,6 +13,12 @@
       "formatter": "simple",
       "stream": "ext://sys.stdout"
     },
+    "console_error": {
+      "class": "logging.StreamHandler",
+      "level": "ERROR",
+      "formatter": "simple",
+      "stream": "ext://sys.stderr"
+    },
     "file": {
       "class": "logging.FileHandler",
       "level": "WARNING",
@@ -26,7 +32,7 @@
     "example": {
       "level": "INFO",
       "handlers": [
-        "console"
+        "console_error"
       ],
       "propagate": "no"
     }
@@ -35,6 +41,7 @@
     "level": "DEBUG",
     "handlers": [
       "console",
+      "console_error",
       "file"
     ]
   }
