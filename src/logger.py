@@ -15,7 +15,7 @@ import os
 from logging import getLogger
 
 # Load config
-log_config = "_logger.json"  # os.getenv("LOG_CONFIG", "logger.json")
+log_config = "logger.json"  # os.getenv("LOG_CONFIG", "logger.json")
 
 if os.path.isfile(log_config):
     import json
@@ -35,17 +35,13 @@ else:
     stream_handler = StreamHandler(stream=sys.stdout)
     stream_handler.setLevel(DEBUG)
 
-    stream_error_handler = StreamHandler(stream=sys.stderr)
-    stream_error_handler.setLevel(ERROR)
-
     # File
     file_handler = FileHandler("data.log", encoding="utf-8")
     file_handler.setLevel(WARNING)
 
-    basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, stream_error_handler, file_handler])
+    basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, file_handler])
 
     stream_handler.close()
-    stream_error_handler.close()
     file_handler.close()
 
 logger = getLogger(__name__)
