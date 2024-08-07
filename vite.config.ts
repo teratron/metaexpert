@@ -1,6 +1,6 @@
 import {defineConfig} from 'vite'
 import {fileURLToPath, URL} from 'node:url'
-import * as path from 'node:path'
+import path from 'node:path'
 import autoprefixer from 'autoprefixer'
 
 const root = path.resolve(__dirname, './')
@@ -19,7 +19,6 @@ export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
         base: command === 'serve' ? '/' : './',
         root: dir.src,
         publicDir: dir.public,
-        plugins: [],
         server: {
             open: true,
             hmr: {

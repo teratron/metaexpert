@@ -14,8 +14,8 @@ const chart = createChart(document.getElementById('chart')!, chartOptions)
 const areaSeries = chart.addAreaSeries({
     lineColor: '#2962FF',
     topColor: '#2962FF',
-    bottomColor: 'rgba(41, 98, 255, 0.28)',
-});
+    bottomColor: 'rgba(41, 98, 255, 0.28)'
+})
 
 areaSeries.setData([
     {time: '2018-12-22', value: 32.51},
@@ -27,12 +27,15 @@ areaSeries.setData([
     {time: '2018-12-28', value: 25.46},
     {time: '2018-12-29', value: 23.92},
     {time: '2018-12-30', value: 22.68},
-    {time: '2018-12-31', value: 22.67},
+    {time: '2018-12-31', value: 22.67}
 ])
 
 const candlestickSeries = chart.addCandlestickSeries({
-    upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-    wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+    upColor: '#26a69a',
+    downColor: '#ef5350',
+    wickUpColor: '#26a69a',
+    wickDownColor: '#ef5350',
+    borderVisible: false
 })
 
 candlestickSeries.setData([
@@ -45,7 +48,7 @@ candlestickSeries.setData([
     {time: '2018-12-28', open: 111.51, high: 142.83, low: 103.34, close: 131.25},
     {time: '2018-12-29', open: 131.33, high: 151.17, low: 77.68, close: 96.43},
     {time: '2018-12-30', open: 106.33, high: 110.20, low: 90.39, close: 98.10},
-    {time: '2018-12-31', open: 109.87, high: 114.69, low: 85.66, close: 111.26},
+    {time: '2018-12-31', open: 109.87, high: 114.69, low: 85.66, close: 111.26}
 ])
 
 chart.timeScale().fitContent()
