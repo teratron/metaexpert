@@ -1,3 +1,7 @@
 {% block main %}
-<h2>Main</h2>
+<main id="app-main" role="main">
+    <section class="app-container">
+        {% block content %}{% endblock %}
+    </section>
+</main>
 {% endblock %}

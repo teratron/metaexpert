@@ -1,3 +1,9 @@
 {% extends "layout.base.tmpl" %}
 {% block title %}404{% endblock %}
-<p>{% block error %}{% endblock %}</p>
+
+{### Main ###}
+{% block main %}
+    {{ super() }}
+    <h2>{{ self.title() }}</h2>
+    <p>{% block error %}{% endblock %}</p>
+{% endblock %}

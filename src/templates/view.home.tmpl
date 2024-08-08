@@ -1,2 +1,18 @@
 {% extends "layout.base.tmpl" %}
 {% block title %}Home{% endblock %}
+
+{### Header ###}
+{% block header %}
+    {{ super() }}
+{% endblock %}
+
+{### Main ###}
+{% block main %}
+    {{ super() }}
+    <h2>{{ self.title() }}</h2>
+{% endblock %}
+
+{### Footer ###}
+{% block footer %}
+    {{ super() }}
+{% endblock %}

@@ -1,4 +1,7 @@
 {% block header %}
-<h2>Header</h2>
-{% include "component.menu.tmpl" %}
+    <header id="app-header" role="banner">
+        <section class="app-container">
+            {% include "component.menu.tmpl" %}
+        </section>
+    </header>
 {% endblock %}
