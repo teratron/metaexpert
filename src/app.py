@@ -1,6 +1,5 @@
 """Binance Expert Application
 """
-
 from logger import getLogger
 from flask import Flask, render_template, request, flash, redirect, jsonify
 
@@ -15,7 +14,13 @@ def index():
 
 
 @app.route("/about")
-def hello_world():
+def about():
+    title = "About"
+    return render_template("view.about.tmpl", title=title)
+
+
+@app.route("/hello")
+def hello():
     return "<h1>Hello, World!</h1>"
 
 
