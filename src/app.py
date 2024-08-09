@@ -1,6 +1,6 @@
 """Binance Expert Application
 """
-from logger import getLogger
+from src.logger import getLogger
 from flask import Flask, render_template, request, flash, redirect, jsonify
 
 logger = getLogger()
@@ -30,11 +30,12 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    # logger.info("start app")
+    logger.info("start app")
     # logger.debug("test debug")
     # logger.warning("test warning")
     # logger.error("test error")
     # logger.critical("test critical")
-    # logger.info("finish app")
 
-    app.run(debug=True)
+    app.run(port=5001, debug=True)
+
+    logger.info("finish app")
