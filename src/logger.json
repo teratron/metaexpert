@@ -3,7 +3,7 @@
   "disable_existing_loggers": false,
   "formatters": {
     "simple": {
-      "format": "%(asctime)s %(levelname)s: %(name)s: %(message)s"
+      "format": "%(asctime)s %(name)s: %(levelname)s: %(message)s"
     }
   },
   "handlers": {
@@ -21,7 +21,7 @@
     },
     "file": {
       "class": "logging.FileHandler",
-      "level": "WARNING",
+      "level": "INFO",
       "formatter": "simple",
       "filename": "data.log",
       "mode": "a",
@@ -30,7 +30,7 @@
   },
   "loggers": {
     "example": {
-      "level": "INFO",
+      "level": "WARNING",
       "handlers": [
         "console_error"
       ],

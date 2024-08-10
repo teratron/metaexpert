@@ -1,6 +1,6 @@
 """Expert Application
 """
-from src.logger import getLogger
+from logger import getLogger
 from flask import Flask, render_template, request, flash, redirect, jsonify
 
 logger = getLogger()

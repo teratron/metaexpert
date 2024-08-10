@@ -15,33 +15,28 @@ import os
 from logging import getLogger
 from dotenv_vault import load_dotenv
 
-# Dotenv
-global log_config, log_file
-if load_dotenv():
-    log_config = os.getenv("LOG_CONFIG", "logger.json")
-    log_file = os.getenv("LOG_FILE", "data.log")
+load_dotenv()
+LOG_CONFIG = os.getenv("LOG_CONFIG", "logger.json")
+LOG_FILE = os.getenv("LOG_FILE")
 
 # Load config
-if os.path.isfile(log_config):
+if os.path.isfile(LOG_CONFIG):
     import json
     from logging.config import dictConfig
 
-    with open(log_config) as file:
+    with open(LOG_CONFIG) as file:
         config = json.load(file)
-
     dictConfig(config)
 else:
     import sys
     from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING
 
-    log_format = "%(asctime)s %(levelname)s: %(name)s: %(message)s"
+    log_format = "%(asctime)s %(name)s: %(levelname)s: %(message)s"
 
-    # Console
     stream_handler = StreamHandler(stream=sys.stdout)
     stream_handler.setLevel(DEBUG)
 
-    # File
-    file_handler = FileHandler(log_file, encoding="utf-8")
+    file_handler = FileHandler(LOG_FILE, encoding="utf-8")
     file_handler.setLevel(WARNING)
 
     basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, file_handler])

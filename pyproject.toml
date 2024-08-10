@@ -7,15 +7,11 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.11 || ^3.12"
+python = "^3.11"
 flask = "^3.0.3"
-#binance-connector = { version = "^3.8.1", python = "<=3.11" }
-ta-lib = [
-    { platform = "linux", version = "^0.4.32" },
-    { platform = "win64", python = "^3.12", url = "https://github.com/cgohlke/talib-build/releases/download/v0.4.29/TA_Lib-0.4.29-cp312-cp312-win_amd64.whl" },
-]
-#lightweight-charts = "^2.0.1"
 binance-connector = "^3.8.1"
+ta-lib = {url = "https://github.com/cgohlke/talib-build/releases/download/v0.4.29/TA_Lib-0.4.29-cp311-cp311-win_amd64.whl"}
+#lightweight-charts = "^2.0.1"
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^72.1.0"
