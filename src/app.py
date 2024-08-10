@@ -1,9 +1,9 @@
 """Expert Application
 """
-from logger import getLogger
+from _logger import getLogger
 from flask import Flask, render_template, request, flash, redirect, jsonify
 
-logger = getLogger()
+logger = getLogger(__name__)
 app = Flask(__name__)
 
 
@@ -31,10 +31,6 @@ def not_found(error):
 
 if __name__ == "__main__":
     logger.info("start app")
-    # logger.debug("test debug")
-    # logger.warning("test warning")
-    # logger.error("test error")
-    # logger.critical("test critical")
 
     app.run(port=5001, debug=True)
 

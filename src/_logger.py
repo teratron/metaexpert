@@ -12,7 +12,7 @@ NOTSET < DEBUG < INFO < WARNING < ERROR < CRITICAL
 - CRITICAL - приложение не может работать дальше.
 """
 import os
-#from logging import getLogger
+from logging import getLogger
 from dotenv_vault import load_dotenv
 
 load_dotenv()
@@ -44,4 +44,4 @@ else:
     stream_handler.close()
     file_handler.close()
 
-#logger = getLogger(__name__)
+logger = getLogger(__name__)
