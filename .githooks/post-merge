@@ -1,0 +1,3 @@
+#!/bin/sh
+
+npx dotenv-vault@latest pull
