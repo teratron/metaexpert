@@ -15,9 +15,13 @@ import os
 from logging import getLogger
 from dotenv_vault import load_dotenv
 
-load_dotenv()
+_ = load_dotenv()
+# LOG_CONFIG = os.path.join("configs/", os.getenv("LOG_CONFIG", "logger.json"))
+# f"configs/{os.getenv('LOG_CONFIG', 'logger.json')}"
+# LOG_FILE = os.path.join("logs", os.getenv("LOG_FILE", "data.log"))
+# f"logs/{os.getenv('LOG_FILE', 'data.log')}"
 LOG_CONFIG = os.getenv("LOG_CONFIG", "logger.json")
-LOG_FILE = os.getenv("LOG_FILE")
+LOG_FILE = os.getenv("LOG_FILE", "data.log")
 
 # Load config
 if os.path.isfile(LOG_CONFIG):
@@ -36,7 +40,7 @@ else:
     stream_handler = StreamHandler(stream=sys.stdout)
     stream_handler.setLevel(DEBUG)
 
-    file_handler = FileHandler(LOG_FILE, encoding="utf-8")
+    file_handler = FileHandler(filename=LOG_FILE, encoding="utf-8")
     file_handler.setLevel(WARNING)
 
     basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, file_handler])

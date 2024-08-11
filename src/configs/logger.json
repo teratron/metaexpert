@@ -23,7 +23,7 @@
       "class": "logging.FileHandler",
       "level": "INFO",
       "formatter": "simple",
-      "filename": "data.log",
+      "filename": "logs/data.log",
       "mode": "a",
       "encoding": "utf-8"
     }
