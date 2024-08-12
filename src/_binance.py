@@ -1,20 +1,20 @@
 """Binance API
 """
-#from typing import override
+# from typing import override
 import sys
 import pandas
 from binance.spot import Spot
+from _logger import getLogger
+
+_log = getLogger(__name__)
 
 
-class API:
-    from _logger import getLogger
-
-    __log = getLogger(__name__)
+class SpotAPI:
     __default_url = "https://testnet.binance.vision"
 
     def __init__(self, api_key=None, api_secret=None, base_url=__default_url) -> None:
-        if not API.query_status():
-            API.__log.error("Binance is not available")
+        if not SpotAPI.query_status():
+            _log.error("Binance is not available")
             sys.exit(1)
 
         self.api_key = api_key
@@ -27,10 +27,10 @@ class API:
         try:
             status = Spot().system_status()
             if status["status"] == 0:
-                API.__log.info(f"System status {status['msg']}")
+                _log.info(f"System status {status['msg']}")
                 return True
         except ConnectionError as error:
-            API.__log.error(error)
+            _log.error(error)
         return False
 
     # Получение данных аккаунта с Binance
@@ -39,7 +39,7 @@ class API:
 
     # Проверка состояния соединения с Binance
     def query_testnet(self) -> None:
-        self.__log.info(f"Check server time test {self.spot.time()['serverTime']}")
+        _log.info(f"Check server time test {self.spot.time()['serverTime']}")
 
     # Получение списка биржевых пар
     def query_quote_asset_list(self, quote_asset_symbol: str) -> pandas.DataFrame:
@@ -79,4 +79,4 @@ def make_trade_with_params(spot: Spot, **kwargs):
         response = spot.new_order(**kwargs)
         return response
     except ConnectionRefusedError as error:
-        logger.error(f"New order error: {error}")
+        _log.error(f"New order error: {error}")

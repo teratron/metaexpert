@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-from _binance import API, get_candlestick_data#, query_status, query_testnet, query_quote_asset_list
+from _binance import SpotAPI, get_candlestick_data#, query_status, query_testnet, query_quote_asset_list
 
 
 if __name__ == "__main__":
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
     BINANCE_BASE_URL = os.getenv("BINANCE_BASE_URL")
 
-    spot = API(BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL)
+    spot = SpotAPI(BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL)
     account = spot.query_account()
     print(account)
 
