@@ -1,9 +1,14 @@
 {% extends "layout.base.tmpl" %}
-{% block title %}Home{% endblock %}
 
 {### Head ###}
 {% block head %}
     {{ super() }}
+{% endblock %}
+
+{### Body ###}
+{% block body %}
+    {{ super() }}
+    {% include "component.chart.tmpl" %}
 {% endblock %}
 
 {### Header ###}
@@ -15,16 +20,45 @@
 {% block main %}
     {{ super() }}
     <h2>{{ self.title() }}</h2>
+
+    {#    {{ infos|e }}#}
+    {#    <dl>#}
+    {#        {% for key, value in infos %}#}
+    {#            <dt>{{ key|e }}:</dt>#}
+    {#            <dd>{{ value|e }}</dd>#}
+    {#            <li>#}
+    {#                <label for={{ key }}>{{ key }}#}
+    {#                <select id={{ key }} name={{ key }}>#}
+    {#                    {% for item in value %}#}
+    {#                        <option>{{ value[item] }}</option>#}
+    {#                    {% endfor %}#}
+    {#                </select>#}
+    {#                </label>#}
+    {#            </li>#}
+    {#        {% endfor %}#}
+    {#    </dl>#}
+
+    <ol>
+        {% for info in infos %}
+            <li>
+                {{ info }}
+            </li>
+        {% endfor %}
+    </ol>
+
+    <label for="symbol">Symbol</label>
+    <select id="symbol" name="symbol" tabindex=0>
+        {% for symbol in symbols %}
+            {% if symbol["status"] == "TRADING" %}
+                <option>{{ symbol["symbol"] }}</option>
+            {% endif %}
+        {% endfor %}
+    </select>
+
     <div id="chart"></div>
 {% endblock %}
 
 {### Footer ###}
 {% block footer %}
     {{ super() }}
-{% endblock %}
-
-{### Body ###}
-{% block body %}
-    {{ super() }}
-    {% include "component.chart.tmpl" %}
 {% endblock %}

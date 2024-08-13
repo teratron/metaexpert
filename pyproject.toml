@@ -13,8 +13,8 @@ numpy = "^2.0.1"
 flask = "^3.0.3"
 binance-connector = "^3.8.1"
 ta-lib = [
-    { platform = "linux", version = "^0.4.32" },
-    { url = "https://github.com/cgohlke/talib-build/releases/download/v0.4.29/TA_Lib-0.4.29-cp311-cp311-win_amd64.whl" }
+    { platform = "win64", url = "https://github.com/cgohlke/talib-build/releases/download/v0.4.29/TA_Lib-0.4.29-cp311-cp311-win_amd64.whl" },
+    { platform = "linux", version = "^0.4.32", source = "pypi"}
 ]
 #lightweight-charts = "^2.0.1"
 
