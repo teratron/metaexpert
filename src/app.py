@@ -155,7 +155,7 @@ def hello():
     spot = Spot()
     infos = spot.exchange_info()
 
-    return jsonify(infos)
+    return jsonify(infos["rateLimits"])
 
 
 @app.errorhandler(404)

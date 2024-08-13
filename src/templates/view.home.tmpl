@@ -47,10 +47,10 @@
     </ol>
 
     <label for="symbol">Symbol</label>
-    <select id="symbol" name="symbol" tabindex=0>
+    <select id="symbol" name="symbol">
         {% for symbol in symbols %}
             {% if symbol["status"] == "TRADING" %}
-                <option>{{ symbol["symbol"] }}</option>
+                <option {% if loop.index == 2 %}selected{% endif %}>{{ symbol["symbol"] }}</option>
             {% endif %}
         {% endfor %}
     </select>
