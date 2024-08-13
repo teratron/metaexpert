@@ -77,8 +77,9 @@ class SpotAPI:
 
         return converted_data
 
+    # Создание ордера на покупку
     def make_trade_with_params(self, **kwargs):
-        print("Making trade with params")
+        _logger.info("Making trade with params")
         try:
             response = self.spot.new_order(**kwargs)
             return response
