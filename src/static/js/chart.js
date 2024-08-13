@@ -40,12 +40,12 @@
         wickUpColor: 'rgba(255, 144, 0, 1)'
     })
 
-    fetch('http://localhost:5000/history')
-        .then((r) => r.json())
-        .then((response) => {
-            //console.log(response)
-            candleSeries.setData(response)
-        })
+    // fetch('http://localhost:5000/history')
+    //     .then((r) => r.json())
+    //     .then((response) => {
+    //         //console.log(response)
+    //         candleSeries.setData(response)
+    //     })
 
     const binanceSocket = new WebSocket("wss://stream.binance.com:9443/ws/btcusdt@kline_1m")
 

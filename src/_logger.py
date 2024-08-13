@@ -48,4 +48,4 @@ else:
     stream_handler.close()
     file_handler.close()
 
-logger = getLogger(__name__)
+_logger = getLogger(__name__)

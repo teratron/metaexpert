@@ -3,6 +3,11 @@
 {### Head ###}
 {% block head %}
     {{ super() }}
+    <style>
+        option:disabled {
+            color: rgba(0, 0, 0, 0.2);
+        }
+    </style>
 {% endblock %}
 
 {### Body ###}
@@ -49,9 +54,10 @@
     <label for="symbol">Symbol</label>
     <select id="symbol" name="symbol">
         {% for symbol in symbols %}
-            {% if symbol["status"] == "TRADING" %}
-                <option {% if loop.index == 2 %}selected{% endif %}>{{ symbol["symbol"] }}</option>
-            {% endif %}
+            <option {% if loop.index == 2 %}selected{% endif %}
+                    {% if symbol["status"] != "TRADING" %}disabled{% endif %}>
+                {{ symbol["symbol"] }}
+            </option>
         {% endfor %}
     </select>
 

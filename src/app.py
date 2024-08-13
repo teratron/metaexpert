@@ -1,8 +1,6 @@
 """Expert Application
 """
-import json
-import pprint
-
+import os
 from _logger import getLogger
 from flask import Flask, render_template, request, flash, redirect, jsonify
 from binance.spot import Spot
@@ -27,12 +25,89 @@ def index():
 
 @app.route("/about")
 def about():
+    import pandas
+    from lightweight_charts import Chart
+
     title = "About"
-    return render_template("view.about.tmpl", title=title)
+
+    chart = Chart()
+    df = pandas.read_csv("data/ohlcv.csv")
+    chart.set(df)
+    print(chart)
+
+    return render_template("view.about.tmpl", title=title, chart=chart)
 
 
-@app.route("/hello")
-def hello():
+@app.route("/account")
+def account():
+    """{
+          "accountType": "SPOT",
+          "balances": [
+            {
+              "asset": "ETH",
+              "free": "1.00000000",
+              "locked": "0.00000000"
+            },
+            {
+              "asset": "BTC",
+              "free": "1.00000000",
+              "locked": "0.00000000"
+            },
+            {
+              "asset": "LTC",
+              "free": "8.00000000",
+              "locked": "0.00000000"
+            },
+            ...
+            {
+              "asset": "BANANA",
+              "free": "14.00000000",
+              "locked": "0.00000000"
+            },
+            {
+              "asset": "RENDER",
+              "free": "104.00000000",
+              "locked": "0.00000000"
+            }
+          ],
+          "brokered": false,
+          "buyerCommission": 0,
+          "canDeposit": true,
+          "canTrade": true,
+          "canWithdraw": true,
+          "commissionRates": {
+            "buyer": "0.00000000",
+            "maker": "0.00000000",
+            "seller": "0.00000000",
+            "taker": "0.00000000"
+          },
+          "makerCommission": 0,
+          "permissions": [
+            "SPOT"
+          ],
+          "preventSor": false,
+          "requireSelfTradePrevention": false,
+          "sellerCommission": 0,
+          "takerCommission": 0,
+          "uid": 1722358673636398520,
+          "updateTime": 1723039532543
+    }
+    """
+    from dotenv_vault import load_dotenv
+
+    _ = load_dotenv()
+    api_key = os.getenv("BINANCE_API_KEY")
+    api_secret = os.getenv("BINANCE_API_SECRET")
+    base_url = os.getenv("BINANCE_BASE_URL")
+
+    spot = Spot(api_key, api_secret, base_url=base_url)
+    __account = spot.account()
+    return jsonify(__account)
+    # return jsonify(__account["rateLimits"])
+
+
+@app.route("/exchange")
+def exchange():
     """{
     timezone: "UTC",
     serverTime: 1633012903441,
@@ -65,7 +140,7 @@ def hello():
               "quoteCommissionPrecision": 8,
               "quoteOrderQtyMarketAllowed": true,
               "quotePrecision": 8,
-              "status": "TRADING",
+              "status": "TRADING", // "BREAK", "PRE_TRADING", "POST_TRADING", "END_OF_DAY", "HALT"
               "symbol": "ETHBTC",
               "filters": [
                 {
@@ -152,10 +227,14 @@ def hello():
         ]
     }
     """
-    spot = Spot()
-    infos = spot.exchange_info()
+    __exchange = Spot().exchange_info()
+    # return jsonify(__exchange)
+    return jsonify(__exchange["symbols"])
 
-    return jsonify(infos["rateLimits"])
+
+@app.route("/hello")
+def hello():
+    return "Hello World!"
 
 
 @app.errorhandler(404)

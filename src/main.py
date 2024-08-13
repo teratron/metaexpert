@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-from _binance import SpotAPI, get_candlestick_data#, query_status, query_testnet, query_quote_asset_list
+from _binance import SpotAPI  #, get_candlestick_data, query_status, query_testnet, query_quote_asset_list
 
 
 if __name__ == "__main__":
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     spot.query_testnet()
 
-    candlesticks = get_candlestick_data("BTCUSDT", "1h", 3)
+    candlesticks = spot.get_candlestick_data("BTCUSDT", "1h", 3)
     print(candlesticks)
 
     dataframe = spot.query_quote_asset_list("BTC")
