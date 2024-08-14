@@ -17,6 +17,7 @@ def index():
 
     props = {
         "title": "Home",
+        "url": "/",
         "infos": infos,
         "symbols": symbols
     }
@@ -29,13 +30,14 @@ def about():
     from lightweight_charts import Chart
 
     title = "About"
+    url = "/about"
 
     chart = Chart()
     df = pandas.read_csv("data/ohlcv.csv")
     chart.set(df)
     print(chart)
 
-    return render_template("view.about.tmpl", title=title, chart=chart)
+    return render_template("view.about.tmpl", title=title, url=url, chart=chart)
 
 
 @app.route("/account")

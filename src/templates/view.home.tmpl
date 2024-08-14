@@ -4,11 +4,6 @@
 {###############################################}
 {% block head %}
     {{ super() }}
-    <style>
-        option:disabled {
-            color: rgba(0, 0, 0, 0.2);
-        }
-    </style>
 {% endblock %}
 
 {### Body ###}
@@ -22,7 +17,6 @@
 {###############################################}
 {% block header %}
     {{ super() }}
-    dsdfdsfsdfsd
 {% endblock %}
 
 {### Main ###}
@@ -30,7 +24,7 @@
 {% block main %}
     {{ super() }}
     <h2 class="text-3xl font-bold underline text-clifford">
-        {{ self.title() }}
+        {{ self.base_title() }}
     </h2>
 
     {#    {{ infos|e }}#}
@@ -50,13 +44,13 @@
     {#        {% endfor %}#}
     {#    </dl>#}
 
-    <ol>
-        {% for info in infos %}
-            <li>
-                {{ info }}
-            </li>
-        {% endfor %}
-    </ol>
+    {#    <ol>#}
+    {#        {% for info in infos %}#}
+    {#            <li>#}
+    {#                {{ info }}#}
+    {#            </li>#}
+    {#        {% endfor %}#}
+    {#    </ol>#}
 
     <label for="symbol">Symbol</label>
     <select id="symbol" name="symbol">

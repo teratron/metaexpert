@@ -1,7 +1,10 @@
-//const {LightweightCharts} = require('https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js')
-
-(function (window, document, undefined) {
+(function (window, document) {
     'use strict'
+
+    //const LightweightCharts = require('https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js')
+    //const LightweightCharts = require('../../../node_modules/lightweight-charts/dist/lightweight-charts.standalone.production.js')
+    //import LightweightCharts from '../../../node_modules/lightweight-charts'
+    //import LightweightCharts from '../../../node_modules/lightweight-charts/dist/lightweight-charts.standalone.production.js'
 
     const chart = LightweightCharts.createChart(document.getElementById('chart'), {
         width: 1000,

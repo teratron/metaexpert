@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% block title %}{{ title }}{% endblock %}
+
+{% block base_title %}{{ title }}{% endblock %}
+{% block base_url %}{{ url }}{% endblock %}
 
 {### Head ###}
 {###############################################}
@@ -12,26 +14,13 @@
 {% block body %}
     {{ super() }}
     <div id="app" role="application">
-        <header id="app-header" role="banner">
-            <section class="app-container">
-                {% block header %}
-                    {% include "component.menu.tmpl" %}
-                {% endblock %}
-            </section>
-        </header>
         {% include "container.header.tmpl" %}
         <main id="app-main" role="main">
             <section class="app-container">
                 {% block main %}{% endblock %}
             </section>
         </main>
-        <footer id="app-footer"  role="contentinfo">
-            <section class="app-container">
-                {% block footer %}
-                    <div>&copy; 2024</div>
-                    {% include "component.menu.tmpl" %}
-                {% endblock %}
-            </section>
-        </footer>
+        {% include "container.footer.tmpl" %}
     </div>
+    <script src="https://cdn.tailwindcss.com"></script>
 {% endblock body %}

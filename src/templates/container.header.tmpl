@@ -1,8 +1,8 @@
-{% block header %}
-    <header id="app-header" role="banner">
-        <section class="app-container">
+<header id="app-header" role="banner">
+    <section class="app-container">
+        {% block header %}
             {% include "component.menu.tmpl" %}
-            <button class="">Key</button>
-        </section>
-    </header>
-{% endblock %}
+            <button type="button" class="">Key</button>
+        {% endblock %}
+    </section>
+</header>

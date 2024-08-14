@@ -1,8 +1,8 @@
-{% block footer %}
 <footer id="app-footer" role="contentinfo">
     <section class="app-container">
-        <div>&copy; 2024</div>
-        {% include "component.menu.tmpl" %}
+        {% block footer %}
+            <div>&copy; 2024</div>
+            {% include "component.menu.tmpl" %}
+        {% endblock %}
     </section>
 </footer>
-{% endblock %}

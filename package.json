@@ -10,8 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy:gh": "gh-pages-clean && gh-pages -d build",
-    "build process": "npm run dev"
+    "deploy:gh": "gh-pages-clean && gh-pages -d build"
   },
   "dependencies": {
     "lightweight-charts": "^4.2.0"

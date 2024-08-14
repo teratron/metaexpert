@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "templates/*": [
+        "./src/templates/*"
+      ],
+      "static/*": [
+        "./src/static/*"
+      ],
+      "scss/*": [
+        "./src/static/scss/*"
+      ],
+      "fonts/*": [
+        "./src/static/fonts/*"
+      ],
+      "media/*": [
+        "./src/static/media/*"
+      ],
+      "js/*": [
+        "./src/static/js/*"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "vite.config.js",
+    "vitest.config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test"
+  ]
+}

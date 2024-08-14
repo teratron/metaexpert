@@ -1,7 +1,15 @@
 {% block menu %}
     <menu>
-        <a href="/">Home</a>
-        <a href="/about">About</a>
+        {% if url == "/" %}
+            <strong>Home</strong>
+        {% else %}
+            <a href="/">Home</a>
+        {% endif %}
+        {% if url == "/about" %}
+            <strong>About</strong>
+        {% else %}
+            <a href="/about">About</a>
+        {% endif %}
         <a href="/account">Account</a>
         <a href="/exchange">Exchange</a>
         <a href="/hello">Hello</a>
