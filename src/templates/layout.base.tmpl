@@ -2,11 +2,13 @@
 {% block title %}{{ title }}{% endblock %}
 
 {### Head ###}
+{###############################################}
 {% block head %}
     {{ super() }}
 {% endblock %}
 
 {### Body ###}
+{###############################################}
 {% block body %}
     {{ super() }}
     <div id="app" role="application">
@@ -17,6 +19,7 @@
                 {% endblock %}
             </section>
         </header>
+        {% include "container.header.tmpl" %}
         <main id="app-main" role="main">
             <section class="app-container">
                 {% block main %}{% endblock %}

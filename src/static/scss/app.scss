@@ -4,6 +4,10 @@
 //
 //**********************************************************
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 // Configuration
 @import "themes/default/light";
 @import "themes/default/dark";

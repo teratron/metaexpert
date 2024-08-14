@@ -1,6 +1,7 @@
 {% extends "layout.base.tmpl" %}
 
 {### Head ###}
+{###############################################}
 {% block head %}
     {{ super() }}
     <style>
@@ -11,20 +12,26 @@
 {% endblock %}
 
 {### Body ###}
+{###############################################}
 {% block body %}
     {{ super() }}
     {% include "component.chart.tmpl" %}
 {% endblock %}
 
 {### Header ###}
+{###############################################}
 {% block header %}
     {{ super() }}
+    dsdfdsfsdfsd
 {% endblock %}
 
 {### Main ###}
+{###############################################}
 {% block main %}
     {{ super() }}
-    <h2>{{ self.title() }}</h2>
+    <h2 class="text-3xl font-bold underline text-clifford">
+        {{ self.title() }}
+    </h2>
 
     {#    {{ infos|e }}#}
     {#    <dl>#}
@@ -65,6 +72,7 @@
 {% endblock %}
 
 {### Footer ###}
+{###############################################}
 {% block footer %}
     {{ super() }}
 {% endblock %}
