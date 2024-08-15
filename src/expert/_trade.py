@@ -10,13 +10,8 @@ _logger = getLogger(__name__)
 
 @dataclass
 class Trade:
-    _lots: float = 0
-    _stop_loss: float = 0
-    _take_profit: float = 0
-    _trailing_stop: float = 0
-    _positions: int = 0
-    _slippage: int = 0
-
+    """Trade
+    """
     def __init__(self, symbol: str | None, **props: dict[str, Any]) -> None:
         self.symbol = symbol
         self._lots = props.get("lots", 0)
@@ -42,6 +37,32 @@ class Trade:
         self._trailing_stop = trailing_stop
         self._positions = positions
         self._slippage = slippage
+
+    # POSITION
+    def open_position(self) -> None:
+        pass
+
+    def close_position(self) -> None:
+        pass
+
+    def close_all_positions(self) -> None:
+        pass
+
+    # ORDER
+    def open_order(self) -> None:
+        pass
+
+    def close_order(self) -> None:
+        pass
+
+    def close_all_orders(self) -> None:
+        pass
+
+    def modify_position(self) -> None:
+        pass
+
+    def modify_all_positions(self) -> None:
+        pass
 
     # @property
     # def lots(self) -> float:
@@ -91,61 +112,21 @@ class Trade:
     # def slippage(self, value: int) -> None:
     #     self._slippage = value
 
-# struct sTrade
-#   {
-# protected:
-#    string            m_symbol;
-#    ENUM_TIMEFRAMES   m_time_frame;
-#    int               m_magic;
-#    string            m_comment;
-#    double            m_lots;
-#    double            m_stop_loss;
-#    double            m_take_profit;
-#    double            m_trailing_stop;
-#    int               m_positions;
-#    uint              m_slippage;
-#    //---
+
 #    datetime          m_long_timer;
 #    datetime          m_short_timer;
 #    int               m_long_position;
 #    int               m_short_position;
 #
-# public:
-#    //--- конструктор с параметром по умолчанию
-#                      sTrade(void);
-#    //--- конструктор с параметрами
-#                      sTrade(const string symbol, const ENUM_TIMEFRAMES time_frame, const int magic, const string comment, const double lots, const uint stop_loss, const uint take_profit, const uint trailing_stop, const uint position);
-#    //--- конструктор копирования
-#                      sTrade(const sTrade &trade);
-#    //--- деструктор
-#                     ~sTrade(void);
-#    //---
-#    int               Init(const string symbol, const ENUM_TIMEFRAMES time_frame, const int magic, const string comment, const double lots, const uint stop_loss, const uint take_profit, const uint trailing_stop, const uint position);
-#    //---
 #    bool              Processing(const int signal_long, const int signal_short);
 #    bool              Processing(const int signal);
-#    bool              Processing(void);
-#    //---
-#    bool              OpenPosition(const ENUM_POSITION_TYPE type);
-#    bool              LongOpened(void) {return(OpenPosition(POSITION_TYPE_BUY));}
-#    bool              ShortOpened(void) {return(OpenPosition(POSITION_TYPE_SELL));}
-#    //---
-#    int               ClosePositions(const ENUM_POSITION_TYPE type);
-#    int               LongClosed(void) {return(ClosePositions(POSITION_TYPE_BUY));}
-#    int               ShortClosed(void) {return(ClosePositions(POSITION_TYPE_SELL));}
-#    //---
-#    int               ClosePositionsBy(const ENUM_POSITION_TYPE type);
-#    int               LongClosedBy(void) {return(ClosePositionsBy(POSITION_TYPE_BUY));}
-#    int               ShortClosedBy(void) {return(ClosePositionsBy(POSITION_TYPE_SELL));}
-#    //---
-#    bool              ModifyPosition(const ENUM_POSITION_TYPE type);
-#    bool              LongModified(void) {return(ModifyPosition(POSITION_TYPE_BUY));}
-#    bool              ShortModified(void) {return(ModifyPosition(POSITION_TYPE_SELL));}
 #
-# protected:
+#    bool              OpenPosition(const ENUM_POSITION_TYPE type);
+#    int               ClosePositions(const ENUM_POSITION_TYPE type);
+#    bool              ModifyPosition(const ENUM_POSITION_TYPE type);
+#
 #    bool              CheckParameters(void);
 #    bool              CheckLots(void);
 #    void              CheckingAbilityOpenTransactions(void);
 #    double            MarginCheck(const ENUM_ORDER_TYPE type, const double price) const;
 #    double            FreeMarginCheck(const ENUM_ORDER_TYPE type, const double price) const;
-#   };

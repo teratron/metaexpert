@@ -79,6 +79,15 @@ class SpotAPI:
 
     # Создание ордера на покупку
     def make_trade_with_params(self, **kwargs):
+        # Post a new order
+        # kwargs = {
+        #     "symbol": "BTCUSDT",
+        #     "side": "SELL",
+        #     "type": "LIMIT",
+        #     "timeInForce": "GTC",
+        #     "quantity": 0.002,
+        #     "price": 61000,
+        # }
         _logger.info("Making trade with params")
         try:
             response = self.spot.new_order(**kwargs)
