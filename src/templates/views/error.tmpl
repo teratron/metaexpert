@@ -1,9 +1,9 @@
-{% extends "layout.base.tmpl" %}
+{% extends "layouts/base.tmpl" %}
 
 {### Main ###}
 {###############################################}
 {% block main %}
     {{ super() }}
     <h2>{{ self.base_title() }}</h2>
-    {{ chart|e }}
+    <p>{{ error }}</p>
 {% endblock %}

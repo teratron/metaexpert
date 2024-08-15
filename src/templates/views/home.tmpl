@@ -1,4 +1,4 @@
-{% extends "layout.base.tmpl" %}
+{% extends "layouts/base.tmpl" %}
 
 {### Head ###}
 {###############################################}
@@ -10,7 +10,7 @@
 {###############################################}
 {% block body %}
     {{ super() }}
-    {% include "component.chart.tmpl" %}
+    {% include "components/chart.tmpl" %}
 {% endblock %}
 
 {### Main ###}

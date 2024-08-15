@@ -21,7 +21,7 @@ def index():
         "infos": infos,
         "symbols": symbols
     }
-    return render_template("view.home.tmpl", **props)
+    return render_template("views/home.tmpl", **props)
 
 
 @app.route("/about")
@@ -37,7 +37,7 @@ def about():
     chart.set(df)
     print(chart)
 
-    return render_template("view.about.tmpl", title=title, url=url, chart=chart)
+    return render_template("views/about.tmpl", title=title, url=url, chart=chart)
 
 
 @app.route("/account")
@@ -242,7 +242,7 @@ def hello():
 @app.errorhandler(404)
 def not_found(error):
     title = "404"
-    return render_template('view.error.tmpl', title=title, error=error), 404
+    return render_template('views/error.tmpl', title=title, error=error), 404
 
 
 if __name__ == "__main__":

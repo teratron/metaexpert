@@ -21,6 +21,10 @@ export default defineConfig(({command, mode, isSsrBuild, isPreview}) => {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url)),
                 'templates': fileURLToPath(new URL('./src/templates', import.meta.url)),
+                'components': fileURLToPath(new URL('./src/templates/components', import.meta.url)),
+                'containers': fileURLToPath(new URL('./src/templates/containers', import.meta.url)),
+                'layouts': fileURLToPath(new URL('./src/templates/layouts', import.meta.url)),
+                'views': fileURLToPath(new URL('./src/templates/views', import.meta.url)),
                 'static': fileURLToPath(new URL('./src/static', import.meta.url)),
                 'scss': fileURLToPath(new URL('./src/static/scss', import.meta.url)),
                 'fonts': fileURLToPath(new URL('./src/static/fonts', import.meta.url)),

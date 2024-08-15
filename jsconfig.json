@@ -8,6 +8,18 @@
       "templates/*": [
         "./src/templates/*"
       ],
+      "components/*": [
+        "./src/templates/components/*"
+      ],
+      "containers/*": [
+        "./src/templates/containers/*"
+      ],
+      "layouts/*": [
+        "./src/templates/layouts/*"
+      ],
+      "views/*": [
+        "./src/templates/views/*"
+      ],,
       "static/*": [
         "./src/static/*"
       ],

@@ -1,13 +1,13 @@
 import time
 import numpy
-from expert import Expert
+import talib
+from src._expert import Expert
 
 
 def main() -> None:
     bot = Expert("BTCUSDT",)
 
     close = numpy.random.randn(100)
-
     ema = talib.MA(close, timeperiod=3, matype=talib.MA_Type.EMA)
     print(ema)
 
