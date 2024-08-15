@@ -15,29 +15,29 @@ def index():
     infos = spot.exchange_info()
     symbols = infos["symbols"]
 
-    props = {
+    context = {
         "title": "Home",
         "url": "/",
         "infos": infos,
         "symbols": symbols
     }
-    return render_template("views/home.tmpl", **props)
+    return render_template("views/home.tmpl", **context)
 
 
 @app.route("/about")
 def about():
-    import pandas
-    from lightweight_charts import Chart
+    #import pandas
+    #from lightweight_charts import Chart
+    # chart = Chart()
+    # df = pandas.read_csv("data/ohlcv.csv")
+    # chart.set(df)
+    # print(chart)
 
-    title = "About"
-    url = "/about"
-
-    chart = Chart()
-    df = pandas.read_csv("data/ohlcv.csv")
-    chart.set(df)
-    print(chart)
-
-    return render_template("views/about.tmpl", title=title, url=url, chart=chart)
+    context = {
+        "title": "About",
+        "url": "/about"
+    }
+    return render_template("views/about.tmpl", **context)
 
 
 @app.route("/account")
