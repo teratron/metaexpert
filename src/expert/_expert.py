@@ -1,13 +1,22 @@
 """Expert
 """
 import asyncio
-from functools import wraps
-from typing import Any, Callable, Coroutine
+from functools import wraps, update_wrapper
+from typing import Any, Callable, Coroutine, TypeVar, cast
 
 from expert._trade import Trade
 from _logger import getLogger
+import typing as t
 
 _logger = getLogger(__name__)
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def setup_method(func: F) -> F:
+    def wrapper_func(self: Expert, *args: Any, **kwargs: Any) -> Any:
+        return func(self, *args, **kwargs)
+
+    return cast(F, update_wrapper(wrapper_func, func))
 
 
 class Expert(Trade):
@@ -45,39 +54,62 @@ class Expert(Trade):
         self._prefix = prefix
 
         # Создание асинхронных задач
-        self.__task_on_trade = asyncio.create_task(self.on_trade)
-        self.__task_on_tick = asyncio.create_task(self.on_tick)
-        self.__task_on_minute = asyncio.create_task(self.on_minute)
-        self.__task_on_bar = asyncio.create_task(self.on_bar(time_frame))
+        # self.__task_on_trade = asyncio.create_task(self.on_trade)
+        # self.__task_on_tick = asyncio.create_task(self.on_tick)
+        # self.__task_on_timer = asyncio.create_task(self.on_timer)
+        # self.__task_on_bar = asyncio.create_task(self.on_bar(time_frame))
 
-    async def __aenter__(self) -> None:
-        await self.__task_on_trade
-        await self.__task_on_tick
-        await self.__task_on_minute
-        await self.__task_on_bar
-
-    def on_init(self, func) -> None:
-        pass
-
-    def on_deinit(self, func) -> None:
-        pass
-
-    async def on_trade(self, func) -> None:
-        pass
-
-    async def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-        async def inner() -> None:
-            while True:
-                func()
-                print(self)
+    @setup_method
+    def route(self, rule: str) -> Callable:
+        def inner(func: Callable) -> Callable:
+            print(rule)
+            func()
+            return func
 
         return inner
 
-    async def on_minute(self, func) -> None:
+    @setup_method
+    def on_init(self, func) -> None:
         pass
 
+    @setup_method
+    def on_deinit(self, func) -> None:
+        pass
+
+    @setup_method
+    def on_trade(self, func) -> None:
+        pass
+
+    @setup_method
+    def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
+        @wraps(func)
+        async def inner() -> None:
+            task = asyncio.create_task(func)
+            await task
+
+            i = 10
+            while i > 0:
+                func()
+                print(self, " ", i)
+                i -= 1
+
+        return inner
+
+    @setup_method
+    def on_timer(self, interval: int = 1000) -> Callable:
+        def outer(func: Callable) -> Callable:
+            @wraps(func)
+            async def inner() -> Coroutine:
+                await func()
+                print(self, interval)
+                return await func()
+
+            return inner
+
+        return outer
+
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
-    def on_bar(self, time_frame="1h") -> Callable:
+    def on_bar(self, time_frame: str = "1h") -> Callable:
         async def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], None]) -> (
                 Callable[[tuple[Any, ...], dict[str, Any]], Coroutine[Any, Any, None]]
         ):

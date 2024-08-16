@@ -17,7 +17,7 @@ def deinit() -> None:
 
 
 @expert.on_trade
-def trade() -> None:
+def on_trade() -> None:
     print("on_trade")
 
 
@@ -26,9 +26,9 @@ def tick() -> None:
     print("on_tick")
 
 
-@expert.on_minute
-def minute() -> None:
-    print("on_minute")
+@expert.on_timer(interval=1000)
+def timer() -> None:
+    print("on_timer")
 
 
 @expert.on_bar(time_frame="1h")
