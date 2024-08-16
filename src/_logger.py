@@ -35,7 +35,7 @@ else:
     import sys
     from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING
 
-    log_format = "%(asctime)s %(name)s: %(levelname)s: %(message)s"
+    log_format = "[%(asctime)s] %(levelname)s >> %(module)s: >> %(name)s: %(message)s"
 
     stream_handler = StreamHandler(stream=sys.stdout)
     stream_handler.setLevel(DEBUG)

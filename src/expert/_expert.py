@@ -1,5 +1,6 @@
 """Expert
 """
+import asyncio
 from functools import wraps
 from typing import Any, Callable, Coroutine
 
@@ -43,10 +44,22 @@ class Expert(Trade):
         self._title = title
         self._prefix = prefix
 
-    async def on_init(self, func) -> None:
+        # Создание асинхронных задач
+        self.__task_on_trade = asyncio.create_task(self.on_trade)
+        self.__task_on_tick = asyncio.create_task(self.on_tick)
+        self.__task_on_minute = asyncio.create_task(self.on_minute)
+        self.__task_on_bar = asyncio.create_task(self.on_bar(time_frame))
+
+    async def __aenter__(self) -> None:
+        await self.__task_on_trade
+        await self.__task_on_tick
+        await self.__task_on_minute
+        await self.__task_on_bar
+
+    def on_init(self, func) -> None:
         pass
 
-    async def on_deinit(self, func) -> None:
+    def on_deinit(self, func) -> None:
         pass
 
     async def on_trade(self, func) -> None:
@@ -54,8 +67,9 @@ class Expert(Trade):
 
     async def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
         async def inner() -> None:
-            func()
-            print(self)
+            while True:
+                func()
+                print(self)
 
         return inner
 
@@ -76,18 +90,18 @@ class Expert(Trade):
 
         return outer
 
-    @property
-    def magic(self) -> int:
-        return self._magic
-
-    @magic.setter
-    def magic(self, value: int) -> None:
-        self._magic = value
-
-    @property
-    def comment(self) -> str:
-        return self.__comment
-
-    @comment.setter
-    def comment(self, value: str) -> None:
-        self.__comment = value + f"Magic number: {self._magic}"
+    # @property
+    # def magic(self) -> int:
+    #     return self._magic
+    #
+    # @magic.setter
+    # def magic(self, value: int) -> None:
+    #     self._magic = value
+    #
+    # @property
+    # def comment(self) -> str:
+    #     return self.__comment
+    #
+    # @comment.setter
+    # def comment(self, value: str) -> None:
+    #     self.__comment = value + f"Magic number: {self._magic}"
