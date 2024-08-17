@@ -1,6 +1,6 @@
 import time
-import numpy
-import talib
+# import numpy
+# import talib
 from expert import Expert
 
 expert = Expert("BTCUSDT", "1h", shift=0, period=3)
@@ -31,21 +31,21 @@ def timer() -> None:
     print("on_timer")
 
 
-@expert.on_bar(time_frame="1h")
-def bar() -> None:
-    print("on_bar")
+# @expert.on_bar(time_frame="1h")
+# def bar() -> None:
+#     print("on_bar")
 
 
 def main() -> None:
-    bot = Expert("BTCUSDT", "1h", shift=0, period=3)
+    # expert.trade(lots=0.0001, stop_loss=0.0001, take_profit=0.0001, trailing_stop=0.0001)
+    # expert.positions = 2
+    # expert.slippage = 10.0
 
-    bot.trade(lots=0.0001, stop_loss=0.0001, take_profit=0.0001, trailing_stop=0.0001)
-    bot.positions = 2
-    bot.slippage = 10.0
+    expert.run()
 
-    close = numpy.random.randn(100)
-    ema = talib.MA(close, timeperiod=3, matype=talib.MA_Type.EMA)
-    print(ema)
+    # close = numpy.random.randn(100)
+    # ema = talib.MA(close, timeperiod=3, matype=talib.MA_Type.EMA)
+    # print(ema)
 
 
 if __name__ == "__main__":

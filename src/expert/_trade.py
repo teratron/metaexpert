@@ -39,29 +39,29 @@ class Trade:
         self._slippage = slippage
 
     # POSITION
-    def open_position(self) -> None:
+    def open_position(self, side: str) -> None:
         pass
 
-    def close_position(self) -> None:
+    def close_position(self, side: str) -> None:
         pass
 
-    def close_all_positions(self) -> None:
-        pass
-
-    # ORDER
-    def open_order(self) -> None:
-        pass
-
-    def close_order(self) -> None:
-        pass
-
-    def close_all_orders(self) -> None:
+    def close_all_positions(self, side: str) -> None:
         pass
 
     def modify_position(self) -> None:
         pass
 
     def modify_all_positions(self) -> None:
+        pass
+
+    # ORDER
+    def open_order(self, side: str) -> None:
+        pass
+
+    def close_order(self, side: str) -> None:
+        pass
+
+    def close_all_orders(self, side: str) -> None:
         pass
 
     # @property

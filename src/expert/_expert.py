@@ -9,14 +9,14 @@ from _logger import getLogger
 import typing as t
 
 _logger = getLogger(__name__)
-F = TypeVar("F", bound=Callable[..., Any])
+#F = TypeVar("F", bound=Callable[..., Any])
 
 
-def setup_method(func: F) -> F:
-    def wrapper_func(self: Expert, *args: Any, **kwargs: Any) -> Any:
-        return func(self, *args, **kwargs)
-
-    return cast(F, update_wrapper(wrapper_func, func))
+# def setup_method(func: F) -> F:
+#     def wrapper_func(self: Expert, *args: Any, **kwargs: Any) -> F:
+#         return func(self, *args, **kwargs)
+#
+#     return cast(F, update_wrapper(wrapper_func, func))
 
 
 class Expert(Trade):
@@ -59,28 +59,32 @@ class Expert(Trade):
         # self.__task_on_timer = asyncio.create_task(self.on_timer)
         # self.__task_on_bar = asyncio.create_task(self.on_bar(time_frame))
 
-    @setup_method
-    def route(self, rule: str) -> Callable:
-        def inner(func: Callable) -> Callable:
-            print(rule)
-            func()
-            return func
+    # @setup_method
+    # def route(self, rule: str) -> Callable:
+    #     def inner(func: Callable) -> Callable:
+    #         print(rule)
+    #         func()
+    #         return func
+    #
+    #     return inner
 
-        return inner
+    def run(self) -> None:
+        #asyncio.run()
+        pass
 
-    @setup_method
+    #@setup_method
     def on_init(self, func) -> None:
         pass
 
-    @setup_method
+    #@setup_method
     def on_deinit(self, func) -> None:
         pass
 
-    @setup_method
+    #@setup_method
     def on_trade(self, func) -> None:
         pass
 
-    @setup_method
+    #@setup_method
     def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
         @wraps(func)
         async def inner() -> None:
@@ -95,32 +99,31 @@ class Expert(Trade):
 
         return inner
 
-    @setup_method
+    #@setup_method
     def on_timer(self, interval: int = 1000) -> Callable:
         def outer(func: Callable) -> Callable:
             @wraps(func)
-            async def inner() -> Coroutine:
+            async def inner() -> None:
                 await func()
                 print(self, interval)
-                return await func()
 
             return inner
 
         return outer
 
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
-    def on_bar(self, time_frame: str = "1h") -> Callable:
-        async def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], None]) -> (
-                Callable[[tuple[Any, ...], dict[str, Any]], Coroutine[Any, Any, None]]
-        ):
-            @wraps(func)
-            async def inner(*args, **kwargs) -> None:
-                func(*args, **kwargs)
-                print(self, time_frame)
-
-            return inner
-
-        return outer
+    # def on_bar(self, time_frame: str = "1h") -> Callable:
+    #     async def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], None]) -> (
+    #             Callable[[tuple[Any, ...], dict[str, Any]], Coroutine[Any, Any, None]]
+    #     ):
+    #         @wraps(func)
+    #         async def inner(*args, **kwargs) -> None:
+    #             await func(*args, **kwargs)
+    #             print(self, time_frame)
+    #
+    #         return inner
+    #
+    #     return outer
 
     # @property
     # def magic(self) -> int:
