@@ -11,24 +11,24 @@ def init() -> None:
     print("on_init")
 
 
-@expert.on_deinit
-def deinit() -> None:
-    print("on_deinit")
-
-
-@expert.on_trade
-def on_trade() -> None:
-    print("on_trade")
-
-
-@expert.on_tick
-def tick() -> None:
-    print("on_tick")
-
-
-@expert.on_timer(interval=1000)
-def timer() -> None:
-    print("on_timer")
+# @expert.on_deinit
+# def deinit() -> None:
+#     print("on_deinit")
+#
+#
+# @expert.on_trade
+# def trade() -> None:
+#     print("on_trade")
+#
+#
+# @expert.on_tick
+# def tick() -> None:
+#     print("on_tick")
+#
+#
+# @expert.on_timer(interval=1000)
+# def timer() -> None:
+#     print("on_timer")
 
 
 # @expert.on_bar(time_frame="1h")
@@ -41,7 +41,9 @@ def main() -> None:
     # expert.positions = 2
     # expert.slippage = 10.0
 
-    expert.run()
+    expert.run(__name__)
+    # print(__name__)
+    # print(__file__)
 
     # close = numpy.random.randn(100)
     # ema = talib.MA(close, timeperiod=3, matype=talib.MA_Type.EMA)

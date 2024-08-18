@@ -6,29 +6,33 @@ from typing import Any, Callable, Coroutine, TypeVar, cast
 
 from expert._trade import Trade
 from _logger import getLogger
-import typing as t
+
+# import typing as t
 
 _logger = getLogger(__name__)
-#F = TypeVar("F", bound=Callable[..., Any])
+
+F = TypeVar("F", bound=Callable[..., Any])
 
 
-# def setup_method(func: F) -> F:
-#     def wrapper_func(self: Expert, *args: Any, **kwargs: Any) -> F:
-#         return func(self, *args, **kwargs)
-#
-#     return cast(F, update_wrapper(wrapper_func, func))
+def setup_method(fun: F) -> F:
+    f_name = fun.__name__
+
+    def wrapper_func(self: Expert, *args: Any, **kwargs: Any) -> Any:
+        return fun(self, *args, **kwargs)
+
+    return cast(F, update_wrapper(wrapper_func, fun))
 
 
 class Expert(Trade):
     """
     :param symbol: Инструмент с которым работает эксперт.
-    :type symbol: str or set[str] or None
+    :type symbol: `str` or `None`
     :param time_frame: Таймфрейм, по которому осуществляется торговля эксперт.
-    :type time_frame: str or set[str] or None
+    :type time_frame: `str` or `set[str]` or `None`
     :param shift: Сдвиг относительно текущего бара, бар на котором осуществляется торговля эксперта.
-    :type shift: int
+    :type shift: `int`
     :param period: Период (интервал) баров на котором осуществляется торговля и/или прорисовка эксперта.
-    :type period: int
+    :type period: `int`
     """
     __comment: str = None
 
@@ -68,48 +72,54 @@ class Expert(Trade):
     #
     #     return inner
 
-    def run(self) -> None:
-        #asyncio.run()
+    def run(self, name: str) -> None:
+        # asyncio.run()
+        # self.on_init()
+        print(name)
         pass
 
-    #@setup_method
-    def on_init(self, func) -> None:
-        pass
-
-    #@setup_method
-    def on_deinit(self, func) -> None:
-        pass
-
-    #@setup_method
-    def on_trade(self, func) -> None:
-        pass
-
-    #@setup_method
-    def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-        @wraps(func)
-        async def inner() -> None:
-            task = asyncio.create_task(func)
-            await task
-
-            i = 10
-            while i > 0:
-                func()
-                print(self, " ", i)
-                i -= 1
+    # @setup_method
+    def on_init(self, func) -> Callable:
+        def inner() -> None:
+            print(func.__name__)
+            # return func()
 
         return inner
 
-    #@setup_method
-    def on_timer(self, interval: int = 1000) -> Callable:
-        def outer(func: Callable) -> Callable:
-            @wraps(func)
-            async def inner() -> None:
-                await func()
-                print(self, interval)
-
-            return inner
-
-        return outer
+    # @setup_method
+    # def on_deinit(self, func) -> None:
+    #     pass
+    #
+    # # @setup_method
+    # def on_trade(self, func) -> None:
+    #     pass
+    #
+    # # @setup_method
+    # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
+    #     @wraps(func)
+    #     async def inner() -> None:
+    #         task = asyncio.create_task(func)
+    #         await task
+    #
+    #         i = 10
+    #         while i > 0:
+    #             func()
+    #             print(self, " ", i)
+    #             i -= 1
+    #
+    #     return inner
+    #
+    # # @setup_method
+    # def on_timer(self, interval: int = 1000) -> Callable:
+    #     def outer(func: Callable) -> Callable:
+    #         @wraps(func)
+    #         async def inner() -> None:
+    #             await func()
+    #             print(self, interval)
+    #
+    #         return inner
+    #
+    #     return outer
 
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
     # def on_bar(self, time_frame: str = "1h") -> Callable:
