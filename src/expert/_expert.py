@@ -6,7 +6,8 @@ import os
 import sys
 from functools import wraps
 from pprint import pprint
-from typing import Any, Callable, Coroutine, TypeVar, TypeAlias
+from types import ModuleType
+from typing import Any, Callable, Coroutine, TypeVar, TypeAlias, Self
 
 from expert._trade import Trade
 from _logger import getLogger
@@ -65,35 +66,57 @@ class Expert(Trade):
     #
     #     return inner
 
-    #def run(self, import_name: str) -> None:
+    # def run(self, import_name: str) -> None:
     def run(self) -> None:
         frame = inspect.stack()[1]
         mod = inspect.getmodule(frame[0])
         # pprint(mod)
 
-        #for attr in dir(mod):
-        for attr in mod.__dict__:
-            #a: list = mod.__dict__.get(attr)
-            pprint(attr)
-            # match attr:
-            #     case "init":
-            #         print(attr)
-            #     case "deinit":
-            #         print(attr)
-            #     case "trade":
-            #         print(attr)
-            #     case "tick":
-            #         print(attr)
-            #     case "bar":
-            #         print(attr)
-            #     case "timer":
-            #         print(attr)
+        for attr in dir(mod):
+            # pprint(attr)
+            obj: list = mod.__dict__.get(attr)
+            if callable(obj) and not isinstance(obj, type):
+                qual: list = obj.__qualname__.split(".")
+                if len(qual) > 1 and qual[0] == self.__class__.__name__:
+                    # print(attr, ": ", qual[1])
+                    # print(attr, ": ", obj.__dict__)
+                    match qual[1]:
+                        case "on_init":
+                            # obj()
+                            getattr(mod, attr)()
+                            # print(attr)
+                            pass
+                        case "on_deinit":
+                            getattr(mod, attr)()
+                            # obj()
+                            # print(attr)
+                            pass
+                        case "on_trade":
+                            getattr(mod, attr)()
+                            # obj()
+                            # print(attr)
+                            pass
+                        case "on_tick":
+                            getattr(mod, attr)()
+                            # obj()
+                            # print(attr)
+                            pass
+                        case "on_bar":
+                            getattr(mod, attr)()
+                            # obj()
+                            # print(attr)
+                            pass
+                        case "on_timer":
+                            getattr(mod, attr)()
+                            # obj()
+                            # print(attr)
+                            pass
 
-        #print("")
-        #pprint(mod.__dict__["init"])
-        #print("")
-        a: list = mod.__dict__.get("init").__qualname__.split(".")
-        #pprint(a[a.index("on_init")])
+        # print("")
+        # pprint(mod.__dict__["init"])
+        # print("")
+        # a: list = mod.__dict__.get("init").__qualname__.split(".")
+        # pprint(a[a.index("on_init")])
         # mod.init()
         # mod.deinit()
         # mod.trade()
@@ -114,7 +137,7 @@ class Expert(Trade):
 
     def on_init(self, func: Callable) -> Callable:
         def inner() -> Callable:
-            #func()
+            # func()
             return func()
 
         return inner
@@ -132,29 +155,27 @@ class Expert(Trade):
         return inner
 
     def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-        @wraps(func)
         def inner() -> None:
-            #task = asyncio.create_task(func)
-            #await task
+            # task = asyncio.create_task(func)
+            # await task
 
-            i = 10
+            i = 3
             while i > 0:
                 func()
                 print(self, " ", i)
                 i -= 1
-            #return func()
+            # return func()
 
         return inner
 
-    #Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
+    # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
 
     def on_bar(self, time_frame: str = "1h") -> Callable:
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], None]) -> (
                 Callable[[tuple[Any, ...], dict[str, Any]], Coroutine[Any, Any, None]]
         ):
-            @wraps(func)
-            async def inner(*args, **kwargs) -> None:
-                await func(*args, **kwargs)
+            def inner(*args, **kwargs) -> None:
+                func(*args, **kwargs)
                 print(self, time_frame)
 
             return inner
@@ -163,10 +184,9 @@ class Expert(Trade):
 
     def on_timer(self, interval: int = 1000) -> Callable:
         def outer(func: Callable) -> Callable:
-            @wraps(func)
-            async def inner() -> None:
-                await func()
-                print(self, interval)
+            def inner() -> None:
+                func()
+                # print(self, interval)
 
             return inner
 

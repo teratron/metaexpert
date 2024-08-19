@@ -6,34 +6,34 @@ from expert import Expert
 expert = Expert("BTCUSDT", "1h", shift=0, period=3)
 
 
-@expert.on_init
-def init() -> None:
-    print("on_init")
-
-
-@expert.on_deinit
-def deinit() -> None:
-    print("on_deinit")
-
-
-@expert.on_trade
-def trade() -> None:
-    print("on_trade")
-
-
-@expert.on_tick
-def tick() -> None:
-    print("on_tick")
-
-
-@expert.on_bar(time_frame="1h")
-def bar() -> None:
-    print("on_bar")
+# @expert.on_init
+# def init() -> None:
+#     print("*** on_init ***")
+#
+#
+# @expert.on_deinit
+# def deinit() -> None:
+#     print("*** on_deinit ***")
+#
+#
+# @expert.on_trade
+# def trade() -> None:
+#     print("*** on_trade ***")
+#
+#
+# @expert.on_tick
+# def tick() -> None:
+#     print("*** on_tick ***")
+#
+#
+# @expert.on_bar(time_frame="1h")
+# def bar() -> None:
+#     print("*** on_bar ***")
 
 
 @expert.on_timer(interval=1000)
 def timer() -> None:
-    print("on_timer")
+    print("*** on_timer ***")
 
 
 def main() -> None:
