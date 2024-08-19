@@ -4,17 +4,21 @@ import asyncio
 import inspect
 import os
 import sys
-from functools import wraps
-from pprint import pprint
-from types import ModuleType
-from typing import Any, Callable, Coroutine, TypeVar, TypeAlias, Self
-
+from functools import update_wrapper
+from typing import Any, Callable, Coroutine, TypeVar, cast
 from expert._trade import Trade
 from _logger import getLogger
 
-# import typing as t
-
 _logger = getLogger(__name__)
+
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+def setupmethod(f: F) -> F:
+    def wrapper_func(self, *args: Any, **kwargs: Any) -> Any:
+        return f(self, *args, **kwargs)
+
+    return cast(F, update_wrapper(wrapper_func, f))
 
 
 class Expert(Trade):
@@ -28,11 +32,12 @@ class Expert(Trade):
     :param period: Период (интервал) баров на котором осуществляется торговля и/или прорисовка эксперта.
     :type period: `int`
     """
+    # __dict__ = ["on_init", "on_deinit", "on_trade", "on_tick", "on_bar", "on_timer"]
     __comment: str = None
 
     def __init__(
             self,
-            symbol: str | None = None,
+            symbol: str | None,
             time_frame: str | set[str] | None = None,
             *,
             shift: int = 0,
@@ -57,89 +62,47 @@ class Expert(Trade):
         # self.__task_on_timer = asyncio.create_task(self.on_timer)
         # self.__task_on_bar = asyncio.create_task(self.on_bar(time_frame))
 
-    # @setup_method
-    # def route(self, rule: str) -> Callable:
-    #     def inner(func: Callable) -> Callable:
-    #         print(rule)
-    #         func()
-    #         return func
-    #
-    #     return inner
-
-    # def run(self, import_name: str) -> None:
     def run(self) -> None:
         frame = inspect.stack()[1]
         mod = inspect.getmodule(frame[0])
-        # pprint(mod)
 
-        for attr in dir(mod):
-            # pprint(attr)
-            obj: list = mod.__dict__.get(attr)
-            if callable(obj) and not isinstance(obj, type):
-                qual: list = obj.__qualname__.split(".")
-                if len(qual) > 1 and qual[0] == self.__class__.__name__:
-                    # print(attr, ": ", qual[1])
-                    # print(attr, ": ", obj.__dict__)
-                    # print(attr, ": ", obj.__class__.__dict__)
-                    match qual[1]:
-                        case "on_init":
-                            # obj()
+        if mod:
+            for attr in dir(mod):
+                obj: list = mod.__dict__.get(attr)
+                if callable(obj) and not isinstance(obj, type):
+                    qualif: list = obj.__qualname__.split(".")
+                    if len(qualif) > 1 and qualif[0] == self.__class__.__name__:
+                        if any(
+                                qualif[1] == item for item in
+                                ["on_init", "on_deinit", "on_trade", "on_tick", "on_bar", "on_timer"]
+                        ):
                             getattr(mod, attr)()
-                            # print(attr)
-                            pass
-                        case "on_deinit":
-                            getattr(mod, attr)()
-                            # obj()
-                            # print(attr)
-                            pass
-                        case "on_trade":
-                            getattr(mod, attr)()
-                            # obj()
-                            # print(attr)
-                            pass
-                        case "on_tick":
-                            getattr(mod, attr)()
-                            # obj()
-                            # print(attr)
-                            pass
-                        case "on_bar":
-                            getattr(mod, attr)()
-                            # obj()
-                            # print(attr)
-                            pass
-                        case "on_timer":
-                            getattr(mod, attr)()
-                            # obj()
-                            # print(attr)
-                            pass
-
-        # print("")
-        # pprint(mod.__dict__["init"])
-        # print("")
-        # a: list = mod.__dict__.get("init").__qualname__.split(".")
-        # pprint(a[a.index("on_init")])
-        # mod.init()
-        # mod.deinit()
-        # mod.trade()
-        # mod.tick()
-
-        # asyncio.run()
-        # self.on_init()
+                            _logger.debug(f"Launch task for @{qualif[1]}:{attr}()")
+                    # match qual[1]:
+                    #     case "on_init":
+                    #         pass
+                    #     case "on_deinit":
+                    #         pass
+                    #     case "on_trade":
+                    #         pass
+                    #     case "on_tick":
+                    #         pass
+                    #     case "on_bar":
+                    #         pass
+                    #     case "on_timer":
+                    #         pass
         # if import_name == "__main__":
         #     file_name: str | None = getattr(sys.modules["__main__"], "__file__", None)
-        #     print(file_name)
         #     name: str = os.path.splitext(os.path.basename(file_name))[0]
-        #     print(name)
         #     mod = __import__(name)
-        #     print(mod)
-        #     mod.init()
-        #     mod.deinit()
-        #     mod.trade()
 
+    def on_process(self) -> None:
+        pass
+
+    @setupmethod
     def on_init(self, func: Callable) -> Callable:
-        def inner() -> Callable:
-            # func()
-            return func()
+        def inner() -> None:
+            func()
 
         return inner
 
@@ -157,14 +120,15 @@ class Expert(Trade):
 
     def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
         def inner() -> None:
-            # task = asyncio.create_task(func)
-            # await task
+            # task = asyncio.create_task(func())
+            # task
+            func()
 
-            i = 3
-            while i > 0:
-                func()
-                print(self, " ", i)
-                i -= 1
+            # i = 3
+            # while i > 0:
+            #     func()
+            #     print(self, " ", i)
+            #     i -= 1
             # return func()
 
         return inner
@@ -177,7 +141,7 @@ class Expert(Trade):
         ):
             def inner(*args, **kwargs) -> None:
                 func(*args, **kwargs)
-                print(self, time_frame)
+                print(time_frame)
 
             return inner
 
