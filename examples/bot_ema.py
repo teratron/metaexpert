@@ -26,12 +26,12 @@ expert = Expert("BTCUSDT", "1h", shift=0, period=3)
 #     print("*** on_tick ***")
 #
 #
-# @expert.on_bar(time_frame="1h")
+# @expert.on_bar("1h")
 # def bar() -> None:
 #     print("*** on_bar ***")
 
 
-@expert.on_timer(interval=1000)
+@expert.on_timer(1042)
 def timer() -> None:
     print("*** on_timer ***")
 

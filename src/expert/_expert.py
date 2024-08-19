@@ -80,6 +80,7 @@ class Expert(Trade):
                 if len(qual) > 1 and qual[0] == self.__class__.__name__:
                     # print(attr, ": ", qual[1])
                     # print(attr, ": ", obj.__dict__)
+                    # print(attr, ": ", obj.__class__.__dict__)
                     match qual[1]:
                         case "on_init":
                             # obj()
@@ -186,7 +187,7 @@ class Expert(Trade):
         def outer(func: Callable) -> Callable:
             def inner() -> None:
                 func()
-                # print(self, interval)
+                print(interval)
 
             return inner
 
