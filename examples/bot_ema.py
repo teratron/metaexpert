@@ -11,29 +11,29 @@ def init() -> None:
     print("on_init")
 
 
-# @expert.on_deinit
-# def deinit() -> None:
-#     print("on_deinit")
-#
-#
-# @expert.on_trade
-# def trade() -> None:
-#     print("on_trade")
-#
-#
-# @expert.on_tick
-# def tick() -> None:
-#     print("on_tick")
-#
-#
-# @expert.on_timer(interval=1000)
-# def timer() -> None:
-#     print("on_timer")
+@expert.on_deinit
+def deinit() -> None:
+    print("on_deinit")
 
 
-# @expert.on_bar(time_frame="1h")
-# def bar() -> None:
-#     print("on_bar")
+@expert.on_trade
+def trade() -> None:
+    print("on_trade")
+
+
+@expert.on_tick
+def tick() -> None:
+    print("on_tick")
+
+
+@expert.on_bar(time_frame="1h")
+def bar() -> None:
+    print("on_bar")
+
+
+@expert.on_timer(interval=1000)
+def timer() -> None:
+    print("on_timer")
 
 
 def main() -> None:
@@ -41,7 +41,7 @@ def main() -> None:
     # expert.positions = 2
     # expert.slippage = 10.0
 
-    expert.run(__name__)
+    expert.run()
     # print(__name__)
     # print(__file__)
 

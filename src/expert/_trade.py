@@ -39,30 +39,30 @@ class Trade:
         self._slippage = slippage
 
     # POSITION
-    def open_position(self, side: str) -> None:
-        pass
+    def open_position(self, side: str) -> bool:
+        return False
 
-    def close_position(self, side: str) -> None:
-        pass
+    def close_position(self, side: str) -> bool:
+        return False
 
-    def close_all_positions(self, side: str) -> None:
-        pass
+    def close_all_positions(self, side: str) -> bool:
+        return False
 
-    def modify_position(self) -> None:
-        pass
+    def modify_position(self) -> bool:
+        return False
 
-    def modify_all_positions(self) -> None:
-        pass
+    def modify_all_positions(self) -> bool:
+        return False
 
     # ORDER
-    def open_order(self, side: str) -> None:
-        pass
+    def open_order(self, side: str) -> bool:
+        return False
 
-    def close_order(self, side: str) -> None:
-        pass
+    def close_order(self, side: str) -> bool:
+        return False
 
-    def close_all_orders(self, side: str) -> None:
-        pass
+    def close_all_orders(self, side: str) -> bool:
+        return False
 
     # @property
     # def lots(self) -> float:
@@ -117,13 +117,6 @@ class Trade:
 #    datetime          m_short_timer;
 #    int               m_long_position;
 #    int               m_short_position;
-#
-#    bool              Processing(const int signal_long, const int signal_short);
-#    bool              Processing(const int signal);
-#
-#    bool              OpenPosition(const ENUM_POSITION_TYPE type);
-#    int               ClosePositions(const ENUM_POSITION_TYPE type);
-#    bool              ModifyPosition(const ENUM_POSITION_TYPE type);
 #
 #    bool              CheckParameters(void);
 #    bool              CheckLots(void);
