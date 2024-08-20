@@ -11,7 +11,7 @@ def on_process() -> None:
 
 
 @expert.on_init
-async def init() -> None:
+def init() -> None:
     print("*** on_init ***")
 
 
@@ -23,13 +23,13 @@ async def init() -> None:
 # @expert.on_trade
 # def trade() -> None:
 #     print("*** on_trade ***")
-#
-#
-# @expert.on_tick
-# def tick() -> None:
-#     print("*** on_tick ***")
-#
-#
+
+
+@expert.on_tick
+def tick() -> None:
+    print("*** on_tick ***")
+
+
 # @expert.on_bar("1h")
 # def bar() -> None:
 #     print("*** on_bar ***")

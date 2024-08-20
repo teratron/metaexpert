@@ -66,7 +66,7 @@ class Expert(Trade):
         frame = inspect.stack()[1]
         mod = inspect.getmodule(frame[0])
 
-        #self.on_process()
+        # self.on_process()
 
         if mod:
             for attr in dir(mod):
@@ -82,20 +82,20 @@ class Expert(Trade):
                                 qualif[1] == item for item in
                                 ["on_init", "on_deinit", "on_trade", "on_tick", "on_bar", "on_timer"]
                         ):
-                            asyncio.run(getattr(mod, attr)())
-                            _logger.debug(f"Launch task for @{qualif[1]}:{attr}()")
-                    else:
-                        if any(qualif[0] == item for item in ["on_process"]):
+                            # asyncio.run(getattr(mod, attr)())
                             getattr(mod, attr)()
-                            _logger.debug(f"Launch task for {attr}()")
+                            _logger.debug(f"Launch task for @{qualif[1]}:{attr}()")
+                    elif any(qualif[0] == item for item in ["on_process"]):
+                        getattr(mod, attr)()
+                        _logger.debug(f"Launch task for {attr}()")
 
     @setup_method
     def on_process(self) -> None:
         print("*** expert.on_process ***")
 
     def on_init(self, func: Callable) -> Callable:
-        async def inner() -> None:
-            await func()
+        def inner() -> None:
+            func()
 
         return inner
 
@@ -111,12 +111,15 @@ class Expert(Trade):
 
         return inner
 
-    def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-        def inner() -> None:
+    # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
+    def on_tick(self, func: Callable) -> Callable:
+        def inner(*args, **kwargs) -> None:
             # task = asyncio.create_task(func())
             # task
-            func()
-
+            func(*args, **kwargs)
+            # await self.__tick()
+            # task = asyncio.create_task(self.__tick())
+            # await task
             # i = 3
             # while i > 0:
             #     func()
@@ -149,6 +152,9 @@ class Expert(Trade):
             return inner
 
         return outer
+
+    async def __tick(self):
+        print("__tick")
 
     # @property
     # def magic(self) -> int:
