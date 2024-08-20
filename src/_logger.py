@@ -33,12 +33,12 @@ if os.path.isfile(LOG_CONFIG):
     dictConfig(config)
 else:
     import sys
-    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING
+    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING, INFO
 
-    log_format = "[%(asctime)s] %(levelname)s >> %(name)s: %(message)s"
+    log_format = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
 
     stream_handler = StreamHandler(stream=sys.stdout)
-    stream_handler.setLevel(DEBUG)
+    stream_handler.setLevel(INFO)
 
     file_handler = FileHandler(filename=LOG_FILE, encoding="utf-8")
     file_handler.setLevel(WARNING)

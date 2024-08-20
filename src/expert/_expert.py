@@ -14,7 +14,7 @@ _logger = getLogger(__name__)
 F = TypeVar("F", bound=Callable[..., Any])
 
 
-def setupmethod(f: F) -> F:
+def setup_method(f: F) -> F:
     def wrapper_func(self, *args: Any, **kwargs: Any) -> Any:
         return f(self, *args, **kwargs)
 
@@ -68,9 +68,13 @@ class Expert(Trade):
 
         if mod:
             for attr in dir(mod):
-                obj: list = mod.__dict__.get(attr)
+                # Все объекты модуля.
+                obj = mod.__dict__.get(attr)
+                # Только функции модуля
                 if callable(obj) and not isinstance(obj, type):
-                    qualif: list = obj.__qualname__.split(".")
+                    # Все функции модуля с декораторами или замыканиями или без них.
+                    # Список иерархии объектов, функций, декораторов или замыканий.
+                    qualif: list[str] = obj.__qualname__.split(".")
                     if len(qualif) > 1 and qualif[0] == self.__class__.__name__:
                         if any(
                                 qualif[1] == item for item in
@@ -78,31 +82,19 @@ class Expert(Trade):
                         ):
                             getattr(mod, attr)()
                             _logger.debug(f"Launch task for @{qualif[1]}:{attr}()")
-                    # match qual[1]:
-                    #     case "on_init":
-                    #         pass
-                    #     case "on_deinit":
-                    #         pass
-                    #     case "on_trade":
-                    #         pass
-                    #     case "on_tick":
-                    #         pass
-                    #     case "on_bar":
-                    #         pass
-                    #     case "on_timer":
-                    #         pass
-        # if import_name == "__main__":
-        #     file_name: str | None = getattr(sys.modules["__main__"], "__file__", None)
-        #     name: str = os.path.splitext(os.path.basename(file_name))[0]
-        #     mod = __import__(name)
+                    else:
+                        if any(qualif[0] == item for item in ["on_process"]):
+                            getattr(mod, attr)()
+                            _logger.debug(f"Launch task for {attr}()")
 
+    @setup_method
     def on_process(self) -> None:
-        pass
+        print("*** expert.on_process ***")
 
-    @setupmethod
+    @setup_method
     def on_init(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
+        def inner() -> Callable:
+            return func
 
         return inner
 
