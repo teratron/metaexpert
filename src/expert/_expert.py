@@ -66,6 +66,8 @@ class Expert(Trade):
         frame = inspect.stack()[1]
         mod = inspect.getmodule(frame[0])
 
+        #self.on_process()
+
         if mod:
             for attr in dir(mod):
                 # Все объекты модуля.
@@ -80,7 +82,7 @@ class Expert(Trade):
                                 qualif[1] == item for item in
                                 ["on_init", "on_deinit", "on_trade", "on_tick", "on_bar", "on_timer"]
                         ):
-                            getattr(mod, attr)()
+                            asyncio.run(getattr(mod, attr)())
                             _logger.debug(f"Launch task for @{qualif[1]}:{attr}()")
                     else:
                         if any(qualif[0] == item for item in ["on_process"]):
@@ -91,10 +93,9 @@ class Expert(Trade):
     def on_process(self) -> None:
         print("*** expert.on_process ***")
 
-    @setup_method
     def on_init(self, func: Callable) -> Callable:
-        def inner() -> Callable:
-            return func
+        async def inner() -> None:
+            await func()
 
         return inner
 

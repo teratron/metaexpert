@@ -11,33 +11,33 @@ def on_process() -> None:
 
 
 @expert.on_init
-def init() -> None:
+async def init() -> None:
     print("*** on_init ***")
 
 
-@expert.on_deinit
-def deinit() -> None:
-    print("*** on_deinit ***")
-
-
-@expert.on_trade
-def trade() -> None:
-    print("*** on_trade ***")
-
-
-@expert.on_tick
-def tick() -> None:
-    print("*** on_tick ***")
-
-
-@expert.on_bar("1h")
-def bar() -> None:
-    print("*** on_bar ***")
-
-
-@expert.on_timer(1042)
-def timer() -> None:
-    print("*** on_timer ***")
+# @expert.on_deinit
+# def deinit() -> None:
+#     print("*** on_deinit ***")
+#
+#
+# @expert.on_trade
+# def trade() -> None:
+#     print("*** on_trade ***")
+#
+#
+# @expert.on_tick
+# def tick() -> None:
+#     print("*** on_tick ***")
+#
+#
+# @expert.on_bar("1h")
+# def bar() -> None:
+#     print("*** on_bar ***")
+#
+#
+# @expert.on_timer(1042)
+# def timer() -> None:
+#     print("*** on_timer ***")
 
 
 def main() -> None:
