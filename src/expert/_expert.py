@@ -2,8 +2,6 @@
 """
 import asyncio
 import inspect
-import os
-import sys
 from functools import update_wrapper
 from typing import Any, Callable, Coroutine, TypeVar, cast
 from expert._trade import Trade
@@ -55,12 +53,6 @@ class Expert(Trade):
         self._magic = magic
         self._title = title
         self._prefix = prefix
-
-        # Создание асинхронных задач
-        # self.__task_on_trade = asyncio.create_task(self.on_trade)
-        # self.__task_on_tick = asyncio.create_task(self.on_tick)
-        # self.__task_on_timer = asyncio.create_task(self.on_timer)
-        # self.__task_on_bar = asyncio.create_task(self.on_bar(time_frame))
 
     def run(self) -> None:
         frame = inspect.stack()[1]
