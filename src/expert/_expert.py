@@ -30,6 +30,7 @@ class Expert(Trade):
     :param period: Период (интервал) баров на котором осуществляется торговля и/или прорисовка эксперта.
     :type period: `int`
     """
+    name: str
     # __dict__ = ["on_init", "on_deinit", "on_trade", "on_tick", "on_bar", "on_timer"]
     __comment: str = None
 
@@ -53,6 +54,9 @@ class Expert(Trade):
         self._magic = magic
         self._title = title
         self._prefix = prefix
+
+    def __repr__(self) -> str:
+        return f"<{type(self).__name__} {self.name!r}>"
 
     def run(self) -> None:
         frame = inspect.stack()[1]
