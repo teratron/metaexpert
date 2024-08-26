@@ -15,6 +15,10 @@ import os
 from logging import getLogger
 from dotenv_vault import load_dotenv
 
+# https://youtu.be/USNrWe_3WJg?si=FYctGEXxVoiyYBva&t=517
+# https://www.youtube.com/live/LKYOtXNqiBc?si=Tic9KshrkOzAS13f&t=350
+
+
 _ = load_dotenv()
 # LOG_CONFIG = os.path.join("configs/", os.getenv("LOG_CONFIG", "logger.json"))
 # f"configs/{os.getenv('LOG_CONFIG', 'logger.json')}"
@@ -43,7 +47,7 @@ else:
     file_handler = FileHandler(filename=LOG_FILE, encoding="utf-8")
     file_handler.setLevel(WARNING)
 
-    basicConfig(level=DEBUG, format=log_format, handlers=[stream_handler, file_handler])
+    basicConfig(format=log_format, handlers=[stream_handler, file_handler])
 
     stream_handler.close()
     file_handler.close()
