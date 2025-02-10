@@ -1,0 +1,23 @@
+[project]
+name = "binance-expert"
+version = "0.1.0"
+description = "Application for Binance expert"
+authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "binance-connector>=3.12.0",
+    "flask>=3.1.0",
+    "numpy>=2.2.2",
+    "pandas>=2.2.3",
+]
+
+[dependency-groups]
+dev = [
+    "python-dotenv-vault>=0.6.4",
+    "ruff>=0.9.5",
+]
+
+[tool.uv]
+package = false
+link-mode = "copy"

@@ -1,29 +1,29 @@
 # Binance Expert
 
-https://www.youtube.com/watch?v=kZ6wfxVyk2w
+<https://www.youtube.com/watch?v=kZ6wfxVyk2w>
 
-https://www.youtube.com/watch?v=UYtFByS6tCs
+<https://www.youtube.com/watch?v=UYtFByS6tCs>
 
-https://www.youtube.com/watch?v=EeT3Ore4Sao&list=PLvzuUVysUFOuB1kJQ3S2G-nB7_nHhD7Ay&index=10
+<https://www.youtube.com/watch?v=EeT3Ore4Sao&list=PLvzuUVysUFOuB1kJQ3S2G-nB7_nHhD7Ay&index=10>
 
-https://www.youtube.com/watch?v=gMRee2srpe8
+<https://www.youtube.com/watch?v=gMRee2srpe8>
 
-## Examples:
+## Examples
 
-https://github.com/cromewar/Binance-trading-bot
+<https://github.com/cromewar/Binance-trading-bot>
 
-https://github.com/hackingthemarkets/binance-tutorials
+<https://github.com/hackingthemarkets/binance-tutorials>
 
-https://github.com/hackingthemarkets/tradingview-binance-strategy-alert-webhook
+<https://github.com/hackingthemarkets/tradingview-binance-strategy-alert-webhook>
 
 ## Numpy
 
-https://www.youtube.com/watch?v=Dh0cdMlcrbU
+<https://www.youtube.com/watch?v=Dh0cdMlcrbU>
 
 ## Pandas
 
-https://www.youtube.com/watch?v=cEeY0opsVMw
+<https://www.youtube.com/watch?v=cEeY0opsVMw>
 
 ## Matplotlib
 
-https://www.youtube.com/watch?v=RAXDcUrFD2o
+<https://www.youtube.com/watch?v=RAXDcUrFD2o>
