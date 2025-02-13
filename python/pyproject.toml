@@ -18,7 +18,14 @@ dev = [
     "python-dotenv-vault>=0.6.4",
     "ruff>=0.9.5",
 ]
+test = [
+    "pytest>=8.3.4",
+]
 
 [tool.uv]
 package = false
 link-mode = "copy"
+default-groups = [
+    "docs",
+	"test",
+]
