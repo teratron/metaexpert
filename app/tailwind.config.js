@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import type, {Config} from "tailwindcss";
 
 export default {
     darkMode: ["class"],
@@ -66,4 +65,4 @@ export default {
             autoprefixer: {}
         }
     ],
-} satisfies Config;
+};
