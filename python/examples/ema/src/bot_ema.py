@@ -1,5 +1,5 @@
 import time
-import numpy
+#import numpy
 #import talib
 from expert import Expert
 
