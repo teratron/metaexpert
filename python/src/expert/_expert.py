@@ -1,11 +1,10 @@
 """Expert
 """
-import asyncio
 import inspect
+from _logger import getLogger
+from expert._trade import Trade
 from functools import update_wrapper
 from typing import Any, Callable, Coroutine, TypeVar, cast
-from expert._trade import Trade
-from _logger import getLogger
 
 _logger = getLogger(__name__)
 

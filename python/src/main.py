@@ -1,8 +1,6 @@
 import os
-import sys
-import json
-from _binance import SpotAPI  #, get_candlestick_data, query_status, query_testnet, query_quote_asset_list
 
+from _binance import SpotAPI  # , get_candlestick_data, query_status, query_testnet, query_quote_asset_list
 
 if __name__ == "__main__":
     from dotenv_vault import load_dotenv

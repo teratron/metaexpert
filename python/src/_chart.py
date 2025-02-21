@@ -1,5 +1,6 @@
 import pandas
 from lightweight_charts import Chart, JupyterChart
+
 from _logger import getLogger
 
 logger = getLogger()

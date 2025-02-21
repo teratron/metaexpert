@@ -2,8 +2,8 @@
 """
 import os
 from _logger import getLogger
-from flask import Flask, render_template, request, flash, redirect, jsonify
 from binance.spot import Spot
+from flask import Flask, render_template, jsonify
 
 _logger = getLogger(__name__)
 app = Flask(__name__)
@@ -26,8 +26,8 @@ def index():
 
 @app.route("/about")
 def about():
-    #import pandas
-    #from lightweight_charts import Chart
+    # import pandas
+    # from lightweight_charts import Chart
     # chart = Chart()
     # df = pandas.read_csv("data/ohlcv.csv")
     # chart.set(df)

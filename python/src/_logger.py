@@ -12,8 +12,8 @@ NOTSET < DEBUG < INFO < WARNING < ERROR < CRITICAL
 - CRITICAL - приложение не может работать дальше.
 """
 import os
-from logging import getLogger
 from dotenv_vault import load_dotenv
+from logging import getLogger
 
 # https://youtu.be/USNrWe_3WJg?si=FYctGEXxVoiyYBva&t=517
 # https://www.youtube.com/live/LKYOtXNqiBc?si=Tic9KshrkOzAS13f&t=350
@@ -37,7 +37,7 @@ if os.path.isfile(LOG_CONFIG):
     dictConfig(config)
 else:
     import sys
-    from logging import basicConfig, FileHandler, StreamHandler, DEBUG, WARNING, INFO
+    from logging import basicConfig, FileHandler, StreamHandler, WARNING, INFO
 
     log_format = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
 

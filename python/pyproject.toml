@@ -21,11 +21,14 @@ dev = [
 test = [
     "pytest>=8.3.4",
 ]
+docs = [
+    "pytest>=8.3.4",
+]
 
 [tool.uv]
 package = false
 link-mode = "copy"
 default-groups = [
+    "test",
     "docs",
-	"test",
 ]

@@ -1,9 +1,8 @@
 """Trade
 """
+from _logger import getLogger
 from dataclasses import dataclass
 from typing import Any
-
-from _logger import getLogger
 
 _logger = getLogger(__name__)
 
@@ -12,6 +11,7 @@ _logger = getLogger(__name__)
 class Trade:
     """Trade
     """
+
     def __init__(self, symbol: str | None, **props: dict[str, Any]) -> None:
         self.symbol = symbol
         self._lots = props.get("lots", 0)
@@ -111,7 +111,6 @@ class Trade:
     # @slippage.setter
     # def slippage(self, value: int) -> None:
     #     self._slippage = value
-
 
 #    datetime          m_long_timer;
 #    datetime          m_short_timer;
