@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-import type {Config} from "tailwindcss";
+import type, {Config} from "tailwindcss";
 
 export default {
     darkMode: ["class"],
@@ -58,14 +58,12 @@ export default {
             },
         },
     },
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     plugins: [
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         require("tailwindcss-animate"),
         {
             tailwindcss: {},
             autoprefixer: {}
         }
     ],
-}
-satisfies
-Config;
+} satisfies Config;
