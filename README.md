@@ -1,14 +1,12 @@
 # Binance Expert
 
-# Binance
+<https://binance-connector.readthedocs.io>
 
-https://binance-connector.readthedocs.io
+<https://github.com/binance/binance-connector-python/blob/master/examples/>
 
-https://github.com/binance/binance-connector-python/blob/master/examples/
+<https://www.youtube.com/watch?v=AV1boDD-uWc>
 
-https://www.youtube.com/watch?v=AV1boDD-uWc
-
-https://www.youtube.com/watch?v=NaWH3zH_SNw&t=113s
+<https://www.youtube.com/watch?v=NaWH3zH_SNw&t=113s>
 
 <https://www.youtube.com/watch?v=kZ6wfxVyk2w>
 
@@ -40,8 +38,8 @@ https://www.youtube.com/watch?v=NaWH3zH_SNw&t=113s
 
 ## TA-Lib
 
-https://ta-lib.github.io/ta-lib-python/install.html
+<https://ta-lib.github.io/ta-lib-python/install.html>
 
 ## Helpers
 
-https://www.unixtimestamp.com/
+<https://www.unixtimestamp.com/>
