@@ -7,10 +7,11 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     #"binance-connector>=3.12.0",
-    #"flask>=3.1.0",
     #"numpy>=2.2.2",
-    #"pandas>=2.2.3",
+	#"pandas>=2.2.3",
     #"ta-lib",
+	"numpy; python_version >= '3.11'",
+	"pandas; python_version >= '3.11'",
     "uv>=0.6.2",
 ]
 
@@ -22,8 +23,10 @@ clean-cache = "poetry cache clear pypi --all && poetry cache clear _default_cach
 [dependency-groups]
 dev = [
     "mypy>=1.15.0",
-    "ruff>=0.9.5",
     "python-dotenv-vault>=0.6.4",
+]
+lint = [
+  "ruff>=0.9.5"
 ]
 test = [
     "pytest>=8.3.4",
@@ -37,20 +40,20 @@ package = true
 link-mode = "copy"
 default-groups = [
     "test",
+	"lint",
     "docs",
 ]
 
 [tool.uv.sources]
 expert = { path = "python/expert" }
 binance = { path = "python/binance" }
-#examples = { workspace = true, path = "src/examples" }
-#
+
 [tool.uv.workspace]
 members = [
     "python/app",
     "python/expert",
     "python/binance",
-    "python/examples/ema",
+    "python/examples/bot_ema",
 ]
 exclude = ["python/tests"]
 

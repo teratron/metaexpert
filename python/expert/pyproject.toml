@@ -11,16 +11,7 @@ dependencies = [
 [project.scripts]
 
 
-#[tool.uv.sources]
-#expert = { workspace = true, path = "src/expert" }
-#examples = { workspace = true, path = "src/examples" }
-#
-#[tool.uv.workspace]
-#members = ["examples/*", "src/*" ]
+[tool.uv.sources]
 
-#[tool.uv.sources]
-#ta-lib = [
-#    { url = "https://github.com/cgohlke/talib-build/releases/download/v0.4.29/TA_Lib-0.4.29-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'win64'" },
-#    { index = "pypi", marker = "sys_platform == 'linux'" },
-#]
 
+[tool.uv.workspace]
