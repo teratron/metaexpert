@@ -19,7 +19,3 @@ ta-lib = [
     { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'Win64'" },
     #{ index = "pypi", marker = "sys_platform == 'Linux'" },
 ]
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"

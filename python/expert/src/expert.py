@@ -35,7 +35,7 @@ class Expert(Trade):
 
     def __init__(
             self,
-            symbol: str | None,
+            symbol: str | set[str] | None,
             time_frame: str | set[str] | None = None,
             *,
             shift: int = 0,
