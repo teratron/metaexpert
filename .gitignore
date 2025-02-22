@@ -103,3 +103,17 @@ env.bak/
 !.env.development
 !.env.project
 !.env.vault
+!.env.example
+
+# VirtualEnv template
+.venv
+venv/
+venv.bak/
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+pip-selfcheck.json

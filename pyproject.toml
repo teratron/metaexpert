@@ -6,7 +6,6 @@ authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "uv>=0.6.2",
 ]
 
 [project.scripts]
@@ -52,4 +51,4 @@ members = [
 
 [tool.ruff]
 #line-length = 99
-src = ["src"]
+src = ["python"]
