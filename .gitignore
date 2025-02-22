@@ -92,7 +92,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Environments
+### Environments
 .env
 .env*
 .env.local
@@ -105,7 +105,7 @@ env.bak/
 !.env.vault
 !.env.example
 
-# VirtualEnv template
+### VirtualEnv template
 .venv
 venv/
 venv.bak/
@@ -117,3 +117,6 @@ venv.bak/
 [Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
+
+### Python template
+uv.lock

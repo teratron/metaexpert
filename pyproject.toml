@@ -6,11 +6,18 @@ authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    #"binance-connector>=3.12.0",
+    #"flask>=3.1.0",
+    #"numpy>=2.2.2",
+    #"pandas>=2.2.3",
+    #"ta-lib",
+    "uv>=0.6.2",
 ]
 
 [project.scripts]
 dotenv-pull = "npx dotenv-vault@latest pull"
 dotenv-push = "npx dotenv-vault@latest push"
+clean-cache = "poetry cache clear pypi --all && poetry cache clear _default_cache --all"
 
 [dependency-groups]
 dev = [
@@ -33,21 +40,18 @@ default-groups = [
     "docs",
 ]
 
-#[tool.uv.sources]
-#expert = { workspace = true, path = "src/expert" }
+[tool.uv.sources]
+expert = { path = "python/expert" }
 #examples = { workspace = true, path = "src/examples" }
 #
 [tool.uv.workspace]
 members = [
-    "python/examples/*",
-    "python/src/*",
+    "python/app",
+    "python/expert",
+    "python/examples/ema",
 ]
+exclude = ["python/tests"]
 
-#[tool.uv.sources]
-#ta-lib = [
-#    { url = "https://github.com/cgohlke/talib-build/releases/download/v0.4.29/TA_Lib-0.4.29-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'win64'" },
-#    { index = "pypi", marker = "sys_platform == 'linux'" },
-#]
 
 [tool.ruff]
 #line-length = 99

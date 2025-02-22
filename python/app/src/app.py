@@ -242,7 +242,7 @@ def hello():
 @app.errorhandler(404)
 def not_found(error):
     title = "404"
-    return render_template('views/error.tmpl', title=title, error=error), 404
+    return render_template("views/error.tmpl", title=title, error=error), 404
 
 
 if __name__ == "__main__":

@@ -58,7 +58,6 @@ profile_default/
 ipython_config.py
 Pipfile.lock
 poetry.lock
-uv.lock
 pdm.lock
 .pdm.toml
 celerybeat-schedule
