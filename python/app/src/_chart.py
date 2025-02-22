@@ -10,7 +10,7 @@ if __name__ == "__main__":
     chart = Chart()
 
     # Columns: time | open | high | low | close | volume
-    df = pandas.read_csv("../data/ohlcv.csv")
+    df = pandas.read_csv("../../../data/ohlcv.csv")
     chart.set(df)
     chart.show(block=True)
 

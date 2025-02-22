@@ -5,7 +5,7 @@ import pandas
 import sys
 from binance.spot import Spot
 
-from _logger import getLogger
+from python._logger import getLogger
 
 _logger = getLogger(__name__)
 

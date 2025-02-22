@@ -1,8 +1,8 @@
 """Expert
 """
 import inspect
-from _logger import getLogger
-from expert._trade import Trade
+from python._logger import getLogger
+from _trade import Trade
 from functools import update_wrapper
 from typing import Any, Callable, Coroutine, TypeVar, cast
 

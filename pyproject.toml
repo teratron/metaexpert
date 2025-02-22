@@ -33,7 +33,7 @@ docs = [
 ]
 
 [tool.uv]
-package = false
+package = true
 link-mode = "copy"
 default-groups = [
     "test",
@@ -42,12 +42,14 @@ default-groups = [
 
 [tool.uv.sources]
 expert = { path = "python/expert" }
+binance = { path = "python/binance" }
 #examples = { workspace = true, path = "src/examples" }
 #
 [tool.uv.workspace]
 members = [
     "python/app",
     "python/expert",
+    "python/binance",
     "python/examples/ema",
 ]
 exclude = ["python/tests"]

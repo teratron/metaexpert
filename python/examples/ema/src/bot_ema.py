@@ -1,7 +1,7 @@
 import time
 #import numpy
 #import talib
-from expert import Expert
+from python.expert.src.expert import Expert
 
 expert = Expert("BTCUSDT", "1h", shift=0, period=3)
 
