@@ -1,0 +1,17 @@
+[project]
+name = "demo-uv-pkg"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+demo-uv-pkg = "demo_uv_pkg:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
