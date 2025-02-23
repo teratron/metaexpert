@@ -56,7 +56,6 @@ exclude = [
     "tests",
     "rust",
     "typescript",
-    "python-tmp",
 ]
 
 [tool.ruff]
