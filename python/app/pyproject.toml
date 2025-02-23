@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-flask-run = "flask --app src/app run"
+flask = "flask --app src/app run"
 
 #[tool.uv.sources]
 #expert = { workspace = true, path = "src/expert" }

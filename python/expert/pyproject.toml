@@ -8,10 +8,10 @@ requires-python = ">=3.11"
 dependencies = [
 ]
 
-[project.scripts]
+#[project.scripts]
 
 
-[tool.uv.sources]
+#[tool.uv.sources]
 
 
-[tool.uv.workspace]
+#[tool.uv.workspace]

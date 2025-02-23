@@ -1,5 +1,5 @@
 [project]
-name = "binance-bot-ema"
+name = "bot-ema"
 version = "0.1.0"
 description = "EMA bot for Binance"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
@@ -7,15 +7,15 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "expert",
-    "ta-lib; python_version >= '3.11'",
+    "ta-lib",
 ]
 
-[project.scripts]
-bot-ema = "examples:bot_ema"
+#[project.scripts]
+#bot-ema = "examples:bot_ema"
 
 [tool.uv.sources]
 expert = { workspace = true }
 ta-lib = [
-    { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'Win64'" },
-    #{ index = "pypi", marker = "sys_platform == 'Linux'" },
+    { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'win64'" },
+    #{ index = "pypi", marker = "sys_platform == 'linux'" },
 ]
