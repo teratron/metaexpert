@@ -1,5 +1,5 @@
 [project]
-name = "bot-ema"
+name = "expert-examples"
 version = "0.1.0"
 description = "EMA bot for Binance"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
@@ -15,7 +15,12 @@ dependencies = [
 
 [tool.uv.sources]
 expert = { workspace = true }
-ta-lib = [
-    { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'win64'" },
+ta-lib = { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl" }
+#ta-lib = [
+    #{ url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'win64'" },
     #{ index = "pypi", marker = "sys_platform == 'linux'" },
-]
+#]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

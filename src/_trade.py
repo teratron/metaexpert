@@ -1,6 +1,6 @@
 """Trade
 """
-from python._logger import getLogger
+from _logger import getLogger
 from dataclasses import dataclass
 from typing import Any
 

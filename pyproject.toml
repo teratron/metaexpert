@@ -1,20 +1,18 @@
 [project]
-name = "binance-expert"
+name = "expert"
 version = "0.1.0"
-description = "Application for Binance expert"
+description = "Expert application"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "numpy>=2.2.2",
-	"pandas>=2.2.3",
-	#"numpy; python_version >= '3.11'",
-	#"pandas; python_version >= '3.11'",
+    "pandas>=2.2.3",
     "uv>=0.6.2",
 ]
 
 [project.scripts]
-#bot-ema = "examples/bot_ema/src:main"
+bot-ema = "examples/src/bot_ema:main"
 #dotenv-pull = "npx dotenv-vault@latest pull"
 #dotenv-push = "npx dotenv-vault@latest push"
 #clean-cache = "poetry cache clear pypi --all && poetry cache clear _default_cache --all"
@@ -44,26 +42,29 @@ default-groups = [
 ]
 
 [tool.uv.sources]
-expert = { path = "python/expert" }
-binance = { path = "python/binance" }
+#expert = { path = "expert" }
+binance = { path = "binance" }
 
 [tool.uv.workspace]
 members = [
-    "python/app",
-    "python/expert",
-    "python/binance",
-    "python/examples/bot_ema",
+    #"expert",
+    "app",
+    "binance",
+    "examples",
 ]
 exclude = [
-    "python/tests",
-    "app",
-    "examples",
-    "docs",
-    "data",
-    "python-tmp",
+    "tests",
     "rust",
+    "typescript",
+    "python-tmp",
 ]
 
 [tool.ruff]
 line-length = 99
-src = ["python"]
+src = [
+    "src",
+    "app/src",
+    "binance/src",
+    "examples/**/src",
+    "tests",
+]

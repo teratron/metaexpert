@@ -1,18 +1,16 @@
 [project]
-name = "binance-api"
+name = "expert-app"
 version = "0.1.0"
-description = "Binance API"
+description = "Expert App"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "binance-connector>=3.12.0",
-    "numpy>=2.2.2",
-    "pandas>=2.2.3",
+    "flask>=3.1.0",
 ]
 
-[project.scripts]
-#clean-cache = "poetry cache clear pypi --all && poetry cache clear _default_cache --all"
+#[project.scripts]
+#flask = "flask --app src/app run"
 
 #[tool.uv.sources]
 #expert = { workspace = true, path = "src/expert" }
