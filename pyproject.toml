@@ -62,6 +62,6 @@ src = [
     "src",
     "app/src",
     "binance/src",
-    "examples/**/src",
+    "examples/src",
     "tests",
 ]
