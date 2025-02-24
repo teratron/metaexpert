@@ -43,7 +43,7 @@ default-groups = [
 
 [tool.uv.sources]
 #expert = { path = "expert" }
-#binance = { path = "binance" }
+#api = { path = "api" }
 
 [tool.uv.workspace]
 members = [
