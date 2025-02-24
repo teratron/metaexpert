@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-bot-ema = "examples/src/bot_ema:main"
+#bot-ema = "examples/src/bot_ema:main"
 
 [dependency-groups]
 dev = [
@@ -24,6 +24,7 @@ lint = [
 ]
 test = [
     "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.3",
 ]
 docs = [
     "sphinx>=4.3.0",

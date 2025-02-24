@@ -29,7 +29,7 @@ def hello_world():
 def buy():
     print(request.form)
     try:
-        order = client.new_order(
+        _order = client.new_order(
             symbol=request.form["symbol"],
             side="BUY",
             type="LIMIT",
