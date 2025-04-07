@@ -12,8 +12,9 @@ NOTSET < DEBUG < INFO < WARNING < ERROR < CRITICAL
 - CRITICAL - приложение не может работать дальше.
 """
 import os
-from dotenv_vault import load_dotenv
 from logging import getLogger
+
+from dotenv_vault import load_dotenv
 
 # https://youtu.be/USNrWe_3WJg?si=FYctGEXxVoiyYBva&t=517
 # https://www.youtube.com/live/LKYOtXNqiBc?si=Tic9KshrkOzAS13f&t=350

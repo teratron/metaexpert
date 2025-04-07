@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     # Подключиться к существующей базе данных
     with psycopg.connect(
-        f"dbname={os.getenv('DB_NAME')} user={os.getenv('DB_USER')} password={os.getenv('DB_PASSWORD')}"
+            f"dbname={os.getenv('DB_NAME')} user={os.getenv('DB_USER')} password={os.getenv('DB_PASSWORD')}"
     ) as conn:
         # Откройте курсор для выполнения операций с базой данных.
         with conn.cursor() as cur:
