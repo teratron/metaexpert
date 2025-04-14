@@ -4,7 +4,7 @@ from api.src import SpotAPI  # , get_candlestick_data, query_status, query_testn
 
 if __name__ == "__main__":
     from dotenv_vault import load_dotenv
-    from _logger import getLogger
+    from logger import getLogger
 
     _logger = getLogger()
     _ = load_dotenv()
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     spot.query_testnet()
 
-    candlesticks = spot.get_candlestick_data("BTCUSDT", "1h", 3)
+    candlesticks = spot.get_candlestick_data("BTCUSDT", "1m", 3)
     print(candlesticks)
 
     dataframe = spot.query_quote_asset_list("BTC")

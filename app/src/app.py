@@ -1,7 +1,7 @@
 """Expert Application
 """
 import os
-from _logger import getLogger
+from logger import getLogger
 from binance.spot import Spot
 from flask import Flask, render_template, jsonify
 

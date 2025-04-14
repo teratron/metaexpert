@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from _logger import getLogger
+from logger import getLogger
 
 _logger = getLogger(__name__)
 
