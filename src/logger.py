@@ -11,6 +11,7 @@ NOTSET < DEBUG < INFO < WARNING < ERROR < CRITICAL
 - ERROR - приложение еще работает и может работать, но что-то пошло не так.
 - CRITICAL - приложение не может работать дальше.
 """
+
 import os
 from logging import getLogger
 

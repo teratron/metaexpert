@@ -29,7 +29,7 @@ pytest = "^8.3.2"
 [tool.poetry.scripts]
 dotenv-pull = "npx dotenv-vault@latest pull"
 dotenv-push = "npx dotenv-vault@latest push"
-flask-run = "flask --app src/app run"
+flask-run = "flask run --app src/app"
 clean-cache = "poetry cache clear pypi --all && poetry cache clear _default_cache --all"
 
 [tool.ruff]

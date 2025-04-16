@@ -1,5 +1,5 @@
 import pandas
-from lightweight_charts import Chart, JupyterChart
+from lightweight_charts import Chart  # , JupyterChart
 
 from logger import getLogger
 
@@ -14,6 +14,6 @@ if __name__ == "__main__":
     chart.set(df)
     chart.show(block=True)
 
-    ju_chart = JupyterChart()
-    ju_chart.set(df)
-    ju_chart.load()
+    # ju_chart = JupyterChart()
+    # ju_chart.set(df)
+    # ju_chart.load()

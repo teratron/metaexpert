@@ -1,4 +1,18 @@
-# Configuration file for Binance Trading Bot
+"""Configuration file for Binance Trading Bot"""
+
+import os
+
+from dotenv_vault import load_dotenv
+
+_ = load_dotenv()
+
+# Logging configuration
+LOG_LEVEL = os.getenv("LOG_LEVEL")  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+LOG_FORMAT = os.getenv("LOG_FORMAT")  # Log format
+LOG_CONFIG = os.getenv("LOG_CONFIG")  # Log configuration file name
+LOG_FILE = os.getenv("LOG_FILE")  # Log file name
+LOG_MAX_SIZE = os.getenv("LOG_MAX_SIZE")  # Maximum log file size (10 * 1024 * 1024 = 10 MB)
+LOG_BACKUP_COUNT = os.getenv("LOG_BACKUP_COUNT")  # Number of backup log files
 
 # Trading parameters
 TRADING_PAIRS = ["BTCUSDT", "ETHUSDT"]  # Trading pairs to monitor
@@ -31,13 +45,6 @@ BACKTEST_END_DATE = "2025-04-01"  # End date for backtesting
 # API request parameters
 API_RATE_LIMIT = 1200  # Maximum number of requests per minute
 REQUEST_TIMEOUT = 10  # Timeout for API requests in seconds
-
-# Logging configuration
-LOG_LEVEL = "INFO"  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"  # Log format
-LOG_FILE = "bot.log"  # Log file name
-LOG_MAX_SIZE = 10 * 1024 * 1024  # Maximum log file size (10 MB)
-LOG_BACKUP_COUNT = 5  # Number of backup log files
 
 # Trading bot operation modes
 MODE_BACKTEST = "backtest"  # Backtesting mode

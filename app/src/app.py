@@ -1,9 +1,11 @@
-"""Expert Application
-"""
+"""Expert Application"""
+
 import os
-from logger import getLogger
+
 from binance.spot import Spot
 from flask import Flask, render_template, jsonify
+
+from logger import getLogger
 
 _logger = getLogger(__name__)
 app = Flask(__name__)
