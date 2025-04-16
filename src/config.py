@@ -6,8 +6,12 @@ from dotenv_vault import load_dotenv
 
 _ = load_dotenv()
 
+# Application configuration
+APP_NAME = "expert"  # Expert name for the bot
+
 # Logging configuration
 LOG_LEVEL = os.getenv("LOG_LEVEL")  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+LOG_NAME = APP_NAME  # Logger name
 LOG_FORMAT = os.getenv("LOG_FORMAT")  # Log format
 LOG_CONFIG = os.getenv("LOG_CONFIG")  # Log configuration file name
 LOG_FILE = os.getenv("LOG_FILE")  # Log file name

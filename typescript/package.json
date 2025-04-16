@@ -1,12 +1,12 @@
 {
-  "name": "binance-expert",
+  "name": "expert",
   "private": true,
   "version": "0.1.0",
   "description": "Web application for Binance expert",
   "type": "module",
   "module": "./src/main.ts",
   "author": "Oleg Alexandrov <alexandrovoleg.ru@gmail.com>",
-  "homepage": "https://teratron.github.io/binance-expert",
+  "homepage": "https://teratron.github.io/expert",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
