@@ -1,16 +1,19 @@
-"""
+"""Arguments for the trading bot."""
 
-"""
 import argparse
 
 from src.config import (
     DEFAULT_MODE,
     DEFAULT_TIMEFRAME,
     LOG_LEVEL,
+    MAX_POSITION_SIZE,
     MODE_BACKTEST,
     MODE_LIVE,
     MODE_PAPER,
-    TRADING_PAIRS
+    STOP_LOSS_PERCENT,
+    TAKE_PROFIT_PERCENT,
+    TRAILING_STOP_PERCENT,
+    TRADING_PAIRS,
 )
 
 
@@ -32,15 +35,41 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--timeframe",
+        "--tf",
         type=str,
         default=DEFAULT_TIMEFRAME,
         help="Trading timeframe",
     )
-    # lots=0.0001, stop_loss=0.0001, take_profit=0.0001, trailing_stop=0.0001
-    # MAX_POSITION_SIZE = 0.01  # Maximum position size as a fraction of available balance
-    # STOP_LOSS_PERCENT = 0.02  # Stop loss percentage
-    # TAKE_PROFIT_PERCENT = 0.04  # Take profit percentage
-
+    parser.add_argument(
+        "--position-size",
+        "--size",
+        "--ps",
+        "--lots",
+        type=float,
+        default=MAX_POSITION_SIZE,
+        help="Maximum position size as a fraction of available balance",
+    )
+    parser.add_argument(
+        "--stop-loss",
+        "--sl",
+        type=float,
+        default=STOP_LOSS_PERCENT,
+        help="Stop loss percentage",
+    )
+    parser.add_argument(
+        "--take-profit",
+        "--tp",
+        type=float,
+        default=TAKE_PROFIT_PERCENT,
+        help="Take profit percentage",
+    )
+    parser.add_argument(
+        "--trailing-stop",
+        "--ts",
+        type=float,
+        default=TRAILING_STOP_PERCENT,
+        help="Trailing stop percentage",
+    )
     parser.add_argument(
         "--log-level",
         type=str,
@@ -48,4 +77,6 @@ def parse_arguments() -> argparse.Namespace:
         default=LOG_LEVEL,
         help="Logging level",
     )
+    # TODO: тип торговли: spot, futures, options, etc.
+    # TODO: тип ордера: buy, sell, buy limit, sell limit, etc.
     return parser.parse_args()

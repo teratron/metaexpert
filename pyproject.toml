@@ -1,7 +1,7 @@
 [project]
-name = "expert"
+name = "metaexpert"
 version = "0.1.0"
-description = "Expert application"
+description = "MetaExpert library"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,7 +14,7 @@ dependencies = [
     "ta-lib==0.6.3",
 ]
 
-[project.scripts]
+#[project.scripts]
 #bot-ema = "examples/src/bot_ema:main"
 
 [dependency-groups]
@@ -34,7 +34,7 @@ docs = [
 ]
 
 [tool.uv]
-package = true
+package = false
 link-mode = "copy"
 default-groups = [
     "test",
@@ -67,3 +67,7 @@ src = [
     "examples/src",
     "tests",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

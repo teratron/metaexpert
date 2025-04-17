@@ -1,10 +1,16 @@
+"""Main module for the expert trading system.
+
+This module serves as the entry point for the trading application,
+handling API connections, data retrieval, and trading operations.
+"""
+
 import argparse
 
-from dotenv_vault import load_dotenv
+from dotenv_vault import load_dotenv  # type: ignore
 
 from api.src import SpotAPI  # , get_candlestick_data, query_status, query_testnet, query_quote_asset_list
-from arguments import parse_arguments
-from logger import get_logger
+from arguments import parse_arguments  # type: ignore
+from logger import get_logger  # type: ignore
 from src.config import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL
 
 if __name__ == "__main__":
