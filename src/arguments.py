@@ -20,6 +20,7 @@ from src.config import (
 def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Expert Trading Bot")
+
     parser.add_argument(
         "--mode",
         type=str,
