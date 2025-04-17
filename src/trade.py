@@ -3,9 +3,9 @@
 from dataclasses import dataclass
 from typing import Any
 
-from logger import getLogger
+from logger import get_logger
 
-_logger = getLogger(__name__)
+_logger = get_logger(__name__)
 
 
 @dataclass

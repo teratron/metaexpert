@@ -4,10 +4,10 @@ import inspect
 from functools import update_wrapper
 from typing import Any, Callable, Coroutine, TypeVar, cast
 
-from logger import getLogger
+from logger import get_logger
 from trade import Trade
 
-_logger = getLogger(__name__)
+_logger = get_logger(__name__)
 
 F = TypeVar("F", bound=Callable[..., Any])
 

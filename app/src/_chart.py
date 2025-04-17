@@ -1,9 +1,9 @@
 import pandas
 from lightweight_charts import Chart  # , JupyterChart
 
-from logger import getLogger
+from logger import get_logger
 
-logger = getLogger()
+logger = get_logger()
 
 if __name__ == "__main__":
     logger.info("start chart")

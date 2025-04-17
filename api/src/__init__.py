@@ -1,13 +1,14 @@
 """Binance API
 """
-import pandas
 # from typing import override
 import sys
+
+import pandas
 from binance.spot import Spot
 
-from logger import getLogger
+from logger import get_logger
 
-_logger = getLogger(__name__)
+_logger = get_logger(__name__)
 
 
 class SpotAPI:

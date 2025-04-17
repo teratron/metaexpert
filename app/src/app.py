@@ -5,9 +5,9 @@ import os
 from binance.spot import Spot
 from flask import Flask, render_template, jsonify
 
-from logger import getLogger
+from logger import get_logger
 
-_logger = getLogger(__name__)
+logger = get_logger(__name__)
 app = Flask(__name__)
 
 
@@ -248,8 +248,8 @@ def not_found(error):
 
 
 if __name__ == "__main__":
-    _logger.info("start app")
+    logger.info("start app")
 
     app.run(port=5001, debug=True)
 
-    _logger.info("finish app")
+    logger.info("finish app")

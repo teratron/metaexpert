@@ -1,4 +1,4 @@
-"""Configuration file for Binance Trading Bot"""
+"""Configuration file for Expert Trading Bot"""
 
 import os
 
@@ -15,8 +15,13 @@ LOG_NAME = APP_NAME  # Logger name
 LOG_FORMAT = os.getenv("LOG_FORMAT")  # Log format
 LOG_CONFIG = os.getenv("LOG_CONFIG")  # Log configuration file name
 LOG_FILE = os.getenv("LOG_FILE")  # Log file name
-LOG_MAX_SIZE = os.getenv("LOG_MAX_SIZE")  # Maximum log file size (10 * 1024 * 1024 = 10 MB)
-LOG_BACKUP_COUNT = os.getenv("LOG_BACKUP_COUNT")  # Number of backup log files
+LOG_MAX_SIZE = int(os.getenv("LOG_MAX_SIZE"))  # Maximum log file size (10 * 1024 * 1024 = 10 MB)
+LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT"))  # Number of backup log files
+
+# Binance
+BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
+BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
+BINANCE_BASE_URL = os.getenv("BINANCE_BASE_URL")
 
 # Trading parameters
 TRADING_PAIRS = ["BTCUSDT", "ETHUSDT"]  # Trading pairs to monitor

@@ -39,7 +39,7 @@ from src.config import (
 load_dotenv()
 
 
-def setup_logger(name: str | None = None, level: str | None = None) -> logging.Logger:
+def setup_logger(name: str | None = None, *, level: str | None = None) -> logging.Logger:
     """Set up and configure the logger.
 
     Args:
@@ -49,13 +49,9 @@ def setup_logger(name: str | None = None, level: str | None = None) -> logging.L
     Returns:
         logging.Logger: Configured logger instance.
     """
-
     # Set default logger name if not provided
     if name is None:
         name = LOG_NAME
-
-    # Create logger instance
-    logger = logging.getLogger(name)
 
     # Check if log config file exists
     if os.path.isfile(LOG_CONFIG):
@@ -69,17 +65,16 @@ def setup_logger(name: str | None = None, level: str | None = None) -> logging.L
 
             dictConfig(config)
 
-            return logger
+            return get_logger(name)
         except FileNotFoundError as e:
             print(f"Error loading logging configuration file: {e}")
+
+    # Create logger instance
+    logger = get_logger(name)
 
     # Get log level from environment or config
     if level is None:
         level = os.getenv("LOG_LEVEL", LOG_LEVEL)
-
-    # Create logs directory if it doesn't exist
-    log_dir: Path = Path(str.join("..", "logs"))
-    log_dir.mkdir(exist_ok=True)
 
     # Configure logger
     logger.setLevel(getattr(logging, level))
@@ -92,19 +87,23 @@ def setup_logger(name: str | None = None, level: str | None = None) -> logging.L
     formatter = logging.Formatter(LOG_FORMAT)
 
     # Create console handler
-    console_handler = logging.StreamHandler(stream=sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    with logging.StreamHandler(stream=sys.stdout) as console_handler:
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
+
+    # Create logs directory if it doesn't exist
+    log_dir: Path = Path(str.join("..", "logs"))
+    log_dir.mkdir(exist_ok=True)
 
     # Create file handler with rotation
-    file_handler = RotatingFileHandler(
+    with RotatingFileHandler(
         log_dir / LOG_FILE,
         maxBytes=LOG_MAX_SIZE,
         backupCount=LOG_BACKUP_COUNT,
         encoding="utf-8",
-    )
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    ) as file_handler:
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
     return logger
 
@@ -118,38 +117,4 @@ def get_logger(name: str | None = None) -> logging.Logger:
     Returns:
         logging.Logger: Logger instance.
     """
-
     return logging.getLogger(name)
-
-# from logging import getLogger
-#
-# # https://youtu.be/USNrWe_3WJg?si=FYctGEXxVoiyYBva&t=517
-# # https://www.youtube.com/live/LKYOtXNqiBc?si=Tic9KshrkOzAS13f&t=350
-#
-#
-# # Load config
-# if os.path.isfile(LOG_CONFIG):
-#     import json
-#     from logging.config import dictConfig
-#
-#     with open(LOG_CONFIG) as file:
-#         config = json.load(file)
-#     dictConfig(config)
-# else:
-#     import sys
-#     from logging import basicConfig, FileHandler, StreamHandler, WARNING, INFO
-#
-#     log_format = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
-#
-#     stream_handler = StreamHandler(stream=sys.stdout)
-#     stream_handler.setLevel(INFO)
-#
-#     file_handler = FileHandler(filename=LOG_FILE, encoding="utf-8")
-#     file_handler.setLevel(WARNING)
-#
-#     basicConfig(format=log_format, handlers=[stream_handler, file_handler])
-#
-#     stream_handler.close()
-#     file_handler.close()
-#
-# _logger = getLogger(__name__)
