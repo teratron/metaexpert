@@ -51,14 +51,15 @@ default-groups = [
 ]
 
 [tool.uv.sources]
+ta-lib = { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl" }
 #expert = { path = "expert" }
 #api = { path = "api" }
 
 [tool.uv.workspace]
 members = [
-    "app",
-    "binance",
-    "examples",
+    #"app",
+    #"binance",
+    #"examples",
 ]
 exclude = [
     "tests",
@@ -69,9 +70,9 @@ exclude = [
 [tool.ruff]
 line-length = 99
 src = [
-    "src",
-    "app/src",
-    "examples/src",
+    #"src",
+    #"app/src",
+    #"examples/src",
     "tests",
 ]
 
