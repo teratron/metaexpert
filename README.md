@@ -1,45 +1,60 @@
-# Binance Expert
+# MetaExpert
 
-<https://binance-connector.readthedocs.io>
+[![PyPI version](https://badge.fury.io/py/metaexpert.svg)](https://badge.fury.io/py/metaexpert)
+[![Build Status](https://travis-ci.com/teratron/metaexpert.svg?branch=master)](https://travis-ci.com/teratron/metaexpert)
+[![Documentation Status](https://readthedocs.org/projects/metaexpert/badge/?version=latest)](https://metaexpert.readthedocs.io/en/latest/?badge=latest)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-<https://github.com/binance/binance-connector-python/blob/master/examples/>
+---
 
-<https://www.youtube.com/watch?v=AV1boDD-uWc>
+## Description
 
-<https://www.youtube.com/watch?v=NaWH3zH_SNw&t=113s>
+## Visuals
 
-<https://www.youtube.com/watch?v=kZ6wfxVyk2w>
+## Installation
 
-<https://www.youtube.com/watch?v=UYtFByS6tCs>
+```shell
 
-<https://www.youtube.com/watch?v=EeT3Ore4Sao&list=PLvzuUVysUFOuB1kJQ3S2G-nB7_nHhD7Ay&index=10>
+```
 
-<https://www.youtube.com/watch?v=gMRee2srpe8>
+If you have already added **MetaExpert**, you can update to the latest version by using:
+
+```shell
+
+```
+
+## Usage
+
+```python
+
+```
+
+## Documentation
 
 ## Examples
 
-<https://github.com/cromewar/Binance-trading-bot>
+You can find examples in the [example's directory](examples):
 
-<https://github.com/hackingthemarkets/binance-tutorials>
+-
+-
+-
 
-<https://github.com/hackingthemarkets/tradingview-binance-strategy-alert-webhook>
+## Support
 
-## Numpy
+## Roadmap
 
-<https://www.youtube.com/watch?v=Dh0cdMlcrbU>
+## Contributing
 
-## Pandas
+## Authors and acknowledgment
 
-<https://www.youtube.com/watch?v=cEeY0opsVMw>
+## License
 
-## Matplotlib
+[MIT License](LICENSE).
 
-<https://www.youtube.com/watch?v=RAXDcUrFD2o>
+## Project status
 
-## TA-Lib
+_Project at the initial stage._
 
-<https://ta-lib.github.io/ta-lib-python/install.html>
+See the latest [commits](https://github.com/teratron/metaexpert/commits/master).
 
-## Helpers
-
-<https://www.unixtimestamp.com/>
+---

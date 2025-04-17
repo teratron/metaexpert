@@ -9,9 +9,9 @@ import argparse
 from dotenv_vault import load_dotenv  # type: ignore
 
 from api.src import SpotAPI  # , get_candlestick_data, query_status, query_testnet, query_quote_asset_list
-from arguments import parse_arguments  # type: ignore
 from logger import get_logger  # type: ignore
-from src.config import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL
+from metaexpert import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL
+from metaexpert.arguments import parse_arguments  # type: ignore
 
 if __name__ == "__main__":
     logger = get_logger()

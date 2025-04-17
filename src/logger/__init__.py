@@ -25,7 +25,7 @@ from pathlib import Path
 
 from dotenv_vault import load_dotenv
 
-from src.config import (
+from metaexpert import (
     LOG_BACKUP_COUNT,
     LOG_CONFIG,
     LOG_FORMAT,
