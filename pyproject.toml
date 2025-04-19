@@ -6,7 +6,9 @@ authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
 requires-python = ">=3.11"
-classifiers = ["Private :: Do Not Upload"]
+#classifiers = ["Private :: Do Not Upload"]
+keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
+excluded = ["tests", "examples"]
 dependencies = [
     "binance-connector>=3.12.0",
     "flask>=3.1.0",
@@ -52,7 +54,7 @@ default-groups = [
 
 [tool.uv.sources]
 ta-lib = { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl" }
-#metaexpert = { path = "src/metaexpert" }
+metaexpert = { path = "src/metaexpert" }
 #logger = { path = "src/logger" }
 #api = { path = "api" }
 
