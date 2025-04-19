@@ -52,19 +52,22 @@ default-groups = [
 
 [tool.uv.sources]
 ta-lib = { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl" }
-#expert = { path = "expert" }
+#metaexpert = { path = "src/metaexpert" }
+#logger = { path = "src/logger" }
 #api = { path = "api" }
 
 [tool.uv.workspace]
 members = [
-    #"app",
+    #    "src",
+    #    "src/metaexpert",
+    #    "src/app",
+    #    "src/logger",
     #"binance",
     #"examples",
 ]
 exclude = [
     "tests",
-    "rust",
-    "typescript",
+    "examples",
 ]
 
 [tool.ruff]

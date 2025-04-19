@@ -6,7 +6,7 @@ authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "expert",
+    "metaexpert",
     "ta-lib",
 ]
 
@@ -14,7 +14,7 @@ dependencies = [
 #bot-ema = "examples:bot_ema"
 
 [tool.uv.sources]
-expert = { workspace = true }
+metaexpert = { workspace = true }
 ta-lib = { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl" }
 #ta-lib = [
     #{ url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl", marker = "sys_platform == 'win64'" },

@@ -17,29 +17,32 @@ NOTSET < DEBUG < INFO < WARNING < ERROR < CRITICAL
 - CRITICAL - приложение не может работать дальше.
 """
 
+import json
 import logging
 import os
 import sys
+from logging import Logger, Formatter, StreamHandler, getLogger
+from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from dotenv_vault import load_dotenv
 
-from metaexpert import (
+from metaexpert.config import (
     LOG_BACKUP_COUNT,
     LOG_CONFIG,
+    LOG_FILE,
     LOG_FORMAT,
     LOG_LEVEL,
     LOG_MAX_SIZE,
-    LOG_FILE,
-    LOG_NAME
+    LOG_NAME,
 )
 
 # Load environment variables
 load_dotenv()
 
 
-def setup_logger(name: str | None = None, *, level: str | None = None) -> logging.Logger:
+def setup_logger(name: str | None = None, *, level: str | None = None) -> Logger:
     """Set up and configure the logger.
 
     Args:
@@ -47,7 +50,7 @@ def setup_logger(name: str | None = None, *, level: str | None = None) -> loggin
         level (str, optional): Logging level. Defaults to None.
 
     Returns:
-        logging.Logger: Configured logger instance.
+        Logger: Configured logger instance.
     """
     # Set default logger name if not provided
     if name is None:
@@ -55,12 +58,9 @@ def setup_logger(name: str | None = None, *, level: str | None = None) -> loggin
 
     # Check if log config file exists
     if os.path.isfile(LOG_CONFIG):
-        import json
-        from logging.config import dictConfig
-
         try:
             # Load config from JSON file
-            with open(LOG_CONFIG) as file:
+            with open(LOG_CONFIG, encoding="utf-8") as file:
                 config = json.load(file)
 
             dictConfig(config)
@@ -77,38 +77,38 @@ def setup_logger(name: str | None = None, *, level: str | None = None) -> loggin
         level = os.getenv("LOG_LEVEL", LOG_LEVEL)
 
     # Configure logger
-    logger.setLevel(getattr(logging, level))
+    logger.setLevel(getattr(logging, level) if level else LOG_LEVEL)
 
     # Clear existing handlers to avoid duplicate logs
     if logger.handlers:
         logger.handlers.clear()
 
     # Create formatter
-    formatter = logging.Formatter(LOG_FORMAT)
+    formatter = Formatter(LOG_FORMAT)
 
     # Create console handler
-    with logging.StreamHandler(stream=sys.stdout) as console_handler:
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
+    console_handler = StreamHandler(stream=sys.stdout)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
 
     # Create logs directory if it doesn't exist
-    log_dir: Path = Path(str.join("..", "logs"))
+    log_dir = Path(str.join("..", "logs"))
     log_dir.mkdir(exist_ok=True)
 
     # Create file handler with rotation
-    with RotatingFileHandler(
+    file_handler = RotatingFileHandler(
         log_dir / LOG_FILE,
         maxBytes=LOG_MAX_SIZE,
         backupCount=LOG_BACKUP_COUNT,
         encoding="utf-8",
-    ) as file_handler:
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+    )
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
 
     return logger
 
 
-def get_logger(name: str | None = None) -> logging.Logger:
+def get_logger(name: str | None = None) -> Logger:
     """Get the logger instance.
 
     Args:
@@ -117,4 +117,4 @@ def get_logger(name: str | None = None) -> logging.Logger:
     Returns:
         logging.Logger: Logger instance.
     """
-    return logging.getLogger(name)
+    return getLogger(name)

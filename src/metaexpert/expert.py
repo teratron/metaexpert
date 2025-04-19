@@ -5,7 +5,7 @@ from functools import update_wrapper
 from typing import Any, Callable, Coroutine, TypeVar, cast
 
 from logger import get_logger
-from trade import Trade
+from metaexpert._trade import Trade
 
 _logger = get_logger(__name__)
 
