@@ -2,9 +2,13 @@
 
 import argparse
 
-from metaexpert import (
+from metaexpert.config import (
+    CONTRACT_TYPE_COIN_M,
+    CONTRACT_TYPE_USD_M,
+    DEFAULT_CONTRACT_TYPE,
     DEFAULT_MODE,
     DEFAULT_TIMEFRAME,
+    DEFAULT_TRADE_TYPE,
     LOG_LEVEL,
     MAX_POSITION_SIZE,
     MODE_BACKTEST,
@@ -12,6 +16,10 @@ from metaexpert import (
     MODE_PAPER,
     STOP_LOSS_PERCENT,
     TAKE_PROFIT_PERCENT,
+    TRADE_TYPE_FUTURES,
+    TRADE_TYPE_MARGIN,
+    TRADE_TYPE_OPTIONS,
+    TRADE_TYPE_SPOT,
     TRAILING_STOP_PERCENT,
     TRADING_PAIRS,
 )
@@ -21,6 +29,20 @@ def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Expert Trading Bot")
 
+    parser.add_argument(
+        "--type",
+        type=str,
+        choices=[TRADE_TYPE_SPOT, TRADE_TYPE_FUTURES, TRADE_TYPE_OPTIONS, TRADE_TYPE_MARGIN],
+        default=DEFAULT_TRADE_TYPE,
+        help="Trading type: spot, futures, options, or margin",
+    )
+    parser.add_argument(
+        "--contract",
+        type=str,
+        choices=[CONTRACT_TYPE_USD_M, CONTRACT_TYPE_COIN_M],
+        default=DEFAULT_CONTRACT_TYPE,
+        help="Contract type for futures trading: USDⓈ-M (usd_m) or COIN-M (coin_m)",
+    )
     parser.add_argument(
         "--mode",
         type=str,
@@ -42,9 +64,7 @@ def parse_arguments() -> argparse.Namespace:
         help="Trading timeframe",
     )
     parser.add_argument(
-        "--position-size",
         "--size",
-        "--ps",
         "--lots",
         type=float,
         default=MAX_POSITION_SIZE,
@@ -78,6 +98,4 @@ def parse_arguments() -> argparse.Namespace:
         default=LOG_LEVEL,
         help="Logging level",
     )
-    # TODO: тип торговли: spot, futures, options, etc.
-    # TODO: тип ордера: buy, sell, buy limit, sell limit, etc.
     return parser.parse_args()

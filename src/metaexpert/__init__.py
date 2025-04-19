@@ -11,5 +11,6 @@ class MetaExpert:
         pass
 
     # type: ignore
-    from ._market import Market
+    from metaexpert._market import Market
+    from metaexpert._trade import Trade
     
