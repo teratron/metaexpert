@@ -1,13 +1,13 @@
 [project]
-name = "expert-examples"
+name = "metaexpert-examples"
 version = "0.1.0"
-description = "EMA bot for Binance"
+description = "EMA expert for Binance"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "metaexpert",
-    "ta-lib",
+    "ta-lib==0.6.3",
 ]
 
 #[project.scripts]

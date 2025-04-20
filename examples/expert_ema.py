@@ -4,7 +4,7 @@ import time
 # import talib
 from metaexpert import MetaExpert
 
-expert = MetaExpert("BTCUSDT", "1h", shift=0, period=3)
+expert = MetaExpert("BTCUSDT", "1h", shift=0)
 
 
 # def on_process() -> None:

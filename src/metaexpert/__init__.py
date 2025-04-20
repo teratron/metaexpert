@@ -9,7 +9,7 @@ class MetaExpert(Process):
 
     name: str
 
-    def __init__(self):
+    def __init__(self, api_key: str, symbol: str, shift: int = 0):
         self.logger: Logger = get_logger(__name__)
         super().__init__(self.name)
 

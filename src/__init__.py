@@ -6,9 +6,9 @@ handling API connections, data retrieval, and trading operations.
 
 import argparse
 
+from api.src import SpotAPI  # , get_candlestick_data, query_status, query_testnet, query_quote_asset_list
 from dotenv_vault import load_dotenv  # type: ignore
 
-from api.src import SpotAPI  # , get_candlestick_data, query_status, query_testnet, query_quote_asset_list
 from logger import get_logger  # type: ignore
 from metaexpert.arguments import parse_arguments  # type: ignore
 from metaexpert.config import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL

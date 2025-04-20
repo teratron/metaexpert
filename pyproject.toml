@@ -8,14 +8,16 @@ readme = "README.md"
 requires-python = ">=3.11"
 #classifiers = ["Private :: Do Not Upload"]
 keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
-excluded = ["tests", "examples"]
+#excluded = ["tests", "examples", "app", "docs", "src/data"]
 dependencies = [
-    "binance-connector>=3.12.0",
-    "flask>=3.1.0",
-    "lightweight-charts>=2.1",
-    "numpy>=2.2.4",
+    #"binance-connector>=3.12.0",
+    #"flask>=3.1.0",
+    #"lightweight-charts>=2.1",
+    "numpy>=2.2.5",
     "pandas>=2.2.3",
-    "ta-lib==0.6.3",
+    #"ta-lib==0.6.3",
+    "metaexpert-binance-api",
+    "metaexpert-bybit-api",
 ]
 
 [project.urls]
@@ -25,7 +27,7 @@ github = "https://github.com/teratron/metaexpert"
 repository = "https://github.com/teratron/metaexpert.git"
 
 #[project.scripts]
-#bot-ema = "examples/src/bot_ema:main"
+#expert-ema = "examples/expert_ema:main"
 
 [dependency-groups]
 dev = [
@@ -53,22 +55,15 @@ default-groups = [
 ]
 
 [tool.uv.sources]
-ta-lib = { url = "https://github.com/cgohlke/talib-build/releases/download/v0.6.3/ta_lib-0.6.3-cp311-cp311-win_amd64.whl" }
-metaexpert = { path = "src/metaexpert" }
-#logger = { path = "src/logger" }
-#api = { path = "api" }
+metaexpert-binance-api = { path = "packages/api/binance" }
+metaexpert-bybit-api = { path = "packages/api/bybit" }
 
 [tool.uv.workspace]
 members = [
-    #    "src",
-    #    "src/metaexpert",
-    #    "src/app",
-    #    "src/logger",
-    #"binance",
-    #"examples",
-]
-exclude = [
-    "tests",
+    "packages/app",
+    #"src/metaexpert",
+    #"packages/api/binance",
+    #"packages/api/bybit",
     "examples",
 ]
 
