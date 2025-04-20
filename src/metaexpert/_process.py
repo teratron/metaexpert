@@ -25,8 +25,8 @@ class InitStatus(Enum):
 
 
 class Process:
-    __events: list[str] = ["on_deinit", "on_trade", "on_transaction", "on_tick", "on_bar", "on_timer",
-                           "on_book"]  # "on_init",
+    __events: list[str] = ["on_deinit", "on_trade", "on_transaction", "on_tick", "on_bar", "on_timer", "on_book"]
+    # "on_init",
     symbol: str | None
     time_frame: str | None
     shift: int
@@ -68,7 +68,6 @@ class Process:
 
                 # Только функции модуля
                 if callable(obj) and not isinstance(obj, type):
-
                     # Все функции модуля с декораторами или замыканиями или без них.
                     # Список иерархии объектов, функций, декораторов или замыканий.
                     qualif: list[str] = obj.__qualname__.split(".")
