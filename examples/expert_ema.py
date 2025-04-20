@@ -3,15 +3,21 @@ import time
 # import numpy
 # import talib
 from metaexpert import MetaExpert
+from metaexpert.exchange import Exchange
 
-expert = MetaExpert("BTCUSDT", "1h", shift=0)
+expert = MetaExpert(
+    stock=Exchange.binance,
+    api_key="your_api_key",
+    api_secret="your_api_secret",
+    base_url="https://api.binance.com"
+)
 
 
 # def on_process() -> None:
 #     print("*** on_process ***")
 
 
-@expert.on_init
+@expert.on_init("BTCUSDT", "1h", shift=0, magic=12345, name="ema")
 def init() -> None:
     print("*** on_init ***")
 
@@ -50,7 +56,11 @@ def timer() -> None:
     print("*** on_timer ***")
 
 
-if __name__ == "__main__":
+def main() -> None:
     start = time.time()
     expert.run()
     print(f"Elapsed time: {time.time() - start}")
+
+
+if __name__ == "__main__":
+    main()

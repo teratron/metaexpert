@@ -2,7 +2,7 @@
 
 import argparse
 
-from metaexpert.config import (
+from config import (
     CONTRACT_TYPE_COIN_M,
     CONTRACT_TYPE_USD_M,
     DEFAULT_CONTRACT_TYPE,
@@ -52,6 +52,7 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--pair",
+        "--symbol",
         type=str,
         default=TRADING_PAIRS[0],
         help="Trading pair (e.g., BTCUSDT)",
