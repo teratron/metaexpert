@@ -31,9 +31,10 @@ class Process:
     }
     symbol: str | set[str] | None
     timeframe: str | set[str] | None
-    shift: int
-    magic: int
-    filename: str | None
+
+    # shift: int
+    # magic: int
+    # filename: str | None
 
     def __init__(self, name: str) -> None:
         self.logger: Logger = get_logger(name)

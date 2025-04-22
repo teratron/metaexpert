@@ -79,6 +79,9 @@ class MetaExpert(Process):
             # Initialize and run the trading bot
             self._run("on_init", 1)
             self.logger.info("Expert initialized successfully")
+
+            print(self.symbol)
+            print(self.timeframe)
             print(self.filename)
             # self._run(self.__events)
             # while True:
