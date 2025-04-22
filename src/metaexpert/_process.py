@@ -46,9 +46,10 @@ class Process:
         # ** props: dict[str, Any]
         self.logger: Logger = get_logger(__name__)
         # self.run()
-        # qualif: str = module.__dict__.get(attr).__qualname__.split(".")[1]
-        # if qualif == "on_init":
-        #     getattr(module, attr)()
+        self._run_event("on_init")
+
+    # def __init_subclass__(cls, **kwargs):
+    #     print(cls)
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
@@ -57,30 +58,37 @@ class Process:
         return f"<{type(self).__name__} {self.name!r}>"
 
     def run(self) -> None:
-        frame = inspect.stack()[1]
+        self._run_event(self.__events)
+
+    def _run_event(self, decorator: str | list[str]) -> None:
+        frame = inspect.stack()[len(inspect.stack()) - 1]
+        # [print(i) for i in inspect.stack()]
+        # print(len(inspect.stack()))
         module = inspect.getmodule(frame[0])
-        # self.on_process()
 
         if module:
             for attr in dir(module):
                 # Все объекты модуля.
                 obj = module.__dict__.get(attr)
+                # print(attr)
 
                 # Только функции модуля
                 if callable(obj) and not isinstance(obj, type):
                     # Все функции модуля с декораторами или замыканиями или без них.
                     # Список иерархии объектов, функций, декораторов или замыканий.
                     qualif: list[str] = obj.__qualname__.split(".")
-                    # print(qualif, mod, attr)
+                    #print(qualif)
 
-                    if len(qualif) > 1 and qualif[0] == __class__.__name__:
-                        if any(qualif[1] == item for item in self.__events):
-                            # asyncio.run(getattr(mod, attr)())
+                    if len(qualif) > 1:
+                        if qualif[0] == __class__.__name__ or qualif[0] == self.__class__.__name__:
+                            if (isinstance(decorator, list) and any(qualif[1] == item for item in decorator)) or (
+                                    isinstance(decorator, str) and qualif[1] == decorator):
+                                # asyncio.run(getattr(mod, attr)())
+                                getattr(module, attr)()
+                                self.logger.debug("Launch task for @%s:%s()", qualif[1], attr)
+                        elif any(qualif[0] == item for item in ["on_process"]):
                             getattr(module, attr)()
-                            self.logger.debug(f"Launch task for @{qualif[1]}:{attr}()")
-                    elif any(qualif[0] == item for item in ["on_process"]):
-                        getattr(module, attr)()
-                        self.logger.debug(f"Launch task for {attr}()")
+                            self.logger.debug("Launch task for %s()", attr)
 
     @setup_method
     def on_process(self) -> None:
