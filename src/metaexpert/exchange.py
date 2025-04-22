@@ -10,8 +10,15 @@ from enum import Enum
 
 
 class Exchange(Enum):
-    binance = {}
-    bybit = {}
+    binance = {
+        "name": "Binance",
+    }
+    bybit = {
+        "name": "Bybit",
+    }
+
+    # def __init__(self, value):
+    #     self.name = value["name"]
 
 # def binance(self: {query}) -> Exchange:
 #     return Exchange.Binance

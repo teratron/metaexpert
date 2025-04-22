@@ -26,7 +26,7 @@ class MetaExpert(Process):
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
-        self.stock: Exchange = stock
+        self.stock: Exchange = stock or args.stock
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
@@ -39,10 +39,11 @@ class MetaExpert(Process):
 
         # Setup logger
         self.logger: Logger = setup_logger(self.name, args.log_level)
-        self.logger.info("Starting expert in %s mode", self.symbol)
+        self.logger.info("Starting expert on %s", self.stock.value["name"])
         self.logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
+        # Initialize stock exchange
         self._init_exchange()
 
     def __str__(self) -> str:
@@ -73,11 +74,12 @@ class MetaExpert(Process):
             self.logger.info("Initialized Binance client with API key authentication")
 
     def run(self) -> None:
+        """Run the expert trading system."""
         try:
             # Initialize and run the trading bot
             self._run("on_init", 1)
             self.logger.info("Expert initialized successfully")
-
+            print(self.filename)
             # self._run(self.__events)
             # while True:
             #     pass
