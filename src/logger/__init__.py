@@ -26,8 +26,6 @@ from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from dotenv_vault import load_dotenv
-
 from config import (
     LOG_BACKUP_COUNT,
     LOG_CONFIG,
@@ -38,11 +36,8 @@ from config import (
     LOG_NAME,
 )
 
-# Load environment variables
-load_dotenv()
 
-
-def setup_logger(name: str | None = None, *, level: str | None = None) -> Logger:
+def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
     """Set up and configure the logger.
 
     Args:
@@ -56,6 +51,9 @@ def setup_logger(name: str | None = None, *, level: str | None = None) -> Logger
     if name is None:
         name = LOG_NAME
 
+    # Create logger instance
+    logger = get_logger(name)
+
     # Check if log config file exists
     if os.path.isfile(LOG_CONFIG):
         try:
@@ -67,10 +65,7 @@ def setup_logger(name: str | None = None, *, level: str | None = None) -> Logger
 
             return get_logger(name)
         except FileNotFoundError as e:
-            print(f"Error loading logging configuration file: {e}")
-
-    # Create logger instance
-    logger = get_logger(name)
+            logger.error("Error loading logging configuration file: %s", e)
 
     # Get log level from environment or config
     if level is None:
@@ -92,7 +87,8 @@ def setup_logger(name: str | None = None, *, level: str | None = None) -> Logger
     logger.addHandler(console_handler)
 
     # Create logs directory if it doesn't exist
-    log_dir = Path(str.join("..", "logs"))
+    # log_dir = Path(str.join("..", "logs"))
+    log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
 
     # Create file handler with rotation

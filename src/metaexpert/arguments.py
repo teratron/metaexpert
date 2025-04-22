@@ -1,8 +1,10 @@
 """Arguments for the trading bot."""
 
-import argparse
+from argparse import ArgumentParser, Namespace
 
 from config import (
+    AVAILABLE_EXCHANGES,
+    DEFAULT_EXCHANGE,
     CONTRACT_TYPE_COIN_M,
     CONTRACT_TYPE_USD_M,
     DEFAULT_CONTRACT_TYPE,
@@ -25,9 +27,9 @@ from config import (
 )
 
 
-def parse_arguments() -> argparse.Namespace:
+def parse_arguments() -> Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Expert Trading Bot")
+    parser = ArgumentParser(description="Expert Trading Bot")
 
     parser.add_argument(
         "--type",
@@ -49,6 +51,13 @@ def parse_arguments() -> argparse.Namespace:
         choices=[MODE_BACKTEST, MODE_PAPER, MODE_LIVE],
         default=DEFAULT_MODE,
         help="Trading mode: backtest, paper, or live",
+    )
+    parser.add_argument(
+        "--exchange",
+        type=str,
+        choices=AVAILABLE_EXCHANGES,
+        default=DEFAULT_EXCHANGE,
+        help="Stock exchange to use (e.g., binance, bybit)",
     )
     parser.add_argument(
         "--pair",

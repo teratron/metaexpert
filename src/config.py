@@ -7,7 +7,7 @@ from dotenv_vault import load_dotenv  # type: ignore
 _ = load_dotenv()
 
 # Application configuration
-APP_NAME = "metaexpert"
+APP_NAME = "MetaExpert"
 
 # Logging configuration
 LOG_NAME = APP_NAME  # Logger name
@@ -70,6 +70,9 @@ TRADE_TYPE_FUTURES = "futures"  # Futures trading
 TRADE_TYPE_OPTIONS = "options"  # Options trading
 TRADE_TYPE_MARGIN = "margin"  # Margin trading
 
+# Default trade type
+DEFAULT_TRADE_TYPE = TRADE_TYPE_SPOT
+
 # Contract types for futures trading
 CONTRACT_TYPE_USD_M = "usd_m"  # USDⓈ-M Futures (USDT/BUSD margined contracts)
 CONTRACT_TYPE_COIN_M = "coin_m"  # COIN-M Futures (Coin margined contracts)
@@ -77,8 +80,13 @@ CONTRACT_TYPE_COIN_M = "coin_m"  # COIN-M Futures (Coin margined contracts)
 # Default contract type
 DEFAULT_CONTRACT_TYPE = CONTRACT_TYPE_USD_M
 
-# Default trade type
-DEFAULT_TRADE_TYPE = TRADE_TYPE_SPOT
+# Available Exchanges
+EXCHANGE_BINANCE = "binance"
+EXCHANGE_BYBIT = "bybit"
+AVAILABLE_EXCHANGES = [EXCHANGE_BINANCE, EXCHANGE_BYBIT]
+
+# Default exchange
+DEFAULT_EXCHANGE = EXCHANGE_BINANCE
 
 # Trading strategy parameters
 ALLOW_LONG_BUYING = True

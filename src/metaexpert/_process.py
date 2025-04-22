@@ -3,7 +3,7 @@ from enum import Enum, unique
 from functools import update_wrapper
 from typing import Any, Callable, Coroutine, TypeVar, cast
 
-from logger import get_logger, Logger
+from logger import Logger, getLogger
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -44,12 +44,9 @@ class Process:
         # title: str = "",
         # prefix: str = "_",
         # ** props: dict[str, Any]
-        self.logger: Logger = get_logger(__name__)
+        self.logger: Logger = getLogger(__name__)
         # self.run()
-        self._run_event("on_init")
-
-    # def __init_subclass__(cls, **kwargs):
-    #     print(cls)
+        # self._run_event("on_init")
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
@@ -58,26 +55,30 @@ class Process:
         return f"<{type(self).__name__} {self.name!r}>"
 
     def run(self) -> None:
-        self._run_event(self.__events)
+        self._run_event("on_init")
+        # self._run_event(self.__events)
 
     def _run_event(self, decorator: str | list[str]) -> None:
         frame = inspect.stack()[len(inspect.stack()) - 1]
         # [print(i) for i in inspect.stack()]
         # print(len(inspect.stack()))
+        # print(inspect.stack()[3])
+        # [print(i) for i in inspect.stack()[3]]
         module = inspect.getmodule(frame[0])
+        # print(module.__dict__)
 
         if module:
             for attr in dir(module):
                 # Все объекты модуля.
-                obj = module.__dict__.get(attr)
-                # print(attr)
+                obj: Any | None = module.__dict__.get(attr)
+                # print(attr, obj)
 
                 # Только функции модуля
-                if callable(obj) and not isinstance(obj, type):
+                if obj and callable(obj) and not isinstance(obj, type):
                     # Все функции модуля с декораторами или замыканиями или без них.
                     # Список иерархии объектов, функций, декораторов или замыканий.
                     qualif: list[str] = obj.__qualname__.split(".")
-                    #print(qualif)
+                    # print(qualif)
 
                     if len(qualif) > 1:
                         if qualif[0] == __class__.__name__ or qualif[0] == self.__class__.__name__:
@@ -105,6 +106,16 @@ class Process:
     ) -> Callable:
         """Decorator for initialization event handling.
 
+        Args:
+            symbol (str | None): Symbol of the trading pair.
+            time_frame (str | None): Time frame for the trading data.
+            shift (int, optional): Shift value. Defaults to 0.
+            magic (int, optional): Magic number. Defaults to 0.
+            name (str | None): Name of the process.
+            
+        Returns:
+            Callable: Decorated function that handles the initialization event.
+            
         :param symbol: Инструмент с которым работает эксперт.
         :type symbol: `str` or `None`
         :param time_frame: Таймфрейм, по которому осуществляется торговля эксперт.
@@ -113,10 +124,12 @@ class Process:
         :type shift: `int`
         :param period: Период (интервал) баров на котором осуществляется торговля и/или прорисовка эксперта.
         :type period: `int`
-
-        Args:
-            magic:
-            name:
+        :param magic: Магический номер. Используется для идентификации эксперта.
+        :type magic: `int`
+        :param name: Название процесса.
+        :type name: `str` or `None`
+        :return: Декорированная функция, обрабатывающая событие инициализации.
+        :rtype: Callable
         """
 
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], InitStatus]) -> Callable:  # InitStatus:
@@ -126,6 +139,8 @@ class Process:
                 self.shift = shift
                 self.magic = magic
                 self.name = name
+
+                self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
                 func(*args, **kwargs)
 
