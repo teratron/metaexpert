@@ -1,9 +1,8 @@
 import inspect
-import platform
 from enum import Enum, unique
 from functools import update_wrapper
 from pathlib import Path
-from typing import Any, Callable, Coroutine, TypeVar, cast, Iterable
+from typing import Any, Callable, Coroutine, TypeVar, cast
 
 from logger import Logger, get_logger
 
@@ -32,66 +31,28 @@ class Process:
     }
     symbol: str | set[str] | None
     timeframe: str | set[str] | None
-    shift: int = 0
-    magic: int = 0
-    name: str = ""
+    shift: int
+    magic: int
+    filename: str | None
 
-    def __init__(self, name) -> None:
+    def __init__(self, name: str) -> None:
         self.logger: Logger = get_logger(name)
 
-    def __str__(self) -> str:
-        return f"{type(self).__name__} {self.name}"
-
-    def __repr__(self) -> str:
-        return f"<{type(self).__name__} {self.name!r}>"
-
-    def run(self) -> None:
-        try:
-            # Initialize and run the trading bot
-            self._run_event("on_init")
-            self.logger.info("Expert initialized successfully")
-
-            # self._run_event(self.__events)
-            # while True:
-            #     pass
-        except KeyboardInterrupt:
-            self.logger.info("Expert stopped by user")
-        except (ConnectionError, TimeoutError) as e:
-            self.logger.exception("An error occurred: %s", e)
-        finally:
-            self._run_event("on_deinit")
-            self.logger.info("Expert shutdown complete")
-
-    def _get_name_module(self, path: str) -> str:
+    def _run(self, event: str | set[str], count: int = 1) -> None:
         frame = inspect.stack()[len(inspect.stack()) - 1]
-        name = frame[1]
-
-        match platform.system():
-            case "Windows":
-                name = name.split("\\")[-1]
-            case "Linux" | "Darwin":
-                name = name.split("/")[-1]
-
-        return name.split(".")[0]
-
-    def _run_event(self, decorator: str | Iterable[str]) -> None:
-        frame = inspect.stack()[len(inspect.stack()) - 1]
-        # [print(i) for i in inspect.stack()]
-        # print(len(inspect.stack()))
-        # print(inspect.stack()[3])
-        #[print(i) for i in inspect.stack()[3]]
         module = inspect.getmodule(frame[0])
-        # print(frame[1].split("\\")[-1].split(".")[0])
 
-        # Получение имени файла
-        self.name = Path(frame[1]).stem
-        self.logger.debug("Processing file: %s", self.name)
+        # Obtaining a file name
+        self.filename = Path(frame[1]).stem
+        self.logger.debug("Processing file: %s", self.filename)
 
         if module:
+            num: int = 0
+            dec: set[str] = {event} if isinstance(event, str) else event
+
             for attr in dir(module):
                 # All objects of the module.
-                obj: Any | None = module.__dict__.get(attr)
-                # print(attr, obj)
+                obj: object | None = module.__dict__.get(attr)
 
                 # Only module functions.
                 # All the functions of the module with decorators or without shortcuts.
@@ -101,12 +62,12 @@ class Process:
 
                     if len(qualif) > 1:
                         if qualif[0] == __class__.__name__ or qualif[0] == self.__class__.__name__:
-                            if (isinstance(decorator, Iterable) and any(qualif[1] == item for item in decorator)) or (
-                                    isinstance(decorator, str) and qualif[1] == decorator):
+                            if any(qualif[1] == item for item in dec) and num < count:
+                                num += 1
                                 # asyncio.run(getattr(module, attr)())
                                 getattr(module, attr)()
                                 self.logger.debug("Launch task for @%s:%s()", qualif[1], attr)
-                        elif any(qualif[0] == item for item in ["on_process"]):
+                        elif any(qualif[0] == item for item in dec):
                             getattr(module, attr)()
                             self.logger.debug("Launch task for %s()", attr)
 
@@ -116,8 +77,8 @@ class Process:
 
     def on_init(
             self,
-            symbol: str | None = None,
-            timeframe: str | None = None,
+            symbol: str | set[str] | None = None,
+            timeframe: str | set[str] | None = None,
             *,
             shift: int = 0,
             magic: int = 0,
@@ -128,13 +89,14 @@ class Process:
         Args:
             symbol (str | None): Symbol of the trading pair.
             timeframe (str | None): Time frame for the trading data.
-            shift (int, optional): A shift relative to the current bar on which the expert is traded. Defaults to 0.
-            magic (int, optional): Magic number. Used to identify the expert. Defaults to 0.
+            shift (int): A shift relative to the current bar on which the expert is traded. Defaults to 0.
+            magic (int): Magic number. Used to identify the expert. Defaults to 0.
             name (str | None): The name of the expert.
             
         Returns:
             Callable: Decorated function that handles the initialization event.
         """
+
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], InitStatus]) -> Callable:  # InitStatus:
             def inner(*args, **kwargs) -> None:
                 self.symbol = symbol

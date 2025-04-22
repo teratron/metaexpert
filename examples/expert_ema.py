@@ -24,7 +24,6 @@ expert = MetaExpert(
 def init() -> None:
     print("*** on_init ***")
 
-
 @expert.on_deinit
 def deinit() -> None:
     print("*** on_deinit ***")

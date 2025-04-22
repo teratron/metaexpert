@@ -16,8 +16,8 @@ dependencies = [
     "numpy>=2.2.5",
     "pandas>=2.2.3",
     #"ta-lib==0.6.3",
-    "metaexpert-binance-api",
-    "metaexpert-bybit-api",
+    #"metaexpert-binance-api",
+    #"metaexpert-bybit-api",
 ]
 
 [project.urls]
@@ -26,7 +26,7 @@ documentation = "https://teratron.github.io/metaexpert/docs"
 github = "https://github.com/teratron/metaexpert"
 repository = "https://github.com/teratron/metaexpert.git"
 
-#[project.scripts]
+[project.scripts]
 #expert-ema = "examples/expert_ema:main"
 
 [dependency-groups]
@@ -39,14 +39,11 @@ lint = [
 ]
 test = [
     "pytest>=8.3.4",
-    "pytest-asyncio>=0.25.3",
 ]
-docs = [
-    "sphinx>=4.3.0",
-]
+docs = []
 
 [tool.uv]
-package = false
+package = true
 link-mode = "copy"
 default-groups = [
     "test",
