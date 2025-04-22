@@ -1,13 +1,15 @@
 # import numpy
 # import talib
+import os
+
 from metaexpert import MetaExpert
 from metaexpert.exchange import Exchange
 
 expert = MetaExpert(
     stock=Exchange.binance,
-    api_key="your_api_key",
-    api_secret="your_api_secret",
-    base_url="https://api.binance.com",
+    api_key=os.getenv("BINANCE_API_KEY"),
+    api_secret=os.getenv("BINANCE_API_SECRET"),
+    base_url=os.getenv("BINANCE_BASE_URL"),
     trade_type="spot",
     trade_contract="coin_m",
     trade_mode="paper"
