@@ -54,9 +54,9 @@ class MetaExpert(Process):
 
     def _init_exchange(self):
         match self.stock:
-            case Exchange.binance:
+            case Exchange.BINANCE:
                 self.logger.debug("Binance exchange selected")
-            case Exchange.bybit:
+            case Exchange.BYBIT:
                 self.logger.debug("Bybit exchange selected")
             case _:
                 self.logger.warning("Unknown exchange selected")

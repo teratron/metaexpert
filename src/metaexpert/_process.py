@@ -31,7 +31,6 @@ class Process:
     }
     symbol: str | set[str] | None
     timeframe: str | set[str] | None
-
     # shift: int
     # magic: int
     # filename: str | None
