@@ -5,7 +5,7 @@ description = "MetaExpert library"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 #classifiers = ["Private :: Do Not Upload"]
 keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
 #excluded = ["tests", "examples", "app", "docs", "src/data"]

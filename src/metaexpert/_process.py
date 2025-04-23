@@ -1,15 +1,16 @@
-import inspect
-from pathlib import Path
 from typing import Any, Callable
 
 from logger import Logger, get_logger
 from metaexpert._event import Event
 
 
-class Process(Event):
-    __events: set[str] = {
-        "on_init", "on_deinit", "on_trade", "on_transaction", "on_tick", "on_bar", "on_timer", "on_book"
-    }
+class Process:  # (Event)
+    """Expert trading system process.
+
+    This class handles the initialization and management of the trading system's events.
+    It provides decorators for various events such as initialization, deinitialization,
+    trading, transactions, ticks, bars, timers, and book events.
+    """
     symbol: str | set[str] | None
     timeframe: str | set[str] | None
 
@@ -18,44 +19,9 @@ class Process(Event):
     # filename: str | None
 
     def __init__(self, name: str) -> None:
-        super().__init__()
+        #super().__init__(name)
         self.logger: Logger = get_logger(name)
-        # self.event: Event = Event()
-
-        # self.fill()
-
-    def _run(self, event: str | set[str], count: int = 1) -> None:
-        frame = inspect.stack()[len(inspect.stack()) - 1]
-        module = inspect.getmodule(frame[0])
-
-        # Obtaining a file name
-        self.filename = Path(frame[1]).stem
-        self.logger.debug("Processing file: %s", self.filename)
-
-        if module:
-            num: int = 0
-            dec: set[str] = {event} if isinstance(event, str) else event
-
-            for attr in dir(module):
-                # All objects of the module.
-                obj: object | None = module.__dict__.get(attr)
-
-                # Only module functions.
-                # All the functions of the module with decorators or without shortcuts.
-                if obj and callable(obj) and not isinstance(obj, type):
-                    # List of hierarchy of objects, functions, decorators or closes.
-                    qualif: list[str] = obj.__qualname__.split(".")
-
-                    if len(qualif) > 1:
-                        if qualif[0] == __class__.__name__ or qualif[0] == self.__class__.__name__:
-                            if any(qualif[1] == item for item in dec) and num < count:
-                                num += 1
-                                # asyncio.run(getattr(module, attr)())
-                                getattr(module, attr)()
-                                self.logger.debug("Launch task for @%s:%s()", qualif[1], attr)
-                        elif any(qualif[0] == item for item in dec):
-                            getattr(module, attr)()
-                            self.logger.debug("Launch task for %s()", attr)
+        self.event: Event = Event(name)
 
     def on_init(
             self,

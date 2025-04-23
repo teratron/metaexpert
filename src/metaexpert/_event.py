@@ -3,90 +3,76 @@
 import inspect
 from pathlib import Path
 
+from logger import Logger, get_logger
 
-class Event(set[dict]):
+
+class Event(list[dict]):
     """Event types for the trading system."""
-    ON_INIT = {
-        "name": "on_init",
-        "description": "Initialization event",
+    on_init = {
         "number": 1,
-        "callback": None
+        "callback": []
     }
-    ON_DEINIT = {
-        "name": "on_deinit",
-        "description": "Deinitialization event",
+    on_deinit = {
         "number": 1,
-        "callback": None
+        "callback": []
     }
-    ON_TRADE = {
-        "name": "on_trade",
-        "description": "Trade event",
+    on_trade = {
         "number": 1,
-        "callback": None
+        "callback": []
     }
-    ON_TRANSACTION = {
-        "name": "on_transaction",
-        "description": "Transaction event",
+    on_transaction = {
         "number": 1,
-        "callback": None
+        "callback": []
     }
-    ON_TICK = {
-        "name": "on_tick",
-        "description": "Tick event",
+    on_tick = {
         "number": 3,
-        "callback": {}
+        "callback": []
     }
-    ON_BAR = {
-        "name": "on_bar",
-        "description": "Bar event",
+    on_bar = {
         "number": 3,
-        "callback": {}
+        "callback": []
     }
-    ON_TIMER = {
-        "name": "on_timer",
-        "description": "Timer event",
+    on_timer = {
         "number": 5,
-        "callback": {}
+        "callback": []
     }
-    ON_BOOK = {
-        "name": "on_book",
-        "description": "Book event",
+    on_book = {
         "number": 3,
-        "callback": {}
+        "callback": []
     }
 
-    def __init__(self):
+    def __init__(self, name: str):
         super().__init__()
+        self.logger: Logger = get_logger(name)
+        self.module: object | None = None
         self.filename: str | None = None
+        self.__enum: list[str] = self.__get_list()
 
-    def _set_callback(self, name: str, callback: callable) -> None:
+    def __get_list(self) -> list[str]:
+        """Get the list of event names."""
+        return list(item for item in self.__dir__() if item.startswith("on_"))
+
+    def __get_number(self, name: str) -> int:
+        """Get the number of parameters for a specific event."""
+        return self.__getattribute__(name)["number"]
+
+    def __set_callback(self, name: str, callback: callable) -> None:
         """Set the callback for a specific event."""
-        if name in self:
-            self.__getattribute__(name)["callback"] = callback
-        else:
-            raise ValueError(f"Event {name} not found.")
+        self.__getattribute__(name)["callback"].append(callback)
 
-    def _set_number(self, name: str, number: int) -> None:
-        """Set the number of parameters for a specific event."""
-        if name in self:
-            self.__getattribute__(name)["number"] = number
-        else:
-            raise ValueError(f"Event {name} not found.")
+    def __len_callback(self, name: str) -> int:
+        """Get the number of callbacks for a specific event."""
+        return len(self.__getattribute__(name)["callback"])
 
-    def fill(self) -> None:
+    def init(self) -> None:
+        """Fill the event list with the callbacks."""
         frame = inspect.stack()[len(inspect.stack()) - 1]
         module = inspect.getmodule(frame[0])
-        # print(self.ON_INIT["name"])
 
-        # Obtaining a file name
-        self.filename = Path(frame[1]).stem
-        # self.logger.debug("Processing file: %s", self.filename)
-        a = (i['name'] for i in iter(self))
-        print(a.__iter__())  # if i[0].startswith("ON_")
         if module:
-            num: int = 0
-            #     dec: set[str] = {event} if isinstance(event, str) else event
-            #
+            self.module = module
+            self.filename = Path(frame[1]).stem
+
             for attr in dir(module):
                 # All objects of the module.
                 obj: object | None = module.__dict__.get(attr)
@@ -97,11 +83,20 @@ class Event(set[dict]):
                     # List of hierarchy of objects, functions, decorators or closes.
                     qualif: list[str] = obj.__qualname__.split(".")
 
-                    if len(qualif) > 1:
-                        if qualif[0] == __class__.__name__ or qualif[0] == self.__class__.__name__:
-                            if any(qualif[1] == item["name"] for item in self if isinstance(self, dict)):
-                                num += 1
-                                print("+++")
-                                # asyncio.run(getattr(module, attr)())
-                                getattr(module, attr)()
-                                # self.logger.debug("Launch task for @%s:%s()", qualif[1], attr)
+                    if len(qualif) > 1 and qualif[1] in self.__enum:
+                        if self.__len_callback(qualif[1]) < self.__get_number(qualif[1]):
+                            self.__set_callback(qualif[1], getattr(module, attr))
+                        else:
+                            self.logger.warning(
+                                "Too many callbacks for %s: %d",
+                                qualif[1], self.__len_callback(qualif[1]) + 1
+                            )
+
+    def run(self, name: str) -> None:
+        """Run the event."""
+        if name in self.__enum:
+            for callback in self.__getattribute__(name)["callback"]:
+                callback()
+                self.logger.debug("Launch task for %s()", name)
+        else:
+            self.logger.warning("Event %s not found", name)

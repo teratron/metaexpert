@@ -75,25 +75,53 @@ class MetaExpert(Process):
 
     def run(self) -> None:
         """Run the expert trading system."""
+        self.logger.info("Starting trading bot in %s mode", self.trade_mode)
+        self.running = True
+        # print(self.symbol)
+        # print(self.timeframe)
+        # print(self.filename)
+
         try:
-            self.fill()
-            # Initialize and run the trading bot
-            # self._run("on_init", 1)
+            # Initialize event handling
+            self.event.init()
+            # self.init_event()
+
+            # Initialize the expert
+            self.event.run("on_init")
+            # self.run_event("on_init")
             self.logger.info("Expert initialized successfully")
 
-            # print(self.symbol)
-            # print(self.timeframe)
-            # print(self.filename)
-            # self._run(self.__events)
-            # while True:
-            #     pass
-        except KeyboardInterrupt:
-            self.logger.info("Expert stopped by user")
-        except (ConnectionError, TimeoutError) as e:
-            self.logger.exception("An error occurred: %s", e)
-        finally:
-            self._run("on_deinit")
-            self.logger.info("Expert shutdown complete")
+            while self.running:
+                # Fetch latest market data
+                # data = self.fetch_historical_data()
 
+                # Sleep until next candle
+                if self.trade_mode != MODE_BACKTEST:
+                    pass
+                    # self.logger.info("Waiting for next candle...")
+                    # Calculate sleep time based on timeframe
+                    # sleep_time = self._get_sleep_time()
+                    # time.sleep(sleep_time)
+                else:
+                    # In backtest mode, we process all data at once
+                    self.running = False
+
+        except KeyboardInterrupt:
+            # Handle keyboard interrupt
+            self.logger.info("Bot stopped by user")
+        except (ConnectionError, TimeoutError) as e:
+            # Handle network-related errors
+            self.logger.error("Network error occurred: %s", e)
+        except ValueError as e:
+            # Handle data validation errors
+            self.logger.error("Data validation error: %s", e)
+        except RuntimeError as e:
+            # Handle runtime-specific errors
+            self.logger.error("Runtime error: %s", e)
+        finally:
+            self.running = False
+            self.event.run("on_deinit")
+            #self.run_event("on_deinit")
+            self.logger.info("Expert shutdown complete")
     # from metaexpert._market import Market
     # from metaexpert._trade import Trade
