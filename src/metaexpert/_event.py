@@ -46,7 +46,7 @@ class Event(list[dict]):
         self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
-        self.__enum: list[str] = self.__get_list()
+        self.__list: list[str] = self.__get_list()
 
     def __get_list(self) -> list[str]:
         """Get the list of event names."""
@@ -83,7 +83,7 @@ class Event(list[dict]):
                     # List of hierarchy of objects, functions, decorators or closes.
                     qualif: list[str] = obj.__qualname__.split(".")
 
-                    if len(qualif) > 1 and qualif[1] in self.__enum:
+                    if len(qualif) > 1 and qualif[1] in self.__list:
                         if self.__len_callback(qualif[1]) < self.__get_number(qualif[1]):
                             self.__set_callback(qualif[1], getattr(module, attr))
                         else:
@@ -94,7 +94,7 @@ class Event(list[dict]):
 
     def run(self, name: str) -> None:
         """Run the event."""
-        if name in self.__enum:
+        if name in self.__list:
             for callback in self.__getattribute__(name)["callback"]:
                 callback()
                 self.logger.debug("Launch task for %s()", name)
