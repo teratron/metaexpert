@@ -1,42 +1,28 @@
 import inspect
-from enum import Enum, unique
-from functools import update_wrapper
 from pathlib import Path
-from typing import Any, Callable, Coroutine, TypeVar, cast
+from typing import Any, Callable
 
 from logger import Logger, get_logger
-
-F = TypeVar("F", bound=Callable[..., Any])
-
-
-def setup_method(f: F) -> F:
-    def wrapper_func(self, *args: Any, **kwargs: Any) -> Any:
-        return f(self, *args, **kwargs)
-
-    return cast(F, update_wrapper(wrapper_func, f))
+from metaexpert._event import Event
 
 
-@unique
-class InitStatus(Enum):
-    """Initialization status codes."""
-    INIT_UNKNOWN = 0
-    INIT_SUCCEEDED = 1
-    INIT_FAILED = 2
-    INIT_PARAMETERS_INCORRECT = 3
-
-
-class Process:
+class Process(Event):
     __events: set[str] = {
         "on_init", "on_deinit", "on_trade", "on_transaction", "on_tick", "on_bar", "on_timer", "on_book"
     }
     symbol: str | set[str] | None
     timeframe: str | set[str] | None
+
     # shift: int
     # magic: int
     # filename: str | None
 
     def __init__(self, name: str) -> None:
+        super().__init__()
         self.logger: Logger = get_logger(name)
+        # self.event: Event = Event()
+
+        # self.fill()
 
     def _run(self, event: str | set[str], count: int = 1) -> None:
         frame = inspect.stack()[len(inspect.stack()) - 1]
@@ -71,10 +57,6 @@ class Process:
                             getattr(module, attr)()
                             self.logger.debug("Launch task for %s()", attr)
 
-    @setup_method
-    def on_process(self) -> None:
-        print("*** expert.on_process ***")
-
     def on_init(
             self,
             symbol: str | set[str] | None = None,
@@ -97,7 +79,7 @@ class Process:
             Callable: Decorated function that handles the initialization event.
         """
 
-        def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], InitStatus]) -> Callable:  # InitStatus:
+        def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
             def inner(*args, **kwargs) -> None:
                 self.symbol = symbol
                 self.timeframe = timeframe
@@ -154,7 +136,7 @@ class Process:
     def on_bar(self, time_frame: str = "1h") -> Callable:
         def outer(
                 func: Callable[[tuple[Any, ...], dict[str, Any]], None],
-        ) -> Callable[[tuple[Any, ...], dict[str, Any]], Coroutine[Any, Any, None]]:
+        ) -> Callable[[tuple[Any, ...], dict[str, Any]], None]:
             def inner(*args, **kwargs) -> None:
                 func(*args, **kwargs)
                 print(time_frame)

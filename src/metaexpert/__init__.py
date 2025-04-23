@@ -26,7 +26,7 @@ class MetaExpert(Process):
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
-        self.stock: Exchange = stock or args.stock
+        self.stock: Exchange = stock
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
@@ -76,13 +76,14 @@ class MetaExpert(Process):
     def run(self) -> None:
         """Run the expert trading system."""
         try:
+            self.fill()
             # Initialize and run the trading bot
-            self._run("on_init", 1)
+            # self._run("on_init", 1)
             self.logger.info("Expert initialized successfully")
 
-            print(self.symbol)
-            print(self.timeframe)
-            print(self.filename)
+            # print(self.symbol)
+            # print(self.timeframe)
+            # print(self.filename)
             # self._run(self.__events)
             # while True:
             #     pass
