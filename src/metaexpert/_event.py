@@ -51,22 +51,27 @@ class Event(list[dict]):
 
     def __init__(self, name: str):
         """Initialize the event system.
+
         Args:
-            name (str): Name of the event system.
+            name (str): Name of the event.
         """
         super().__init__()
         self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
         self.__list: list[str] = self.__get_list()
-        print(self.__list)
+        # print(self[0])
 
     def __get_list(self) -> list[str]:
         """Get the list of event names."""
         return list(self.__getattribute__(item)["name"] for item in self.__dir__() if item.startswith("ON_"))
 
     def __get_number(self, name: str) -> int:
-        """Get the number of parameters for a specific event."""
+        """Get the number of parameters for a specific event.
+
+        Args:
+            name (str): Name of the event.
+        """
         if name not in self.__list:
             self.logger.warning("Event %s not found", name)
             return 0
@@ -74,7 +79,12 @@ class Event(list[dict]):
         return self.__getattribute__(name.upper())["number"]
 
     def __set_callback(self, name: str, callback: callable) -> None:
-        """Set the callback for a specific event."""
+        """Set the callback for a specific event.
+
+        Args:
+            name (str): Name of the event.
+            callback (callable): Callback function to be executed.
+        """
         if name not in self.__list:
             self.logger.warning("Event %s not found", name)
             return
@@ -82,7 +92,11 @@ class Event(list[dict]):
         self.__getattribute__(name.upper())["callback"].append(callback)
 
     def __len_callback(self, name: str) -> int:
-        """Get the number of callbacks for a specific event."""
+        """Get the number of callbacks for a specific event.
+
+        Args:
+            name (str): Name of the event.
+        """
         if name not in self.__list:
             self.logger.warning("Event %s not found", name)
             return 0
@@ -118,7 +132,11 @@ class Event(list[dict]):
                             )
 
     def run_event(self, name: str) -> None:
-        """Run the event."""
+        """Run the event.
+
+        Args:
+            name (str): Name of the event.
+        """
         if name in self.__list:
             for callback in self.__getattribute__(name.upper())["callback"]:
                 callback()

@@ -103,8 +103,9 @@ class Process(Event):
         def outer(
                 func: Callable[[tuple[Any, ...], dict[str, Any]], None],
         ) -> Callable[[tuple[Any, ...], dict[str, Any]], None]:
-            def inner(*args, **kwargs) -> None:
-                func(*args, **kwargs)
+            def inner(rate, *args, **kwargs) -> None:
+                # rate: list = kwargs.get("rate")
+                func(rate, *args, **kwargs)
                 print(time_frame)
 
             return inner

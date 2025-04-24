@@ -1,4 +1,9 @@
-class Timeframe(list[dict]):
+# -*- coding: utf-8 -*-
+
+from enum import Enum
+
+
+class Timeframe(Enum):
     M1 = {
         "name": "1m",
         "sec": 60
@@ -56,11 +61,18 @@ class Timeframe(list[dict]):
         "sec": 604800
     }
 
-    def __init__(self) -> None:
-        super().__init__()
-        self.__list: list[str] = self.__get_list()
+    # def __init__(self) -> None:
+    #     super().__init__()
+    #     self.__list: list[str] = self.__get_list()
+    #
+    # def __get_list(self) -> list[str]:
+    #     """Get the list of timeframe names."""
+    #     return list(
+    #         item for item in self.__dir__()
+    #         if item.startswith("M") or item.startswith("H") or item.startswith("D") or item.startswith("W")
+    #     )
 
-    def __get_list(self) -> list[str]:
-        """Get the list of timeframe names."""
-        return list(item for item in self.__dir__() if
-                    item.startswith("M") or item.startswith("H") or item.startswith("D") or item.startswith("W"))
+# if __name__ == "__main__":
+#     #tf = Timeframe()
+#     for item in Timeframe:
+#         print(item)
