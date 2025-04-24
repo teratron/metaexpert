@@ -2,8 +2,9 @@
 
 from config import APP_NAME, MODE_LIVE, MODE_BACKTEST
 from logger import setup_logger, Logger
+from metaexpert._event import Event
 from metaexpert._process import Process
-from metaexpert.arguments import Namespace, parse_arguments
+from metaexpert.argument import Namespace, parse_arguments
 from metaexpert.exchange import Exchange
 
 
@@ -23,6 +24,18 @@ class MetaExpert(Process):
             trade_contract: str | None = None,
             trade_mode: str | None = None
     ) -> None:
+        """Initialize the expert trading system.
+
+        Args:
+            stock (Exchange | str | None): Stock exchange to use (e.g., Binance, Bybit).
+            api_key (str | None): API key for authentication.
+            api_secret (str | None): API secret for authentication.
+            base_url (str | None): Base URL for the exchange API.
+            trade_type (str | None): Type of trading (e.g., spot, futures).
+            trade_contract (str | None): Type of contract (e.g., coin_m, usdt_m).
+            trade_mode (str | None): Mode of operation (e.g., live, paper, backtest).
+        """
+
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
@@ -83,12 +96,12 @@ class MetaExpert(Process):
 
         try:
             # Initialize event handling
-            self.event.init()
-            # self.init_event()
+            # self.event.init()
+            self.init_event()
 
             # Initialize the expert
-            self.event.run("on_init")
-            # self.run_event("on_init")
+            # self.event.run("on_init")
+            self.run_event("on_init")
             self.logger.info("Expert initialized successfully")
 
             while self.running:
@@ -120,8 +133,8 @@ class MetaExpert(Process):
             self.logger.error("Runtime error: %s", e)
         finally:
             self.running = False
-            self.event.run("on_deinit")
-            #self.run_event("on_deinit")
+            # self.event.run("on_deinit")
+            self.run_event("on_deinit")
             self.logger.info("Expert shutdown complete")
     # from metaexpert._market import Market
     # from metaexpert._trade import Trade

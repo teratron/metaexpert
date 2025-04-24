@@ -4,7 +4,7 @@ from logger import Logger, get_logger
 from metaexpert._event import Event
 
 
-class Process:  # (Event)
+class Process(Event):
     """Expert trading system process.
 
     This class handles the initialization and management of the trading system's events.
@@ -19,9 +19,9 @@ class Process:  # (Event)
     # filename: str | None
 
     def __init__(self, name: str) -> None:
-        #super().__init__(name)
+        super().__init__(name)
         self.logger: Logger = get_logger(name)
-        self.event: Event = Event(name)
+        # self.event: Event = Event(name)
 
     def on_init(
             self,

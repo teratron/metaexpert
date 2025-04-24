@@ -8,63 +8,88 @@ from logger import Logger, get_logger
 
 class Event(list[dict]):
     """Event types for the trading system."""
-    on_init = {
+    ON_INIT = {
+        "name": "on_init",
         "number": 1,
         "callback": []
     }
-    on_deinit = {
+    ON_DEINIT = {
+        "name": "on_deinit",
         "number": 1,
         "callback": []
     }
-    on_trade = {
+    ON_TRADE = {
+        "name": "on_trade",
         "number": 1,
         "callback": []
     }
-    on_transaction = {
+    ON_TRANSACTION = {
+        "name": "on_transaction",
         "number": 1,
         "callback": []
     }
-    on_tick = {
+    ON_TICK = {
+        "name": "on_tick",
         "number": 3,
         "callback": []
     }
-    on_bar = {
+    ON_BAR = {
+        "name": "on_bar",
         "number": 3,
         "callback": []
     }
-    on_timer = {
+    ON_TIMER = {
+        "name": "on_timer",
         "number": 5,
         "callback": []
     }
-    on_book = {
+    ON_BOOK = {
+        "name": "on_book",
         "number": 3,
         "callback": []
     }
 
     def __init__(self, name: str):
+        """Initialize the event system.
+        Args:
+            name (str): Name of the event system.
+        """
         super().__init__()
         self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
         self.__list: list[str] = self.__get_list()
+        print(self.__list)
 
     def __get_list(self) -> list[str]:
         """Get the list of event names."""
-        return list(item for item in self.__dir__() if item.startswith("on_"))
+        return list(self.__getattribute__(item)["name"] for item in self.__dir__() if item.startswith("ON_"))
 
     def __get_number(self, name: str) -> int:
         """Get the number of parameters for a specific event."""
-        return self.__getattribute__(name)["number"]
+        if name not in self.__list:
+            self.logger.warning("Event %s not found", name)
+            return 0
+
+        return self.__getattribute__(name.upper())["number"]
 
     def __set_callback(self, name: str, callback: callable) -> None:
         """Set the callback for a specific event."""
-        self.__getattribute__(name)["callback"].append(callback)
+        if name not in self.__list:
+            self.logger.warning("Event %s not found", name)
+            return
+
+        self.__getattribute__(name.upper())["callback"].append(callback)
 
     def __len_callback(self, name: str) -> int:
         """Get the number of callbacks for a specific event."""
-        return len(self.__getattribute__(name)["callback"])
+        if name not in self.__list:
+            self.logger.warning("Event %s not found", name)
+            return 0
 
-    def init(self) -> None:
+        return len(self.__getattribute__(name.upper())["callback"])
+
+    def init_event(self) -> None:
         """Fill the event list with the callbacks."""
         frame = inspect.stack()[len(inspect.stack()) - 1]
         module = inspect.getmodule(frame[0])
@@ -92,10 +117,10 @@ class Event(list[dict]):
                                 qualif[1], self.__len_callback(qualif[1]) + 1
                             )
 
-    def run(self, name: str) -> None:
+    def run_event(self, name: str) -> None:
         """Run the event."""
         if name in self.__list:
-            for callback in self.__getattribute__(name)["callback"]:
+            for callback in self.__getattribute__(name.upper())["callback"]:
                 callback()
                 self.logger.debug("Launch task for %s()", name)
         else:
