@@ -52,81 +52,34 @@ class Event(Enum):
 
 
 class Process:
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         """Initialize the event system.
 
         Args:
-            name (str): Name of the event.
+            name (str): Name of the library.
         """
-        super().__init__()
         self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
-        self.__list: list[str] = self.__get_list()
-        # print(self[0])
 
     @staticmethod
     def __get_event_from(name: str) -> Event | None:
-        """Get the event from its name.
-
-        Args:
-            name (str): Name of the event.
-
-        Returns:
-            Event | None: Event object if found, else None.
-        """
         for event in Event:
             if event.value["name"] == name:
                 return event
-
         return None
 
     @staticmethod
-    def __get_list() -> list[str]:
-        """Get the list of event names.
+    def __get_number(event: Event) -> int:
+        return event.value["number"]
 
-        Returns:
-            list[str]: List of event names.
-        """
-        #return list(self.__getattribute__(item)["name"] for item in self.__dir__() if item.startswith("ON_"))
-        return list(item.value["name"] for item in Event)
+    @staticmethod
+    def __add_callback(event: Event, callback: callable) -> None:
+        event.value["callback"].append(callback)
 
-    def __get_number(self, name: str) -> int:
-        """Get the number of parameters for a specific event.
-
-        Args:
-            name (str): Name of the event.
-        """
-        if name not in self.__list:
-            self.logger.warning("Event %s not found", name)
-            return 0
-
-        return self.__getattribute__(name.upper())["number"]
-
-    def __set_callback(self, name: str, callback: callable) -> None:
-        """Set the callback for a specific event.
-
-        Args:
-            name (str): Name of the event.
-            callback (callable): Callback function to be executed.
-        """
-        if name not in self.__list:
-            self.logger.warning("Event %s not found", name)
-            return
-
-        self.__getattribute__(name.upper())["callback"].append(callback)
-
-    def __len_callback(self, name: str) -> int:
-        """Get the number of callbacks for a specific event.
-
-        Args:
-            name (str): Name of the event.
-        """
-        if name not in self.__list:
-            self.logger.warning("Event %s not found", name)
-            return 0
-
-        return len(self.__getattribute__(name.upper())["callback"])
+    @staticmethod
+    def __len_callback(event: Event) -> int:
+        return len(event.value["callback"])
 
     def init_process(self) -> None:
         """Fill the event list with the callbacks."""
@@ -147,14 +100,17 @@ class Process:
                     # List of hierarchy of objects, functions, decorators or closes.
                     qualif: list[str] = obj.__qualname__.split(".")
 
-                    if len(qualif) > 1 and qualif[1] in self.__list:
-                        if self.__len_callback(qualif[1]) < self.__get_number(qualif[1]):
-                            self.__set_callback(qualif[1], getattr(module, attr))
-                        else:
-                            self.logger.warning(
-                                "Too many callbacks for %s: %d",
-                                qualif[1], self.__len_callback(qualif[1]) + 1
-                            )
+                    if len(qualif) > 1: # and qualif[1] in self.__list:
+                        event = self.__get_event_from(qualif[1])
+
+                        if event:
+                            if self.__len_callback(event) < self.__get_number(event):
+                                self.__add_callback(event, getattr(module, attr))
+                            else:
+                                self.logger.warning(
+                                    "Too many callbacks for %s: %d",
+                                    qualif[1], self.__len_callback(event) + 1
+                                )
 
     def run_process(self, event: Event) -> None:
         """Run the process.

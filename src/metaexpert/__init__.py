@@ -57,7 +57,7 @@ class MetaExpert(Service):
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
         # Initialize stock exchange
-        self.init_exchange()
+        #self.init_exchange()
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
@@ -100,7 +100,7 @@ class MetaExpert(Service):
 
         except KeyboardInterrupt:
             # Handle keyboard interrupt
-            self.logger.info("Bot stopped by user")
+            self.logger.info("Expert stopped by user")
         except (ConnectionError, TimeoutError) as e:
             # Handle network-related errors
             self.logger.error("Network error occurred: %s", e)
