@@ -69,18 +69,6 @@ class Process:
                 return event
         return None
 
-    @staticmethod
-    def __get_number(event: Event) -> int:
-        return event.value["number"]
-
-    @staticmethod
-    def __add_callback(event: Event, callback: callable) -> None:
-        event.value["callback"].append(callback)
-
-    @staticmethod
-    def __len_callback(event: Event) -> int:
-        return len(event.value["callback"])
-
     def init_process(self) -> None:
         """Initialize the process.
 
@@ -106,16 +94,16 @@ class Process:
                     # List of hierarchy of objects, functions, decorators or closes.
                     qualif: list[str] = obj.__qualname__.split(".")
 
-                    if len(qualif) > 1: # and qualif[1] in self.__list:
+                    if len(qualif) > 1:
                         event = self.__get_event_from(qualif[1])
 
                         if event:
-                            if self.__len_callback(event) < self.__get_number(event):
-                                self.__add_callback(event, getattr(module, attr))
+                            if len(event.value["callback"]) < event.value["number"]:
+                                event.value["callback"].append(getattr(module, attr))
                             else:
                                 self.logger.warning(
                                     "Too many callbacks for %s: %d",
-                                    qualif[1], self.__len_callback(event) + 1
+                                    qualif[1], event.value["number"] + 1
                                 )
 
     def run_process(self, event: Event) -> None:
@@ -124,11 +112,9 @@ class Process:
         Args:
             event (Event): Event to be executed.
         """
-        if event in  Event:
+        if event in Event:
             for callback in event.value["callback"]:
                 callback()
                 self.logger.debug("Launch task for %s()", event.value["name"])
         else:
             self.logger.warning("Process %s not found", event.value["name"])
-
-
