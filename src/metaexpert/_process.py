@@ -53,14 +53,14 @@ class Event(Enum):
 
 class Process:
     def __init__(self, name: str) -> None:
-        """Initialize the event system.
+        """Initialize the process.
 
         Args:
             name (str): Name of the library.
         """
-        self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
+        self.logger: Logger = get_logger(self.filename)
 
     @staticmethod
     def __get_event_from(name: str) -> Event | None:
@@ -82,7 +82,13 @@ class Process:
         return len(event.value["callback"])
 
     def init_process(self) -> None:
-        """Fill the event list with the callbacks."""
+        """Initialize the process.
+
+        This method is called to set up the process and register callbacks.
+        It inspects the current module to find functions decorated with
+        specific event decorators and registers them as callbacks for the
+        corresponding events.
+        """
         frame = inspect.stack()[len(inspect.stack()) - 1]
         module = inspect.getmodule(frame[0])
 
