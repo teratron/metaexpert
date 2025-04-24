@@ -76,11 +76,11 @@ class MetaExpert(Service):
         try:
             # Initialize event handling
             # self.event.init()
-            self.init_event()
+            self.init_process()
 
             # Initialize the expert
             # self.event.run("on_init")
-            self.run_event("on_init")
+            self.run_process(Event.ON_INIT)
             self.logger.info("Expert initialized successfully")
 
             while self.running:
@@ -113,7 +113,7 @@ class MetaExpert(Service):
         finally:
             self.running = False
             # self.event.run("on_deinit")
-            self.run_event("on_deinit")
+            self.run_process(Event.ON_DEINIT)
             self.logger.info("Expert shutdown complete")
     # from metaexpert._market import Market
     # from metaexpert._trade import Trade

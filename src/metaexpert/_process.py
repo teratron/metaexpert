@@ -65,9 +65,31 @@ class Process:
         self.__list: list[str] = self.__get_list()
         # print(self[0])
 
-    def __get_list(self) -> list[str]:
-        """Get the list of event names."""
-        return list(self.__getattribute__(item)["name"] for item in self.__dir__() if item.startswith("ON_"))
+    @staticmethod
+    def __get_event_from(name: str) -> Event | None:
+        """Get the event from its name.
+
+        Args:
+            name (str): Name of the event.
+
+        Returns:
+            Event | None: Event object if found, else None.
+        """
+        for event in Event:
+            if event.value["name"] == name:
+                return event
+
+        return None
+
+    @staticmethod
+    def __get_list() -> list[str]:
+        """Get the list of event names.
+
+        Returns:
+            list[str]: List of event names.
+        """
+        #return list(self.__getattribute__(item)["name"] for item in self.__dir__() if item.startswith("ON_"))
+        return list(item.value["name"] for item in Event)
 
     def __get_number(self, name: str) -> int:
         """Get the number of parameters for a specific event.
@@ -106,7 +128,7 @@ class Process:
 
         return len(self.__getattribute__(name.upper())["callback"])
 
-    def init_event(self) -> None:
+    def init_process(self) -> None:
         """Fill the event list with the callbacks."""
         frame = inspect.stack()[len(inspect.stack()) - 1]
         module = inspect.getmodule(frame[0])
@@ -134,15 +156,17 @@ class Process:
                                 qualif[1], self.__len_callback(qualif[1]) + 1
                             )
 
-    def run_event(self, name: str) -> None:
-        """Run the event.
+    def run_process(self, event: Event) -> None:
+        """Run the process.
 
         Args:
-            name (str): Name of the event.
+            event (Event): Event to be executed.
         """
-        if name in self.__list:
-            for callback in self.__getattribute__(name.upper())["callback"]:
+        if event in  Event:
+            for callback in event.value["callback"]:
                 callback()
-                self.logger.debug("Launch task for %s()", name)
+                self.logger.debug("Launch task for %s()", event.value["name"])
         else:
-            self.logger.warning("Event %s not found", name)
+            self.logger.warning("Process %s not found", event.value["name"])
+
+
