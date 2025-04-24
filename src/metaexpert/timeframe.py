@@ -2,8 +2,6 @@
 
 from enum import Enum
 
-import metaexpert
-
 
 class Period(Enum):
     M1 = {
@@ -34,66 +32,77 @@ class Period(Enum):
     H1 = {
         "name": "1h",
         "sec": 3600,
-        "min": 60
+        "min": 60,
+        "hour": 1
     }
     H2 = {
         "name": "2h",
         "sec": 7200,
-        "min": 120
+        "min": 120,
+        "hour": 2
     }
     H4 = {
         "name": "4h",
         "sec": 14400,
-        "min": 240
+        "min": 240,
+        "hour": 4
     }
     H6 = {
         "name": "6h",
         "sec": 21600,
-        "min": 360
+        "min": 360,
+        "hour": 6
     }
     H8 = {
         "name": "8h",
         "sec": 28800,
-        "min": 480
+        "min": 480,
+        "hour": 8
     }
     H12 = {
         "name": "12h",
         "sec": 43200,
-        "min": 720
+        "min": 720,
+        "hour": 12
     }
     D1 = {
         "name": "1d",
         "sec": 86400,
-        "min": 1440
+        "min": 1440,
+        "hour": 24
     }
     D3 = {
         "name": "3d",
         "sec": 259200,
-        "min": 4320
+        "min": 4320,
+        "hour": 72
     }
     W1 = {
         "name": "1w",
         "sec": 604800,
-        "min": 10080
+        "min": 10080,
+        "hour": 168
     }
 
-    class Timeframe:
-        """Timeframe class to represent different timeframes."""
+class Timeframe:
+    """Timeframe class to represent different timeframes."""
 
-        def __init__(self) -> None:
-            """Initialize the Timeframe class."""
-            pass
+    def __init__(self) -> None:
+        """Initialize the Timeframe class."""
+        pass
 
-        @staticmethod
-        def __get_period_from(name: str) -> Period | None:
-            for period in Period:
-                if period.value["name"] == name:
-                    return period
-            return None
+    @staticmethod
+    def __get_period_from(name: str) -> Period | None:
+        for period in Period:
+            if period.value["name"] == name:
+                return period
+        return None
+
+
 
 if __name__ == "__main__":
 
     for item in Period:
         print(item.name, item.value["name"], item.value["sec"])
 
-    print(Timeframe().__get_period_from("1m"))
+    print(Timeframe()._get_period_from("1m"))
