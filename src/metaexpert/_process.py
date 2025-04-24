@@ -58,9 +58,9 @@ class Process:
         Args:
             name (str): Name of the library.
         """
+        self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
-        self.logger: Logger = get_logger(self.filename)
 
     @staticmethod
     def __get_event_from(name: str) -> Event | None:

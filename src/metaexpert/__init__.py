@@ -1,4 +1,9 @@
-""" """
+"""MetaExpert: A Python-based Expert Trading System.
+
+This module provides a framework for creating and managing expert trading systems
+using the MetaExpert library. It includes features for event handling, logging,
+and integration with various stock exchanges.
+"""
 
 from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
@@ -7,6 +12,8 @@ from metaexpert._service import Service
 from metaexpert.argument import Namespace, parse_arguments
 from metaexpert.exchange import Stock, Exchange
 
+# from metaexpert._market import Market
+# from metaexpert._trade import Trade
 
 class MetaExpert(Service):
     """Expert trading system"""
@@ -115,5 +122,3 @@ class MetaExpert(Service):
             # self.event.run("on_deinit")
             self.run_process(Event.ON_DEINIT)
             self.logger.info("Expert shutdown complete")
-    # from metaexpert._market import Market
-    # from metaexpert._trade import Trade
