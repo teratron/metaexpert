@@ -1,163 +1,148 @@
-from typing import Any, Callable
+# -*- coding: utf-8 -*-
+
+import inspect
+from enum import Enum
+from pathlib import Path
 
 from logger import Logger, get_logger
-from metaexpert._event import Event
 
 
-class Process(Event):
-    """Expert trading system process.
+class Event(Enum):
+    """Event types for the trading system."""
+    ON_INIT = {
+        "name": "on_init",
+        "number": 1,
+        "callback": []
+    }
+    ON_DEINIT = {
+        "name": "on_deinit",
+        "number": 1,
+        "callback": []
+    }
+    ON_TRADE = {
+        "name": "on_trade",
+        "number": 1,
+        "callback": []
+    }
+    ON_TRANSACTION = {
+        "name": "on_transaction",
+        "number": 1,
+        "callback": []
+    }
+    ON_TICK = {
+        "name": "on_tick",
+        "number": 3,
+        "callback": []
+    }
+    ON_BAR = {
+        "name": "on_bar",
+        "number": 3,
+        "callback": []
+    }
+    ON_TIMER = {
+        "name": "on_timer",
+        "number": 5,
+        "callback": []
+    }
+    ON_BOOK = {
+        "name": "on_book",
+        "number": 3,
+        "callback": []
+    }
 
-    This class handles the initialization and management of the trading system's events.
-    It provides decorators for various events such as initialization, deinitialization,
-    trading, transactions, ticks, bars, timers, and book events.
-    """
-    symbol: str | set[str] | None
-    timeframe: str | set[str] | None
 
-    # shift: int
-    # magic: int
-    # filename: str | None
+class Process:
+    def __init__(self, name: str):
+        """Initialize the event system.
 
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+        Args:
+            name (str): Name of the event.
+        """
+        super().__init__()
         self.logger: Logger = get_logger(name)
-        # self.event: Event = Event(name)
+        self.module: object | None = None
+        self.filename: str | None = None
+        self.__list: list[str] = self.__get_list()
+        # print(self[0])
 
-    def on_init(
-            self,
-            symbol: str | set[str] | None = None,
-            timeframe: str | set[str] | None = None,
-            *,
-            shift: int = 0,
-            magic: int = 0,
-            name: str | None = None
-    ) -> Callable:
-        """Decorator for initialization event handling.
+    def __get_list(self) -> list[str]:
+        """Get the list of event names."""
+        return list(self.__getattribute__(item)["name"] for item in self.__dir__() if item.startswith("ON_"))
 
-        Args:
-            symbol (str | None): Symbol of the trading pair.
-            timeframe (str | None): Time frame for the trading data.
-            shift (int): A shift relative to the current bar on which the expert is traded. Defaults to 0.
-            magic (int): Magic number. Used to identify the expert. Defaults to 0.
-            name (str | None): The name of the expert.
-            
-        Returns:
-            Callable: Decorated function that handles the initialization event.
-        """
-
-        def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
-            def inner(*args, **kwargs) -> None:
-                self.symbol = symbol
-                self.timeframe = timeframe
-                self.shift = shift
-                self.magic = magic
-                self.name = name
-
-                # self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
-
-                func(*args, **kwargs)
-
-            return inner  # InitStatus.INIT_SUCCEEDED
-
-        return outer
-
-    def on_deinit(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
-
-        return inner
-
-    def on_trade(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
-
-        return inner
-
-    def on_transaction(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
-
-        return inner
-
-    # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-    def on_tick(self, func: Callable) -> Callable:
-        def inner(*args, **kwargs) -> None:
-            # task = asyncio.create_task(func())
-            # task
-            func(*args, **kwargs)
-            # await self.__tick()
-            # task = asyncio.create_task(self.__tick())
-            # await task
-            # i = 3
-            # while i > 0:
-            #     func()
-            #     print(self, " ", i)
-            #     i -= 1
-            # return func()
-
-        return inner
-
-    # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
-
-    def on_bar(self, time_frame: str = "1h") -> Callable:
-        def outer(
-                func: Callable[[tuple[Any, ...], dict[str, Any]], None],
-        ) -> Callable[[tuple[Any, ...], dict[str, Any]], None]:
-            def inner(rate, *args, **kwargs) -> None:
-                # rate: list = kwargs.get("rate")
-                func(rate, *args, **kwargs)
-                print(time_frame)
-
-            return inner
-
-            # async def async_inner(*args, **kwargs) -> None:
-            #     await func(*args, **kwargs)
-            #     print(time_frame)
-            #
-            # return async_inner
-
-        return outer
-
-    def on_timer(self, interval: int = 1000) -> Callable:
-        """Decorator for timer-based event handling.
+    def __get_number(self, name: str) -> int:
+        """Get the number of parameters for a specific event.
 
         Args:
-            interval (int, optional): Time interval in milliseconds. Defaults to 1000.
-
-        Returns:
-            Callable: Decorated function that executes at specified intervals.
+            name (str): Name of the event.
         """
+        if name not in self.__list:
+            self.logger.warning("Event %s not found", name)
+            return 0
 
-        def outer(func: Callable) -> Callable:
-            def inner() -> None:
-                func()
-                print(interval)
+        return self.__getattribute__(name.upper())["number"]
 
-            return inner
+    def __set_callback(self, name: str, callback: callable) -> None:
+        """Set the callback for a specific event.
 
-        return outer
+        Args:
+            name (str): Name of the event.
+            callback (callable): Callback function to be executed.
+        """
+        if name not in self.__list:
+            self.logger.warning("Event %s not found", name)
+            return
 
-    def on_book(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
+        self.__getattribute__(name.upper())["callback"].append(callback)
 
-        return inner
+    def __len_callback(self, name: str) -> int:
+        """Get the number of callbacks for a specific event.
 
-    async def __tick(self):
-        print("__tick")
+        Args:
+            name (str): Name of the event.
+        """
+        if name not in self.__list:
+            self.logger.warning("Event %s not found", name)
+            return 0
 
-    # @property
-    # def magic(self) -> int:
-    #     return self._magic
-    #
-    # @magic.setter
-    # def magic(self, value: int) -> None:
-    #     self._magic = value
-    #
-    # @property
-    # def comment(self) -> str:
-    #     return self.__comment
-    #
-    # @comment.setter
-    # def comment(self, value: str) -> None:
-    #     self.__comment = value + f"Magic number: {self._magic}"
+        return len(self.__getattribute__(name.upper())["callback"])
+
+    def init_event(self) -> None:
+        """Fill the event list with the callbacks."""
+        frame = inspect.stack()[len(inspect.stack()) - 1]
+        module = inspect.getmodule(frame[0])
+
+        if module:
+            self.module = module
+            self.filename = Path(frame[1]).stem
+
+            for attr in dir(module):
+                # All objects of the module.
+                obj: object | None = module.__dict__.get(attr)
+
+                # Only module functions.
+                # All the functions of the module with decorators or without shortcuts.
+                if obj and callable(obj) and not isinstance(obj, type):
+                    # List of hierarchy of objects, functions, decorators or closes.
+                    qualif: list[str] = obj.__qualname__.split(".")
+
+                    if len(qualif) > 1 and qualif[1] in self.__list:
+                        if self.__len_callback(qualif[1]) < self.__get_number(qualif[1]):
+                            self.__set_callback(qualif[1], getattr(module, attr))
+                        else:
+                            self.logger.warning(
+                                "Too many callbacks for %s: %d",
+                                qualif[1], self.__len_callback(qualif[1]) + 1
+                            )
+
+    def run_event(self, name: str) -> None:
+        """Run the event.
+
+        Args:
+            name (str): Name of the event.
+        """
+        if name in self.__list:
+            for callback in self.__getattribute__(name.upper())["callback"]:
+                callback()
+                self.logger.debug("Launch task for %s()", name)
+        else:
+            self.logger.warning("Event %s not found", name)

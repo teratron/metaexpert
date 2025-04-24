@@ -3,10 +3,10 @@
 import os
 
 from metaexpert import MetaExpert
-from metaexpert.exchange import Exchange
+from metaexpert.exchange import Stock
 
 expert = MetaExpert(
-    stock=Exchange.BINANCE,
+    stock=Stock.BINANCE,
     api_key=os.getenv("BINANCE_API_KEY"),
     api_secret=os.getenv("BINANCE_API_SECRET"),
     base_url=os.getenv("BINANCE_BASE_URL"),

@@ -1,21 +1,21 @@
 """ """
 
-from config import APP_NAME, MODE_LIVE, MODE_BACKTEST
+from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
-from metaexpert._event import Event
-from metaexpert._process import Process
+from metaexpert._process import Event
+from metaexpert._service import Service
 from metaexpert.argument import Namespace, parse_arguments
-from metaexpert.exchange import Exchange
+from metaexpert.exchange import Stock, Exchange
 
 
-class MetaExpert(Process):
+class MetaExpert(Service):
     """Expert trading system"""
 
     name: str = APP_NAME
 
     def __init__(
             self,
-            stock: Exchange | str | None = None,
+            stock: Stock | str | None = None,
             api_key: str | None = None,
             api_secret: str | None = None,
             *,
@@ -27,7 +27,7 @@ class MetaExpert(Process):
         """Initialize the expert trading system.
 
         Args:
-            stock (Exchange | str | None): Stock exchange to use (e.g., Binance, Bybit).
+            stock (Stock | str | None): Stock exchange to use (e.g., Binance, Bybit).
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             base_url (str | None): Base URL for the exchange API.
@@ -39,7 +39,7 @@ class MetaExpert(Process):
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
-        self.stock: Exchange = stock
+        self.stock: Stock = stock
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
@@ -57,34 +57,13 @@ class MetaExpert(Process):
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
         # Initialize stock exchange
-        self._init_exchange()
+        self.init_exchange()
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
 
     def __repr__(self) -> str:
         return f"<{type(self).__name__} {self.name!r}>"
-
-    def _init_exchange(self):
-        match self.stock:
-            case Exchange.BINANCE:
-                self.logger.debug("Binance exchange selected")
-            case Exchange.BYBIT:
-                self.logger.debug("Bybit exchange selected")
-            case _:
-                self.logger.warning("Unknown exchange selected")
-
-        if self.trade_mode == MODE_LIVE and (not self.api_key or not self.api_secret):
-            self.logger.error("API key and secret are required for live trading")
-            raise ValueError("API key and secret are required for live trading")
-
-        # Initialize client with or without authentication based on mode
-        if self.trade_mode == MODE_BACKTEST or (not self.api_key or not self.api_secret):
-            # self.client = Spot()
-            self.logger.info("Initialized Binance client in public mode")
-        else:
-            # self.client = Spot(api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url)
-            self.logger.info("Initialized Binance client with API key authentication")
 
     def run(self) -> None:
         """Run the expert trading system."""

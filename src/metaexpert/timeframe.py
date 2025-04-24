@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class Timeframe(Enum):
+class Period(Enum):
     M1 = {
         "name": "1m",
         "sec": 60
@@ -61,6 +61,8 @@ class Timeframe(Enum):
         "sec": 604800
     }
 
+    class Timeframe:
+        pass
     # def __init__(self) -> None:
     #     super().__init__()
     #     self.__list: list[str] = self.__get_list()
@@ -72,7 +74,8 @@ class Timeframe(Enum):
     #         if item.startswith("M") or item.startswith("H") or item.startswith("D") or item.startswith("W")
     #     )
 
-# if __name__ == "__main__":
-#     #tf = Timeframe()
-#     for item in Timeframe:
-#         print(item)
+
+if __name__ == "__main__":
+    # tf = Timeframe()
+    for item in Period:
+        print(item.name, item.value["name"], item.value["sec"])
