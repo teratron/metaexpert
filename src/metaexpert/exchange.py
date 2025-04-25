@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from typing import Self
+from typing import Self, TypedDict
+
+
+class ProcessDict(TypedDict):
+    name: str
+    title: str
+    description: str
 
 
 class Stock(Enum):

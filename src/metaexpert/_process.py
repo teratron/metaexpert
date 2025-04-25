@@ -3,10 +3,15 @@
 import inspect
 from enum import Enum
 from types import ModuleType
-from typing import Self
+from typing import Self, TypedDict
 
 
 # from logger import get_logger
+
+class ProcessDict(TypedDict):
+    name: str
+    number: int
+    callback: [callable]
 
 
 class Process(Enum):

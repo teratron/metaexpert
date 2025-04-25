@@ -5,6 +5,7 @@ using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
 from types import ModuleType
+from typing import Self
 
 from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
@@ -23,6 +24,11 @@ class MetaExpert(Service):
     name: str = APP_NAME
     module: ModuleType | None = None
     filename: str | None = None
+
+    def __new__(cls, *args, **kwargs) -> Self:
+        """Create a new instance of the MetaExpert class."""
+        instance = super().__new__(cls)
+        return instance
 
     def __init__(
             self,

@@ -1,34 +1,47 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
-from typing import Self
+from typing import Self, TypedDict
+
+
+class TimeframeDict(TypedDict):
+    name: str
+    sec: int
+    min: int
+    hour: int | None
 
 
 class Timeframe(Enum):
+    """Timeframe enumeration for supported timeframes."""
     M1 = {
         "name": "1m",
         "sec": 60,
-        "min": 1
+        "min": 1,
+        "hour": None
     }
     M3 = {
         "name": "3m",
         "sec": 180,
-        "min": 3
+        "min": 3,
+        "hour": None
     }
     M5 = {
         "name": "5m",
         "sec": 300,
-        "min": 5
+        "min": 5,
+        "hour": None
     }
     M15 = {
         "name": "15m",
         "sec": 900,
-        "min": 15
+        "min": 15,
+        "hour": None
     }
     M30 = {
         "name": "30m",
         "sec": 1800,
-        "min": 30
+        "min": 30,
+        "hour": None
     }
     H1 = {
         "name": "1h",
@@ -93,25 +106,9 @@ class Timeframe(Enum):
 
         return None
 
-# class Timeframe:
-#     """Timeframe class to represent different timeframes."""
-#
-#     def __init__(self) -> None:
-#         """Initialize the Timeframe class."""
-#         pass
-#
-#     @staticmethod
-#     def __get_period_from(name: str) -> Period | None:
-#         for period in Period:
-#             if period.value["name"] == name:
-#                 return period
-#         return None
 
-
-
-# if __name__ == "__main__":
-#
-#     for item in Period:
-#         print(item.name, item.value["name"], item.value["sec"])
+if __name__ == "__main__":
+    for i in Timeframe:
+        print(i.name, i.value["name"], i.value["sec"])
 #
 #     print(Timeframe()._get_period_from("1m"))
