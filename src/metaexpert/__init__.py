@@ -61,7 +61,7 @@ class MetaExpert(Service):
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
-        self.stock: Stock = stock #args.stock or
+        self.stock: Stock = stock #or args.stock
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
@@ -74,7 +74,7 @@ class MetaExpert(Service):
 
         # Setup logger
         self.logger: Logger = setup_logger(self.name, args.log_level)
-        self.logger.info("Starting expert on %s", self.stock.value["name"])
+        self.logger.info("Starting expert on %s", self.stock.value["title"])
         self.logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
