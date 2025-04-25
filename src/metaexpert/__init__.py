@@ -9,11 +9,16 @@ from typing import Self
 
 from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
+from metaexpert._contract import Contract
 from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert._argument import Namespace, parse_arguments
-from metaexpert.exchange import Stock, Exchange
+from metaexpert._exchange import Stock, Exchange
 from pathlib import Path
+
+from metaexpert._instrument import Instrument
+from metaexpert._mode import Mode
+
 
 # from metaexpert._market import Market
 # from metaexpert._trade import Trade
@@ -37,9 +42,9 @@ class MetaExpert(Service):
             api_secret: str | None = None,
             *,
             base_url: str | None = None,
-            trade_mode: str | None = None,
-            trade_type: str | None = None,
-            trade_contract: str | None = None
+            mode: Mode | str | None = None,
+            instrument: Instrument | str | None = None,
+            contract: Contract | str | None = None
     ) -> None:
         """Initialize the expert trading system.
 
@@ -48,9 +53,9 @@ class MetaExpert(Service):
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             base_url (str | None): Base URL for the exchange API.
-            trade_mode (str | None): Mode of operation (e.g., live, paper, backtest).
-            trade_type (str | None): Type of trading (e.g., spot, futures).
-            trade_contract (str | None): Type of contract (e.g., coin_m, usdt_m).
+            mode (Mode | str | None): Mode of operation (e.g., live, paper, backtest).
+            instrument (Instrument | str | None): Type of financial instruments (e.g., spot, futures).
+            contract (Contract | str | None): Type of contract (e.g., coin_m, usdt_m).
         """
 
         # Parse command line arguments
@@ -60,9 +65,9 @@ class MetaExpert(Service):
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
-        self.trade_mode: str = trade_mode
-        self.trade_type: str = trade_type
-        self.trade_contract: str = trade_contract
+        self.mode: Mode = mode
+        self.instrument: Instrument = instrument
+        self.contract: Contract = contract
         self.running: bool = False
 
         super().__init__(self.name)
@@ -84,7 +89,7 @@ class MetaExpert(Service):
 
     def run(self) -> None:
         """Run the expert trading system."""
-        self.logger.info("Starting trading bot in %s mode", self.trade_mode)
+        self.logger.info("Starting trading bot in %s mode", self.mode)
         self.running = True
         # print(self.symbol)
         # print(self.timeframe)
@@ -106,7 +111,7 @@ class MetaExpert(Service):
                 # data = self.fetch_historical_data()
 
                 # Sleep until next candle
-                if self.trade_mode != MODE_BACKTEST:
+                if self.mode != MODE_BACKTEST:
                     pass
                     # self.logger.info("Waiting for next candle...")
                     # Calculate sleep time based on timeframe

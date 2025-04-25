@@ -3,16 +3,15 @@
 import os
 
 from metaexpert import MetaExpert
-from metaexpert.exchange import Stock
 
 expert = MetaExpert(
-    stock=Stock.BINANCE,
+    stock="binance",
     api_key=os.getenv("BINANCE_API_KEY"),
     api_secret=os.getenv("BINANCE_API_SECRET"),
     base_url=os.getenv("BINANCE_BASE_URL"),
-    trade_mode="paper",
-    trade_type="spot",
-    trade_contract="coin_m"
+    mode="paper",
+    instrument="spot",
+    contract="coin_m"
 )
 
 

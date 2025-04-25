@@ -3,7 +3,7 @@
 import inspect
 from enum import Enum
 from types import ModuleType
-from typing import Self, TypedDict
+from typing import Self, TypedDict, Callable
 
 
 # from logger import get_logger
@@ -11,7 +11,7 @@ from typing import Self, TypedDict
 class ProcessDict(TypedDict):
     name: str
     number: int
-    callback: [callable]
+    callback: list[Callable]
 
 
 class Process(Enum):

@@ -47,7 +47,15 @@ def parse_arguments() -> Namespace:
         help="Stock exchange to use (e.g., binance, bybit)",
     )
     parser.add_argument(
+        "--mode",
+        type=str,
+        choices=[MODE_BACKTEST, MODE_PAPER, MODE_LIVE],
+        default=DEFAULT_MODE,
+        help="Trading mode: backtest, paper, or live",
+    )
+    parser.add_argument(
         "--type",
+        "--instrument",
         type=str,
         choices=[TRADE_TYPE_SPOT, TRADE_TYPE_FUTURES, TRADE_TYPE_OPTIONS, TRADE_TYPE_MARGIN],
         default=DEFAULT_TRADE_TYPE,
@@ -59,13 +67,6 @@ def parse_arguments() -> Namespace:
         choices=[CONTRACT_TYPE_USD_M, CONTRACT_TYPE_COIN_M],
         default=DEFAULT_CONTRACT_TYPE,
         help="Contract type for futures trading: USDⓈ-M (usd_m) or COIN-M (coin_m)",
-    )
-    parser.add_argument(
-        "--mode",
-        type=str,
-        choices=[MODE_BACKTEST, MODE_PAPER, MODE_LIVE],
-        default=DEFAULT_MODE,
-        help="Trading mode: backtest, paper, or live",
     )
     parser.add_argument(
         "--pair",

@@ -4,7 +4,7 @@ from typing import Any, Callable
 
 from logger import Logger, get_logger
 from metaexpert._process import Process
-from metaexpert.timeframe import Timeframe
+from metaexpert._timeframe import Timeframe
 
 
 class Service:#(Process)

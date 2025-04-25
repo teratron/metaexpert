@@ -50,12 +50,12 @@ class Exchange:
             case _:
                 self.logger.warning("Unknown exchange selected")
 
-        # if self.trade_mode == MODE_LIVE and (not self.api_key or not self.api_secret):
+        # if self.mode == MODE_LIVE and (not self.api_key or not self.api_secret):
         #     self.logger.error("API key and secret are required for live trading")
         #     raise ValueError("API key and secret are required for live trading")
         #
         # # Initialize client with or without authentication based on mode
-        # if self.trade_mode == MODE_BACKTEST or (not self.api_key or not self.api_secret):
+        # if self.mode == MODE_BACKTEST or (not self.api_key or not self.api_secret):
         #     # self.client = Spot()
         #     self.logger.info("Initialized Binance client in public mode")
         # else:

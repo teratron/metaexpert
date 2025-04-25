@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Self
 
 
 class Mode(Enum):
@@ -17,8 +18,11 @@ class Mode(Enum):
         "description": "Backtesting mode"
     }
 
-    def __str__(self) -> str:
-        return self.value["name"]
+    @classmethod
+    def __get_mode_from(cls, name: str) -> Self | None:
+        """Get the mode type from a string."""
+        for item in cls:
+            if item.value["name"] == name.lower():
+                return item
 
-    def __repr__(self) -> str:
-        return f"<Mode {self.name!r}>"
+        return None
