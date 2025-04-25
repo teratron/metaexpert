@@ -12,6 +12,7 @@ class ProcessDict(TypedDict):
 
 class Stock(Enum):
     """Stock enumeration for supported exchanges."""
+
     BINANCE = {
         "name": "binance",
         "title": "Binance",

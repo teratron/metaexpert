@@ -4,6 +4,7 @@ from typing import Any, Callable
 
 from logger import Logger, get_logger
 from metaexpert._process import Process
+from metaexpert.timeframe import Timeframe
 
 
 class Service:#(Process)
@@ -25,7 +26,7 @@ class Service:#(Process)
     def on_init(
             self,
             symbol: str | set[str] | None = None,
-            timeframe: str | set[str] | None = None,
+            timeframe: Timeframe | set[Timeframe] | str | set[str] | None = None,
             *,
             shift: int = 0,
             magic: int = 0,
@@ -44,7 +45,7 @@ class Service:#(Process)
             Callable: Decorated function that handles the initialization event.
         """
         self.symbol = symbol
-        self.timeframe = timeframe
+        self.timeframe: Timeframe | set[Timeframe] = timeframe
         self.shift = shift
         self.magic = magic
         self.name = name

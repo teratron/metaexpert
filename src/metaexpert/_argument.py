@@ -23,14 +23,21 @@ from config import (
     TRADE_TYPE_OPTIONS,
     TRADE_TYPE_SPOT,
     TRAILING_STOP_PERCENT,
-    TRADING_PAIRS,
+    TRADING_PAIRS, BACKTEST_START_DATE, BACKTEST_END_DATE,
 )
 
 
 def parse_arguments() -> Namespace:
     """Parse command line arguments."""
-    parser = ArgumentParser(description="Expert Trading Bot")
+    parser = ArgumentParser(description="Expert Trading System")
 
+    parser.add_argument(
+        "--log-level",
+        type=str,
+        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+        default=LOG_LEVEL,
+        help="Logging level",
+    )
     parser.add_argument(
         "--stock",
         "--exchange",
@@ -102,11 +109,30 @@ def parse_arguments() -> Namespace:
         default=TRAILING_STOP_PERCENT,
         help="Trailing stop percentage",
     )
+
+    # Add arguments for backtesting
     parser.add_argument(
-        "--log-level",
+        "--start-date",
         type=str,
-        choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-        default=LOG_LEVEL,
-        help="Logging level",
+        default=BACKTEST_START_DATE,
+        help="Start date for backtesting (YYYY-MM-DD)",
     )
+    parser.add_argument(
+        "--end-date",
+        type=str,
+        default=BACKTEST_END_DATE,
+        help="End date for backtesting (YYYY-MM-DD)",
+    )
+    parser.add_argument(
+        "--balance",
+        type=float,
+        default=1000.0,
+        help="Initial balance for backtesting",
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        help="Output file for backtest results (JSON format)",
+    )
+
     return parser.parse_args()

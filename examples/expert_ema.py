@@ -10,14 +10,10 @@ expert = MetaExpert(
     api_key=os.getenv("BINANCE_API_KEY"),
     api_secret=os.getenv("BINANCE_API_SECRET"),
     base_url=os.getenv("BINANCE_BASE_URL"),
+    trade_mode="paper",
     trade_type="spot",
-    trade_contract="coin_m",
-    trade_mode="paper"
+    trade_contract="coin_m"
 )
-
-
-# def on_process() -> None:
-#     print("*** on_process ***")
 
 
 @expert.on_init("BTCUSDT", "1h", shift=0, magic=12345, name="EMA Expert")

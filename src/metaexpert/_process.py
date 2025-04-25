@@ -16,6 +16,7 @@ class ProcessDict(TypedDict):
 
 class Process(Enum):
     """Event types for the trading system."""
+
     ON_INIT = {
         "name": "on_init",
         "number": 1,

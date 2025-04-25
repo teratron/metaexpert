@@ -13,6 +13,7 @@ class TimeframeDict(TypedDict):
 
 class Timeframe(Enum):
     """Timeframe enumeration for supported timeframes."""
+
     M1 = {
         "name": "1m",
         "sec": 60,
@@ -107,8 +108,8 @@ class Timeframe(Enum):
         return None
 
 
-if __name__ == "__main__":
-    for i in Timeframe:
-        print(i.name, i.value["name"], i.value["sec"])
+# if __name__ == "__main__":
+#     for i in Timeframe:
+#         print(i.name, i.value["name"], i.value["sec"])
 #
 #     print(Timeframe()._get_period_from("1m"))

@@ -37,9 +37,9 @@ class MetaExpert(Service):
             api_secret: str | None = None,
             *,
             base_url: str | None = None,
+            trade_mode: str | None = None,
             trade_type: str | None = None,
-            trade_contract: str | None = None,
-            trade_mode: str | None = None
+            trade_contract: str | None = None
     ) -> None:
         """Initialize the expert trading system.
 
@@ -48,9 +48,9 @@ class MetaExpert(Service):
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             base_url (str | None): Base URL for the exchange API.
+            trade_mode (str | None): Mode of operation (e.g., live, paper, backtest).
             trade_type (str | None): Type of trading (e.g., spot, futures).
             trade_contract (str | None): Type of contract (e.g., coin_m, usdt_m).
-            trade_mode (str | None): Mode of operation (e.g., live, paper, backtest).
         """
 
         # Parse command line arguments
@@ -60,9 +60,9 @@ class MetaExpert(Service):
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
+        self.trade_mode: str = trade_mode
         self.trade_type: str = trade_type
         self.trade_contract: str = trade_contract
-        self.trade_mode: str = trade_mode
         self.running: bool = False
 
         super().__init__(self.name)
