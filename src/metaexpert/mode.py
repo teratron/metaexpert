@@ -5,13 +5,16 @@ class Mode(Enum):
     """Enum for different trading modes."""
 
     LIVE = {
-        "name": "live"
+        "name": "live",
+        "description": "Live trading mode"
     }
     PAPER = {
-        "name": "paper"
+        "name": "paper",
+        "description": "Paper trading mode"
     }
     BACKTEST = {
-        "name": "backtest"
+        "name": "backtest",
+        "description": "Backtesting mode"
     }
 
     def __str__(self) -> str:
