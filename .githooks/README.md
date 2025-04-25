@@ -1,4 +1,4 @@
-# Git Hooks
+# Git Hooks Cheat Sheet
 
 Reassigning the location of hooks:
 
