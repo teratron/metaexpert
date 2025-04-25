@@ -1,24 +1,67 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-from pathlib import Path
+from enum import Enum
+from types import ModuleType
+from typing import Self
 
-from logger import Logger, get_logger
-from metaexpert._event import Event
+
+# from logger import get_logger
 
 
-class Process:
-    def __init__(self, name: str) -> None:
-        """Initialize the process.
+class Process(Enum):
+    """Event types for the trading system."""
+    ON_INIT = {
+        "name": "on_init",
+        "number": 1,
+        "callback": []
+    }
+    ON_DEINIT = {
+        "name": "on_deinit",
+        "number": 1,
+        "callback": []
+    }
+    ON_TRADE = {
+        "name": "on_trade",
+        "number": 1,
+        "callback": []
+    }
+    ON_TRANSACTION = {
+        "name": "on_transaction",
+        "number": 1,
+        "callback": []
+    }
+    ON_TICK = {
+        "name": "on_tick",
+        "number": 3,
+        "callback": []
+    }
+    ON_BAR = {
+        "name": "on_bar",
+        "number": 3,
+        "callback": []
+    }
+    ON_TIMER = {
+        "name": "on_timer",
+        "number": 5,
+        "callback": []
+    }
+    ON_BOOK = {
+        "name": "on_book",
+        "number": 3,
+        "callback": []
+    }
 
-        Args:
-            name (str): Name of the library.
-        """
-        self.logger: Logger = get_logger(name)
-        self.module: object | None = None
-        self.filename: str | None = None
+    @classmethod
+    def __get_process_from(cls, name: str) -> Self | None:
+        for item in cls:
+            if item.value["name"] == name.lower():
+                return item
 
-    def init_process(self) -> None:
+        return None
+
+    @classmethod
+    def init(cls) -> ModuleType | None:
         """Initialize the process.
 
         This method is called to set up the process and register callbacks.
@@ -26,13 +69,11 @@ class Process:
         specific event decorators and registers them as callbacks for the
         corresponding events.
         """
+        # logger = get_logger(__name__)
         frame = inspect.stack()[len(inspect.stack()) - 1]
-        module = inspect.getmodule(frame[0])
+        module: ModuleType = inspect.getmodule(frame[0])
 
         if module:
-            self.module = module
-            self.filename = Path(frame[1]).stem
-
             for attr in dir(module):
                 # All objects of the module.
                 obj: object | None = module.__dict__.get(attr)
@@ -44,26 +85,30 @@ class Process:
                     qualif: list[str] = obj.__qualname__.split(".")
 
                     if len(qualif) > 1:
-                        event = Event.get_event_from(qualif[1])
+                        event = cls.__get_process_from(qualif[1])
 
                         if event:
                             if len(event.value["callback"]) < event.value["number"]:
                                 event.value["callback"].append(getattr(module, attr))
-                            else:
-                                self.logger.warning(
-                                    "Too many callbacks for %s: %d",
-                                    qualif[1], event.value["number"] + 1
-                                )
+                            #     logger.debug(
+                            #         "Registering callback for %s:%s()",
+                            #         event.value["name"], attr
+                            #     )
+                            # else:
+                            #     logger.warning(
+                            #         "Too many callbacks for %s: %d",
+                            #         qualif[1], event.value["number"] + 1
+                            #     )
+            return module
 
-    def run_process(self, event: Event) -> None:
+        return None
+
+    def run(self) -> None:
         """Run the process.
 
-        Args:
-            event (Event): Event to be executed.
+        This method executes the registered callbacks for the event.
         """
-        if event in Event:
-            for callback in event.value["callback"]:
-                callback()
-                self.logger.debug("Launch task for %s()", event.value["name"])
-        else:
-            self.logger.warning("Process %s not found", event.value["name"])
+        # logger = get_logger(__name__)
+        for callback in self.value["callback"]:
+            callback()
+            # logger.debug("Launch task for %s()", self.value["name"])

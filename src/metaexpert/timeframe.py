@@ -88,8 +88,9 @@ class Timeframe(Enum):
     @classmethod
     def get_period_from(cls, name: str) -> Self | None:
         for item in cls:
-            if item.value["name"] == name:
+            if item.value["name"] == name.lower():
                 return item
+
         return None
 
 # class Timeframe:

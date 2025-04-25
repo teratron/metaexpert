@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
+from typing import Self
 
 
 class Stock(Enum):
@@ -18,6 +19,15 @@ class Stock(Enum):
 
     def init_exchange(self) -> None:
         print("Initializing exchange:", self.value["name"])
+
+    @classmethod
+    def get_exchange_name(cls, name: str) -> Self | None:
+        """Get the exchange name from the enumeration."""
+        for item in cls:
+            if item.value["name"] == name.lower():
+                return item
+
+        return None
 
 
 class Exchange:

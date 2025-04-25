@@ -4,13 +4,15 @@ This module provides a framework for creating and managing expert trading system
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
+from types import ModuleType
 
 from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
-from metaexpert._process import Event
+from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert._argument import Namespace, parse_arguments
 from metaexpert.exchange import Stock, Exchange
+from pathlib import Path
 
 # from metaexpert._market import Market
 # from metaexpert._trade import Trade
@@ -19,6 +21,8 @@ class MetaExpert(Service):
     """Expert trading system"""
 
     name: str = APP_NAME
+    module: ModuleType | None = None
+    filename: str | None = None
 
     def __init__(
             self,
@@ -82,12 +86,13 @@ class MetaExpert(Service):
 
         try:
             # Initialize event handling
-            # self.event.init()
-            self.init_process()
+            self.module = Process.init()
+
+            if not self.module:
+                self.filename = Path(self.module.__file__).stem
 
             # Initialize the expert
-            # self.event.run("on_init")
-            self.run_process(Event.ON_INIT)
+            Process.ON_INIT.run()
             self.logger.info("Expert initialized successfully")
 
             while self.running:
@@ -119,6 +124,5 @@ class MetaExpert(Service):
             self.logger.error("Runtime error: %s", e)
         finally:
             self.running = False
-            # self.event.run("on_deinit")
-            self.run_process(Event.ON_DEINIT)
+            Process.ON_DEINIT.run()
             self.logger.info("Expert shutdown complete")

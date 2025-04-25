@@ -6,7 +6,7 @@ from logger import Logger, get_logger
 from metaexpert._process import Process
 
 
-class Service(Process):
+class Service:#(Process)
     """Expert trading system service.
 
     This class handles the initialization and management of the trading system's events.
@@ -20,7 +20,6 @@ class Service(Process):
     name: str | None
 
     def __init__(self, name: str) -> None:
-        super().__init__(name)
         self.logger: Logger = get_logger(name)
 
     def on_init(
