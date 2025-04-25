@@ -1,54 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import inspect
-from enum import Enum
 from pathlib import Path
 
 from logger import Logger, get_logger
-
-
-class Event(Enum):
-    """Event types for the trading system."""
-    ON_INIT = {
-        "name": "on_init",
-        "number": 1,
-        "callback": []
-    }
-    ON_DEINIT = {
-        "name": "on_deinit",
-        "number": 1,
-        "callback": []
-    }
-    ON_TRADE = {
-        "name": "on_trade",
-        "number": 1,
-        "callback": []
-    }
-    ON_TRANSACTION = {
-        "name": "on_transaction",
-        "number": 1,
-        "callback": []
-    }
-    ON_TICK = {
-        "name": "on_tick",
-        "number": 3,
-        "callback": []
-    }
-    ON_BAR = {
-        "name": "on_bar",
-        "number": 3,
-        "callback": []
-    }
-    ON_TIMER = {
-        "name": "on_timer",
-        "number": 5,
-        "callback": []
-    }
-    ON_BOOK = {
-        "name": "on_book",
-        "number": 3,
-        "callback": []
-    }
+from metaexpert._event import Event
 
 
 class Process:
@@ -61,13 +17,6 @@ class Process:
         self.logger: Logger = get_logger(name)
         self.module: object | None = None
         self.filename: str | None = None
-
-    @staticmethod
-    def __get_event_from(name: str) -> Event | None:
-        for event in Event:
-            if event.value["name"] == name:
-                return event
-        return None
 
     def init_process(self) -> None:
         """Initialize the process.
@@ -95,7 +44,7 @@ class Process:
                     qualif: list[str] = obj.__qualname__.split(".")
 
                     if len(qualif) > 1:
-                        event = self.__get_event_from(qualif[1])
+                        event = Event.get_event_from(qualif[1])
 
                         if event:
                             if len(event.value["callback"]) < event.value["number"]:

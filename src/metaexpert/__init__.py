@@ -64,7 +64,7 @@ class MetaExpert(Service):
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
         # Initialize stock exchange
-        #self.init_exchange()
+        self.stock.init_exchange()
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"

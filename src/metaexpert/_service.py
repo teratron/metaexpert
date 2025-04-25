@@ -52,9 +52,8 @@ class Service(Process):
 
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
             def inner(*args, **kwargs) -> None:
-
                 # self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
-
+                self.logger.debug("Initializing...")
                 func(*args, **kwargs)
 
             return inner  # InitStatus.INIT_SUCCEEDED
@@ -63,6 +62,7 @@ class Service(Process):
 
     def on_deinit(self, func: Callable) -> Callable:
         def inner() -> None:
+            self.logger.debug("Deinitializing...")
             func()
 
         return inner

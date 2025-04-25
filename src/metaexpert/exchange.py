@@ -6,25 +6,30 @@ from enum import Enum
 class Stock(Enum):
     """Stock enumeration for supported exchanges."""
     BINANCE = {
-        "name": "Binance",
+        "name": "binance",
+        "title": "Binance",
         "description": "Binance exchange",
     }
     BYBIT = {
-        "name": "Bybit",
+        "name": "bybit",
+        "title": "Bybit",
         "description": "Bybit exchange",
     }
 
+    def init_exchange(self) -> None:
+        print("Initializing exchange:", self.value["name"])
+
 
 class Exchange:
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = None
 
     def init_exchange(self, stock: Stock) -> None:
         match stock:
             case Stock.BINANCE:
-                self.logger.debug("Binance exchange selected")
+                self.logger.debug("%s exchange selected", stock.value["title"])
             case Stock.BYBIT:
-                self.logger.debug("Bybit exchange selected")
+                self.logger.debug("%s exchange selected", stock.value["title"])
             case _:
                 self.logger.warning("Unknown exchange selected")
 

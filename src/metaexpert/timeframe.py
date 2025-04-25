@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from enum import Enum
+from typing import Self
 
 
-class Period(Enum):
+class Timeframe(Enum):
     M1 = {
         "name": "1m",
         "sec": 60,
@@ -84,25 +85,32 @@ class Period(Enum):
         "hour": 168
     }
 
-class Timeframe:
-    """Timeframe class to represent different timeframes."""
-
-    def __init__(self) -> None:
-        """Initialize the Timeframe class."""
-        pass
-
-    @staticmethod
-    def __get_period_from(name: str) -> Period | None:
-        for period in Period:
-            if period.value["name"] == name:
-                return period
+    @classmethod
+    def get_period_from(cls, name: str) -> Self | None:
+        for item in cls:
+            if item.value["name"] == name:
+                return item
         return None
 
+# class Timeframe:
+#     """Timeframe class to represent different timeframes."""
+#
+#     def __init__(self) -> None:
+#         """Initialize the Timeframe class."""
+#         pass
+#
+#     @staticmethod
+#     def __get_period_from(name: str) -> Period | None:
+#         for period in Period:
+#             if period.value["name"] == name:
+#                 return period
+#         return None
 
 
-if __name__ == "__main__":
 
-    for item in Period:
-        print(item.name, item.value["name"], item.value["sec"])
-
-    print(Timeframe()._get_period_from("1m"))
+# if __name__ == "__main__":
+#
+#     for item in Period:
+#         print(item.name, item.value["name"], item.value["sec"])
+#
+#     print(Timeframe()._get_period_from("1m"))
