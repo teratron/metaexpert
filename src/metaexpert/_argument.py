@@ -32,6 +32,14 @@ def parse_arguments() -> Namespace:
     parser = ArgumentParser(description="Expert Trading Bot")
 
     parser.add_argument(
+        "--stock",
+        "--exchange",
+        type=str,
+        choices=AVAILABLE_EXCHANGES,
+        default=DEFAULT_EXCHANGE,
+        help="Stock exchange to use (e.g., binance, bybit)",
+    )
+    parser.add_argument(
         "--type",
         type=str,
         choices=[TRADE_TYPE_SPOT, TRADE_TYPE_FUTURES, TRADE_TYPE_OPTIONS, TRADE_TYPE_MARGIN],
@@ -53,13 +61,6 @@ def parse_arguments() -> Namespace:
         help="Trading mode: backtest, paper, or live",
     )
     parser.add_argument(
-        "--exchange",
-        type=str,
-        choices=AVAILABLE_EXCHANGES,
-        default=DEFAULT_EXCHANGE,
-        help="Stock exchange to use (e.g., binance, bybit)",
-    )
-    parser.add_argument(
         "--pair",
         "--symbol",
         type=str,
@@ -67,8 +68,8 @@ def parse_arguments() -> Namespace:
         help="Trading pair (e.g., BTCUSDT)",
     )
     parser.add_argument(
+        "-tf",
         "--timeframe",
-        "--tf",
         type=str,
         default=DEFAULT_TIMEFRAME,
         help="Trading timeframe",
@@ -81,22 +82,22 @@ def parse_arguments() -> Namespace:
         help="Maximum position size as a fraction of available balance",
     )
     parser.add_argument(
+        "-sl",
         "--stop-loss",
-        "--sl",
         type=float,
         default=STOP_LOSS_PERCENT,
         help="Stop loss percentage",
     )
     parser.add_argument(
+        "-tp",
         "--take-profit",
-        "--tp",
         type=float,
         default=TAKE_PROFIT_PERCENT,
         help="Take profit percentage",
     )
     parser.add_argument(
+        "-ts",
         "--trailing-stop",
-        "--ts",
         type=float,
         default=TRAILING_STOP_PERCENT,
         help="Trailing stop percentage",

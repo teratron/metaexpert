@@ -15,15 +15,13 @@ class Service(Process):
     """
     symbol: str | set[str] | None
     timeframe: str | set[str] | None
-
-    # shift: int
-    # magic: int
-    # filename: str | None
+    shift: int
+    magic: int
+    name: str | None
 
     def __init__(self, name: str) -> None:
         super().__init__(name)
         self.logger: Logger = get_logger(name)
-        # self.event: Event = Event(name)
 
     def on_init(
             self,
@@ -46,14 +44,14 @@ class Service(Process):
         Returns:
             Callable: Decorated function that handles the initialization event.
         """
+        self.symbol = symbol
+        self.timeframe = timeframe
+        self.shift = shift
+        self.magic = magic
+        self.name = name
 
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
             def inner(*args, **kwargs) -> None:
-                self.symbol = symbol
-                self.timeframe = timeframe
-                self.shift = shift
-                self.magic = magic
-                self.name = name
 
                 # self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
@@ -101,14 +99,14 @@ class Service(Process):
 
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
 
-    def on_bar(self, time_frame: str = "1h") -> Callable:
+    def on_bar(self, timeframe: str = "1h") -> Callable:
         def outer(
                 func: Callable[[tuple[Any, ...], dict[str, Any]], None],
         ) -> Callable[[tuple[Any, ...], dict[str, Any]], None]:
             def inner(rate, *args, **kwargs) -> None:
                 # rate: list = kwargs.get("rate")
                 func(rate, *args, **kwargs)
-                print(time_frame)
+                print(timeframe)
 
             return inner
 

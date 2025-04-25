@@ -11,7 +11,7 @@ from dotenv_vault import load_dotenv  # type: ignore
 
 from config import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL
 from logger import get_logger  # type: ignore
-from metaexpert.argument import parse_arguments  # type: ignore
+from metaexpert._argument import parse_arguments  # type: ignore
 
 if __name__ == "__main__":
     logger = get_logger()

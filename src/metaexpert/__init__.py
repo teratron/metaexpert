@@ -9,7 +9,7 @@ from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
 from metaexpert._process import Event
 from metaexpert._service import Service
-from metaexpert.argument import Namespace, parse_arguments
+from metaexpert._argument import Namespace, parse_arguments
 from metaexpert.exchange import Stock, Exchange
 
 # from metaexpert._market import Market
@@ -46,7 +46,7 @@ class MetaExpert(Service):
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
-        self.stock: Stock = stock
+        self.stock: Stock = stock #args.stock or
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
