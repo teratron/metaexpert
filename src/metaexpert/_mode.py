@@ -19,7 +19,7 @@ class Mode(Enum):
     }
 
     @classmethod
-    def __get_mode_from(cls, name: str) -> Self | None:
+    def get_mode_from(cls, name: str) -> Self | None:
         """Get the mode type from a string."""
         for item in cls:
             if item.value["name"] == name.lower():

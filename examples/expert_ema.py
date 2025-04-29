@@ -20,9 +20,9 @@ def init() -> None:
     print("*** on_init ***")
 
 
-@expert.on_init("BTCUSDT", "1h", shift=0, magic=12345, name="EMA Expert")
-def init2() -> None:
-    print("*** on_init 2 ***")
+# @expert.on_init("BTCUSDT", "1h", shift=0, magic=12345, name="EMA Expert")
+# def init2() -> None:
+#     print("*** on_init 2 ***")
 
 @expert.on_deinit
 def deinit() -> None:
@@ -64,9 +64,9 @@ def timer() -> None:
     print("*** on_timer ***")
 
 
-@expert.on_timer(1042)
-def timer2() -> None:
-    print("*** on_timer 2 ***")
+# @expert.on_timer(1042)
+# def timer2() -> None:
+#     print("*** on_timer 2 ***")
 
 @expert.on_book
 def book() -> None:

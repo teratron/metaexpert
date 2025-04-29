@@ -10,7 +10,8 @@ requires-python = ">=3.12"
 keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
 #excluded = ["tests", "examples", "app", "docs", "src/data"]
 dependencies = [
-    #"binance-connector>=3.12.0",
+    "binance-connector>=3.12.0",
+    "pybit>=5.10.1",
     #"flask>=3.1.0",
     #"lightweight-charts>=2.1",
     "numpy>=2.2.5",
@@ -55,16 +56,16 @@ default-groups = [
 [tool.uv.sources]
 #metaexpert-binance-api = { path = "packages/api/binance" }
 #metaexpert-bybit-api = { path = "packages/api/bybit" }
-metaexpert-binance-api = { workspace = true }
-metaexpert-bybit-api = { workspace = true }
+#metaexpert-binance-api = { workspace = true }
+#metaexpert-bybit-api = { workspace = true }
 metaexpert-examples = { path = "examples" }
 
 [tool.uv.workspace]
 members = [
     "packages/app",
     #"src/metaexpert",
-    "packages/api/binance",
-    "packages/api/bybit",
+    #"packages/api/binance",
+    #"packages/api/bybit",
     #"examples",
 ]
 

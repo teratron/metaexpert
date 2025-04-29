@@ -13,7 +13,7 @@ from metaexpert._contract import Contract
 from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert._argument import Namespace, parse_arguments
-from metaexpert._exchange import Stock, Exchange
+from metaexpert._exchange import Stock
 from pathlib import Path
 
 from metaexpert._instrument import Instrument
@@ -42,9 +42,9 @@ class MetaExpert(Service):
             api_secret: str | None = None,
             *,
             base_url: str | None = None,
-            mode: Mode | str | None = None,
             instrument: Instrument | str | None = None,
-            contract: Contract | str | None = None
+            contract: Contract | str | None = None,
+            mode: Mode | str | None = None
     ) -> None:
         """Initialize the expert trading system.
 
@@ -53,21 +53,24 @@ class MetaExpert(Service):
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             base_url (str | None): Base URL for the exchange API.
-            mode (Mode | str | None): Mode of operation (e.g., live, paper, backtest).
             instrument (Instrument | str | None): Type of financial instruments (e.g., spot, futures).
             contract (Contract | str | None): Type of contract (e.g., coin_m, usdt_m).
+            mode (Mode | str | None): Mode of operation (e.g., live, paper, backtest).
         """
 
         # Parse command line arguments
         args: Namespace = parse_arguments()
 
-        self.stock: Stock = stock #or args.stock
+        # Initialize stock exchange
+        self.stock: Stock = Stock.get_exchange_from(stock) or Stock.get_exchange_from(args.stock)
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
-        self.mode: Mode = mode
-        self.instrument: Instrument = instrument
-        self.contract: Contract = contract
+        
+        # Initialize mode, instrument and contract
+        self.instrument: Instrument = instrument or Instrument.get_instrument_from(args.type)
+        self.contract: Contract = contract or Contract.get_contract_from(args.contract)
+        self.mode: Mode = mode or Mode.get_mode_from(args.mode)
         self.running: bool = False
 
         super().__init__(self.name)

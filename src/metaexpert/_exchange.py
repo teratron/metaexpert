@@ -26,9 +26,20 @@ class Stock(Enum):
 
     def init_exchange(self) -> None:
         print("Initializing exchange:", self.value["name"])
+        
+        match self:
+            case Stock.BINANCE:
+                #self.logger.debug("%s exchange selected", self.value["title"])
+                print(f"{self.value["title"]} exchange selected")
+            case Stock.BYBIT:
+                #self.logger.debug("%s exchange selected", self.value["title"])
+                print(f"{self.value["title"]} exchange selected")
+            case _:
+                #self.logger.warning("Unknown exchange selected")
+                print("Unknown exchange selected")
 
     @classmethod
-    def get_exchange_name(cls, name: str) -> Self | None:
+    def get_exchange_from(cls, name: str) -> Self | None:
         """Get the exchange name from the enumeration."""
         for item in cls:
             if item.value["name"] == name.lower():
@@ -37,18 +48,18 @@ class Stock(Enum):
         return None
 
 
-class Exchange:
-    def __init__(self) -> None:
-        self.logger = None
+# class Exchange:
+#     def __init__(self) -> None:
+#         self.logger = None
 
-    def init_exchange(self, stock: Stock) -> None:
-        match stock:
-            case Stock.BINANCE:
-                self.logger.debug("%s exchange selected", stock.value["title"])
-            case Stock.BYBIT:
-                self.logger.debug("%s exchange selected", stock.value["title"])
-            case _:
-                self.logger.warning("Unknown exchange selected")
+#     def init_exchange(self, stock: Stock) -> None:
+#         match stock:
+#             case Stock.BINANCE:
+#                 self.logger.debug("%s exchange selected", stock.value["title"])
+#             case Stock.BYBIT:
+#                 self.logger.debug("%s exchange selected", stock.value["title"])
+#             case _:
+#                 self.logger.warning("Unknown exchange selected")
 
         # if self.mode == MODE_LIVE and (not self.api_key or not self.api_secret):
         #     self.logger.error("API key and secret are required for live trading")

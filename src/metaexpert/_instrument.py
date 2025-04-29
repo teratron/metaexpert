@@ -45,7 +45,7 @@ class Instrument(Enum):
     }
 
     @classmethod
-    def __get_instrument_from(cls, name: str) -> Self | None:
+    def get_instrument_from(cls, name: str) -> Self | None:
         """Get the instrument type from a string."""
         for item in cls:
             if item.value["name"] == name.lower():
