@@ -39,8 +39,11 @@ class Stock(Enum):
                 print("Unknown exchange selected")
 
     @classmethod
-    def get_exchange_from(cls, name: str) -> Self | None:
+    def get_exchange_from(cls, name: str | Self) -> Self | None:
         """Get the exchange name from the enumeration."""
+        if isinstance(name, Stock):
+            return name
+
         for item in cls:
             if item.value["name"] == name.lower():
                 return item

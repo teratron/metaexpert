@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from datetime import timedelta, datetime
 from enum import Enum
 from typing import Self, TypedDict
 
@@ -9,6 +9,7 @@ class TimeframeDict(TypedDict):
     sec: int
     min: int
     hour: int | None
+    delta: timedelta | None
 
 
 class Timeframe(Enum):
@@ -18,95 +19,148 @@ class Timeframe(Enum):
         "name": "1m",
         "sec": 60,
         "min": 1,
-        "hour": None
+        "hour": None,
+        "delta": timedelta(minutes=1)
     }
     M3 = {
         "name": "3m",
         "sec": 180,
         "min": 3,
-        "hour": None
+        "hour": None,
+        "delta": timedelta(minutes=3)
     }
     M5 = {
         "name": "5m",
         "sec": 300,
         "min": 5,
-        "hour": None
+        "hour": None,
+        "delta": timedelta(minutes=5)
     }
     M15 = {
         "name": "15m",
         "sec": 900,
         "min": 15,
-        "hour": None
+        "hour": None,
+        "delta": timedelta(minutes=15)
     }
     M30 = {
         "name": "30m",
         "sec": 1800,
         "min": 30,
-        "hour": None
+        "hour": None,
+        "delta": timedelta(minutes=30)
     }
     H1 = {
         "name": "1h",
         "sec": 3600,
         "min": 60,
-        "hour": 1
+        "hour": 1,
+        "delta": timedelta(hours=1)
     }
     H2 = {
         "name": "2h",
         "sec": 7200,
         "min": 120,
-        "hour": 2
+        "hour": 2,
+        "delta": timedelta(hours=2)
     }
     H4 = {
         "name": "4h",
         "sec": 14400,
         "min": 240,
-        "hour": 4
+        "hour": 4,
+        "delta": timedelta(hours=4)
     }
     H6 = {
         "name": "6h",
         "sec": 21600,
         "min": 360,
-        "hour": 6
+        "hour": 6,
+        "delta": timedelta(hours=6)
     }
     H8 = {
         "name": "8h",
         "sec": 28800,
         "min": 480,
-        "hour": 8
+        "hour": 8,
+        "delta": timedelta(hours=8)
     }
     H12 = {
         "name": "12h",
         "sec": 43200,
         "min": 720,
-        "hour": 12
+        "hour": 12,
+        "delta": timedelta(hours=12)
     }
     D1 = {
         "name": "1d",
         "sec": 86400,
         "min": 1440,
-        "hour": 24
+        "hour": 24,
+        "delta": timedelta(days=1)
     }
     D3 = {
         "name": "3d",
         "sec": 259200,
         "min": 4320,
-        "hour": 72
+        "hour": 72,
+        "delta": timedelta(days=3)
     }
     W1 = {
         "name": "1w",
         "sec": 604800,
         "min": 10080,
-        "hour": 168
+        "hour": 168,
+        "delta": timedelta(weeks=1)
     }
 
     @classmethod
-    def get_period_from(cls, name: str) -> Self | None:
+    def get_period_from(cls, name: str | Self) -> Self | None:
+        """Get the period type from a string."""
+        if isinstance(name, Timeframe):
+            return name
+
         for item in cls:
             if item.value["name"] == name.lower():
                 return item
 
         return None
 
+    def get_next_candle_time(self, timeframe: str) -> datetime:
+        """Calculate the timestamp of the next candle based on the timeframe.
+
+        Args:
+            timeframe (str): Timeframe string (e.g., '1m', '1h', '1d')
+
+        Returns:
+            datetime: Timestamp of the next candle
+        """
+        now = datetime.now()
+        #_delta = self.value["delta"]#get_timeframe_delta(timeframe)
+
+        if timeframe.endswith("m"):
+            # For minute timeframes
+            minutes = int(timeframe[:-1])
+            next_minute = ((now.minute // minutes) + 1) * minutes
+            next_time = now.replace(minute=next_minute % 60, second=0, microsecond=0)
+
+            if next_minute >= 60:
+                next_time = next_time + timedelta(hours=next_minute // 60)
+        elif timeframe.endswith("h"):
+            # For hour timeframes
+            hours = int(timeframe[:-1])
+            next_hour = ((now.hour // hours) + 1) * hours
+            next_time = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
+
+            if next_hour >= 24:
+                next_time = next_time + timedelta(days=next_hour // 24)
+        elif timeframe.endswith("d"):
+            # For day timeframes
+            next_time = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+        else:
+            raise ValueError(f"Unsupported timeframe: {timeframe}")
+
+        return next_time
 
 # if __name__ == "__main__":
 #     for i in Timeframe:

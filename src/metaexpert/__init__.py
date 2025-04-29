@@ -62,15 +62,15 @@ class MetaExpert(Service):
         args: Namespace = parse_arguments()
 
         # Initialize stock exchange
-        self.stock: Stock = Stock.get_exchange_from(stock) or Stock.get_exchange_from(args.stock)
+        self.stock: Stock = Stock.get_exchange_from(stock or args.stock)
         self.api_key: str = api_key
         self.api_secret: str = api_secret
         self.base_url: str = base_url
         
         # Initialize mode, instrument and contract
-        self.instrument: Instrument = instrument or Instrument.get_instrument_from(args.type)
-        self.contract: Contract = contract or Contract.get_contract_from(args.contract)
-        self.mode: Mode = mode or Mode.get_mode_from(args.mode)
+        self.instrument: Instrument = Instrument.get_instrument_from(instrument or args.type)
+        self.contract: Contract = Contract.get_contract_from(contract or args.contract)
+        self.mode: Mode = Mode.get_mode_from(mode or args.mode)
         self.running: bool = False
 
         super().__init__(self.name)
