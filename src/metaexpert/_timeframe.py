@@ -126,39 +126,40 @@ class Timeframe(Enum):
 
         return None
 
-    def get_next_candle_time(self, timeframe: str) -> datetime:
+    @classmethod
+    def get_next_candle_time(cls) -> datetime:
         """Calculate the timestamp of the next candle based on the timeframe.
-
-        Args:
-            timeframe (str): Timeframe string (e.g., '1m', '1h', '1d')
 
         Returns:
             datetime: Timestamp of the next candle
         """
         now = datetime.now()
-        #_delta = self.value["delta"]#get_timeframe_delta(timeframe)
+        next_time = now
 
-        if timeframe.endswith("m"):
-            # For minute timeframes
-            minutes = int(timeframe[:-1])
-            next_minute = ((now.minute // minutes) + 1) * minutes
-            next_time = now.replace(minute=next_minute % 60, second=0, microsecond=0)
+        match cls.value["name"][-1]:
+            case "m":
+                # For minute timeframes
+                minutes = cls.value["min"]
+                next_minute = ((now.minute // minutes) + 1) * minutes
+                next_time = now.replace(minute=next_minute % 60, second=0, microsecond=0)
 
-            if next_minute >= 60:
-                next_time = next_time + timedelta(hours=next_minute // 60)
-        elif timeframe.endswith("h"):
-            # For hour timeframes
-            hours = int(timeframe[:-1])
-            next_hour = ((now.hour // hours) + 1) * hours
-            next_time = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
+                if next_minute >= 60:
+                    next_time += timedelta(hours=next_minute // 60)
+            case "h":
+                # For hour timeframes
+                hours = cls.value["hour"]
+                next_hour = ((now.hour // hours) + 1) * hours
+                next_time = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
 
-            if next_hour >= 24:
-                next_time = next_time + timedelta(days=next_hour // 24)
-        elif timeframe.endswith("d"):
-            # For day timeframes
-            next_time = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
-        else:
-            raise ValueError(f"Unsupported timeframe: {timeframe}")
+                if next_hour >= 24:
+                    next_time += timedelta(days=next_hour // 24)
+            case "d":
+                # For day timeframes
+                next_time = now.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
+            case "w":
+                pass
+            case _:
+                raise ValueError(f"Unsupported timeframe: {cls.value["name"]}")
 
         return next_time
 
