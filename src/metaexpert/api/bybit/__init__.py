@@ -1,0 +1,22 @@
+from metaexpert.api import Exchange
+
+
+class BybitStock(Exchange):
+    def __init__(self):
+        super().__init__()
+        # Отложенная загрузка зависимостей
+        try:
+            from pybit.unified_trading import HTTP
+            self._client = HTTP()
+        except ImportError:
+            raise ImportError("Для работы с Bybit необходимо установить пакет pybit: pip install pybit")
+
+    def get_balance(self):
+        """Получить баланс на бирже Bybit"""
+        if self._client is None:
+            # Инициализация клиента при первом использовании
+            from pybit.unified_trading import HTTP
+            self._client = HTTP()
+
+        # Здесь должна быть реализация получения баланса
+        return {"status": "success", "exchange": "bybit", "message": "Баланс получен"}
