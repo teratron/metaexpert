@@ -18,6 +18,7 @@ from pathlib import Path
 
 from metaexpert._instrument import Instrument
 from metaexpert._mode import Mode
+from metaexpert.api import Exchange
 
 
 # from metaexpert._market import Market
@@ -37,7 +38,7 @@ class MetaExpert(Service):
 
     def __init__(
             self,
-            stock: Stock | str | None = None,
+            stock: str | None = None,
             api_key: str | None = None,
             api_secret: str | None = None,
             *,
@@ -62,27 +63,34 @@ class MetaExpert(Service):
         args: Namespace = parse_arguments()
 
         # Initialize stock exchange
-        self.stock: Stock = Stock.get_exchange_from(stock or args.stock)
-        self.api_key: str = api_key
-        self.api_secret: str = api_secret
-        self.base_url: str = base_url
-        
-        # Initialize mode, instrument and contract
-        self.instrument: Instrument = Instrument.get_instrument_from(instrument or args.type)
-        self.contract: Contract = Contract.get_contract_from(contract or args.contract)
+        self.client: Exchange = Exchange.init(
+            stock or args.stock,
+            api_key,
+            api_secret,
+            base_url,
+            instrument or args.type,
+            contract or args.contract
+        )
+        #print(self.client)
         self.mode: Mode = Mode.get_mode_from(mode or args.mode)
         self.running: bool = False
+
+        self.client.get_balance()
+        self.client.get_account()
 
         super().__init__(self.name)
 
         # Setup logger
         self.logger: Logger = setup_logger(self.name, args.log_level)
-        self.logger.info("Starting expert on %s", self.stock.value["title"])
+        self.logger.info("Starting expert on %s", args.stock)
         self.logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
         # Initialize stock exchange
-        self.stock.init_exchange()
+        #self.stock.init_exchange()
+
+        #print(self.client.account())
+        #print(self.client.ping())
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
@@ -94,7 +102,7 @@ class MetaExpert(Service):
         """Run the expert trading system."""
         self.logger.info("Starting trading bot in %s mode", self.mode)
         self.running = True
-        # print(self.symbol)
+        print(self.symbol)
         # print(self.timeframe)
         # print(self.filename)
 

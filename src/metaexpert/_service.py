@@ -7,7 +7,7 @@ from metaexpert._process import Process
 from metaexpert._timeframe import Timeframe
 
 
-class Service:#(Process)
+class Service:
     """Expert trading system service.
 
     This class handles the initialization and management of the trading system's events.

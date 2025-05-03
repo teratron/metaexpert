@@ -3,7 +3,8 @@ from metaexpert.api import Exchange
 
 class BybitStock(Exchange):
     def __init__(self):
-        super().__init__()
+        #super().__init__()
+        #super().__init__(api_key, api_secret, testnet)
         # Отложенная загрузка зависимостей
         try:
             from pybit.unified_trading import HTTP
