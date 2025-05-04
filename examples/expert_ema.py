@@ -14,6 +14,8 @@ expert = MetaExpert(
     contract="coin_m"
 )
 
+expert.balance()
+
 
 @expert.on_init("BTCUSDT", "1h", shift=0, magic=12345, name="EMA Expert")
 def init() -> None:

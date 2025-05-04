@@ -4,20 +4,20 @@ This module provides a framework for creating and managing expert trading system
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
+from importlib import import_module
+from pathlib import Path
 from types import ModuleType
 from typing import Self
 
 from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
-from metaexpert._contract import Contract
-from metaexpert._process import Process
-from metaexpert._service import Service
 from metaexpert._argument import Namespace, parse_arguments
+from metaexpert._contract import Contract
 from metaexpert._exchange import Stock
-from pathlib import Path
-
 from metaexpert._instrument import Instrument
 from metaexpert._mode import Mode
+from metaexpert._process import Process
+from metaexpert._service import Service
 from metaexpert.api import Exchange
 
 
@@ -43,20 +43,20 @@ class MetaExpert(Service):
             api_secret: str | None = None,
             *,
             base_url: str | None = None,
-            instrument: Instrument | str | None = None,
-            contract: Contract | str | None = None,
-            mode: Mode | str | None = None
+            instrument: str | None = None,
+            contract: str | None = None,
+            mode: str | None = None
     ) -> None:
         """Initialize the expert trading system.
 
         Args:
-            stock (Stock | str | None): Stock exchange to use (e.g., Binance, Bybit).
+            stock (str | None): Stock exchange to use (e.g., Binance, Bybit).
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             base_url (str | None): Base URL for the exchange API.
-            instrument (Instrument | str | None): Type of financial instruments (e.g., spot, futures).
-            contract (Contract | str | None): Type of contract (e.g., coin_m, usdt_m).
-            mode (Mode | str | None): Mode of operation (e.g., live, paper, backtest).
+            instrument (str | None): Type of financial instruments (e.g., spot, futures).
+            contract (str | None): Type of contract (e.g., coin_m, usdt_m).
+            mode (str | None): Mode of operation (e.g., live, paper, backtest).
         """
 
         # Parse command line arguments
@@ -71,14 +71,14 @@ class MetaExpert(Service):
             instrument or args.type,
             contract or args.contract
         )
-        #print(self.client)
         self.mode: Mode = Mode.get_mode_from(mode or args.mode)
         self.running: bool = False
 
-        self.client.get_balance()
-        self.client.get_account()
-
         super().__init__(self.name)
+
+        #self.client.get_balance()
+        #self.client.get_account()
+        #print(self.client._client.time()["serverTime"])
 
         # Setup logger
         self.logger: Logger = setup_logger(self.name, args.log_level)
@@ -87,10 +87,7 @@ class MetaExpert(Service):
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
         # Initialize stock exchange
-        #self.stock.init_exchange()
-
-        #print(self.client.account())
-        #print(self.client.ping())
+        # self.stock.init_exchange()
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
@@ -102,7 +99,8 @@ class MetaExpert(Service):
         """Run the expert trading system."""
         self.logger.info("Starting trading bot in %s mode", self.mode)
         self.running = True
-        print(self.symbol)
+
+        # print(self.symbol)
         # print(self.timeframe)
         # print(self.filename)
 
@@ -148,3 +146,7 @@ class MetaExpert(Service):
             self.running = False
             Process.ON_DEINIT.run()
             self.logger.info("Expert shutdown complete")
+
+    #from metaexpert.api.binance import balance
+
+    balance = import_module("metaexpert.api.binance").balance
