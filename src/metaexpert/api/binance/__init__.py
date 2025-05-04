@@ -13,6 +13,15 @@ class BinanceStock(Exchange):
         super().__init__()
         self._client: Self | None = self.__get_client()
 
+        match self.instrument:
+            case "spot":
+                pass
+            case "futures":
+                # self._client = self.__get_client()
+                pass
+            case _:
+                raise ValueError(f"Unsupported instrument: {self.instrument}")
+
     def __get_client(self) -> Self | None:
         """Lazy initializes and returns the Binance Spot client."""
         if self._client is None:

@@ -148,5 +148,4 @@ class MetaExpert(Service):
             self.logger.info("Expert shutdown complete")
 
     #from metaexpert.api.binance import balance
-
     balance = import_module("metaexpert.api.binance").balance
