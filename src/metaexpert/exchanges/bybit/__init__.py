@@ -1,4 +1,4 @@
-from metaexpert.api import Exchange
+from metaexpert.exchanges import Exchange
 
 
 class BybitStock(Exchange):

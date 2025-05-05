@@ -32,9 +32,9 @@ class Exchange(ABC):
 
         match cls.stock:
             case "binance":
-                return import_module("metaexpert.api.binance").BinanceStock()
+                return import_module("metaexpert.exchanges.binance").BinanceStock()
             case "bybit":
-                return import_module("metaexpert.api.bybit").BybitStock()
+                return import_module("metaexpert.exchanges.bybit").BybitStock()
             case _:
                 raise ValueError(f"Unsupported stock: {cls.stock}")
 

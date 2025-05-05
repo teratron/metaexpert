@@ -1,7 +1,7 @@
 from importlib import import_module
 from typing import Self
 
-from metaexpert.api import Exchange
+from metaexpert.exchanges import Exchange
 from metaexpert.utils.install import install_package
 
 

@@ -13,12 +13,12 @@ from config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
 from metaexpert._argument import Namespace, parse_arguments
 from metaexpert._contract import Contract
-from metaexpert._exchange import Stock
+from metaexpert.exchanges._exchange import Stock
 from metaexpert._instrument import Instrument
 from metaexpert._mode import Mode
 from metaexpert._process import Process
 from metaexpert._service import Service
-from metaexpert.api import Exchange
+from metaexpert.exchanges import Exchange
 
 
 # from metaexpert._market import Market
@@ -147,5 +147,5 @@ class MetaExpert(Service):
             Process.ON_DEINIT.run()
             self.logger.info("Expert shutdown complete")
 
-    #from metaexpert.api.binance import balance
-    balance = import_module("metaexpert.api.binance").balance
+    #from metaexpert.exchanges.binance import balance
+    balance = import_module("metaexpert.exchanges.binance").balance
