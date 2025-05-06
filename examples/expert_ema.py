@@ -10,7 +10,8 @@ expert = MetaExpert(
     api_secret=os.getenv("BINANCE_API_SECRET"),
     base_url=os.getenv("BINANCE_BASE_URL"),
     mode="paper",
-    instrument="spot",
+    # instrument="spot",
+    instrument="futures",
     contract="coin_m"
 )
 

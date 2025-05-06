@@ -1,4 +1,5 @@
 from importlib import import_module
+from types import ModuleType
 from typing import Self
 
 from metaexpert.exchanges import Exchange
@@ -13,29 +14,36 @@ class BinanceStock(Exchange):
         super().__init__()
         self._client: Self | None = self.__get_client()
 
-        match self.instrument:
-            case "spot":
-                pass
-            case "futures":
-                # self._client = self.__get_client()
-                pass
-            case _:
-                raise ValueError(f"Unsupported instrument: {self.instrument}")
-
     def __get_client(self) -> Self | None:
         """Lazy initializes and returns the Binance Spot client."""
+        if not self.api_key or not self.api_secret:
+            raise ValueError("API key and secret are required for Binance operations like get_balance.")
+
         if self._client is None:
-            install_package("binance-connector")
+            pkg: ModuleType
+            match self.instrument:
+                case "spot":
+                    install_package("binance-connector")
 
-            try:
-                pkg = import_module("binance.spot")
-            except ImportError:
-                raise ImportError("Please install binance-connector: pip install binance-connector")
+                    try:
+                        pkg = import_module("binance.spot")
+                    except ImportError:
+                        raise ImportError("Please install binance-connector: pip install binance-connector")
 
-            if not self.api_key or not self.api_secret:
-                raise ValueError("API key and secret are required for Binance operations like get_balance.")
+                    self._client: Self = pkg.Spot(api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url)
+                case "futures":
+                    # self._client = self.__get_client()
+                    #from binance.cm_futures import CMFutures
+                    install_package("binance-futures-connector")
 
-            self._client: Self = pkg.Spot(api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url)
+                    try:
+                        pkg = import_module("binance.cm_futures")
+                    except ImportError:
+                        raise ImportError("Please install binance-connector: pip install binance-connector")
+
+                    self._client: Self = pkg.CMFutures(key=self.api_key, secret=self.api_secret, base_url=self.base_url)
+                case _:
+                    raise ValueError(f"Unsupported instrument: {self.instrument}")
 
         return self._client
 

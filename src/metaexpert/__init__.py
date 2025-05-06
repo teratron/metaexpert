@@ -9,7 +9,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Self
 
-from config import APP_NAME, MODE_BACKTEST
+from metaexpert.config import APP_NAME, MODE_BACKTEST
 from logger import setup_logger, Logger
 from metaexpert._argument import Namespace, parse_arguments
 from metaexpert._contract import Contract

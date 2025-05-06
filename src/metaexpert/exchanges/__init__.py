@@ -13,6 +13,13 @@ class Exchange(ABC):
     instrument: str | None = None
     contract: str | None = None
 
+    def __new__(cls, *args, **kwargs) -> Self:
+        """Create a new instance of the Exchange class."""
+        instance = super().__new__(cls)
+        print(f"Creating instance of {cls.__name__}")
+        print(f"Arguments: {args}, {kwargs}")
+        return instance
+
     @classmethod
     def init(
             cls,

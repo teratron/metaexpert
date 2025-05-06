@@ -3,7 +3,7 @@ import datetime
 from binance.spot import Spot as Client
 from flask import Flask, render_template, request, flash, redirect, jsonify
 
-from config import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL
+from metaexpert.config import BINANCE_API_KEY, BINANCE_API_SECRET, BINANCE_BASE_URL
 
 app = Flask(__name__)
 

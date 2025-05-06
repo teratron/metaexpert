@@ -26,7 +26,7 @@ from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from config import (
+from metaexpert.config import (
     LOG_BACKUP_COUNT,
     LOG_CONFIG,
     LOG_FILE,

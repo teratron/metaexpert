@@ -2,7 +2,7 @@
 
 from argparse import ArgumentParser, Namespace
 
-from config import (
+from metaexpert.config import (
     AVAILABLE_EXCHANGES,
     DEFAULT_EXCHANGE,
     CONTRACT_TYPE_COIN_M,
