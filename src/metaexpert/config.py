@@ -18,10 +18,15 @@ LOG_FILE = os.getenv("LOG_FILE")  # Log file name
 LOG_MAX_SIZE = int(str(os.getenv("LOG_MAX_SIZE")))  # Maximum log file size (10*1024*1024 = 10MB)
 LOG_BACKUP_COUNT = int(str(os.getenv("LOG_BACKUP_COUNT")))  # Number of backup log files
 
+# API Configuration
+API_KEY = os.getenv("API_KEY")  # Default API key for authentication
+API_SECRET = os.getenv("API_SECRET")  # Default API secret for authentication
+BASE_URL = os.getenv("BASE_URL")  # Default base URL for exchange API
+
 # Binance
-BINANCE_API_KEY = os.getenv("BINANCE_API_KEY")
-BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET")
-BINANCE_BASE_URL = os.getenv("BINANCE_BASE_URL")
+BINANCE_API_KEY = os.getenv("BINANCE_API_KEY") or API_KEY
+BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET") or API_SECRET
+BINANCE_BASE_URL = os.getenv("BINANCE_BASE_URL") or BASE_URL
 
 # Trading parameters
 TRADING_PAIRS = ["BTCUSDT", "ETHUSDT"]  # Trading pairs to monitor

@@ -65,9 +65,9 @@ class MetaExpert(Service):
         # Initialize stock exchange
         self.client: Exchange = Exchange.init(
             stock or args.stock,
-            api_key,
-            api_secret,
-            base_url,
+            api_key or args.api_key,
+            api_secret or args.api_secret,
+            base_url or args.base_url,
             instrument or args.type,
             contract or args.contract
         )

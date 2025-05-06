@@ -1,5 +1,4 @@
 from importlib import import_module
-from types import ModuleType
 from typing import Self
 
 from metaexpert.exchanges import Exchange
@@ -20,7 +19,6 @@ class BinanceStock(Exchange):
             raise ValueError("API key and secret are required for Binance operations like get_balance.")
 
         if self._client is None:
-            pkg: ModuleType
             match self.instrument:
                 case "spot":
                     install_package("binance-connector")
@@ -30,16 +28,17 @@ class BinanceStock(Exchange):
                     except ImportError:
                         raise ImportError("Please install binance-connector: pip install binance-connector")
 
-                    self._client: Self = pkg.Spot(api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url)
+                    self._client: Self = pkg.Spot(
+                        api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url
+                    )
                 case "futures":
-                    # self._client = self.__get_client()
-                    #from binance.cm_futures import CMFutures
                     install_package("binance-futures-connector")
 
                     try:
                         pkg = import_module("binance.cm_futures")
                     except ImportError:
-                        raise ImportError("Please install binance-connector: pip install binance-connector")
+                        raise ImportError(
+                            "Please install binance-futures-connector: pip install binance-futures-connector")
 
                     self._client: Self = pkg.CMFutures(key=self.api_key, secret=self.api_secret, base_url=self.base_url)
                 case _:
@@ -93,5 +92,5 @@ class BinanceStock(Exchange):
         #     raise RuntimeError(f"Failed to get Binance account information: {e}")
 
 
-def balance(self = None):
+def balance(self=None):
     self.client.get_balance()

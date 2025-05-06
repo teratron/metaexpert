@@ -23,7 +23,9 @@ from metaexpert.config import (
     TRADE_TYPE_OPTIONS,
     TRADE_TYPE_SPOT,
     TRAILING_STOP_PERCENT,
-    TRADING_PAIRS, BACKTEST_START_DATE, BACKTEST_END_DATE,
+    TRADING_PAIRS,
+    BACKTEST_START_DATE,
+    BACKTEST_END_DATE,
 )
 
 
@@ -31,6 +33,7 @@ def parse_arguments() -> Namespace:
     """Parse command line arguments."""
     parser = ArgumentParser(description="Expert Trading System")
 
+    # Add arguments for logging
     parser.add_argument(
         "--log-level",
         type=str,
@@ -38,6 +41,8 @@ def parse_arguments() -> Namespace:
         default=LOG_LEVEL,
         help="Logging level",
     )
+
+    # Add arguments for trading parameters
     parser.add_argument(
         "--stock",
         "--exchange",
@@ -134,6 +139,26 @@ def parse_arguments() -> Namespace:
         "--output",
         type=str,
         help="Output file for backtest results (JSON format)",
+    )
+
+    # API authentication parameters
+    parser.add_argument(
+        "--api-key",
+        "--key",
+        type=str,
+        help="API key for exchange authentication",
+    )
+    parser.add_argument(
+        "--api-secret",
+        "--secret",
+        type=str,
+        help="API secret for exchange authentication",
+    )
+    parser.add_argument(
+        "--base-url",
+        "--url",
+        type=str,
+        help="Base URL for the exchange API",
     )
 
     return parser.parse_args()
