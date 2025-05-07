@@ -2,6 +2,13 @@ from importlib import import_module
 from typing import Self
 
 from metaexpert.exchanges import Exchange
+from metaexpert.exchanges.config import (
+    BINANCE_SPOT_PACKAGE,
+    BINANCE_SPOT_MODULE,
+    BINANCE_FUTURES_PACKAGE,
+    BINANCE_FUTURES_MODULE_USDT_M,
+    BINANCE_FUTURES_MODULE_COIN_M
+)
 from metaexpert.utils.install import install_package
 
 
@@ -16,31 +23,40 @@ class BinanceStock(Exchange):
     def __get_client(self) -> Self | None:
         """Lazy initializes and returns the Binance Spot client."""
         if not self.api_key or not self.api_secret:
-            raise ValueError("API key and secret are required for Binance operations like get_balance.")
+            raise ValueError("API key and secret are required for Binance operations.")
 
         if self._client is None:
             match self.instrument:
                 case "spot":
-                    install_package("binance-connector")
-
+                    install_package(BINANCE_SPOT_PACKAGE)
                     try:
-                        pkg = import_module("binance.spot")
+                        pkg = import_module(BINANCE_SPOT_MODULE)
                     except ImportError:
-                        raise ImportError("Please install binance-connector: pip install binance-connector")
+                        raise ImportError(f"Please install {BINANCE_SPOT_PACKAGE}: pip install {BINANCE_SPOT_PACKAGE}")
 
                     self._client: Self = pkg.Spot(
                         api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url
                     )
                 case "futures":
-                    install_package("binance-futures-connector")
-
+                    install_package(BINANCE_FUTURES_PACKAGE)
                     try:
-                        pkg = import_module("binance.cm_futures")
+                        match self.contract:
+                            case "usdt_m":
+                                pkg = import_module(BINANCE_FUTURES_MODULE_USDT_M)
+                                self._client: Self = pkg.UMFutures(
+                                    key=self.api_key, secret=self.api_secret, base_url=self.base_url
+                                )
+                            case "coin_m":
+                                pkg = import_module(BINANCE_FUTURES_MODULE_COIN_M)
+                                self._client: Self = pkg.CMFutures(
+                                    key=self.api_key, secret=self.api_secret, base_url=self.base_url
+                                )
+                            case _:
+                                raise ValueError(f"Unsupported contract type: {self.contract}")
                     except ImportError:
                         raise ImportError(
-                            "Please install binance-futures-connector: pip install binance-futures-connector")
-
-                    self._client: Self = pkg.CMFutures(key=self.api_key, secret=self.api_secret, base_url=self.base_url)
+                            f"Please install {BINANCE_FUTURES_PACKAGE}: pip install {BINANCE_FUTURES_PACKAGE}"
+                        )
                 case _:
                     raise ValueError(f"Unsupported instrument: {self.instrument}")
 

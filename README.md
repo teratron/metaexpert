@@ -45,6 +45,8 @@ uv sync --upgrade-package metaexpert
 
 ```
 
+### Commands
+
 usage:
 
 	main.py [-h] [--exchange {binance,bybit}] [--type {spot,futures,options,margin}] [--contract {usd_m,coin_m}] [--mode {backtest,paper,live}] [--pair PAIR] [--timeframe TIMEFRAME] [--size SIZE]
