@@ -63,13 +63,13 @@ def bar(rate) -> None:
 
 
 @expert.on_timer(1000)
-def timer(past) -> None:
-    print("*** on_timer 1000 ***", past)
+def timer() -> None:
+    print("*** on_timer 1000 ***")
 
 
 @expert.on_timer(3000)
-def timer2(past, left) -> None:
-    print("*** on_timer 3000 ***", past, left)
+def timer2() -> None:
+    print("*** on_timer 3000 ***")
 
 
 @expert.on_book

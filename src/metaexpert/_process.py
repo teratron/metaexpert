@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import asyncio
 import inspect
 from enum import Enum
 from types import ModuleType
@@ -118,3 +118,17 @@ class Process(Enum):
         for callback in self.value["callback"]:
             callback()
             # logger.debug("Launch task for %s()", self.value["name"])
+
+    async def async_run(self) -> None:
+        """Run the process asynchronously.
+
+        This method executes the registered callbacks for the event asynchronously.
+        """
+        # logger = get_logger(__name__)
+        # await asyncio.gather(*self.value["callback"])
+        #for callback in self.value["callback"]:
+        #    task1 = asyncio.create_task(callback())
+        #     await callback()
+            # logger.debug("Launch task for %s()", self.value["name"])
+
+        await asyncio.gather(*(asyncio.create_task(callback()) for callback in self.value["callback"]))

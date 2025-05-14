@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import asyncio
 from typing import Any, Callable
 
 from logger import Logger, get_logger
@@ -61,7 +61,7 @@ class Service:
         return outer
 
     def on_deinit(self, func: Callable[[str], None]) -> Callable:
-        def inner(reason: str = "+++") -> None:
+        def inner(*, reason: str = "+++") -> None:
             self.logger.debug("Deinitializing...")
             func(reason)
 
@@ -128,10 +128,10 @@ class Service:
             Callable: Decorated function that executes at specified intervals.
         """
 
-        def outer(func: Callable[[int, int], None]) -> Callable:
-            def inner(past: int, left: int) -> None:
-                func(past, left)
-                print(interval)
+        def outer(func: Callable) -> Callable:
+            async def inner() -> None:
+                await asyncio.sleep(interval / 1000.0)
+                func()
 
             return inner
 
