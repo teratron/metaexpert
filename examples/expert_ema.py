@@ -28,8 +28,8 @@ def init() -> None:
 #     print("*** on_init 2 ***")
 
 @expert.on_deinit
-def deinit() -> None:
-    print("*** on_deinit ***")
+def deinit(reason) -> None:
+    print("*** on_deinit ***", reason)
 
 
 @expert.on_trade
@@ -62,14 +62,15 @@ def bar(rate) -> None:
     print(rate)
 
 
-@expert.on_timer(1042)
-def timer() -> None:
-    print("*** on_timer ***")
+@expert.on_timer(1000)
+def timer(past) -> None:
+    print("*** on_timer 1000 ***", past)
 
 
-# @expert.on_timer(1042)
-# def timer2() -> None:
-#     print("*** on_timer 2 ***")
+@expert.on_timer(3000)
+def timer2(past, left) -> None:
+    print("*** on_timer 3000 ***", past, left)
+
 
 @expert.on_book
 def book() -> None:

@@ -60,10 +60,10 @@ class Service:
 
         return outer
 
-    def on_deinit(self, func: Callable) -> Callable:
-        def inner() -> None:
+    def on_deinit(self, func: Callable[[str], None]) -> Callable:
+        def inner(reason: str = "+++") -> None:
             self.logger.debug("Deinitializing...")
-            func()
+            func(reason)
 
         return inner
 
@@ -128,9 +128,9 @@ class Service:
             Callable: Decorated function that executes at specified intervals.
         """
 
-        def outer(func: Callable) -> Callable:
-            def inner() -> None:
-                func()
+        def outer(func: Callable[[int, int], None]) -> Callable:
+            def inner(past: int, left: int) -> None:
+                func(past, left)
                 print(interval)
 
             return inner
