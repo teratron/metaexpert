@@ -1,8 +1,6 @@
 import subprocess
 
 
-# import sys
-
 def is_package_installed(name: str) -> bool:
     """Checks whether the package is installed in the virtual environment."""
     try:
@@ -46,10 +44,10 @@ def install_package(name: str) -> None:
     try:
         # Run pip as a subprocess
         # sys.executable ensures using pip from the same Python environment
+        # import sys
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
             ["pip", "install", name],
-            # ["uv", "add", name],
             check=True,  # Will raise CalledProcessError if pip exits with an error
             capture_output=True,  # Captures stdout and stderr
             text=True  # Decodes stdout and stderr as text
@@ -67,7 +65,6 @@ def install_package(name: str) -> None:
         print(f"An unexpected error occurred: {e}")
 
 
-# Usage example:
 def __example_usage() -> None:
     # This function demonstrates how to use the install_package function
     # You can replace 'requests' with any package you want to install

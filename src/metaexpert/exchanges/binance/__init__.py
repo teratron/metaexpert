@@ -9,7 +9,7 @@ from metaexpert.exchanges.config import (
     BINANCE_FUTURES_MODULE_USDT_M,
     BINANCE_FUTURES_MODULE_COIN_M
 )
-from metaexpert.utils.install import install_package
+from metaexpert.utils.package import install_package
 
 
 class BinanceStock(Exchange):
