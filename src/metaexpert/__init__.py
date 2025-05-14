@@ -122,8 +122,6 @@ class MetaExpert(Service):
                 # Fetch latest market data
                 # data = self.fetch_historical_data()
 
-
-
                 # Sleep until next candle
                 if self.mode != MODE_BACKTEST:
                     pass

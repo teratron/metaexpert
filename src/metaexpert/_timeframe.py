@@ -121,7 +121,7 @@ class Timeframe(Enum):
             return name
 
         for item in cls:
-            if item.value["name"] == name.lower():
+            if item.value.get("name") == name.lower():
                 return item
 
         return None
@@ -136,10 +136,10 @@ class Timeframe(Enum):
         now = datetime.now()
         next_time = now
 
-        match cls.value["name"][-1]:
+        match cls.value.get("name")[-1]:
             case "m":
                 # For minute timeframes
-                minutes = cls.value["min"]
+                minutes = cls.value.get("min")
                 next_minute = ((now.minute // minutes) + 1) * minutes
                 next_time = now.replace(minute=next_minute % 60, second=0, microsecond=0)
 
@@ -147,7 +147,7 @@ class Timeframe(Enum):
                     next_time += timedelta(hours=next_minute // 60)
             case "h":
                 # For hour timeframes
-                hours = cls.value["hour"]
+                hours = cls.value.get("hour")
                 next_hour = ((now.hour // hours) + 1) * hours
                 next_time = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
 
@@ -159,12 +159,12 @@ class Timeframe(Enum):
             case "w":
                 pass
             case _:
-                raise ValueError(f"Unsupported timeframe: {cls.value["name"]}")
+                raise ValueError(f"Unsupported timeframe: {cls.value.get("name")}")
 
         return next_time
 
 # if __name__ == "__main__":
 #     for i in Timeframe:
-#         print(i.name, i.value["name"], i.value["sec"])
+#         print(i.name, i.value.get("name"), i.value.get("sec"))
 #
 #     print(Timeframe()._get_period_from("1m"))

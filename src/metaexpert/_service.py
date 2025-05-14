@@ -3,7 +3,6 @@ import asyncio
 from typing import Any, Callable
 
 from logger import Logger, get_logger
-from metaexpert._process import Process
 from metaexpert._timeframe import Timeframe
 
 
@@ -118,7 +117,8 @@ class Service:
 
         return outer
 
-    def on_timer(self, interval: int = 1000) -> Callable:
+    @staticmethod
+    def on_timer(interval: int = 1000) -> Callable:
         """Decorator for timer-based event handling.
 
         Args:
@@ -142,9 +142,6 @@ class Service:
             func()
 
         return inner
-
-    async def __tick(self):
-        print("__tick")
 
     # @property
     # def magic(self) -> int:
