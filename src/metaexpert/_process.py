@@ -1,13 +1,13 @@
-# -*- coding: utf-8 -*-
 import asyncio
 import inspect
 from enum import Enum
 from types import ModuleType
 from typing import Self, TypedDict, Callable
 
-from metaexpert.logger import get_logger
+from metaexpert import APP_NAME
+from metaexpert.logger import Logger, get_logger
 
-logger = get_logger(__name__)
+logger: Logger = get_logger(APP_NAME)
 
 
 class ProcessDict(TypedDict):
@@ -77,7 +77,6 @@ class Process(Enum):
         specific event decorators and registers them as callbacks for the
         corresponding events.
         """
-        # logger = get_logger(__name__)
         frame = inspect.stack()[len(inspect.stack()) - 1]
         module: ModuleType = inspect.getmodule(frame[0])
 
@@ -116,7 +115,6 @@ class Process(Enum):
 
         This method executes the registered callbacks for the event.
         """
-        # logger = get_logger(__name__)
         for callback in self.value.get("callback"):
             callback()
             logger.debug("Launch task for %s()", self.value.get("name"))
@@ -129,3 +127,4 @@ class Process(Enum):
         await asyncio.gather(
             *(asyncio.create_task(callback()) for callback in self.value.get("callback"))
         )
+        logger.debug("Launch task for %s()", self.value.get("name"))
