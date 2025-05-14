@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from logger import get_logger
+from metaexpert.logger import get_logger
 
 _logger = get_logger(__name__)
 

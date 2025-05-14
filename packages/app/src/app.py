@@ -5,7 +5,7 @@ import os
 from binance.spot import Spot
 from flask import Flask, render_template, jsonify
 
-from logger import get_logger
+from metaexpert.logger import get_logger
 
 logger = get_logger(__name__)
 app = Flask(__name__)

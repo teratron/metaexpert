@@ -5,7 +5,7 @@ from enum import Enum
 from types import ModuleType
 from typing import Self, TypedDict, Callable
 
-from logger import get_logger
+from metaexpert.logger import get_logger
 
 logger = get_logger(__name__)
 

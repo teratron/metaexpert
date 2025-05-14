@@ -10,16 +10,16 @@ from pathlib import Path
 from types import ModuleType
 from typing import Self
 
-from metaexpert.config import APP_NAME, MODE_BACKTEST
-from logger import setup_logger, Logger
 from metaexpert._argument import Namespace, parse_arguments
 from metaexpert._contract import Contract
 from metaexpert._instrument import Instrument
 from metaexpert._mode import Mode
 from metaexpert._process import Process
 from metaexpert._service import Service
+from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
 from metaexpert.exchanges.stock import Stock
+from metaexpert.logger import setup_logger, Logger
 
 
 # from metaexpert._market import Market

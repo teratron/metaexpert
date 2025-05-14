@@ -1,7 +1,7 @@
 import pandas
 from lightweight_charts import Chart  # , JupyterChart
 
-from logger import get_logger
+from metaexpert.logger import get_logger
 
 logger = get_logger()
 
