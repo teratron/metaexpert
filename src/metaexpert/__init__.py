@@ -73,7 +73,7 @@ class MetaExpert(Service):
             contract or args.contract
         )
         self.mode: Mode = Mode.get_mode_from(mode or args.mode)
-        self.running: bool = False
+        self._running: bool = False
 
         super().__init__(self.name)
 
@@ -99,7 +99,7 @@ class MetaExpert(Service):
     def run(self) -> None:
         """Run the expert trading system."""
         self.logger.info("Starting trading bot in %s mode", self.mode)
-        self.running = True
+        self._running = True
 
         # print(self.symbol)
         # print(self.timeframe)
@@ -118,7 +118,7 @@ class MetaExpert(Service):
 
             asyncio.run(Process.ON_TIMER.async_run())
 
-            while self.running:
+            while self._running:
                 # Fetch latest market data
                 # data = self.fetch_historical_data()
 
@@ -131,7 +131,7 @@ class MetaExpert(Service):
                     # time.sleep(sleep_time)
                 else:
                     # In backtest mode, we process all data at once
-                    self.running = False
+                    self._running = False
 
         except KeyboardInterrupt:
             # Handle keyboard interrupt
@@ -146,7 +146,7 @@ class MetaExpert(Service):
             # Handle runtime-specific errors
             self.logger.error("Runtime error: %s", e)
         finally:
-            self.running = False
+            self._running = False
             Process.ON_DEINIT.run()
             self.logger.info("Expert shutdown complete")
 

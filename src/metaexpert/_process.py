@@ -100,12 +100,12 @@ class Process(Enum):
                                 event.value.get("callback").append(getattr(module, attr))
                                 logger.debug(
                                     "Registering callback for %s:%s()",
-                                    event.value["name"], attr
+                                    event.value.get("name"), attr
                                 )
                             else:
                                 logger.warning(
                                     "Too many callbacks for %s: %d",
-                                    qualif[1], event.value["number"] + 1
+                                    qualif[1], event.value.get("number") + 1
                                 )
             return module
 
@@ -119,7 +119,7 @@ class Process(Enum):
         # logger = get_logger(__name__)
         for callback in self.value.get("callback"):
             callback()
-            logger.debug("Launch task for %s()", self.value["name"])
+            logger.debug("Launch task for %s()", self.value.get("name"))
 
     async def async_run(self) -> None:
         """Run the process asynchronously.

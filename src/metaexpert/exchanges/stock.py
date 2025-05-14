@@ -25,7 +25,7 @@ class Stock(Enum):
     }
 
     def init_exchange(self) -> None:
-        print("Initializing exchange:", self.value["name"])
+        print("Initializing exchange:", self.value.get("name"))
         
         match self:
             case Stock.BINANCE:
@@ -45,7 +45,7 @@ class Stock(Enum):
             return name
 
         for item in cls:
-            if item.value["name"] == name.lower():
+            if item.value.get("name") == name.lower():
                 return item
 
         return None

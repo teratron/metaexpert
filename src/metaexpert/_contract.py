@@ -19,7 +19,7 @@ class Contract(Enum):
             return name
 
         for item in cls:
-            if item.value["name"] == name.lower():
+            if item.value.get("name") == name.lower():
                 return item
 
         return None
