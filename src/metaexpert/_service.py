@@ -24,7 +24,7 @@ class Service:
     def on_init(
             self,
             symbol: str | set[str] | None = None,
-            timeframe: Timeframe | set[Timeframe] | str | set[str] | None = None,
+            timeframe: str | set[str] | None = None,
             *,
             shift: int = 0,
             magic: int = 0,
@@ -33,8 +33,8 @@ class Service:
         """Decorator for initialization event handling.
 
         Args:
-            symbol (str | None): Symbol of the trading pair.
-            timeframe (str | None): Time frame for the trading data.
+            symbol (str | set[str] | None): Symbol of the trading pair.
+            timeframe (str | set[str] | None): Time frame for the trading data.
             shift (int): A shift relative to the current bar on which the expert is traded. Defaults to 0.
             magic (int): Magic number. Used to identify the expert. Defaults to 0.
             name (str | None): The name of the expert.
@@ -43,7 +43,7 @@ class Service:
             Callable: Decorated function that handles the initialization event.
         """
         self.symbol = symbol
-        self.timeframe: Timeframe | set[Timeframe] = timeframe
+        self.timeframe: Timeframe | set[Timeframe] = Timeframe.get_period_from(timeframe)
         self.shift = shift
         self.magic = magic
         self.name = name
@@ -127,24 +127,21 @@ class Service:
             Callable: Decorated function that executes at specified intervals.
         """
 
+        if interval <= 0:
+            raise ValueError("Interval must be greater than 0")
+
         def outer(func: Callable) -> Callable:
             timer = Timer(interval=interval, callback=func)
 
             async def inner() -> None:
                 await timer.start()
-                # while True:
-                #     await asyncio.sleep(interval / 1000.0)
-                #     func()
-
-                # await asyncio.gather(
-                #     *(asyncio.create_task(Timer(interval=interval, callback=func).start()))
-                # )
 
             return inner
 
         return outer
 
-    def on_book(self, func: Callable) -> Callable:
+    @staticmethod
+    def on_book(func: Callable) -> Callable:
         def inner() -> None:
             func()
 

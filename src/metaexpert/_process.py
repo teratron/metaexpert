@@ -2,18 +2,12 @@ import asyncio
 import inspect
 from enum import Enum
 from types import ModuleType
-from typing import Self, TypedDict, Callable
+from typing import Self
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
 logger: Logger = get_logger(APP_NAME)
-
-
-class ProcessDict(TypedDict):
-    name: str
-    number: int
-    callback: list[Callable]
 
 
 class Process(Enum):
@@ -41,7 +35,7 @@ class Process(Enum):
     }
     ON_BOOK = {
         "name": "on_book",
-        "number": 3,
+        "number": 1,
         "callback": []
     }
     ON_TICK = {
@@ -124,30 +118,6 @@ class Process(Enum):
 
         This method executes the registered callbacks for the event asynchronously.
         """
-        # match self:
-        #     case Process.ON_TRADE:
-        #         # logger.info("Trading...")
-        #         pass
-        #     case Process.ON_TRANSACTION:
-        #         # logger.info("Transaction...")
-        #         pass
-        #     case Process.ON_BOOK:
-        #         # logger.info("Book...")
-        #         pass
-        #     case Process.ON_TICK:
-        #         # logger.info("Tick...")
-        #         pass
-        #     case Process.ON_BAR:
-        #         # logger.info("Bar...")
-        #         pass
-        #     case Process.ON_TIMER:
-        #         await asyncio.gather(
-        #             *(
-        #                 asyncio.create_task(Timer(interval=0, callback=callback).start())
-        #                 for callback in self.value.get("callback")
-        #             )
-        #         )
-        # logger.info("Timer...")
         logger.debug("Launch task for %s(s)", self.value.get("name"))
         await asyncio.gather(
             *(asyncio.create_task(func()) for func in self.value.get("callback"))

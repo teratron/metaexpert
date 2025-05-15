@@ -1,15 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta, datetime
 from enum import Enum
-from typing import Self, TypedDict
-
-
-class TimeframeDict(TypedDict):
-    name: str
-    sec: int
-    min: int
-    hour: int | None
-    delta: timedelta | None
+from typing import Self
 
 
 class Timeframe(Enum):
@@ -115,14 +107,14 @@ class Timeframe(Enum):
     }
 
     @classmethod
-    def get_period_from(cls, name: str | Self) -> Self | None:
+    def get_period_from(cls, name: str | set[str] | None) -> Self | set[Self] | None:
         """Get the period type from a string."""
-        if isinstance(name, Timeframe):
-            return name
-
         for item in cls:
             if item.value.get("name") == name.lower():
                 return item
+
+        if isinstance(name, set):
+            return set(cls.get_period_from(item) for item in name if isinstance(item, str))
 
         return None
 
