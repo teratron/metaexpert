@@ -115,9 +115,9 @@ class Process(Enum):
 
         This method executes the registered callbacks for the event.
         """
-        for callback in self.value.get("callback"):
-            callback()
-            logger.debug("Launch task for %s()", self.value.get("name"))
+        for func in self.value.get("callback"):
+            func()
+            logger.debug("Launch task for %s", self.value.get("name"))
 
     async def async_run(self) -> None:
         """Run the process asynchronously.
@@ -148,8 +148,7 @@ class Process(Enum):
         #             )
         #         )
         # logger.info("Timer...")
-
+        logger.debug("Launch task for %s(s)", self.value.get("name"))
         await asyncio.gather(
-            *(asyncio.create_task(callback()) for callback in self.value.get("callback"))
+            *(asyncio.create_task(func()) for func in self.value.get("callback"))
         )
-        logger.debug("Launch task for %s()", self.value.get("name"))

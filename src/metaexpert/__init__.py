@@ -109,16 +109,17 @@ class MetaExpert(Service):
             # Initialize event handling
             self.module = Process.init()
 
-            if not self.module:
+            if self.module:
                 self.filename = Path(self.module.__file__).stem
 
             # Initialize the expert
             Process.ON_INIT.run()
             self.logger.info("Expert initialized successfully")
 
-            #
+            # Запускаем цикл обработки событий таймеров
             asyncio.run(Process.ON_TIMER.async_run())
 
+            # Запускаем основной цикл обработки событий
             while self._running:
                 # Fetch latest market data
                 # data = self.fetch_historical_data()
