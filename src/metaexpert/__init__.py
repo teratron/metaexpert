@@ -18,7 +18,6 @@ from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
-from metaexpert.exchanges.stock import Stock
 from metaexpert.logger import setup_logger, Logger
 
 
@@ -86,9 +85,6 @@ class MetaExpert(Service):
         self.logger.info("Starting expert on %s", args.stock)
         self.logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
         self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
-
-        # Initialize stock exchange
-        # self.stock.init_exchange()
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"

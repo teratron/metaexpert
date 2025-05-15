@@ -1,13 +1,5 @@
-# -*- coding: utf-8 -*-
-
 from enum import Enum
-from typing import Self, TypedDict
-
-
-class ProcessDict(TypedDict):
-    name: str
-    title: str
-    description: str
+from typing import Self
 
 
 class Stock(Enum):
@@ -39,11 +31,8 @@ class Stock(Enum):
                 print("Unknown exchange selected")
 
     @classmethod
-    def get_exchange_from(cls, name: str | Self) -> Self | None:
+    def get_exchange_from(cls, name: str) -> Self | None:
         """Get the exchange name from the enumeration."""
-        if isinstance(name, Stock):
-            return name
-
         for item in cls:
             if item.value.get("name") == name.lower():
                 return item

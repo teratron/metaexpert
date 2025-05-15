@@ -1,3 +1,5 @@
+"""Configuration for exchange APIs."""
+
 import os
 
 from dotenv_vault import load_dotenv  # type: ignore

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import timedelta, datetime
 from enum import Enum
 from typing import Self
