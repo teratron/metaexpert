@@ -4,7 +4,7 @@ from enum import Enum
 from types import ModuleType
 from typing import Self, TypedDict, Callable
 
-from metaexpert import APP_NAME
+from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
 logger: Logger = get_logger(APP_NAME)
@@ -124,6 +124,31 @@ class Process(Enum):
 
         This method executes the registered callbacks for the event asynchronously.
         """
+        # match self:
+        #     case Process.ON_TRADE:
+        #         # logger.info("Trading...")
+        #         pass
+        #     case Process.ON_TRANSACTION:
+        #         # logger.info("Transaction...")
+        #         pass
+        #     case Process.ON_BOOK:
+        #         # logger.info("Book...")
+        #         pass
+        #     case Process.ON_TICK:
+        #         # logger.info("Tick...")
+        #         pass
+        #     case Process.ON_BAR:
+        #         # logger.info("Bar...")
+        #         pass
+        #     case Process.ON_TIMER:
+        #         await asyncio.gather(
+        #             *(
+        #                 asyncio.create_task(Timer(interval=0, callback=callback).start())
+        #                 for callback in self.value.get("callback")
+        #             )
+        #         )
+        # logger.info("Timer...")
+
         await asyncio.gather(
             *(asyncio.create_task(callback()) for callback in self.value.get("callback"))
         )

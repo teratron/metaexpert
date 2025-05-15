@@ -116,6 +116,7 @@ class MetaExpert(Service):
             Process.ON_INIT.run()
             self.logger.info("Expert initialized successfully")
 
+            #
             asyncio.run(Process.ON_TIMER.async_run())
 
             while self._running:

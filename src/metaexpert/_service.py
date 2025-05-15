@@ -1,7 +1,7 @@
-import asyncio
 from typing import Any, Callable
 
 from metaexpert._timeframe import Timeframe
+from metaexpert._timer import Timer
 from metaexpert.logger import Logger, get_logger
 
 
@@ -128,9 +128,17 @@ class Service:
         """
 
         def outer(func: Callable) -> Callable:
+            timer = Timer(interval=interval, callback=func)
+
             async def inner() -> None:
-                await asyncio.sleep(interval / 1000.0)
-                func()
+                await timer.start()
+                # while True:
+                #     await asyncio.sleep(interval / 1000.0)
+                #     func()
+
+                # await asyncio.gather(
+                #     *(asyncio.create_task(Timer(interval=interval, callback=func).start()))
+                # )
 
             return inner
 
