@@ -26,7 +26,7 @@ class BinanceStock(Exchange):
             raise ValueError("API key and secret are required for Binance operations.")
 
         if self._client is None:
-            match self.instrument:
+            match self.instrument if isinstance(self.instrument, str) else None:
                 case "spot":
                     install_package(BINANCE_SPOT_PACKAGE)
                     try:
@@ -40,7 +40,7 @@ class BinanceStock(Exchange):
                 case "futures":
                     install_package(BINANCE_FUTURES_PACKAGE)
                     try:
-                        match self.contract:
+                        match self.contract if isinstance(self.contract, str) else None:
                             case "usdt_m":
                                 pkg = import_module(BINANCE_FUTURES_MODULE_USDT_M)
                                 self._client: Self = pkg.UMFutures(

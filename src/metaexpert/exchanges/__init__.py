@@ -37,11 +37,13 @@ class Exchange(ABC):
         cls.instrument = instrument.lower() if isinstance(stock, str) else None
         cls.contract = contract.lower() if isinstance(stock, str) else None
 
-        match cls.stock:
+        match cls.stock if isinstance(cls.stock, str) else None:
             case "binance":
                 return import_module("metaexpert.exchanges.binance").BinanceStock()
             case "bybit":
                 return import_module("metaexpert.exchanges.bybit").BybitStock()
+            case "okx":
+                return import_module("metaexpert.exchanges.okx").OkxStock()
             case _:
                 raise ValueError(f"Unsupported stock: {cls.stock}")
 

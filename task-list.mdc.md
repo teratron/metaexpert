@@ -2,9 +2,6 @@
 
 _As you complete tasks and reference relevant files, update this file as our memory to help with future tasks._
 
-This file is structured to track the development of the knowledge base system and integrations with large language models.
-Please keep this file updated as Trae progresses through the implementation flow. ✅
-
 ## 🧠 Rules
 
 When interacting with this file:

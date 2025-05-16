@@ -1,8 +1,8 @@
 import json
-import os
+# import os
 import time
 
-import psycopg
+# import psycopg
 import websocket
 from dotenv_vault import load_dotenv
 
@@ -10,16 +10,16 @@ from dotenv_vault import load_dotenv
 def on_message(ws, message):
     data = json.loads(message)
 
-    with psycopg.connect(
-            f"dbname={os.getenv('DB_NAME')} user={os.getenv('DB_USER')} password={os.getenv('DB_PASSWORD')}"
-    ) as conn:
-        with conn.cursor() as cur:
-            for symbol in data:
-                cur.execute(
-                    "INSERT INTO prices (symbol, value) VALUES (%s, %s) ON CONFLICT (symbol) DO UPDATE SET value = %s",
-                    (symbol["s"], symbol["c"], symbol["c"]),
-                )
-            conn.commit()
+    # with psycopg.connect(
+    #         f"dbname={os.getenv('DB_NAME')} user={os.getenv('DB_USER')} password={os.getenv('DB_PASSWORD')}"
+    # ) as conn:
+    #     with conn.cursor() as cur:
+    #         for symbol in data:
+    #             cur.execute(
+    #                 "INSERT INTO prices (symbol, value) VALUES (%s, %s) ON CONFLICT (symbol) DO UPDATE SET value = %s",
+    #                 (symbol["s"], symbol["c"], symbol["c"]),
+    #             )
+    #         conn.commit()
     time.sleep(3)
 
 
