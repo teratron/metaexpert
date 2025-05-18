@@ -1,5 +1,10 @@
 import subprocess
 
+from metaexpert import APP_NAME
+from metaexpert.logger import Logger, get_logger
+
+logger: Logger = get_logger(APP_NAME)
+
 
 def is_package_installed(name: str) -> bool:
     """Checks whether the package is installed in the virtual environment."""
@@ -12,7 +17,7 @@ def is_package_installed(name: str) -> bool:
         )
         return result.returncode == 0
     except Exception as e:
-        print(f"Mistake when checking the package: {e}")
+        logger.warning("Mistake when checking the package: %s", e)
         return False
 
 
@@ -31,14 +36,14 @@ def get_package_version(name: str) -> str | None:
                     return line.split(": ")[1]
         return None
     except Exception as e:
-        print(f"Error retrieving version for package '{name}': {e}")
+        logger.error("Error retrieving version for package '%s': %s", name, e)
         return None
 
 
-def install_package(name: str) -> None:
+def install_package(name: str, version: str | None = None) -> None:
     """Installs a package from PyPI using pip."""
     if is_package_installed(name):
-        print(f"Package '{name}' is already installed.")
+        logger.debug("Package '%s' is already installed.", name)
         return
 
     try:
@@ -47,31 +52,31 @@ def install_package(name: str) -> None:
         # import sys
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
-            ["pip", "install", name],
+            ["pip", "install", name if not version else f"{name}=={version}"],
             check=True,  # Will raise CalledProcessError if pip exits with an error
             capture_output=True,  # Captures stdout and stderr
             text=True  # Decodes stdout and stderr as text
         )
-        print(f"Package '{name}' installed successfully.")
-        print(result.stdout)
+        logger.info("Package '%s' installed successfully.", name)
+        logger.debug("%s", result.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"Error installing package '{name}': {e}")
-        print(e.stderr)
+        logger.error("Error installing package '%s': %s", name, e)
+        logger.debug("%s", e.stderr)
     except subprocess.SubprocessError as e:
-        print(f"Subprocess error occurred: {e}")
+        logger.error("Subprocess error occurred: %s", e)
     except FileNotFoundError:
-        print("Error: 'pip' not found. Make sure Python and pip are installed and available in PATH.")
+        logger.error("Error: 'pip' not found. Make sure Python and pip are installed and available in PATH.")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        logger.error("An unexpected error occurred: %s", e)
 
 
-def __example_usage() -> None:
+def _example_usage() -> None:
     # This function demonstrates how to use the install_package function
     # You can replace 'requests' with any package you want to install
     package_name = "requests"  # Replace with the name of the required package
 
     if is_package_installed(package_name):
-        print(f"Пакет '{package_name}' установлен")
+        print(f"Package '{package_name}' installed, version: {get_package_version(package_name)}")
     else:
         install_package(package_name)
 
