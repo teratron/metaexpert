@@ -17,8 +17,6 @@ dependencies = [
     "numpy>=2.2.5",
     "pandas>=2.2.3",
     #"ta-lib==0.6.3",
-    #"metaexpert-binance-api",
-    #"metaexpert-bybit-api",
 ]
 
 [project.urls]

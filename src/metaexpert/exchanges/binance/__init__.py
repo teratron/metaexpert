@@ -2,7 +2,7 @@ from importlib import import_module
 from typing import Self
 
 from metaexpert.exchanges import Exchange
-from metaexpert.exchanges.config import (
+from metaexpert.exchanges.binance.config import (
     BINANCE_SPOT_PACKAGE,
     BINANCE_SPOT_MODULE,
     BINANCE_FUTURES_PACKAGE,

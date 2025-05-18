@@ -21,3 +21,6 @@ class BybitStock(Exchange):
 
         # Здесь должна быть реализация получения баланса
         return {"status": "success", "exchange": "bybit", "message": "Баланс получен"}
+
+    def get_account(self) -> dict:
+        pass
