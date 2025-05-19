@@ -30,18 +30,11 @@ class WebSocketClient(WebSocketApp):
         print("Websocket connection closed")
         self.keep_running = False
 
-        if self.on_close:
-            self.on_close(ws, *args, **kwargs)
-
     def on_error(self, ws: WebSocket, error: Exception) -> None:
         print(f"Websocket connection error: {error}")
-        # if self.on_error:
-        #     self.on_error(ws, error)
 
     def on_message(self, ws: WebSocket, message: str) -> None:
         print(f"Received message: {message}")
-        # if self.on_message:
-        #     self.on_message(ws, message)
 
 
 if __name__ == "__main__":
