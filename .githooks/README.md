@@ -24,6 +24,15 @@ git config --global --unset core.hooksPath
 
 1. post-merge
 
+## Fetch
+
+-
+
+## Merge
+
+1. post-index-change
+2. post-merge
+
 ## Add
 
 1. post-index-change
