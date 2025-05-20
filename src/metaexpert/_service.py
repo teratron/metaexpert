@@ -2,7 +2,6 @@ from typing import Any, Callable
 
 from metaexpert._timeframe import Timeframe
 from metaexpert._timer import Timer
-from metaexpert.logger import Logger, get_logger
 
 
 class Service:
@@ -18,8 +17,8 @@ class Service:
     magic: int
     name: str | None
 
-    def __init__(self, name: str) -> None:
-        self.logger: Logger = get_logger(name)
+    # def __init__(self, name: str) -> None:
+    #     self.logger: Logger = get_logger(name)
 
     def on_init(
             self,

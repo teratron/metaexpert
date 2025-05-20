@@ -1,9 +1,30 @@
 import subprocess
+import sys
+from pathlib import Path
 
-from metaexpert import APP_NAME
-from metaexpert.logger import Logger, get_logger
+from packaging import version
 
-logger: Logger = get_logger(APP_NAME)
+from metaexpert import logger
+
+
+def get_venv_path() -> Path | None:
+    """Returns the way to the virtual environment of the project."""
+    try:
+        if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
+            return Path(sys.prefix)
+        return None
+    except Exception as e:
+        logger.error("Error when determining the path of virtual environment: %s", e)
+        return None
+
+
+def get_python_path() -> str:
+    """Returns the way to the executable Python file in a virtual environment."""
+    try:
+        return sys.executable
+    except Exception as e:
+        logger.error("Error when getting a path to Python: %s", e)
+        return ""
 
 
 def is_package_installed(name: str) -> bool:
@@ -40,6 +61,33 @@ def get_package_version(name: str) -> str | None:
         return None
 
 
+def compare_package_versions(name: str, required_version: str) -> tuple[bool, str]:
+    """Сравнивает установленную версию пакета с требуемой.
+
+    Args:
+        name: Имя пакета
+        required_version: Требуемая версия
+
+    Returns:
+        tuple[bool, str]: (результат сравнения, сообщение)
+        - True если установленная версия >= требуемой
+        - False если пакет не установлен или версия < требуемой
+    """
+    try:
+        installed_version = get_package_version(name)
+        if not installed_version:
+            return False, f"Пакет '{name}' не установлен"
+
+        if version().parse(installed_version) >= version().parse(required_version):
+            return True, f"Версия {installed_version} >= {required_version}"
+        else:
+            return False, f"Установлена версия {installed_version}, требуется {required_version}"
+
+    except Exception as e:
+        logger.error("Ошибка при сравнении версий пакета '%s': %s", name, e)
+        return False, str(e)
+
+
 def install_package(name: str, version: str | None = None) -> None:
     """Installs a package from PyPI using pip."""
     if is_package_installed(name):
@@ -71,6 +119,14 @@ def install_package(name: str, version: str | None = None) -> None:
 
 
 def _example_usage() -> None:
+    venv_path = get_venv_path()
+
+    if venv_path:
+        print(f"Путь к виртуальной среде: {venv_path}")
+        print(f"Путь к Python: {get_python_path()}")
+    else:
+        print("Virtual environment was not detected.")
+
     # This function demonstrates how to use the install_package function
     # You can replace 'requests' with any package you want to install
     package_name = "requests"  # Replace with the name of the required package
@@ -89,3 +145,7 @@ def _example_usage() -> None:
         print(f"Package '{package_name}' successfully imported after installation.")
     except ImportError:
         print(f"Failed to import package '{package_name}' immediately after installation.")
+
+
+if __name__ == "__main__":
+    _example_usage()

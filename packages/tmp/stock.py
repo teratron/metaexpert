@@ -18,8 +18,8 @@ class Stock(Enum):
 
     def init_exchange(self) -> None:
         print("Initializing exchange:", self.value.get("name"))
-        
-        match self:
+
+        match self if isinstance(self, Stock) else None:
             case Stock.BINANCE:
                 #self.logger.debug("%s exchange selected", self.value["title"])
                 print(f"{self.value["title"]} exchange selected")

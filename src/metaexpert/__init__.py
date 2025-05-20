@@ -20,9 +20,11 @@ from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
 from metaexpert.logger import setup_logger, Logger
 
-
 # from metaexpert._market import Market
 # from metaexpert._trade import Trade
+
+logger: Logger = setup_logger(APP_NAME)
+
 
 class MetaExpert(Service):
     """Expert trading system"""
@@ -74,7 +76,7 @@ class MetaExpert(Service):
         self.mode: Mode = Mode.get_mode_from(mode or args.mode)
         self._running: bool = False
 
-        super().__init__(self.name)
+        # super().__init__(self.name)
 
         # self.client.get_balance()
         # self.client.get_account()

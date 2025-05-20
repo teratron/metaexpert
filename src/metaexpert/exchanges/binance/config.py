@@ -20,7 +20,7 @@ BINANCE_SPOT_WS_PORT: list[int] = [9443, 443]
 
 # Futures trading
 BINANCE_FUTURES_PACKAGE: str = "binance-futures-connector"
-BINANCE_FUTURES_PACKAGE_VERSION: str = "0.0.0"
+BINANCE_FUTURES_PACKAGE_VERSION: str = "4.1.0"
 BINANCE_FUTURES_MODULE_USDT_M: str = "binance.um_futures"
 BINANCE_FUTURES_MODULE_COIN_M: str = "binance.cm_futures"
 BINANCE_FUTURES_WS_BASE_URL: str = "wss://fstream.binance.com"

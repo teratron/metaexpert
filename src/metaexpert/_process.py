@@ -4,10 +4,11 @@ from enum import Enum
 from types import ModuleType
 from typing import Self
 
-from metaexpert.config import APP_NAME
-from metaexpert.logger import Logger, get_logger
-
-logger: Logger = get_logger(APP_NAME)
+# from metaexpert.config import APP_NAME
+# from metaexpert.logger import Logger, get_logger
+#
+# logger: Logger = get_logger(APP_NAME)
+from metaexpert import logger
 
 
 class Process(Enum):

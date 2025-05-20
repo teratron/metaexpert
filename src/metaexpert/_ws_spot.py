@@ -1,3 +1,6 @@
+import json
+import time
+import traceback
 from threading import Thread
 
 from websocket import WebSocketApp, WebSocket
@@ -11,30 +14,25 @@ class WebSocketClient(WebSocketApp):
             on_close=self.on_close,
             on_error=self.on_error,
             on_message=self.on_message,
-            *args,
             **kwargs
         )
-        self.keep_running = True
-        # _run_forever_thread = Thread(target=self.run_forever)
-        self.run_forever()
-
-    # def run_forever(self):
-    #     while self.keep_running:
-    #         self.run_forever()
+        self.params = args[0] if args else None
+        self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
 
     def on_open(self, ws: WebSocket) -> None:
-        print("Websocket connection opened")
-        # self.run_forever()
+        print(ws, "Websocket connection opened")
+        if self.params and isinstance(self.params, list):
+            ws.send(json.dumps({"op": "subscribe", "args": self.params}))
 
-    def on_close(self, ws: WebSocket, *args, **kwargs) -> None:
-        print("Websocket connection closed")
-        self.keep_running = False
+    def on_close(self, ws: WebSocket, status, message: str, *args, **kwargs) -> None:
+        print(f"{ws} Websocket connection closed: {status} {message}")
 
     def on_error(self, ws: WebSocket, error: Exception) -> None:
-        print(f"Websocket connection error: {error}")
+        print(f"{ws} Websocket connection error: {error}")
+        print(traceback.format_exc())
 
     def on_message(self, ws: WebSocket, message: str) -> None:
-        print(f"Received message: {message}")
+        print(f"{ws} Received message: {message}")
 
 
 if __name__ == "__main__":
@@ -43,4 +41,17 @@ if __name__ == "__main__":
     #     target=WebSocketClient,
     #     args=("wss://stream.binance.com:9443/stream?streams=ethusdt@trade/ethusdt@kline_1m",)
     # ).start()
-    Thread(target=WebSocketClient, args=("wss://stream.binance.com:9443/ws/ethusdt@depth",)).start()
+    # Thread(target=WebSocketClient, args=("wss://stream.binance.com:9443/ws/ethusdt@depth",)).start()
+
+    Thread(
+        target=WebSocketClient,
+        args=("wss://stream.bybit.com/v5/public/spot", ["tickers.ADAUSDT", "orderbook.50.ADAUSDT"]),
+        daemon=True
+    ).start()
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Exiting...")
+        exit(0)
