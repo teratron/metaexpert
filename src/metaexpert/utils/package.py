@@ -2,7 +2,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from packaging import version
+import packaging
 
 from metaexpert import logger
 
@@ -61,7 +61,7 @@ def get_package_version(name: str) -> str | None:
         return None
 
 
-def compare_package_versions(name: str, required_version: str) -> tuple[bool, str]:
+def compare_package_versions(name: str, required_version: str) -> bool:
     """Сравнивает установленную версию пакета с требуемой.
 
     Args:
@@ -69,23 +69,26 @@ def compare_package_versions(name: str, required_version: str) -> tuple[bool, st
         required_version: Требуемая версия
 
     Returns:
-        tuple[bool, str]: (результат сравнения, сообщение)
+        bool: результат сравнения
         - True если установленная версия >= требуемой
         - False если пакет не установлен или версия < требуемой
     """
     try:
         installed_version = get_package_version(name)
         if not installed_version:
-            return False, f"Пакет '{name}' не установлен"
+            logger.warning("Package '%s' not installed", name)
+            return False
 
-        if version().parse(installed_version) >= version().parse(required_version):
-            return True, f"Версия {installed_version} >= {required_version}"
+        if packaging.version.parse(installed_version) >= packaging.version.parse(required_version):
+            logger.info("Version %s >= %s", installed_version, required_version)
+            return True
         else:
-            return False, f"Установлена версия {installed_version}, требуется {required_version}"
+            logger.warning("A version of %s is installed, %s requires", installed_version, required_version)
+            return False
 
     except Exception as e:
-        logger.error("Ошибка при сравнении версий пакета '%s': %s", name, e)
-        return False, str(e)
+        logger.error("Error when comparing versions of the package '%s': %s", name, e)
+        return False
 
 
 def install_package(name: str, version: str | None = None) -> None:
@@ -97,7 +100,6 @@ def install_package(name: str, version: str | None = None) -> None:
     try:
         # Run pip as a subprocess
         # sys.executable ensures using pip from the same Python environment
-        # import sys
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
             ["pip", "install", name if not version else f"{name}=={version}"],
@@ -122,8 +124,8 @@ def _example_usage() -> None:
     venv_path = get_venv_path()
 
     if venv_path:
-        print(f"Путь к виртуальной среде: {venv_path}")
-        print(f"Путь к Python: {get_python_path()}")
+        print(f"The path to the virtual environment: {venv_path}")
+        print(f"The path to Python: {get_python_path()}")
     else:
         print("Virtual environment was not detected.")
 
@@ -145,6 +147,13 @@ def _example_usage() -> None:
         print(f"Package '{package_name}' successfully imported after installation.")
     except ImportError:
         print(f"Failed to import package '{package_name}' immediately after installation.")
+
+    required_version = "1.0.0"
+    is_compatible = compare_package_versions(package_name, required_version)
+
+    if not is_compatible:
+        print(f"Installation of the package '{package_name}' version {required_version}")
+        # install_package(package_name, required_version)
 
 
 if __name__ == "__main__":
