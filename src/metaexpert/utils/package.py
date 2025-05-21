@@ -21,16 +21,32 @@ def get_venv_path() -> Path | None:
         return None
 
 
-def get_python_path() -> str:
-    """Returns the way to the executable Python file in a virtual environment."""
+def get_packages_path() -> Path | None:
+    """Возвращает путь к директории lib виртуальной среды."""
     try:
-        return sys.executable
+        venv_path = get_venv_path()
+        if not venv_path:
+            logger.warning("Виртуальная среда не обнаружена")
+            return None
+
+        lib_path: Path = venv_path / "lib" / "site-packages"
+
+        if sys.platform == "win32" or sys.platform == "win64":
+            lib_path = venv_path / "Lib" / "site-packages"
+
+        if not lib_path.exists():
+            logger.error("Директория lib | Lib не найдена в %s", venv_path)
+            return None
+
+        logger.debug("Путь к lib | Lib: %s", lib_path)
+        return lib_path
+
     except Exception as e:
-        logger.error("Error when getting a path to Python: %s", e)
-        return ""
+        logger.error("Ошибка при определении пути к lib | Lib: %s", e)
+        return None
 
 
-def get_venv_bin_path() -> Path | None:
+def get_bin_path() -> Path | None:
     """Возвращает путь к директории bin | Scripts виртуальной среды."""
     try:
         venv_path = get_venv_path()
@@ -38,13 +54,10 @@ def get_venv_bin_path() -> Path | None:
             logger.warning("Виртуальная среда не обнаружена")
             return None
 
-        bin_path: Path
+        bin_path: Path = venv_path / "bin"
 
-        match sys.platform:
-            case "linux" | "darwin":
-                bin_path = venv_path / "bin"
-            case "win32" | "win64":
-                bin_path = venv_path / "Scripts"
+        if sys.platform == "win32" or sys.platform == "win64":
+            bin_path = venv_path / "Scripts"
 
         if not bin_path.exists():
             logger.error("Директория bin | Scripts не найдена в %s", venv_path)
@@ -58,21 +71,35 @@ def get_venv_bin_path() -> Path | None:
         return None
 
 
-def get_venv_bin_path_with(command: Path | str | None = None) -> Path | None:
+def get_python_path() -> str | None:
+    """Returns the way to the executable Python file in a virtual environment."""
     try:
-        if not command:
-            return get_venv_bin_path()
-        bin_path: Path = get_venv_bin_path()
+        return sys.executable
+    except Exception as e:
+        logger.error("Error when getting a path to Python: %s", e)
+        return None
 
-        if command:
-            bin_path = bin_path / command
 
-        logger.debug("Путь к bin | Scripts: %s", bin_path)
-        return bin_path
+def get_pip_path() -> str:
+    """Возвращает путь к исполняемому файлу pip в виртуальной среде."""
+    try:
+        bin_path = get_bin_path()
+        if not bin_path:
+            return "pip"
+
+        pip_name = "pip.exe" if sys.platform.startswith("win") else "pip"
+        pip_path = bin_path / pip_name
+
+        if not pip_path.exists():
+            logger.error("Файл pip не найден в %s", bin_path)
+            return "pip"
+
+        logger.debug("Путь к pip: %s", pip_path)
+        return str(pip_path)
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к bin | Scripts: %s", e)
-        return None
+        logger.error("Ошибка при определении пути к pip: %s", e)
+        return "pip"
 
 
 def is_package_installed(name: str) -> bool:
@@ -89,7 +116,7 @@ def is_package_installed(name: str) -> bool:
         # return True
 
         result = subprocess.run(
-            ["pip", "show", name, "--require-virtualenv", "--isolated"],
+            [get_pip_path(), "show", name],  # , "--require-virtualenv", "--isolated"
             check=False,
             capture_output=True,
             text=True
@@ -161,7 +188,8 @@ def install_package(name: str, version: str | None = None) -> None:
         # sys.executable ensures using pip from the same Python environment
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
-            ["pip", "install", name if not version else f"{name}=={version}", "--target", get_venv_path()],
+            ["pip", "install", name if not version else f"{name}=={version}", "--target",
+             get_packages_path() if get_packages_path() else ""],
             check=True,  # Will raise CalledProcessError if pip exits with an error
             capture_output=True,  # Captures stdout and stderr
             text=True  # Decodes stdout and stderr as text
