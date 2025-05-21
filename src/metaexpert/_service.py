@@ -2,7 +2,10 @@ from typing import Any, Callable
 
 from metaexpert._timeframe import Timeframe
 from metaexpert._timer import Timer
+from metaexpert.config import APP_NAME
+from metaexpert.logger import Logger, get_logger
 
+logger: Logger = get_logger(APP_NAME)
 
 class Service:
     """Expert trading system service.
@@ -50,7 +53,7 @@ class Service:
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
             def inner(*args, **kwargs) -> None:
                 # self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
-                self.logger.debug("Initializing...")
+                logger.debug("Initializing...")
                 func(*args, **kwargs)
 
             return inner  # InitStatus.INIT_SUCCEEDED
@@ -59,7 +62,7 @@ class Service:
 
     def on_deinit(self, func: Callable[[str], None]) -> Callable:
         def inner(*, reason: str = "+++") -> None:
-            self.logger.debug("Deinitializing...")
+            logger.debug("Deinitializing...")
             func(reason)
 
         return inner
@@ -120,7 +123,7 @@ class Service:
         """Decorator for timer-based event handling.
 
         Args:
-            interval (int, optional): Time interval in milliseconds. Defaults to 1000.
+            interval (int): Interval in milliseconds for the timer. Defaults to 1000 ms.
 
         Returns:
             Callable: Decorated function that executes at specified intervals.

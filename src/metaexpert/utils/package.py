@@ -1,9 +1,12 @@
 import subprocess
 import sys
+import traceback
 from pathlib import Path
 
 import packaging
 
+# import importlib.util
+# import pkg_resources
 from metaexpert import logger
 
 
@@ -27,11 +30,66 @@ def get_python_path() -> str:
         return ""
 
 
+def get_venv_bin_path() -> Path | None:
+    """Возвращает путь к директории bin | Scripts виртуальной среды."""
+    try:
+        venv_path = get_venv_path()
+        if not venv_path:
+            logger.warning("Виртуальная среда не обнаружена")
+            return None
+
+        bin_path: Path
+
+        match sys.platform:
+            case "linux" | "darwin":
+                bin_path = venv_path / "bin"
+            case "win32" | "win64":
+                bin_path = venv_path / "Scripts"
+
+        if not bin_path.exists():
+            logger.error("Директория bin | Scripts не найдена в %s", venv_path)
+            return None
+
+        logger.debug("Путь к bin | Scripts: %s", bin_path)
+        return bin_path
+
+    except Exception as e:
+        logger.error("Ошибка при определении пути к bin | Scripts: %s", e)
+        return None
+
+
+def get_venv_bin_path_with(command: Path | str | None = None) -> Path | None:
+    try:
+        if not command:
+            return get_venv_bin_path()
+        bin_path: Path = get_venv_bin_path()
+
+        if command:
+            bin_path = bin_path / command
+
+        logger.debug("Путь к bin | Scripts: %s", bin_path)
+        return bin_path
+
+    except Exception as e:
+        logger.error("Ошибка при определении пути к bin | Scripts: %s", e)
+        return None
+
+
 def is_package_installed(name: str) -> bool:
     """Checks whether the package is installed in the virtual environment."""
     try:
+        # Способ 1: через importlib
+        # spec = importlib.util.find_spec(name)
+        # if spec is not None:
+        #     return True
+        # return False
+
+        # Способ 2: через pkg_resources
+        # pkg_resources.get_distribution(name)
+        # return True
+
         result = subprocess.run(
-            ["pip", "show", name],
+            ["pip", "show", name, "--require-virtualenv", "--isolated"],
             check=False,
             capture_output=True,
             text=True
@@ -39,6 +97,7 @@ def is_package_installed(name: str) -> bool:
         return result.returncode == 0
     except Exception as e:
         logger.warning("Mistake when checking the package: %s", e)
+        print(traceback.format_exc())
         return False
 
 
@@ -102,7 +161,7 @@ def install_package(name: str, version: str | None = None) -> None:
         # sys.executable ensures using pip from the same Python environment
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
-            ["pip", "install", name if not version else f"{name}=={version}"],
+            ["pip", "install", name if not version else f"{name}=={version}", "--target", get_venv_path()],
             check=True,  # Will raise CalledProcessError if pip exits with an error
             capture_output=True,  # Captures stdout and stderr
             text=True  # Decodes stdout and stderr as text

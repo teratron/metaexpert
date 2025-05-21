@@ -4,11 +4,10 @@ from enum import Enum
 from types import ModuleType
 from typing import Self
 
-# from metaexpert.config import APP_NAME
-# from metaexpert.logger import Logger, get_logger
-#
-# logger: Logger = get_logger(APP_NAME)
-from metaexpert import logger
+from metaexpert.config import APP_NAME
+from metaexpert.logger import Logger, get_logger
+
+logger: Logger = get_logger(APP_NAME)
 
 
 class Process(Enum):
@@ -21,21 +20,6 @@ class Process(Enum):
     }
     ON_DEINIT = {
         "name": "on_deinit",
-        "number": 1,
-        "callback": []
-    }
-    ON_TRADE = {
-        "name": "on_trade",
-        "number": 1,
-        "callback": []
-    }
-    ON_TRANSACTION = {
-        "name": "on_transaction",
-        "number": 1,
-        "callback": []
-    }
-    ON_BOOK = {
-        "name": "on_book",
         "number": 1,
         "callback": []
     }
@@ -52,6 +36,21 @@ class Process(Enum):
     ON_TIMER = {
         "name": "on_timer",
         "number": 5,
+        "callback": []
+    }
+    ON_TRADE = {
+        "name": "on_trade",
+        "number": 1,
+        "callback": []
+    }
+    ON_TRANSACTION = {
+        "name": "on_transaction",
+        "number": 1,
+        "callback": []
+    }
+    ON_BOOK = {
+        "name": "on_book",
+        "number": 1,
         "callback": []
     }
 

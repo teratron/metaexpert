@@ -83,10 +83,10 @@ class MetaExpert(Service):
         # print(self.client._client.time()["serverTime"])
 
         # Setup logger
-        self.logger: Logger = setup_logger(self.name, args.log_level)
-        self.logger.info("Starting expert on %s", args.stock)
-        self.logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
-        self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
+        # self.logger: Logger = setup_logger(self.name, args.log_level)
+        logger.info("Starting expert on %s", args.stock)
+        logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
+        logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.name}"
@@ -96,7 +96,7 @@ class MetaExpert(Service):
 
     def run(self) -> None:
         """Run the expert trading system."""
-        self.logger.info("Starting trading bot in %s mode", self.mode)
+        logger.info("Starting trading bot in %s mode", self.mode)
         self._running = True
 
         # print(self.symbol)
@@ -112,7 +112,7 @@ class MetaExpert(Service):
 
             # Initialize the expert
             Process.ON_INIT.run()
-            self.logger.info("Expert initialized successfully")
+            logger.info("Expert initialized successfully")
 
             # Запускаем цикл обработки событий таймеров
             asyncio.run(Process.ON_TIMER.async_run())
@@ -135,20 +135,20 @@ class MetaExpert(Service):
 
         except KeyboardInterrupt:
             # Handle keyboard interrupt
-            self.logger.info("Expert stopped by user")
+            logger.info("Expert stopped by user")
         except (ConnectionError, TimeoutError) as e:
             # Handle network-related errors
-            self.logger.error("Network error occurred: %s", e)
+            logger.error("Network error occurred: %s", e)
         except ValueError as e:
             # Handle data validation errors
-            self.logger.error("Data validation error: %s", e)
+            logger.error("Data validation error: %s", e)
         except RuntimeError as e:
             # Handle runtime-specific errors
-            self.logger.error("Runtime error: %s", e)
+            logger.error("Runtime error: %s", e)
         finally:
             self._running = False
             Process.ON_DEINIT.run()
-            self.logger.info("Expert shutdown complete")
+            logger.info("Expert shutdown complete")
 
     # from metaexpert.exchanges.binance import balance
     balance = import_module("metaexpert.exchanges.binance").balance
