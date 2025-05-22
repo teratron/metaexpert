@@ -7,6 +7,7 @@ from metaexpert.logger import Logger, get_logger
 
 logger: Logger = get_logger(APP_NAME)
 
+
 class Service:
     """Expert trading system service.
 
@@ -86,12 +87,6 @@ class Service:
                 print(timeframe)
 
             return inner
-
-            # async def async_inner(*args, **kwargs) -> None:
-            #     await func(*args, **kwargs)
-            #     print(time_frame)
-            #
-            # return async_inner
 
         return outer
 

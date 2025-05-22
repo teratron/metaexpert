@@ -72,8 +72,8 @@ def transaction(request, result) -> None:
     print("*** on_transaction ***")
 
 
-@expert.on_book
-def book(symbol) -> None:
+@expert.on_book("BTCUSDT")
+def book() -> None:
     print("*** on_book ***")
 
 

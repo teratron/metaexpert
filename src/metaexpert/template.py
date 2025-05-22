@@ -23,22 +23,22 @@ def init() -> None:
 
 
 @expert.on_deinit
-def deinit(reason) -> None:
+def deinit(reason: str) -> None:
     pass
 
 
 @expert.on_tick
-def tick(rates) -> None:
+def tick(**rates) -> None:
     pass
 
 
 @expert.on_bar("1h")
-def bar(rates) -> None:
+def bar(**rates) -> None:
     pass
 
 
 @expert.on_timer(1000)
-def timer(rates) -> None:
+def timer(**rates) -> None:
     pass
 
 
@@ -48,12 +48,12 @@ def trade() -> None:
 
 
 @expert.on_transaction
-def transaction(request, result) -> None:
+def transaction(request: dict, result: dict) -> None:
     pass
 
 
-@expert.on_book
-def book(symbol) -> None:
+@expert.on_book("BTCUSDT")
+def book() -> None:
     pass
 
 

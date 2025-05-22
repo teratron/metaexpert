@@ -5,9 +5,16 @@ from pathlib import Path
 
 import packaging
 
-# import importlib.util
-# import pkg_resources
 from metaexpert import logger
+
+
+def get_python_path() -> str | None:
+    """Returns the way to the executable Python file in a virtual environment."""
+    try:
+        return sys.executable
+    except Exception as e:
+        logger.error("Error when getting a path to Python: %s", e)
+        return None
 
 
 def get_venv_path() -> Path | None:
@@ -22,91 +29,79 @@ def get_venv_path() -> Path | None:
 
 
 def get_lib_path() -> Path | None:
-    """Возвращает путь к директории lib виртуальной среды."""
+    """Returns the path to the 'lib' directory of the virtual environment."""
+    lib_name: str = "lib"
+
     try:
         venv_path = get_venv_path()
         if not venv_path:
-            logger.warning("Виртуальная среда не обнаружена")
+            logger.warning("Virtual environment was not detected.")
             return None
-
-        lib_path: Path = venv_path / "lib"
 
         if sys.platform == "win32" or sys.platform == "win64":
-            lib_path = venv_path / "Lib"
+            lib_name = "Lib"
+
+        lib_path: Path = venv_path / lib_name
 
         if not lib_path.exists():
-            logger.error("Директория lib | Lib не найдена в %s", venv_path)
+            logger.error("Директория '%s' не найдена в %s", lib_name, venv_path)
             return None
 
-        logger.debug("Путь к lib | Lib: %s", lib_path)
+        logger.debug("The path to '%s': %s", lib_name, lib_path)
         return lib_path
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к lib | Lib: %s", e)
+        logger.error("Ошибка при определении пути к '%s': %s", lib_name, e)
         return None
 
 
 def get_packages_path() -> Path | None:
-    """Возвращает путь к директории lib виртуальной среды."""
+    """Returns the path to the 'site-packages' directory of the virtual environment."""
     try:
-        venv_path = get_venv_path()
-        if not venv_path:
-            logger.warning("Виртуальная среда не обнаружена")
+        lib_path = get_lib_path()
+        if not lib_path:
+            logger.warning("The library of the virtual environment has not been found.")
             return None
 
-        lib_path: Path = venv_path / "lib" / "site-packages"
+        pkg_path: Path = lib_path / "site-packages"
 
-        if sys.platform == "win32" or sys.platform == "win64":
-            lib_path = venv_path / "Lib" / "site-packages"
-
-        if not lib_path.exists():
-            logger.error("Директория lib | Lib не найдена в %s", venv_path)
-            return None
-
-        logger.debug("Путь к lib | Lib: %s", lib_path)
-        return lib_path
+        logger.debug("The path to 'site-packages': %s", pkg_path)
+        return pkg_path
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к lib | Lib: %s", e)
+        logger.error("Ошибка при определении пути к 'site-packages': %s", e)
         return None
 
 
 def get_bin_path() -> Path | None:
-    """Возвращает путь к директории bin | Scripts виртуальной среды."""
+    """Returns the path to the 'bin' directory of the virtual environment."""
+    bin_name: str = "bin"
+
     try:
         venv_path = get_venv_path()
         if not venv_path:
-            logger.warning("Виртуальная среда не обнаружена")
+            logger.warning("The virtual environment has not been detected.")
             return None
-
-        bin_path: Path = venv_path / "bin"
 
         if sys.platform == "win32" or sys.platform == "win64":
-            bin_path = venv_path / "Scripts"
+            bin_name = "Scripts"
+
+        bin_path = venv_path / bin_name
 
         if not bin_path.exists():
-            logger.error("Директория bin | Scripts не найдена в %s", venv_path)
+            logger.error("Директория '%s' не найдена в %s", bin_name, venv_path)
             return None
 
-        logger.debug("Путь к bin | Scripts: %s", bin_path)
+        logger.debug("The path to '%s': %s", bin_name, bin_path)
         return bin_path
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к bin | Scripts: %s", e)
-        return None
-
-
-def get_python_path() -> str | None:
-    """Returns the way to the executable Python file in a virtual environment."""
-    try:
-        return sys.executable
-    except Exception as e:
-        logger.error("Error when getting a path to Python: %s", e)
+        logger.error("Ошибка при определении пути к '%s': %s", bin_name, e)
         return None
 
 
 def get_pip_path() -> str:
-    """Возвращает путь к исполняемому файлу pip в виртуальной среде."""
+    """Returns the path to the executable file 'pip' in a virtual environment."""
     try:
         bin_path = get_bin_path()
         if not bin_path:
@@ -116,32 +111,31 @@ def get_pip_path() -> str:
         pip_path = bin_path / pip_name
 
         if not pip_path.exists():
-            logger.error("Файл pip не найден в %s", bin_path)
+            logger.error("Файл 'pip' не найден в %s", bin_path)
             return "pip"
 
-        logger.debug("Путь к pip: %s", pip_path)
+        logger.debug("The path to 'pip': %s", pip_path)
         return str(pip_path)
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к pip: %s", e)
+        logger.error("Ошибка при определении пути к 'pip': %s", e)
         return "pip"
 
 
 def is_package_installed(name: str) -> bool:
     """Checks whether the package is installed in the virtual environment."""
     try:
-        # Способ 1: через importlib
-        # spec = importlib.util.find_spec(name)
-        # if spec is not None:
-        #     return True
-        # return False
-
-        # Способ 2: через pkg_resources
-        # pkg_resources.get_distribution(name)
-        # return True
+        pkg_path = get_packages_path()
+        if pkg_path.exists():
+            for pkg in pkg_path.iterdir():
+                if pkg.is_dir() and pkg.name.startswith(name.replace("-" or " ", "_")):
+                    logger.debug("Package '%s' found in %s", name, pkg_path)
+                    return True
+        else:
+            logger.warning("Package path not found.")
 
         result = subprocess.run(
-            [get_pip_path(), "show", name],  # , "--require-virtualenv", "--isolated"
+            ["pip", "show", name],
             check=False,
             capture_output=True,
             text=True
@@ -187,14 +181,14 @@ def compare_package_versions(name: str, required_version: str) -> bool:
     try:
         installed_version = get_package_version(name)
         if not installed_version:
-            logger.warning("Package '%s' not installed", name)
+            logger.warning("Package '%s' not installed.", name)
             return False
 
         if packaging.version.parse(installed_version) >= packaging.version.parse(required_version):
             logger.info("Version %s >= %s", installed_version, required_version)
             return True
         else:
-            logger.warning("A version of %s is installed, %s requires", installed_version, required_version)
+            logger.warning("A version of %s is installed, %s requires.", installed_version, required_version)
             return False
 
     except Exception as e:
@@ -209,12 +203,17 @@ def install_package(name: str, version: str | None = None) -> None:
         return
 
     try:
-        # Run pip as a subprocess
-        # sys.executable ensures using pip from the same Python environment
+        pkg_path = get_packages_path()
+        if not pkg_path:
+            raise FileNotFoundError("Package path not found.")
+
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
-            ["pip", "install", name if not version else f"{name}=={version}", "--target",
-             get_packages_path() if get_packages_path() else ""],
+            [
+                "pip", "install",
+                name if not version else f"{name}=={version}",
+                "--target", pkg_path
+            ],
             check=True,  # Will raise CalledProcessError if pip exits with an error
             capture_output=True,  # Captures stdout and stderr
             text=True  # Decodes stdout and stderr as text
@@ -227,7 +226,7 @@ def install_package(name: str, version: str | None = None) -> None:
     except subprocess.SubprocessError as e:
         logger.error("Subprocess error occurred: %s", e)
     except FileNotFoundError:
-        logger.error("Error: 'pip' not found. Make sure Python and pip are installed and available in PATH.")
+        logger.error("Error: 'pip' not found. Make sure Python and 'pip' are installed and available in PATH.")
     except Exception as e:
         logger.error("An unexpected error occurred: %s", e)
 
