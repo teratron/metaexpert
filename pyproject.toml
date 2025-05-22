@@ -28,6 +28,7 @@ github = "https://github.com/teratron/metaexpert"
 repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
+metaexpert = "metaexpert.__main__:main"
 #expert-ema = "examples/expert_ema:main"
 
 [dependency-groups]

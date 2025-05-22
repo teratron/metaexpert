@@ -161,4 +161,11 @@ def parse_arguments() -> Namespace:
         help="Base URL for the exchange API",
     )
 
+    # Template creation parameters
+    parser.add_argument(
+        "--new",
+        type=str,
+        help="Create a new expert file from template with the specified path (e.g., ./experts/my_expert)",
+    )
+
     return parser.parse_args()

@@ -13,7 +13,7 @@ from metaexpert import logger
 def get_venv_path() -> Path | None:
     """Returns the way to the virtual environment of the project."""
     try:
-        if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
+        if hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix):
             return Path(sys.prefix)
         return None
     except Exception as e:

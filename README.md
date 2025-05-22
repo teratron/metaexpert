@@ -85,6 +85,20 @@ Expert Trading Bot
 
 ## Documentation
 
+### CLI Tool
+
+MetaExpert предоставляет интерфейс командной строки для создания новых файлов экспертов из шаблона:
+
+```shell
+# Создание нового эксперта в текущей директории
+metaexpert --new my_expert
+
+# Создание нового эксперта в указанной директории
+metaexpert --new ./experts/my_expert
+```
+
+Подробная документация по CLI доступна в [docs/cli.md](docs/cli.md).
+
 ## Examples
 
 You can find examples in the [example's directory](examples):
