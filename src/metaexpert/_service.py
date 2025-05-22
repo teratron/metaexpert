@@ -67,33 +67,10 @@ class Service:
 
         return inner
 
-    def on_trade(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
-
-        return inner
-
-    def on_transaction(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
-
-        return inner
-
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
     def on_tick(self, func: Callable) -> Callable:
         def inner(*args, **kwargs) -> None:
-            # task = asyncio.create_task(func())
-            # task
             func(*args, **kwargs)
-            # await self.__tick()
-            # task = asyncio.create_task(self.__tick())
-            # await task
-            # i = 3
-            # while i > 0:
-            #     func()
-            #     print(self, " ", i)
-            #     i -= 1
-            # return func()
 
         return inner
 
@@ -142,8 +119,64 @@ class Service:
 
         return outer
 
+    def on_trade(self, func: Callable) -> Callable:
+        def inner() -> None:
+            func()
+
+        return inner
+
+    def on_transaction(self, func: Callable) -> Callable:
+        def inner() -> None:
+            func()
+
+        return inner
+
     @staticmethod
-    def on_book(func: Callable) -> Callable:
+    def on_book(symbol: str | set[str] | None = None) -> Callable:
+        """Decorator for book event handling.
+        Args:
+            symbol (str | None): Symbol of the trading pair. Defaults to None.
+        Returns:
+            Callable: Decorated function that handles book events.
+        """
+        if symbol is None:
+            raise ValueError("Symbol must be provided")
+        if isinstance(symbol, str):
+            symbol = {symbol}
+        if not isinstance(symbol, set):
+            raise TypeError("Symbol must be a string or a set of strings")
+
+        def outer(func: Callable) -> Callable:
+            def inner() -> None:
+                func()
+
+            return inner
+
+        return outer
+
+    @staticmethod
+    def on_tester(func: Callable) -> Callable:
+        def inner() -> None:
+            func()
+
+        return inner
+
+    @staticmethod
+    def on_tester_init(func: Callable) -> Callable:
+        def inner() -> None:
+            func()
+
+        return inner
+
+    @staticmethod
+    def on_tester_deinit(func: Callable) -> Callable:
+        def inner() -> None:
+            func()
+
+        return inner
+
+    @staticmethod
+    def on_tester_pass(self, func: Callable) -> Callable:
         def inner() -> None:
             func()
 

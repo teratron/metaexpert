@@ -21,6 +21,31 @@ def get_venv_path() -> Path | None:
         return None
 
 
+def get_lib_path() -> Path | None:
+    """Возвращает путь к директории lib виртуальной среды."""
+    try:
+        venv_path = get_venv_path()
+        if not venv_path:
+            logger.warning("Виртуальная среда не обнаружена")
+            return None
+
+        lib_path: Path = venv_path / "lib"
+
+        if sys.platform == "win32" or sys.platform == "win64":
+            lib_path = venv_path / "Lib"
+
+        if not lib_path.exists():
+            logger.error("Директория lib | Lib не найдена в %s", venv_path)
+            return None
+
+        logger.debug("Путь к lib | Lib: %s", lib_path)
+        return lib_path
+
+    except Exception as e:
+        logger.error("Ошибка при определении пути к lib | Lib: %s", e)
+        return None
+
+
 def get_packages_path() -> Path | None:
     """Возвращает путь к директории lib виртуальной среды."""
     try:

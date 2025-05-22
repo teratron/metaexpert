@@ -9,10 +9,10 @@ expert = MetaExpert(
     api_key=os.getenv("BINANCE_API_KEY"),
     api_secret=os.getenv("BINANCE_API_SECRET"),
     base_url=os.getenv("BINANCE_BASE_URL"),
-    mode="paper",
     # instrument="spot",
     instrument="futures",
-    contract="coin_m"
+    contract="coin_m",
+    mode="paper",
 )
 
 expert.balance()
@@ -30,16 +30,6 @@ def init() -> None:
 @expert.on_deinit
 def deinit(reason) -> None:
     print("*** on_deinit ***", reason)
-
-
-@expert.on_trade
-def trade() -> None:
-    print("*** on_trade ***")
-
-
-@expert.on_transaction
-def transaction() -> None:
-    print("*** on_transaction ***")
 
 
 @expert.on_tick
@@ -72,8 +62,18 @@ def timer2() -> None:
     print("*** on_timer 3000 ***")
 
 
+@expert.on_trade
+def trade() -> None:
+    print("*** on_trade ***")
+
+
+@expert.on_transaction
+def transaction(request, result) -> None:
+    print("*** on_transaction ***")
+
+
 @expert.on_book
-def book() -> None:
+def book(symbol) -> None:
     print("*** on_book ***")
 
 
