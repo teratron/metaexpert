@@ -18,12 +18,15 @@ class WebSocketClient(WebSocketApp, ABC):
         )
         self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
 
+    @abstractmethod
     def on_open(self, ws: WebSocket) -> None:
         logger.debug("Websocket connection opened")
 
+    @abstractmethod
     def on_close(self, ws: WebSocket, status: int, message: str) -> None:
         logger.debug("Websocket connection closed: %d %s", status, message)
 
+    @abstractmethod
     def on_error(self, ws: WebSocket, error: Exception) -> None:
         logger.error("Websocket connection error: %s", error)
         logger.error(traceback.format_exc())
