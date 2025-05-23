@@ -30,7 +30,7 @@ def get_venv_path() -> Path | None:
 
 def get_lib_path() -> Path | None:
     """Returns the path to the 'lib' directory of the virtual environment."""
-    lib_name: str = "lib"
+    lib_name: str = "Lib" if sys.platform.startswith("win") else "lib"
 
     try:
         venv_path = get_venv_path()
@@ -38,20 +38,17 @@ def get_lib_path() -> Path | None:
             logger.warning("Virtual environment was not detected.")
             return None
 
-        if sys.platform == "win32" or sys.platform == "win64":
-            lib_name = "Lib"
-
         lib_path: Path = venv_path / lib_name
 
         if not lib_path.exists():
-            logger.error("Директория '%s' не найдена в %s", lib_name, venv_path)
+            logger.error("Directory '%s' was not found in %s", lib_name, venv_path)
             return None
 
         logger.debug("The path to '%s': %s", lib_name, lib_path)
         return lib_path
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к '%s': %s", lib_name, e)
+        logger.error("Error in determining the path to '%s': %s", lib_name, e)
         return None
 
 
@@ -69,13 +66,13 @@ def get_packages_path() -> Path | None:
         return pkg_path
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к 'site-packages': %s", e)
+        logger.error("Error in determining the path to 'site-packages': %s", e)
         return None
 
 
 def get_bin_path() -> Path | None:
     """Returns the path to the 'bin' directory of the virtual environment."""
-    bin_name: str = "bin"
+    bin_name: str = "Scripts" if sys.platform.startswith("win") else "bin"
 
     try:
         venv_path = get_venv_path()
@@ -83,20 +80,17 @@ def get_bin_path() -> Path | None:
             logger.warning("The virtual environment has not been detected.")
             return None
 
-        if sys.platform == "win32" or sys.platform == "win64":
-            bin_name = "Scripts"
-
         bin_path = venv_path / bin_name
 
         if not bin_path.exists():
-            logger.error("Директория '%s' не найдена в %s", bin_name, venv_path)
+            logger.error("Directory '%s' was not found in %s", bin_name, venv_path)
             return None
 
         logger.debug("The path to '%s': %s", bin_name, bin_path)
         return bin_path
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к '%s': %s", bin_name, e)
+        logger.error("Error in determining the path to '%s': %s", bin_name, e)
         return None
 
 
@@ -111,14 +105,14 @@ def get_pip_path() -> str:
         pip_path = bin_path / pip_name
 
         if not pip_path.exists():
-            logger.error("Файл 'pip' не найден в %s", bin_path)
+            logger.error("The file 'pip' is not found in %s", bin_path)
             return "pip"
 
         logger.debug("The path to 'pip': %s", pip_path)
         return str(pip_path)
 
     except Exception as e:
-        logger.error("Ошибка при определении пути к 'pip': %s", e)
+        logger.error("Error in determining the path to 'pip': %s", e)
         return "pip"
 
 
