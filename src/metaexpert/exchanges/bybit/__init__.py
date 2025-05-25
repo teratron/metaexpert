@@ -1,7 +1,8 @@
 from metaexpert.exchanges import Exchange
 
 
-class BybitStock(Exchange):
+# class BybitStock(Exchange):
+class Stock(Exchange):
     def __init__(self):
         #super().__init__()
         #super().__init__(api_key, api_secret, testnet)
@@ -16,8 +17,9 @@ class BybitStock(Exchange):
         """Получить баланс на бирже Bybit"""
         if self._client is None:
             # Инициализация клиента при первом использовании
-            from pybit.unified_trading import HTTP
-            self._client = HTTP()
+            # from pybit.unified_trading import HTTP
+            # self._client = HTTP()
+            pass
 
         # Здесь должна быть реализация получения баланса
         return {"status": "success", "exchange": "bybit", "message": "Баланс получен"}

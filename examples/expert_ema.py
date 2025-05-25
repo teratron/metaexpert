@@ -38,7 +38,7 @@ def tick() -> None:
 
 
 @expert.on_bar("1h")
-def bar(rate) -> None:
+def bar(rates) -> None:
     print("*** on_bar ***")
     # close = numpy.random.randn(20)
     # ema_slow = talib.MA(close, timeperiod=7, matype=talib.MA_Type.EMA)
@@ -49,7 +49,7 @@ def bar(rate) -> None:
     # ema_fast.dtype(numpy.float64)
     # ema_cross = numpy.cross(ema_slow, ema_fast)
     # print(ema_cross)
-    print(rate)
+    print(rates)
 
 
 @expert.on_timer(1000)

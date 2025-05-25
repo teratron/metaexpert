@@ -92,12 +92,12 @@ class Process(Enum):
                             if len(event.value.get("callback")) < event.value.get("number"):
                                 event.value.get("callback").append(getattr(module, attr))
                                 logger.debug(
-                                    "Registering callback for %s:%s()",
+                                    "Registering callback for '%s:%s()'",
                                     event.value.get("name"), attr
                                 )
                             else:
                                 logger.warning(
-                                    "Too many callbacks for %s: %d",
+                                    "Too many callbacks for '%s': %d",
                                     qualif[1], event.value.get("number") + 1
                                 )
             return module
@@ -111,14 +111,14 @@ class Process(Enum):
         """
         for func in self.value.get("callback"):
             func()
-            logger.debug("Launch task for %s", self.value.get("name"))
+            logger.debug("Launch task for '%s'", self.value.get("name"))
 
     async def async_run(self) -> None:
         """Run the process asynchronously.
 
         This method executes the registered callbacks for the event asynchronously.
         """
-        logger.debug("Launch task for %s(s)", self.value.get("name"))
+        logger.debug("Launch task for '%s(s)'", self.value.get("name"))
         await asyncio.gather(
             *(asyncio.create_task(func()) for func in self.value.get("callback"))
         )
