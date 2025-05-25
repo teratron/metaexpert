@@ -29,7 +29,7 @@ logger: Logger = setup_logger(APP_NAME)
 class MetaExpert(Service):
     """Expert trading system"""
 
-    name: str = APP_NAME
+    name: str | None = None
     module: ModuleType | None = None
     filename: str | None = None
 
@@ -99,10 +99,6 @@ class MetaExpert(Service):
         logger.info("Starting trading bot in %s mode", self.mode)
         self._running = True
 
-        # print(self.symbol)
-        # print(self.timeframe)
-        # print(self.filename)
-
         try:
             # Initialize event handling
             self.module = Process.init()
@@ -114,7 +110,7 @@ class MetaExpert(Service):
             Process.ON_INIT.run()
             logger.info("Expert initialized successfully")
 
-            # Запускаем цикл обработки событий таймеров
+            # Launch the cycle of processing the events of timers
             asyncio.run(Process.ON_TIMER.async_run())
 
             # Запускаем основной цикл обработки событий

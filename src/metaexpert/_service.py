@@ -81,9 +81,9 @@ class Service:
         def outer(
                 func: Callable[[tuple[Any, ...], dict[str, Any]], None],
         ) -> Callable[[tuple[Any, ...], dict[str, Any]], None]:
-            def inner(rate, *args, **kwargs) -> None:
+            def inner(rates, *args, **kwargs) -> None:
                 # rate: list = kwargs.get("rate")
-                func(rate, *args, **kwargs)
+                func(rates, *args, **kwargs)
                 print(timeframe)
 
             return inner
