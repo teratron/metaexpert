@@ -77,14 +77,16 @@ class Service:
 
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
 
-    def on_bar(self, timeframe: str = "1h") -> Callable:
+    @staticmethod
+    def on_bar(timeframe: str = "1h") -> Callable:
         def outer(
-                func: Callable[[tuple[Any, ...], dict[str, Any]], None],
-        ) -> Callable[[tuple[Any, ...], dict[str, Any]], None]:
-            def inner(rates, *args, **kwargs) -> None:
-                # rate: list = kwargs.get("rate")
-                func(rates, *args, **kwargs)
-                print(timeframe)
+                # func: Callable[[tuple[Any, ...], dict[str, Any]], None],
+                func: Callable,
+                # ) -> Callable[[Any, str], None]:
+        ) -> Callable:
+            async def inner(rates: str = "tram-pam-pam") -> None:
+                func(rates)
+                print(timeframe, rates)
 
             return inner
 

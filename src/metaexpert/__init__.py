@@ -109,9 +109,12 @@ class MetaExpert(Service):
             Process.ON_INIT.run()
             logger.info("Expert initialized successfully")
 
+            Process.ON_BAR.run()
+
             # Launch the cycle of processing the events of timers
-            # asyncio.run(Process.ON_TIMER.async_run())
             Process.ON_TIMER.run()
+
+            # asyncio.run(Process.processing())
 
             # Запускаем основной цикл обработки событий
             while self._running:

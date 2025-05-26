@@ -1,5 +1,6 @@
 import asyncio
 import inspect
+from asyncio import Task
 from enum import Enum
 from types import ModuleType
 from typing import Self
@@ -19,9 +20,9 @@ class Process(Enum):
         "name": "on_init",
         "number": 1,
         "callback": [],
+        "is_async": False,
         # "status": None,  # InitStatus.INIT_SUCCEEDED
         "is_done": False,
-        "is_async": False
     }
     ON_DEINIT = {
         "name": "on_deinit",
@@ -33,21 +34,18 @@ class Process(Enum):
         "name": "on_tick",
         "number": 1,
         "callback": [],
-        # "task": [],
         "is_async": True
     }
     ON_BAR = {
         "name": "on_bar",
         "number": 5,
         "callback": [],
-        # "task": [],
         "is_async": True
     }
     ON_TIMER = {
         "name": "on_timer",
         "number": 5,
         "callback": [],
-        # "task": [],
         "is_async": True
     }
     ON_TRADE = {
@@ -88,7 +86,6 @@ class Process(Enum):
         """
         frame = inspect.stack()[len(inspect.stack()) - 1]
         module: ModuleType = inspect.getmodule(frame[0])
-
         if not module:
             return None
 
@@ -98,27 +95,18 @@ class Process(Enum):
 
             # All the functions of the module with decorators or without shortcuts.
             if obj and callable(obj) and not isinstance(obj, type):
+
                 # List of hierarchy of objects, functions, decorators or closes.
                 qualif: list[str] = obj.__qualname__.split(".")
-
                 if len(qualif) > 1:
                     event = cls.__get_process_from(qualif[1])
-
                     if event:
                         if len(event.value.get("callback")) < event.value.get("number"):
-                            # func = getattr(module, attr)
                             event.value.get("callback").append(getattr(module, attr))
                             logger.debug(
                                 "Registering callback for '%s:%s()'",
                                 event.value.get("name"), attr
                             )
-
-                            # if hasattr(event.value, "task"):
-                            #     event.value.get("task").append(asyncio.create_task(func()))
-                            #     logger.debug(
-                            #         "Creating task for '%s:%s()'",
-                            #         event.value.get("name"), attr
-                            #     )
                         else:
                             logger.warning(
                                 "Too many callbacks for '%s': %d",
@@ -128,19 +116,20 @@ class Process(Enum):
         return module
 
     def run(self) -> None:
-        """Run the process.
-
-        This method executes the registered callbacks for the event.
-        """
         if len(self.value.get("callback")) == 0:
             logger.warning("No callbacks registered for '%s'", self.value.get("name"))
             return
 
         if self.value.get("is_async"):
-            asyncio.run(self.async_run())
-            logger.warning("Process '%s' is asynchronous", self.value.get("name"))
-            return
+            asyncio.run(self.__async_run())
+        else:
+            self.__run()
 
+    def __run(self) -> None:
+        """Run the process.
+
+        This method executes the registered callbacks for the event.
+        """
         for func in self.value.get("callback"):
             func()
             logger.debug("Launch task for '%s'", self.value.get("name"))
@@ -149,7 +138,7 @@ class Process(Enum):
             self.value["is_done"] = True
             logger.debug("Process '%s' is done", self.value.get("name"))
 
-    async def async_run(self) -> None:
+    async def __async_run(self) -> None:
         """Run the process asynchronously.
 
         This method executes the registered callbacks for the event asynchronously.
@@ -159,18 +148,36 @@ class Process(Enum):
             *(asyncio.create_task(func()) for func in self.value.get("callback"))
         )
 
-    def __gather_tasks(self) -> tuple[asyncio.Task]:
-        """Gather all tasks for the process.
-
-        This method collects all tasks associated with the event and returns them as a single task.
-        """
-        return tuple(*(task for task in self.value.get("task")))  # if hasattr(self.value, "task")
+    # @classmethod
+    # def __gather_tasks(cls) -> tuple[Task, ...]:
+    #     """Gather all tasks for the process.
+    #
+    #     This method collects all tasks associated with the event and returns them as a single task.
+    #     """
+    #     tasks: list[Task] = []
+    #     for item in cls:
+    #         for func in item.value.get("callback"):
+    #             if cls.value.get("is_async"):
+    #                 tasks.append(asyncio.create_task(func()))
+    #
+    #     return tuple(tasks)
+    # return tuple(*(task for task in self.value.get("task")))  # if hasattr(self.value, "task")
 
     @classmethod
-    def processing(cls) -> bool:
-        if not cls.ON_INIT.value.get("is_done"):
-            return False
+    async def processing(cls) -> bool:
+        # if not cls.ON_INIT.value.get("is_done"):
+        #     return False
 
+        tasks: list[Task] = []  # map(asyncio.create_task, )
+        for item in cls:
+            if item.value.get("is_async"):
+                for func in item.value.get("callback"):
+                    # print(func)
+                    tasks.append(asyncio.create_task(func()))
+        # print(tasks)
+        await asyncio.gather(*(tuple(tasks)))
+
+        # Run all tasks concurrently
         # Thread(
         #     target=WebSocketClient,
         #     args=("wss://stream.bybit.com/v5/public/spot", ["tickers.ADAUSDT", "orderbook.50.ADAUSDT"]),
