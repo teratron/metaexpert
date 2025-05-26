@@ -16,7 +16,7 @@ class Service:
     trading, transactions, ticks, bars, timers, and book events.
     """
     symbol: str | set[str] | None
-    timeframe: str | set[str] | None
+    timeframe: str | set[Timeframe] | None
     shift: int
     magic: int
     name: str | None
@@ -46,7 +46,7 @@ class Service:
             Callable: Decorated function that handles the initialization event.
         """
         self.symbol = symbol
-        self.timeframe: Timeframe | set[Timeframe] = Timeframe.get_period_from(timeframe)
+        self.timeframe = Timeframe.get_period_from(timeframe)
         self.shift = shift
         self.magic = magic
         self.name = name

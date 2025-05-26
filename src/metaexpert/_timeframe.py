@@ -108,17 +108,22 @@ class Timeframe(Enum):
     @classmethod
     def get_period_from(cls, name: str | set[str] | None) -> Self | set[Self] | None:
         """Get the period type from a string."""
-        for item in cls:
-            if item.value.get("name") == name.lower():
-                return item
+        if isinstance(name, str):
+            for item in cls:
+                if item.value.get("name") == name.lower():
+                    return item
 
         if isinstance(name, set):
-            return set(cls.get_period_from(item) for item in name if isinstance(item, str))
+            return set(
+                cls.get_period_from(item) 
+                for item in name 
+                if isinstance(item, str)
+                )
 
         return None
 
-    @classmethod
-    def get_next_candle_time(cls) -> datetime:
+   # @classmethod
+    def get_next_candle_time(self) -> datetime:
         """Calculate the timestamp of the next candle based on the timeframe.
 
         Returns:
@@ -127,10 +132,10 @@ class Timeframe(Enum):
         now = datetime.now()
         next_time = now
 
-        match cls.value.get("name")[-1]:
+        match str(self.value["name"])[-1]:
             case "m":
                 # For minute timeframes
-                minutes = cls.value.get("min")
+                minutes = self.value.get("min")
                 next_minute = ((now.minute // minutes) + 1) * minutes
                 next_time = now.replace(minute=next_minute % 60, second=0, microsecond=0)
 
@@ -138,7 +143,7 @@ class Timeframe(Enum):
                     next_time += timedelta(hours=next_minute // 60)
             case "h":
                 # For hour timeframes
-                hours = cls.value.get("hour")
+                hours = self.value.get("hour")
                 next_hour = ((now.hour // hours) + 1) * hours
                 next_time = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
 
@@ -150,7 +155,7 @@ class Timeframe(Enum):
             case "w":
                 pass
             case _:
-                raise ValueError(f"Unsupported timeframe: {cls.value.get("name")}")
+                raise ValueError(f"Unsupported timeframe: {self.value.get("name")}")
 
         return next_time
 

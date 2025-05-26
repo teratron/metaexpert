@@ -3,7 +3,7 @@ import inspect
 from asyncio import Task
 from enum import Enum
 from types import ModuleType
-from typing import Self
+from typing import Self, Optional
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
@@ -67,6 +67,10 @@ class Process(Enum):
         "is_async": True
     }
 
+    def __iter__(self):
+        for item in self.value.items():
+            yield item
+
     @classmethod
     def __get_process_from(cls, name: str) -> Self | None:
         for item in cls:
@@ -85,8 +89,8 @@ class Process(Enum):
         corresponding events.
         """
         frame = inspect.stack()[len(inspect.stack()) - 1]
-        module: ModuleType = inspect.getmodule(frame[0])
-        if not module:
+        module: Optional[ModuleType] = inspect.getmodule(frame[0])
+        if module is not None:
             return None
 
         for attr in dir(module):
@@ -97,7 +101,7 @@ class Process(Enum):
             if obj and callable(obj) and not isinstance(obj, type):
 
                 # List of hierarchy of objects, functions, decorators or closes.
-                qualif: list[str] = obj.__qualname__.split(".")
+                qualif: list[str] = getattr(obj, "__qualname__", "").split(".")
                 if len(qualif) > 1:
                     event = cls.__get_process_from(qualif[1])
                     if event:
@@ -116,7 +120,7 @@ class Process(Enum):
         return module
 
     def run(self) -> None:
-        if len(self.value.get("callback")) == 0:
+        if not self.value.get("callback"):
             logger.warning("No callbacks registered for '%s'", self.value.get("name"))
             return
 
