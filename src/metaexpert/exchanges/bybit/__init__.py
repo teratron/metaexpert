@@ -18,7 +18,7 @@ class Stock(Exchange):
         if self._client is None:
             # Инициализация клиента при первом использовании
             # from pybit.unified_trading import HTTP
-            # self._client = HTTP()
+            # self.client = HTTP()
             pass
 
         # Здесь должна быть реализация получения баланса

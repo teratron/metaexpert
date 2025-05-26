@@ -80,7 +80,7 @@ class MetaExpert(Service):
 
         # self.client.get_balance()
         # self.client.get_account()
-        # print(self.client._client.time()["serverTime"])
+        # print(self.client.client.time()["serverTime"])
 
         # Setup logger
         # self.logger: Logger = setup_logger(self.name, args.log_level)

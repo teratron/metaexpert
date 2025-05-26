@@ -1,13 +1,17 @@
 from abc import ABC, abstractmethod
+from importlib import import_module
 from typing import Self
 
-from metaexpert.exchanges._stock import Stocks
+
+# from types import ModuleType
+
+#from metaexpert.exchanges._stock import Stocks
 
 
 class Exchange(ABC):
     """Abstract base class for stock exchanges."""
-    _client: Self | None = None
-    stock: Stocks | None = None
+    client: Self | None = None
+    #stock: Stocks | None = None
     api_key: str | None = None
     api_secret: str | None = None
     base_url: str | None = None
@@ -31,14 +35,19 @@ class Exchange(ABC):
             instrument: str | None = None,
             contract: str | None = None
     ) -> Self:
-        cls.stock: Stocks = Stocks.get_exchange_from(stock.lower()) if isinstance(stock, str) else None
+        #cls.stock: Stocks = Stocks.get_exchange_from(stock.lower()) if isinstance(stock, str) else None
         cls.api_key = api_key
         cls.api_secret = api_secret
         cls.base_url = base_url
         cls.instrument = instrument.lower() if isinstance(stock, str) else None
         cls.contract = contract.lower() if isinstance(stock, str) else None
 
-        return cls.stock.get_module().Stock()
+        # return cls.stock.get_module().Stock()
+
+        if stock is None:
+            raise ValueError("Stock exchange must be specified.")
+
+        return import_module("metaexpert.exchanges." + stock.lower()).Stock()
 
     @abstractmethod
     def get_balance(self) -> dict | float:
