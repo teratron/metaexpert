@@ -101,13 +101,17 @@ class Process(Enum):
                         if len(event.value.get("callback")) < event.value.get("number"):
                             func = getattr(module, attr)
                             event.value.get("callback").append(func)
-
-                            if hasattr(event.value, "task"):
-                                event.value.get("task").append(asyncio.create_task(func()))
                             logger.debug(
                                 "Registering callback for '%s:%s()'",
                                 event.value.get("name"), attr
                             )
+
+                            if hasattr(event.value, "task"):
+                                event.value.get("task").append(asyncio.create_task(func()))
+                                logger.debug(
+                                    "Creating task for '%s:%s()'",
+                                    event.value.get("name"), attr
+                                )
                         else:
                             logger.warning(
                                 "Too many callbacks for '%s': %d",

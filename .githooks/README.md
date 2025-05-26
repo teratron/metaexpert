@@ -48,3 +48,7 @@ git config --global --unset core.hooksPath
 ## Push
 
 1. pre-push
+
+## Stash
+
+1. post-index-change
