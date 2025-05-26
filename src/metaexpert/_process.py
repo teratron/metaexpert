@@ -19,7 +19,7 @@ class Process(Enum):
         "name": "on_init",
         "number": 1,
         "callback": [],
-        "status": None,  # InitStatus.INIT_SUCCEEDED
+        # "status": None,  # InitStatus.INIT_SUCCEEDED
         "is_done": False,
     }
     ON_DEINIT = {
@@ -88,7 +88,6 @@ class Process(Enum):
             # All objects of the module.
             obj: object | None = module.__dict__.get(attr)
 
-            # Only module functions.
             # All the functions of the module with decorators or without shortcuts.
             if obj and callable(obj) and not isinstance(obj, type):
                 # List of hierarchy of objects, functions, decorators or closes.
