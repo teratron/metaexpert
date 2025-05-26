@@ -21,44 +21,52 @@ class Process(Enum):
         "callback": [],
         # "status": None,  # InitStatus.INIT_SUCCEEDED
         "is_done": False,
+        "is_async": False
     }
     ON_DEINIT = {
         "name": "on_deinit",
         "number": 1,
         "callback": [],
+        "is_async": False
     }
     ON_TICK = {
         "name": "on_tick",
         "number": 1,
         "callback": [],
-        "task": []
+        # "task": [],
+        "is_async": True
     }
     ON_BAR = {
         "name": "on_bar",
         "number": 5,
         "callback": [],
-        "task": []
+        # "task": [],
+        "is_async": True
     }
     ON_TIMER = {
         "name": "on_timer",
         "number": 5,
         "callback": [],
-        "task": []
+        # "task": [],
+        "is_async": True
     }
     ON_TRADE = {
         "name": "on_trade",
         "number": 1,
         "callback": [],
+        "is_async": True
     }
     ON_TRANSACTION = {
         "name": "on_transaction",
         "number": 1,
         "callback": [],
+        "is_async": True
     }
     ON_BOOK = {
         "name": "on_book",
         "number": 1,
         "callback": [],
+        "is_async": True
     }
 
     @classmethod
@@ -98,19 +106,19 @@ class Process(Enum):
 
                     if event:
                         if len(event.value.get("callback")) < event.value.get("number"):
-                            func = getattr(module, attr)
-                            event.value.get("callback").append(func)
+                            # func = getattr(module, attr)
+                            event.value.get("callback").append(getattr(module, attr))
                             logger.debug(
                                 "Registering callback for '%s:%s()'",
                                 event.value.get("name"), attr
                             )
 
-                            if hasattr(event.value, "task"):
-                                event.value.get("task").append(asyncio.create_task(func()))
-                                logger.debug(
-                                    "Creating task for '%s:%s()'",
-                                    event.value.get("name"), attr
-                                )
+                            # if hasattr(event.value, "task"):
+                            #     event.value.get("task").append(asyncio.create_task(func()))
+                            #     logger.debug(
+                            #         "Creating task for '%s:%s()'",
+                            #         event.value.get("name"), attr
+                            #     )
                         else:
                             logger.warning(
                                 "Too many callbacks for '%s': %d",
@@ -124,6 +132,15 @@ class Process(Enum):
 
         This method executes the registered callbacks for the event.
         """
+        if len(self.value.get("callback")) == 0:
+            logger.warning("No callbacks registered for '%s'", self.value.get("name"))
+            return
+
+        if self.value.get("is_async"):
+            asyncio.run(self.async_run())
+            logger.warning("Process '%s' is asynchronous", self.value.get("name"))
+            return
+
         for func in self.value.get("callback"):
             func()
             logger.debug("Launch task for '%s'", self.value.get("name"))

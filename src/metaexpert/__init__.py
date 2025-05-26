@@ -4,7 +4,6 @@ This module provides a framework for creating and managing expert trading system
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
-import asyncio
 from importlib import import_module
 from pathlib import Path
 from types import ModuleType
@@ -111,7 +110,8 @@ class MetaExpert(Service):
             logger.info("Expert initialized successfully")
 
             # Launch the cycle of processing the events of timers
-            asyncio.run(Process.ON_TIMER.async_run())
+            # asyncio.run(Process.ON_TIMER.async_run())
+            Process.ON_TIMER.run()
 
             # Запускаем основной цикл обработки событий
             while self._running:
