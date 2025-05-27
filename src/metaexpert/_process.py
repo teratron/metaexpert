@@ -3,7 +3,7 @@ import inspect
 from asyncio import Task
 from enum import Enum
 from types import ModuleType
-from typing import Self, Optional
+from typing import Self
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
@@ -93,8 +93,8 @@ class Process(Enum):
         corresponding events.
         """
         frame = inspect.stack()[len(inspect.stack()) - 1]
-        module: Optional[ModuleType] = inspect.getmodule(frame[0])
-        if module is not None:
+        module: ModuleType | None = inspect.getmodule(frame[0])
+        if module is None:
             return None
 
         for attr in dir(module):
@@ -133,7 +133,6 @@ class Process(Enum):
         This method executes the registered callbacks for the event.
         If the process is marked as asynchronous, it runs the callbacks using asyncio.
         """
-
         if self.value.get("is_async"):
             asyncio.run(self.__async_run())
         else:

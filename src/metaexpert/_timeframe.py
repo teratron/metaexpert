@@ -124,11 +124,24 @@ class Timeframe(Enum):
                     return item
 
         if isinstance(name, set):
-            return set(
-                cls.get_period_from(item)
-                for item in name
-                if isinstance(item, str)
-            )
+            # value: list = []
+            value: set = set()
+            for tf in name:
+                if isinstance(tf, str):
+                    timeframe = cls.get_period_from(tf)
+                    if isinstance(timeframe, Timeframe):
+                        # value.append(timeframe)
+                        value.add(timeframe)
+
+            # if len(value) > 0:
+            #     return {}.update(value)
+            return value
+
+            # return set(
+            #     cls.get_period_from(item)
+            #     for item in name
+            #     if isinstance(item, str)
+            # )
 
         return None
 
