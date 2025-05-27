@@ -12,7 +12,7 @@ uv self update
 if [ "$(uname)" = "Windows_NT" ] || [ -n "$WINDIR" ] || [ -n "$windir" ]; then
     # Windows
     cd .venv/Scripts || exit
-    activate.bat
+    activate
     cd ../..
 else
     # Unix-like OS
