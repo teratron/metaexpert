@@ -9,8 +9,8 @@ from websocket import WebSocketApp, WebSocket
 
 class Chart:
     def __init__(self) -> None:
-        self.x_data = []
-        self.y_data = []
+        self.x_data: list = []
+        self.y_data: list = []
         self.fig = plt.figure()
         self.axe = self.fig.add_subplot(111)
         self.fig.show()

@@ -120,7 +120,10 @@ def is_package_installed(name: str) -> bool:
     """Checks whether the package is installed in the virtual environment."""
     try:
         pkg_path = get_packages_path()
-        if pkg_path.exists():
+        if pkg_path is None:
+            return False
+
+        if pkg_path and pkg_path.exists():
             for pkg in pkg_path.iterdir():
                 if pkg.is_dir() and pkg.name.startswith(name.replace("-" or " ", "_")):
                     logger.debug("Package '%s' found in %s", name, pkg_path)

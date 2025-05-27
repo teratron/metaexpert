@@ -2,6 +2,11 @@ from datetime import timedelta, datetime
 from enum import Enum
 from typing import Self
 
+from metaexpert.config import APP_NAME
+from metaexpert.logger import Logger, get_logger
+
+logger: Logger = get_logger(APP_NAME)
+
 
 class Timeframe(Enum):
     """Timeframe enumeration for supported timeframes."""
@@ -51,59 +56,64 @@ class Timeframe(Enum):
     H2 = {
         "name": "2h",
         "sec": 7200,
-        "min": 120,
+        "min": 120,  # 2 hours * 60 minutes
         "hour": 2,
         "delta": timedelta(hours=2)
     }
     H4 = {
         "name": "4h",
         "sec": 14400,
-        "min": 240,
+        "min": 240,  # 4 hours * 60 minutes
         "hour": 4,
         "delta": timedelta(hours=4)
     }
     H6 = {
         "name": "6h",
         "sec": 21600,
-        "min": 360,
+        "min": 360,  # 6 hours * 60 minutes
         "hour": 6,
         "delta": timedelta(hours=6)
     }
     H8 = {
         "name": "8h",
         "sec": 28800,
-        "min": 480,
+        "min": 480,  # 8 hours * 60 minutes
         "hour": 8,
         "delta": timedelta(hours=8)
     }
     H12 = {
         "name": "12h",
         "sec": 43200,
-        "min": 720,
+        "min": 720,  # 12 hours * 60 minutes
         "hour": 12,
         "delta": timedelta(hours=12)
     }
     D1 = {
         "name": "1d",
         "sec": 86400,
-        "min": 1440,
+        "min": 1440,  # 1 day * 24 hours * 60 minutes
         "hour": 24,
         "delta": timedelta(days=1)
     }
     D3 = {
         "name": "3d",
         "sec": 259200,
-        "min": 4320,
+        "min": 4320,  # 3 days * 24 hours * 60 minutes
         "hour": 72,
         "delta": timedelta(days=3)
     }
     W1 = {
         "name": "1w",
         "sec": 604800,
-        "min": 10080,
+        "min": 10080,  # 7 days * 24 hours * 60 minutes
         "hour": 168,
         "delta": timedelta(weeks=1)
     }
+
+    # def __iter__(self) -> Generator:
+    #     """Iterate over the items in the enumeration."""
+    #     for item in self.value.items():
+    #         yield item
 
     @classmethod
     def get_period_from(cls, name: str | set[str] | None) -> Self | set[Self] | None:
@@ -115,14 +125,14 @@ class Timeframe(Enum):
 
         if isinstance(name, set):
             return set(
-                cls.get_period_from(item) 
-                for item in name 
+                cls.get_period_from(item)
+                for item in name
                 if isinstance(item, str)
-                )
+            )
 
         return None
 
-   # @classmethod
+    # @classmethod
     def get_next_candle_time(self) -> datetime:
         """Calculate the timestamp of the next candle based on the timeframe.
 
@@ -136,6 +146,11 @@ class Timeframe(Enum):
             case "m":
                 # For minute timeframes
                 minutes = self.value.get("min")
+
+                if not isinstance(minutes, int):
+                    logger.error("Invalid minute value for timeframe: %d", self.value.get('name'))
+                    raise ValueError(f"Invalid minute value for timeframe: {self.value.get('name')}")
+
                 next_minute = ((now.minute // minutes) + 1) * minutes
                 next_time = now.replace(minute=next_minute % 60, second=0, microsecond=0)
 
@@ -144,6 +159,11 @@ class Timeframe(Enum):
             case "h":
                 # For hour timeframes
                 hours = self.value.get("hour")
+
+                if not isinstance(hours, int):
+                    logger.error("Invalid hour value for timeframe: %d", self.value.get('name'))
+                    raise ValueError(f"Invalid hour value for timeframe: {self.value.get('name')}")
+
                 next_hour = ((now.hour // hours) + 1) * hours
                 next_time = now.replace(hour=next_hour % 24, minute=0, second=0, microsecond=0)
 

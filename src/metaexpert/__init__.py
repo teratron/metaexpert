@@ -72,7 +72,7 @@ class MetaExpert(Service):
             instrument or args.type,
             contract or args.contract
         )
-        self.mode: Mode = Mode.get_mode_from(mode or args.mode)
+        self.mode: Mode | None = Mode.get_mode_from(mode or args.mode)
         self._running: bool = False
 
         # super().__init__(self.name)
@@ -102,8 +102,8 @@ class MetaExpert(Service):
             # Initialize event handling
             self.module = Process.init()
 
-            if self.module:
-                self.filename = Path(self.module.__file__).stem
+            if self.module and self.module.__file__:
+                self.filename: str = Path(self.module.__file__).stem
 
             # Initialize the expert
             Process.ON_INIT.run()

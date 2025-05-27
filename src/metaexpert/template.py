@@ -28,17 +28,17 @@ def deinit(reason: str) -> None:
 
 
 @expert.on_tick
-def tick(**rates) -> None:
+def tick(rates: dict) -> None:
     pass
 
 
 @expert.on_bar("1h")
-def bar(**rates) -> None:
+def bar(rates: dict) -> None:
     pass
 
 
 @expert.on_timer(1000)
-def timer(**rates) -> None:
+def timer(rates: dict) -> None:
     pass
 
 

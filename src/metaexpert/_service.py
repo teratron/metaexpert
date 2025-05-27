@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Coroutine
 
 from metaexpert._timeframe import Timeframe
 from metaexpert._timer import Timer
@@ -62,7 +62,7 @@ class Service:
         return outer
 
     def on_deinit(self, func: Callable[[str], None]) -> Callable:
-        def inner(*, reason: str = "+++") -> None:
+        def inner(reason: str = "+++", *args, **kwargs) -> None:
             logger.debug("Deinitializing...")
             func(reason)
 
@@ -79,11 +79,7 @@ class Service:
 
     @staticmethod
     def on_bar(timeframe: str = "1h") -> Callable:
-        def outer(
-                # func: Callable[[tuple[Any, ...], dict[str, Any]], None],
-                func: Callable,
-                # ) -> Callable[[Any, str], None]:
-        ) -> Callable:
+        def outer(func: Callable[[str], None]) -> Callable[[str], Coroutine[Any, Any, None]]:
             async def inner(rates: str = "tram-pam-pam") -> None:
                 func(rates)
                 print(timeframe, rates)
@@ -102,15 +98,13 @@ class Service:
         Returns:
             Callable: Decorated function that executes at specified intervals.
         """
-
         if interval <= 0:
             raise ValueError("Interval must be greater than 0")
 
-        def outer(func: Callable) -> Callable:
-            timer = Timer(interval=interval, callback=func)
-
+        def outer(func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
+            # timer = Timer(interval=interval, callback=func)
             async def inner() -> None:
-                await timer.start()
+                await Timer(interval=interval, callback=func).start()
 
             return inner
 
@@ -131,8 +125,10 @@ class Service:
     @staticmethod
     def on_book(symbol: str | set[str] | None = None) -> Callable:
         """Decorator for book event handling.
+
         Args:
             symbol (str | None): Symbol of the trading pair. Defaults to None.
+
         Returns:
             Callable: Decorated function that handles book events.
         """
@@ -152,13 +148,6 @@ class Service:
         return outer
 
     @staticmethod
-    def on_tester(func: Callable) -> Callable:
-        def inner() -> None:
-            func()
-
-        return inner
-
-    @staticmethod
     def on_tester_init(func: Callable) -> Callable:
         def inner() -> None:
             func()
@@ -167,6 +156,13 @@ class Service:
 
     @staticmethod
     def on_tester_deinit(func: Callable) -> Callable:
+        def inner() -> None:
+            func()
+
+        return inner
+
+    @staticmethod
+    def on_tester(func: Callable) -> Callable:
         def inner() -> None:
             func()
 
