@@ -16,7 +16,7 @@ class Service:
     trading, transactions, ticks, bars, timers, and book events.
     """
     symbol: str | set[str] | None
-    timeframe: str | set[Timeframe] | None
+    timeframe: Timeframe | set[Timeframe] | None
     shift: int
     magic: int
     name: str | None

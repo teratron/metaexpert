@@ -14,13 +14,13 @@ class Trade:
     """
 
     def __init__(self, symbol: str | None, **props: dict[str, Any]) -> None:
-        self.symbol = symbol
-        self._lots = props.get("lots", 0)
-        self._stop_loss = props.get("stop_loss", 0)
-        self._take_profit = props.get("take_profit", 0)
-        self._trailing_stop = props.get("trailing_stop", 0)
-        self._positions = props.get("positions", 0)
-        self._slippage = props.get("slippage", 0)
+        self.symbol: str = symbol if symbol else ""
+        self._lots: float = props.__getattribute__("lots")
+        self._stop_loss: float = props.get("stop_loss", 0)
+        self._take_profit: float = props.get("take_profit", 0)
+        self._trailing_stop: float = props.get("trailing_stop", 0)
+        self._positions: int = props.get("positions", 0)
+        self._slippage: int = props.get("slippage", 0)
 
     def trade(
             self,

@@ -25,8 +25,8 @@ class Exchange(ABC):
         cls.api_key = api_key
         cls.api_secret = api_secret
         cls.base_url = base_url
-        cls.instrument = instrument.lower() if isinstance(stock, str) else None
-        cls.contract = contract.lower() if isinstance(stock, str) else None
+        cls.instrument = instrument.lower() if isinstance(instrument, str) else None
+        cls.contract = contract.lower() if isinstance(contract, str) else None
 
         if stock is None:
             raise ValueError("Stock exchange must be specified.")
