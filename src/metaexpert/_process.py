@@ -1,6 +1,5 @@
 import asyncio
 import inspect
-from asyncio import Task
 from enum import Enum
 from types import ModuleType
 from typing import Self
@@ -103,7 +102,6 @@ class Process(Enum):
 
             # All the functions of the module with decorators or without shortcuts.
             if obj and callable(obj) and not isinstance(obj, type):
-
                 # List of hierarchy of objects, functions, decorators or closes.
                 qualif: list[str] = getattr(obj, "__qualname__", "").split(".")
                 if len(qualif) > 1:
@@ -191,7 +189,7 @@ class Process(Enum):
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
 
-        tasks: list[Task] = []  # map(asyncio.create_task, )
+        task: list = []  # map(asyncio.create_task, )
         for item in cls:
             if item.value.get("is_async"):
                 callback = item.value.get("callback")
@@ -200,9 +198,17 @@ class Process(Enum):
                     continue
 
                 for func in callback:
-                    tasks.append(asyncio.create_task(func()))
+                    if func and callable(func):
+                        # print(f"Creating task for {func.__name__}")
+                        if inspect.iscoroutinefunction(func):
+                            # If the function is a coroutine, create an asyncio task
+                            task.append(asyncio.create_task(func()))
+                        else:
+                            # If the function is a regular function, run it in a thread
+                            task.append(asyncio.to_thread(func))
+                    # tasks.append(asyncio.create_task(func()))
 
-        await asyncio.gather(*(tuple(tasks)))
+        await asyncio.gather(*(tuple(task)))
 
         # Run all tasks concurrently
         # Thread(

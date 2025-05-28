@@ -4,10 +4,10 @@ This module provides a framework for creating and managing expert trading system
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
+import asyncio
 from importlib import import_module
 from pathlib import Path
 from types import ModuleType
-from typing import Self
 
 from metaexpert._argument import Namespace, parse_arguments
 from metaexpert._contract import Contract
@@ -28,14 +28,8 @@ logger: Logger = setup_logger(APP_NAME)
 class MetaExpert(Service):
     """Expert trading system"""
 
-    name: str | None = None
-    module: ModuleType | None = None
-    filename: str | None = None
-
-    def __new__(cls, *args, **kwargs) -> Self:
-        """Create a new instance of the MetaExpert class."""
-        instance = super().__new__(cls)
-        return instance
+    _module: ModuleType | None = None
+    _filename: str | None = None
 
     def __init__(
             self,
@@ -100,21 +94,21 @@ class MetaExpert(Service):
 
         try:
             # Initialize event handling
-            self.module = Process.init()
+            self._module = Process.init()
 
-            if self.module and self.module.__file__:
-                self.filename: str = Path(self.module.__file__).stem
+            if self._module and self._module.__file__:
+                self._filename: str = Path(self._module.__file__).stem
 
             # Initialize the expert
             Process.ON_INIT.run()
             logger.info("Expert initialized successfully")
 
-            Process.ON_BAR.run()
+            # Process.ON_BAR.run()
 
             # Launch the cycle of processing the events of timers
-            Process.ON_TIMER.run()
+            #Process.ON_TIMER.run()
 
-            # asyncio.run(Process.processing())
+            asyncio.run(Process.processing())
 
             # Запускаем основной цикл обработки событий
             while self._running:

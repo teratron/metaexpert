@@ -1,5 +1,6 @@
 from typing import Any, Callable, Coroutine
 
+from metaexpert._expert import Expert
 from metaexpert._timeframe import Timeframe
 from metaexpert._timer import Timer
 from metaexpert.config import APP_NAME
@@ -8,21 +9,13 @@ from metaexpert.logger import Logger, get_logger
 logger: Logger = get_logger(APP_NAME)
 
 
-class Service:
+class Service(Expert):
     """Expert trading system service.
 
     This class handles the initialization and management of the trading system's events.
     It provides decorators for various events such as initialization, deinitialization,
     trading, transactions, ticks, bars, timers, and book events.
     """
-    symbol: str | set[str] | None
-    timeframe: Timeframe | set[Timeframe] | None
-    shift: int
-    magic: int
-    name: str | None
-
-    # def __init__(self, name: str) -> None:
-    #     self.logger: Logger = get_logger(name)
 
     def on_init(
             self,
@@ -31,7 +24,13 @@ class Service:
             *,
             shift: int = 0,
             magic: int = 0,
-            name: str | None = None
+            name: str | None = None,
+            lots: float = 0.01,
+            stop_loss: float = 0.0,
+            take_profit: float = 0.0,
+            trailing_stop: float = 0.0,
+            slippage: float = 0.0,
+            positions: int = 5
     ) -> Callable:
         """Decorator for initialization event handling.
 
@@ -50,6 +49,14 @@ class Service:
         self.shift = shift
         self.magic = magic
         self.name = name
+        self.lots = lots
+        self.stop_loss = stop_loss
+        self.take_profit = take_profit
+        self.trailing_stop = trailing_stop
+        self.slippage = slippage
+        self.positions = positions
+
+        # super().__init__()
 
         def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
             def inner(*args, **kwargs) -> None:
@@ -102,7 +109,6 @@ class Service:
             raise ValueError("Interval must be greater than 0")
 
         def outer(func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-            # timer = Timer(interval=interval, callback=func)
             async def inner() -> None:
                 await Timer(interval=interval, callback=func).start()
 
@@ -117,8 +123,8 @@ class Service:
         return inner
 
     def on_transaction(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
+        def inner(request: str = "", result: str = "") -> None:
+            func(request, result)
 
         return inner
 
@@ -174,19 +180,3 @@ class Service:
             func()
 
         return inner
-
-    # @property
-    # def magic(self) -> int:
-    #     return self._magic
-    #
-    # @magic.setter
-    # def magic(self, value: int) -> None:
-    #     self._magic = value
-    #
-    # @property
-    # def comment(self) -> str:
-    #     return self.__comment
-    #
-    # @comment.setter
-    # def comment(self, value: str) -> None:
-    #     self.__comment = value + f"Magic number: {self._magic}"

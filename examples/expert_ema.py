@@ -18,7 +18,10 @@ expert = MetaExpert(
 expert.balance()
 
 
-@expert.on_init("BTCUSDT", "1h", shift=0, magic=12345, name="EMA Expert")
+@expert.on_init(
+    "BTCUSDT", "1h", shift=0, magic=12345, name="EMA Expert",
+    lots=0.01, stop_loss=100, take_profit=200, trailing_stop=50, slippage=10, positions=5
+)
 def init() -> None:
     print("*** on_init ***")
 
