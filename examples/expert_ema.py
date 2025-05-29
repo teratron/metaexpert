@@ -36,8 +36,8 @@ def deinit(reason) -> None:
 
 
 @expert.on_tick
-def tick() -> None:
-    print("*** on_tick ***")
+def tick(rates) -> None:
+    print("*** on_tick ***", rates)
 
 
 @expert.on_bar("1h")

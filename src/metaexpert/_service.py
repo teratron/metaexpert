@@ -77,8 +77,8 @@ class Service(Expert):
 
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
     def on_tick(self, func: Callable) -> Callable:
-        def inner(*args, **kwargs) -> None:
-            func(*args, **kwargs)
+        async def inner(rates: str = "tram-pam-pam") -> None:
+            await func(rates)
 
         return inner
 
@@ -86,10 +86,9 @@ class Service(Expert):
 
     @staticmethod
     def on_bar(timeframe: str = "1h") -> Callable:
-        def outer(func: Callable[[str], None]) -> Callable[[str], Coroutine[Any, Any, None]]:
+        def outer(func: Callable[[str], Coroutine[Any, Any, None]]) -> Callable[[str], Coroutine[Any, Any, None]]:
             async def inner(rates: str = "tram-pam-pam") -> None:
-                func(rates)
-                print(timeframe, rates)
+                await func(rates)
 
             return inner
 
