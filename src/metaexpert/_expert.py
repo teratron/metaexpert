@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 from datetime import datetime
 
 from metaexpert._timeframe import Timeframe
 
 
+@dataclass
 class Expert:
     symbol: str | set[str] | None
     timeframe: Timeframe | set[Timeframe] | None

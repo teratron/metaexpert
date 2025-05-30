@@ -1,6 +1,7 @@
 import asyncio
 import inspect
 from enum import Enum
+from threading import Thread
 from types import ModuleType
 from typing import Self
 
@@ -208,7 +209,8 @@ class Process(Enum):
                             task.append(asyncio.to_thread(func))
                     # tasks.append(asyncio.create_task(func()))
 
-        await asyncio.gather(*(tuple(task)))
+        # await asyncio.gather(*(tuple(task)))
+        Thread(target=asyncio.gather, args=(*(tuple(task)),), daemon=True).start()
 
         # Run all tasks concurrently
         # Thread(
@@ -217,4 +219,24 @@ class Process(Enum):
         #     daemon=True
         # ).start()
 
+        return True
+
+    @classmethod
+    async def processing2(cls) -> bool:
+        tasks: list = []
+        for item in cls:
+            if item.value.get("is_async"):
+                callback = item.value.get("callback")
+                if not isinstance(callback, list):
+                    logger.error("Callbacks for '%s' are not a list", item.value.get("name"))
+                    continue
+
+                for func in callback:
+                    if func and callable(func):
+                        if inspect.iscoroutinefunction(func):
+                            tasks.append(asyncio.create_task(func()))
+                        else:
+                            tasks.append(asyncio.to_thread(func))
+
+        Thread(target=run_async_tasks, args=(tasks,), daemon=True).start()
         return True
