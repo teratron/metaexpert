@@ -8,8 +8,6 @@ from typing import Self
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
-# from threading import Thread
-
 logger: Logger = get_logger(APP_NAME)
 
 
@@ -185,44 +183,44 @@ class Process(Enum):
     #     return tuple(tasks)
     # return tuple(*(task for task in self.value.get("task")))  # if hasattr(self.value, "task")
 
+    # @classmethod
+    # async def processing(cls) -> bool:
+    #     # if not cls.ON_INIT.value.get("is_done"):
+    #     #     return False
+    #
+    #     task: list = []  # map(asyncio.create_task, )
+    #     for item in cls:
+    #         if item.value.get("is_async"):
+    #             callback = item.value.get("callback")
+    #             if not isinstance(callback, list):
+    #                 logger.error("Callbacks for '%s' are not a list", item.value.get("name"))
+    #                 continue
+    #
+    #             for func in callback:
+    #                 if func and callable(func):
+    #                     # print(f"Creating task for {func.__name__}")
+    #                     if inspect.iscoroutinefunction(func):
+    #                         # If the function is a coroutine, create an asyncio task
+    #                         task.append(asyncio.create_task(func()))
+    #                     else:
+    #                         # If the function is a regular function, run it in a thread
+    #                         task.append(asyncio.to_thread(func))
+    #                 # tasks.append(asyncio.create_task(func()))
+    #
+    #     # await asyncio.gather(*(tuple(task)))
+    #     Thread(target=asyncio.gather, args=(*(tuple(task)),), daemon=True).start()
+    #
+    #     # Run all tasks concurrently
+    #     # Thread(
+    #     #     target=WebSocketClient,
+    #     #     args=("wss://stream.bybit.com/v5/public/spot", ["tickers.ADAUSDT", "orderbook.50.ADAUSDT"]),
+    #     #     daemon=True
+    #     # ).start()
+    #
+    #     return True
+
     @classmethod
     async def processing(cls) -> bool:
-        # if not cls.ON_INIT.value.get("is_done"):
-        #     return False
-
-        task: list = []  # map(asyncio.create_task, )
-        for item in cls:
-            if item.value.get("is_async"):
-                callback = item.value.get("callback")
-                if not isinstance(callback, list):
-                    logger.error("Callbacks for '%s' are not a list", item.value.get("name"))
-                    continue
-
-                for func in callback:
-                    if func and callable(func):
-                        # print(f"Creating task for {func.__name__}")
-                        if inspect.iscoroutinefunction(func):
-                            # If the function is a coroutine, create an asyncio task
-                            task.append(asyncio.create_task(func()))
-                        else:
-                            # If the function is a regular function, run it in a thread
-                            task.append(asyncio.to_thread(func))
-                    # tasks.append(asyncio.create_task(func()))
-
-        # await asyncio.gather(*(tuple(task)))
-        Thread(target=asyncio.gather, args=(*(tuple(task)),), daemon=True).start()
-
-        # Run all tasks concurrently
-        # Thread(
-        #     target=WebSocketClient,
-        #     args=("wss://stream.bybit.com/v5/public/spot", ["tickers.ADAUSDT", "orderbook.50.ADAUSDT"]),
-        #     daemon=True
-        # ).start()
-
-        return True
-
-    @classmethod
-    async def processing2(cls) -> bool:
         tasks: list = []
         for item in cls:
             if item.value.get("is_async"):
@@ -238,5 +236,21 @@ class Process(Enum):
                         else:
                             tasks.append(asyncio.to_thread(func))
 
-        Thread(target=run_async_tasks, args=(tasks,), daemon=True).start()
+        Thread(target=cls.run_async_tasks, args=(tasks,), daemon=True).start()
         return True
+
+    @staticmethod
+    def run_async_tasks(tasks) -> None:
+        # Создаем новый цикл событий для потока
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            # Запускаем задачи
+            loop.run_until_complete(asyncio.gather(*tasks))
+        finally:
+            # Закрываем цикл событий
+            loop.close()
+
+# Создаем и запускаем поток
+# thread = Thread(target=run_async_tasks, args=(tasks,), daemon=True)
+# thread.start()
