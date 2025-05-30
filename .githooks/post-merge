@@ -11,7 +11,7 @@ uv self update
 # Activate virtual environment based on OS
 if [ "$(uname)" = "Windows_NT" ] || [ -n "$WINDIR" ] || [ -n "$windir" ]; then
     # Windows
-    cd .venv/Scripts || exit
+    cd .\\.venv\\Scripts || exit
     activate
     cd ../..
 else
