@@ -77,7 +77,7 @@ class Process(Enum):
     #     return list(self.value.keys())
 
     @classmethod
-    def __get_process_from(cls, name: str) -> Self | None:
+    def _get_process_from(cls, name: str) -> Self | None:
         for item in cls:
             if item.value.get("name") == name.lower():
                 return item
@@ -107,7 +107,7 @@ class Process(Enum):
                 # List of hierarchy of objects, functions, decorators or closes.
                 qualif: list[str] = getattr(obj, "__qualname__", "").split(".")
                 if len(qualif) > 1:
-                    event = cls.__get_process_from(qualif[1])
+                    event = cls._get_process_from(qualif[1])
                     if event:
                         callback = event.value.get("callback")
                         if isinstance(callback, list):
@@ -157,6 +157,20 @@ class Process(Enum):
 
         return None
 
+    def check_instance(self) -> bool:
+        """Check if there are any instances registered for the process.
+
+        This method checks if the process has any instances registered.
+        It returns True if there are instances, otherwise False.
+        """
+        if not isinstance(self.value.get("instance"), list):
+            logger.error("Instances for '%s' are not a list", self.value.get("name"))
+            return False
+
+        has_instances = bool(self.value["instance"])
+        logger.debug("Process '%s' has instances: %s", self.value.get("name"), has_instances)
+        return has_instances
+
     def run(self) -> None:
         """Run the process.
 
@@ -164,11 +178,11 @@ class Process(Enum):
         If the process is marked as asynchronous, it runs the callbacks using asyncio.
         """
         if self.value.get("is_async"):
-            asyncio.run(self.__run_async())
+            asyncio.run(self._run_async())
         else:
-            self.__run()
+            self._run()
 
-    def __run(self) -> None:
+    def _run(self) -> None:
         """Run the process.
 
         This method executes the registered callbacks for the event.
@@ -186,7 +200,7 @@ class Process(Enum):
             self.value["is_done"] = True
             logger.debug("Process '%s' is done", self.value.get("name"))
 
-    async def __run_async(self) -> None:
+    async def _run_async(self) -> None:
         """Run the process asynchronously.
 
         This method executes the registered callbacks for the event asynchronously.
@@ -197,9 +211,9 @@ class Process(Enum):
             return
 
         logger.debug("Launch task for '%s(s)'", self.value.get("name"))
-        await asyncio.gather(*tuple(self.__get_tasks()))
+        await asyncio.gather(*tuple(self._get_tasks()))
 
-    def __get_tasks(self) -> list[Task] | None:
+    def _get_tasks(self) -> list[Task] | None:
         callback = self.value.get("callback")
         if not isinstance(callback, list):
             logger.error("Callbacks for '%s' are not a list", self.value.get("name"))
@@ -223,12 +237,12 @@ class Process(Enum):
         #     return False
 
         # Run all tasks concurrently
-        Thread(target=cls.__run_tasks, daemon=True).start()
+        Thread(target=cls._run_tasks, daemon=True).start()
 
         return True
 
     @classmethod
-    def __run_tasks(cls) -> None:  # , tasks: list
+    def _run_tasks(cls) -> None:  # , tasks: list
         # loop = asyncio.new_event_loop()
         # asyncio.set_event_loop(loop)
         # try:
@@ -237,14 +251,14 @@ class Process(Enum):
         #     loop.close()
 
         # await asyncio.gather(*tuple(tasks))
-        asyncio.run(cls.__gather_tasks())
+        asyncio.run(cls._gather_tasks())
 
     @classmethod
-    async def __gather_tasks(cls) -> None:  # list[Task] |
+    async def _gather_tasks(cls) -> None:  # list[Task] |
         tasks: list[Task] = []
         for item in cls:
             if item.value.get("is_async"):
-                task = item.__get_tasks()
+                task = item._get_tasks()
                 if isinstance(task, list):
                     tasks.extend(task)
                 else:

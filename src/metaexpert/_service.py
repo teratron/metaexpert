@@ -42,6 +42,12 @@ class Service(Expert):
             shift (int): A shift relative to the current bar on which the expert is traded. Defaults to 0.
             magic (int): Magic number. Used to identify the expert. Defaults to 0.
             name (str | None): The name of the expert.
+            lots (float): The number of lots for trading. Defaults to 0.01.
+            stop_loss (float): Stop loss value. Defaults to 0.0.
+            take_profit (float): Take profit value. Defaults to 0.0.
+            trailing_stop (float): Trailing stop value. Defaults to 0.0.
+            slippage (float): Slippage value. Defaults to 0.0.
+            positions (int): Number of positions to manage. Defaults to 5.
             
         Returns:
             Callable: Decorated function that handles the initialization event.
@@ -76,13 +82,13 @@ class Service(Expert):
             logger.debug("Deinitializing...")
             func(reason)
 
-            while Process.ON_TIMER:
+            while Process.ON_TIMER.check_instance():
                 timer = Process.ON_TIMER.pop_instance()
                 if timer is not None:
                     logger.debug("Stopping timer...")
                     timer.stop()
 
-            while Process.ON_BAR:
+            while Process.ON_BAR.check_instance():
                 bar = Process.ON_BAR.pop_instance()
                 if bar is not None:
                     logger.debug("Stopping bar...")
