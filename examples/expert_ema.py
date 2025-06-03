@@ -36,7 +36,7 @@ def deinit(reason) -> None:
 
 
 @expert.on_tick
-async def tick(rates) -> None:
+def tick(rates) -> None:
     print("*** on_tick ***", rates)
 
 

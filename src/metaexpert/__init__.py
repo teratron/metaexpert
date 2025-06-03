@@ -105,9 +105,10 @@ class MetaExpert(Service):
             # Process.ON_BAR.run()
 
             # Launch the cycle of processing the events of timers
-            Process.ON_TIMER.run()
+            # Process.ON_TIMER.run()
 
             # asyncio.run(Process.processing())
+            Process.processing()
 
             # Запускаем основной цикл обработки событий
             while self._running:

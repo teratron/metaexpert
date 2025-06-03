@@ -77,9 +77,10 @@ class Service(Expert):
         return inner
 
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
-    def on_tick(self, func: Callable) -> Callable:
-        async def inner(rates: str = "tram-pam-pam") -> None:
-            await func(rates)
+    @staticmethod
+    def on_tick(func: Callable) -> Callable:
+        def inner(rates: str = "tic-tac-toe") -> None:
+            func(rates)
 
         return inner
 

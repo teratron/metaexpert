@@ -33,7 +33,7 @@ class Process(Enum):
         "name": "on_tick",
         "number": 1,
         "callback": [],
-        "is_async": True
+        "is_async": False
     }
     ON_BAR = {
         "name": "on_bar",
@@ -178,57 +178,53 @@ class Process(Enum):
 
         tasks: list[Task] = []
         for func in callback:
-            if func and callable(func) and inspect.iscoroutinefunction(func):
-                tasks.append(asyncio.create_task(func()))
+            if func and callable(func):
+                if inspect.iscoroutinefunction(func):
+                    # If the function is a coroutine, create an asyncio task
+                    tasks.append(asyncio.create_task(func()))
+                # else:
+                # If the function is a regular function, run it in a thread
+                # tasks.append(asyncio.to_thread(func))
 
         return tasks
 
     @classmethod
-    def __gather_tasks_for_each_process(cls) -> list[Task] | None:
+    async def __gather_all_tasks(cls) -> None:  # list[Task] |
         tasks: list[Task] = []
         for item in cls:
             if item.value.get("is_async"):
                 task = item.__gather_tasks()
                 if isinstance(task, list):
                     tasks.extend(task)
+                else:
+                    logger.error("Failed to gather tasks for '%s'", item.value.get("name"))
+                    return
 
-        return tasks
+        await asyncio.gather(*tuple(tasks))
+        #return tasks
 
     @classmethod
-    async def processing(cls) -> bool:
+    def processing(cls) -> bool:
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
 
-        tasks: list = []
-        for item in cls:
-            if item.value.get("is_async"):
-                callback = item.value.get("callback")
-                if not isinstance(callback, list):
-                    logger.error("Callbacks for '%s' are not a list", item.value.get("name"))
-                    continue
-
-                for func in callback:
-                    if func and callable(func):
-                        if inspect.iscoroutinefunction(func):
-                            # If the function is a coroutine, create an asyncio task
-                            tasks.append(asyncio.create_task(func()))
-                            print("create_task", func)
-                        else:
-                            # If the function is a regular function, run it in a thread
-                            tasks.append(asyncio.to_thread(func))
-                            print("to_thread", func)
-
         # Run all tasks concurrently
-        Thread(target=cls.run_async_tasks, args=(tuple(tasks),), daemon=True).start()
+        Thread(
+            target=cls.run_async_tasks,
+            # args=(cls.__gather_all_tasks(),),
+            daemon=True
+        ).start()
+
         return True
 
-    @staticmethod
-    def run_async_tasks(tasks: tuple) -> None:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+    @classmethod
+    def run_async_tasks(cls) -> None:  # , tasks: list
+        # loop = asyncio.new_event_loop()
+        # asyncio.set_event_loop(loop)
         # try:
-        #     loop.run_until_complete(asyncio.gather(*tasks))
+        #     loop.run_until_complete(asyncio.gather(*tuple(tasks)))
         # finally:
         #     loop.close()
 
-        #asyncio.run(asyncio.create_task(asyncio.gather(*tasks)))
+        # await asyncio.gather(*tuple(tasks))
+        asyncio.run(cls.__gather_all_tasks())
