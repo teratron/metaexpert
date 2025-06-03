@@ -50,19 +50,19 @@ class Process(Enum):
         "name": "on_trade",
         "number": 1,
         "callback": [],
-        "is_async": True
+        "is_async": False
     }
     ON_TRANSACTION = {
         "name": "on_transaction",
         "number": 1,
         "callback": [],
-        "is_async": True
+        "is_async": False
     }
     ON_BOOK = {
         "name": "on_book",
         "number": 1,
         "callback": [],
-        "is_async": True
+        "is_async": False
     }
 
     # def __iter__(self) -> Generator:
@@ -233,19 +233,22 @@ class Process(Enum):
                     if func and callable(func):
                         if inspect.iscoroutinefunction(func):
                             tasks.append(asyncio.create_task(func()))
+                            print("create_task", func)
                         else:
                             tasks.append(asyncio.to_thread(func))
+                            print("to_thread", func)
 
-        Thread(target=cls.run_async_tasks, args=(tasks,), daemon=True).start()
+        Thread(target=cls.run_async_tasks, args=(tuple(tasks),), daemon=True).start()
         return True
 
     @staticmethod
-    def run_async_tasks(tasks) -> None:
+    def run_async_tasks(tasks: tuple) -> None:
         # Создаем новый цикл событий для потока
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
             # Запускаем задачи
+            # loop.run_until_complete(asyncio.gather(*(tuple(tasks))))
             loop.run_until_complete(asyncio.gather(*tasks))
         finally:
             # Закрываем цикл событий

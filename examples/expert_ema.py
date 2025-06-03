@@ -41,7 +41,7 @@ async def tick(rates) -> None:
 
 
 @expert.on_bar("1h")
-async def bar(rates) -> None:
+def bar(rates) -> None:
     print("*** on_bar ***", rates)
     # close = numpy.random.randn(20)
     # ema_slow = talib.MA(close, timeperiod=7, matype=talib.MA_Type.EMA)

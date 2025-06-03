@@ -1,5 +1,6 @@
 from typing import Any, Callable, Coroutine
 
+from metaexpert._bar import Bar
 from metaexpert._expert import Expert
 from metaexpert._timeframe import Timeframe
 from metaexpert._timer import Timer
@@ -88,7 +89,7 @@ class Service(Expert):
     def on_bar(timeframe: str = "1h") -> Callable:
         def outer(func: Callable[[str], Coroutine[Any, Any, None]]) -> Callable[[str], Coroutine[Any, Any, None]]:
             async def inner(rates: str = "tram-pam-pam") -> None:
-                await func(rates)
+                await Bar(timeframe=timeframe, callback=func, args=(rates,)).start()
 
             return inner
 
