@@ -132,7 +132,7 @@ class Process(Enum):
         If the process is marked as asynchronous, it runs the callbacks using asyncio.
         """
         if self.value.get("is_async"):
-            asyncio.run(self.__async_run())
+            asyncio.run(self.__run_async())
         else:
             self.__run()
 
@@ -154,7 +154,7 @@ class Process(Enum):
             self.value["is_done"] = True
             logger.debug("Process '%s' is done", self.value.get("name"))
 
-    async def __async_run(self) -> None:
+    async def __run_async(self) -> None:
         """Run the process asynchronously.
 
         This method executes the registered callbacks for the event asynchronously.
@@ -165,12 +165,9 @@ class Process(Enum):
             return
 
         logger.debug("Launch task for '%s(s)'", self.value.get("name"))
-        await asyncio.gather(
-            # *(asyncio.create_task(func()) for func in callback)
-            *tuple(self.__gather_tasks())
-        )
+        await asyncio.gather(*tuple(self.__get_tasks()))
 
-    def __gather_tasks(self) -> list[Task] | None:
+    def __get_tasks(self) -> list[Task] | None:
         callback = self.value.get("callback")
         if not isinstance(callback, list):
             logger.error("Callbacks for '%s' are not a list", self.value.get("name"))
@@ -189,36 +186,17 @@ class Process(Enum):
         return tasks
 
     @classmethod
-    async def __gather_all_tasks(cls) -> None:  # list[Task] |
-        tasks: list[Task] = []
-        for item in cls:
-            if item.value.get("is_async"):
-                task = item.__gather_tasks()
-                if isinstance(task, list):
-                    tasks.extend(task)
-                else:
-                    logger.error("Failed to gather tasks for '%s'", item.value.get("name"))
-                    return
-
-        await asyncio.gather(*tuple(tasks))
-        #return tasks
-
-    @classmethod
     def processing(cls) -> bool:
-        # if not cls.ON_INIT.value.get("is_done"):
-        #     return False
+        if not cls.ON_INIT.value.get("is_done"):
+            return False
 
         # Run all tasks concurrently
-        Thread(
-            target=cls.run_async_tasks,
-            # args=(cls.__gather_all_tasks(),),
-            daemon=True
-        ).start()
+        Thread(target=cls.__run_tasks, daemon=True).start()
 
         return True
 
     @classmethod
-    def run_async_tasks(cls) -> None:  # , tasks: list
+    def __run_tasks(cls) -> None:  # , tasks: list
         # loop = asyncio.new_event_loop()
         # asyncio.set_event_loop(loop)
         # try:
@@ -227,4 +205,19 @@ class Process(Enum):
         #     loop.close()
 
         # await asyncio.gather(*tuple(tasks))
-        asyncio.run(cls.__gather_all_tasks())
+        asyncio.run(cls.__gather_tasks())
+
+    @classmethod
+    async def __gather_tasks(cls) -> None:  # list[Task] |
+        tasks: list[Task] = []
+        for item in cls:
+            if item.value.get("is_async"):
+                task = item.__get_tasks()
+                if isinstance(task, list):
+                    tasks.extend(task)
+                else:
+                    logger.error("Failed to gather tasks for '%s'", item.value.get("name"))
+                    return
+
+        await asyncio.gather(*tuple(tasks))
+        # return tasks
