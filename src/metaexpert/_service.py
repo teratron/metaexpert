@@ -76,17 +76,17 @@ class Service(Expert):
             logger.debug("Deinitializing...")
             func(reason)
 
-            while Process.ON_BAR:
-                bar = Process.ON_BAR.pop_instance()
-                if bar is not None:
-                    logger.debug("Stopping bar...")
-                    bar.stop()
-
             while Process.ON_TIMER:
                 timer = Process.ON_TIMER.pop_instance()
                 if timer is not None:
                     logger.debug("Stopping timer...")
                     timer.stop()
+
+            while Process.ON_BAR:
+                bar = Process.ON_BAR.pop_instance()
+                if bar is not None:
+                    logger.debug("Stopping bar...")
+                    bar.stop()
 
         return inner
 
