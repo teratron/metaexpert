@@ -39,12 +39,14 @@ class Process(Enum):
         "name": "on_bar",
         "number": 5,
         "callback": [],
+        "instance": [],
         "is_async": True
     }
     ON_TIMER = {
         "name": "on_timer",
         "number": 5,
         "callback": [],
+        "instance": [],
         "is_async": True
     }
     ON_TRADE = {
@@ -125,6 +127,36 @@ class Process(Enum):
 
         return module
 
+    def push_instance(self, instance: object) -> None:
+        """Push an instance to the process.
+
+        This method adds an instance to the process's list of instances.
+        It is used to register instances that need to be notified when the event occurs.
+        """
+        if not isinstance(self.value.get("instance"), list):
+            logger.error("Instances for '%s' are not a list", self.value.get("name"))
+            return
+
+        self.value["instance"].append(instance)
+        logger.debug("Instance added for '%s'", self.value.get("name"))
+
+    def pop_instance(self) -> object | None:
+        """Pop an instance from the process.
+
+        This method removes the last instance from the process's list of instances.
+        It is used to unregister instances that no longer need to be notified when the event occurs.
+        """
+        if not isinstance(self.value.get("instance"), list):
+            logger.error("Instances for '%s' are not a list", self.value.get("name"))
+            return None
+
+        if self.value["instance"]:
+            instance = self.value["instance"].pop()
+            logger.debug("Instance removed for '%s': %s", self.value.get("name"), instance)
+            return instance
+
+        return None
+
     def run(self) -> None:
         """Run the process.
 
@@ -187,8 +219,8 @@ class Process(Enum):
 
     @classmethod
     def processing(cls) -> bool:
-        if not cls.ON_INIT.value.get("is_done"):
-            return False
+        # if not cls.ON_INIT.value.get("is_done"):
+        #     return False
 
         # Run all tasks concurrently
         Thread(target=cls.__run_tasks, daemon=True).start()

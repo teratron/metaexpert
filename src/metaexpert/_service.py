@@ -1,5 +1,6 @@
 from typing import Any, Callable, Coroutine
 
+from metaexpert import Process
 from metaexpert._bar import Bar
 from metaexpert._expert import Expert
 from metaexpert._timeframe import Timeframe
@@ -69,10 +70,23 @@ class Service(Expert):
 
         return outer
 
-    def on_deinit(self, func: Callable[[str], None]) -> Callable:
+    @staticmethod
+    def on_deinit(func: Callable[[str], None]) -> Callable:
         def inner(reason: str = "+++", *args, **kwargs) -> None:
             logger.debug("Deinitializing...")
             func(reason)
+
+            while Process.ON_BAR:
+                bar = Process.ON_BAR.pop_instance()
+                if bar is not None:
+                    logger.debug("Stopping bar...")
+                    bar.stop()
+
+            while Process.ON_TIMER:
+                timer = Process.ON_TIMER.pop_instance()
+                if timer is not None:
+                    logger.debug("Stopping timer...")
+                    timer.stop()
 
         return inner
 
@@ -85,12 +99,16 @@ class Service(Expert):
         return inner
 
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
-
     @staticmethod
     def on_bar(timeframe: str = "1h") -> Callable:
+        if not isinstance(timeframe, str):
+            raise TypeError("Timeframe must be a string")
+
         def outer(func: Callable[[str], Coroutine[Any, Any, None]]) -> Callable[[str], Coroutine[Any, Any, None]]:
             async def inner(rates: str = "tram-pam-pam") -> None:
-                await Bar(timeframe=timeframe, callback=func, args=(rates,)).start()
+                bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
+                Process.ON_BAR.push_instance(bar)
+                await bar.start()
 
             return inner
 
@@ -111,7 +129,9 @@ class Service(Expert):
 
         def outer(func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
             async def inner() -> None:
-                await Timer(interval=interval, callback=func).start()
+                timer = Timer(interval=interval, callback=func)
+                Process.ON_TIMER.push_instance(timer)
+                await timer.start()
 
             return inner
 
