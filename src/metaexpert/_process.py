@@ -68,14 +68,6 @@ class Process(Enum):
         "is_async": False
     }
 
-    # def __iter__(self) -> Generator:
-    #     for item in self.value.items():
-    #         yield item
-    #
-    # def __dir__(self) -> list[str]:
-    #     """Return a list of attributes for the process."""
-    #     return list(self.value.keys())
-
     @classmethod
     def _get_process_from(cls, name: str) -> Self | None:
         for item in cls:
@@ -107,25 +99,46 @@ class Process(Enum):
                 # List of hierarchy of objects, functions, decorators or closes.
                 qualif: list[str] = getattr(obj, "__qualname__", "").split(".")
                 if len(qualif) > 1:
-                    event = cls._get_process_from(qualif[1])
-                    if event:
-                        callback = event.value.get("callback")
-                        if isinstance(callback, list):
-                            number = event.value.get("number")
-                            if isinstance(number, int):
-                                if len(callback) < number:
-                                    callback.append(getattr(module, attr))
-                                    logger.debug(
-                                        "Registering callback for '%s:%s()'",
-                                        event.value.get("name"), attr
-                                    )
-                                else:
-                                    logger.warning(
-                                        "Too many callbacks for '%s': %d",
-                                        qualif[1], number + 1
-                                    )
+                    cls._push_callback(qualif[1], (module, attr))
+                    # event = cls._get_process_from(qualif[1])
+                    # if event is not None:
+                    #     callback = event.value.get("callback")
+                    #     if isinstance(callback, list):
+                    #         number = event.value.get("number")
+                    #         if isinstance(number, int):
+                    #             if len(callback) < number:
+                    #                 callback.append(getattr(module, attr))
+                    #                 logger.debug(
+                    #                     "Registering callback for '%s:%s()'",
+                    #                     event.value.get("name"), attr
+                    #                 )
+                    #             else:
+                    #                 logger.warning(
+                    #                     "Too many callbacks for '%s': %d",
+                    #                     qualif[1], number + 1
+                    #                 )
 
         return module
+
+    @classmethod
+    def _push_callback(cls, name: str, args: tuple[ModuleType, str]) -> None:
+        event = cls._get_process_from(name)
+        if event is not None:
+            callback = event.value.get("callback")
+            if isinstance(callback, list):
+                number = event.value.get("number")
+                if isinstance(number, int):
+                    if len(callback) < number:
+                        callback.append(getattr(*args))
+                        logger.debug(
+                            "Registering callback for '%s:%s()'",
+                            event.value.get("name"), args[1]
+                        )
+                    else:
+                        logger.warning(
+                            "Too many callbacks for '%s': %d",
+                            name, number + 1
+                        )
 
     def push_instance(self, instance: object) -> None:
         """Push an instance to the process.
@@ -214,6 +227,11 @@ class Process(Enum):
         await asyncio.gather(*tuple(self._get_tasks()))
 
     def _get_tasks(self) -> list[Task] | None:
+        """Get the tasks for the process.
+
+        This method retrieves the registered callbacks for the event and creates asyncio tasks for them.
+        It returns a list of asyncio tasks or None if there are no valid callbacks.
+        """
         callback = self.value.get("callback")
         if not isinstance(callback, list):
             logger.error("Callbacks for '%s' are not a list", self.value.get("name"))
@@ -221,13 +239,8 @@ class Process(Enum):
 
         tasks: list[Task] = []
         for func in callback:
-            if func and callable(func):
-                if inspect.iscoroutinefunction(func):
-                    # If the function is a coroutine, create an asyncio task
-                    tasks.append(asyncio.create_task(func()))
-                # else:
-                # If the function is a regular function, run it in a thread
-                # tasks.append(asyncio.to_thread(func))
+            if func and callable(func) and inspect.iscoroutinefunction(func):
+                tasks.append(asyncio.create_task(func()))
 
         return tasks
 
@@ -236,25 +249,16 @@ class Process(Enum):
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
 
-        # Run all tasks concurrently
         Thread(target=cls._run_tasks, daemon=True).start()
 
         return True
 
     @classmethod
-    def _run_tasks(cls) -> None:  # , tasks: list
-        # loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(loop)
-        # try:
-        #     loop.run_until_complete(asyncio.gather(*tuple(tasks)))
-        # finally:
-        #     loop.close()
-
-        # await asyncio.gather(*tuple(tasks))
+    def _run_tasks(cls) -> None:
         asyncio.run(cls._gather_tasks())
 
     @classmethod
-    async def _gather_tasks(cls) -> None:  # list[Task] |
+    async def _gather_tasks(cls) -> None:
         tasks: list[Task] = []
         for item in cls:
             if item.value.get("is_async"):
@@ -266,4 +270,3 @@ class Process(Enum):
                     return
 
         await asyncio.gather(*tuple(tasks))
-        # return tasks
