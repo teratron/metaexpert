@@ -69,14 +69,6 @@ class Process(Enum):
     }
 
     @classmethod
-    def _get_process_from(cls, name: str) -> Self | None:
-        for item in cls:
-            if item.value.get("name") == name.lower():
-                return item
-
-        return None
-
-    @classmethod
     def init(cls) -> ModuleType | None:
         """Initialize the process.
 
@@ -100,45 +92,62 @@ class Process(Enum):
                 qualif: list[str] = getattr(obj, "__qualname__", "").split(".")
                 if len(qualif) > 1:
                     cls._push_callback(qualif[1], (module, attr))
-                    # event = cls._get_process_from(qualif[1])
-                    # if event is not None:
-                    #     callback = event.value.get("callback")
-                    #     if isinstance(callback, list):
-                    #         number = event.value.get("number")
-                    #         if isinstance(number, int):
-                    #             if len(callback) < number:
-                    #                 callback.append(getattr(module, attr))
-                    #                 logger.debug(
-                    #                     "Registering callback for '%s:%s()'",
-                    #                     event.value.get("name"), attr
-                    #                 )
-                    #             else:
-                    #                 logger.warning(
-                    #                     "Too many callbacks for '%s': %d",
-                    #                     qualif[1], number + 1
-                    #                 )
 
         return module
 
     @classmethod
+    def _get_process_from(cls, name: str) -> Self | None:
+        """Get a process by its name.
+
+        This method searches for a process in the enumeration by its name.
+
+        Args:
+            name (str): The name of the process to search for.
+
+        Returns:
+            Self | None: The process if found, otherwise None.
+        """
+        for item in cls:
+            if item.value.get("name") == name.lower():
+                return item
+
+        return None
+
+    @classmethod
     def _push_callback(cls, name: str, args: tuple[ModuleType, str]) -> None:
+        """Push a callback to the process.
+
+        This method registers a callback function for a specific event.
+        It checks if the event exists and if the number of callbacks does not exceed the limit.
+        If the event does not exist or the number of callbacks exceeds the limit, it logs a warning.
+
+        Args:
+            name (str): The name of the event to register the callback for.
+            args (tuple[ModuleType, str]): A tuple containing the module and the function name to register as a callback.
+        """
         event = cls._get_process_from(name)
-        if event is not None:
-            callback = event.value.get("callback")
-            if isinstance(callback, list):
-                number = event.value.get("number")
-                if isinstance(number, int):
-                    if len(callback) < number:
-                        callback.append(getattr(*args))
-                        logger.debug(
-                            "Registering callback for '%s:%s()'",
-                            event.value.get("name"), args[1]
-                        )
-                    else:
-                        logger.warning(
-                            "Too many callbacks for '%s': %d",
-                            name, number + 1
-                        )
+        if event is None:
+            return
+
+        callback = event.value.get("callback")
+        if not isinstance(callback, list):
+            return
+
+        number = event.value.get("number")
+        if not isinstance(number, int):
+            return
+
+        if len(callback) < number:
+            callback.append(getattr(*args))
+            logger.debug(
+                "Registering callback for '%s:%s()'",
+                event.value.get("name"), args[1]
+            )
+        else:
+            logger.warning(
+                "Too many callbacks for '%s': %d",
+                name, number + 1
+            )
 
     def push_instance(self, instance: object) -> None:
         """Push an instance to the process.
@@ -246,6 +255,12 @@ class Process(Enum):
 
     @classmethod
     def processing(cls) -> bool:
+        """Process the events for the trading system.
+
+        This method initializes the process and starts running the tasks.
+        It checks if the process is already initialized and if not, it starts a new thread to run the tasks.
+        It returns True if the process was successfully initialized, otherwise False.
+        """
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
 
@@ -255,10 +270,21 @@ class Process(Enum):
 
     @classmethod
     def _run_tasks(cls) -> None:
+        """Run the tasks for the process.
+
+        This method gathers all tasks for the processes that are marked as asynchronous.
+        It runs the tasks in an asyncio event loop.
+        """
         asyncio.run(cls._gather_tasks())
 
     @classmethod
     async def _gather_tasks(cls) -> None:
+        """Gather all tasks for the processes.
+
+        This method collects all tasks for the processes that are marked as asynchronous.
+        It iterates through the processes and gathers their tasks into a single list.
+        If any process fails to gather tasks, it logs an error message.
+        """
         tasks: list[Task] = []
         for item in cls:
             if item.value.get("is_async"):
