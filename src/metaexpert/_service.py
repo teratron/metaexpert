@@ -108,6 +108,7 @@ class Service(Expert):
     @staticmethod
     def on_bar(timeframe: str = "1h") -> Callable:
         if not isinstance(timeframe, str):
+            logger.error("Timeframe must be a string, got %s", type(timeframe).__name__)
             raise TypeError("Timeframe must be a string")
 
         def outer(func: Callable[[str], Coroutine[Any, Any, None]]) -> Callable[[str], Coroutine[Any, Any, None]]:
@@ -121,7 +122,7 @@ class Service(Expert):
         return outer
 
     @staticmethod
-    def on_timer(interval: int = 1000) -> Callable:
+    def on_timer(interval: int = 1000) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
         """Decorator for timer-based event handling.
 
         Args:
@@ -131,6 +132,7 @@ class Service(Expert):
             Callable: Decorated function that executes at specified intervals.
         """
         if interval <= 0:
+            logger.error("Interval must be greater than 0, got %d", interval)
             raise ValueError("Interval must be greater than 0")
 
         def outer(func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
