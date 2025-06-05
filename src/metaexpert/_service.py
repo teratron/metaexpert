@@ -107,6 +107,14 @@ class Service(Expert):
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
     @staticmethod
     def on_bar(timeframe: str = "1h") -> Callable:
+        """Decorator for bar event handling.
+
+        Args:
+            timeframe (str): Time frame for the bar. Defaults to "1h".
+
+        Returns:
+            Callable: Decorated function that handles bar events.
+        """
         if not isinstance(timeframe, str):
             logger.error("Timeframe must be a string, got %s", type(timeframe).__name__)
             raise TypeError("Timeframe must be a string")
@@ -122,11 +130,11 @@ class Service(Expert):
         return outer
 
     @staticmethod
-    def on_timer(interval: int = 1000) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
+    def on_timer(interval: float = 60) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
         """Decorator for timer-based event handling.
 
         Args:
-            interval (int): Interval in milliseconds for the timer. Defaults to 1000 ms.
+            interval (float): Interval in seconds for the timer. Defaults to 60 s.
 
         Returns:
             Callable: Decorated function that executes at specified intervals.

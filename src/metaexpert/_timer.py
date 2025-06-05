@@ -7,8 +7,8 @@ from metaexpert.logger import Logger, get_logger
 
 
 class Timer:
-    def __init__(self, interval: int = 1000, callback: Callable | None = None) -> None:
-        self.interval: float = interval / 1000.0  # Convert milliseconds to seconds
+    def __init__(self, interval: float, callback: Callable | None = None) -> None:
+        self.interval: float = interval
         self.func: Callable = callback if callback is not None else lambda: None
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0

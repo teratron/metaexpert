@@ -54,14 +54,14 @@ def bar(rates) -> None:
     # print(ema_cross)
 
 
-@expert.on_timer(1000)
+@expert.on_timer(1)
 def timer() -> None:
-    print("*** on_timer 1000 ***")
+    print("*** on_timer 1 sec. ***")
 
 
-@expert.on_timer(3000)
+@expert.on_timer(3)
 def timer2() -> None:
-    print("*** on_timer 3000 ***")
+    print("*** on_timer 3 sec. ***")
 
 
 @expert.on_trade
