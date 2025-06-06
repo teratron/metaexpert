@@ -68,7 +68,7 @@ class MetaExpert(Service):
         self.mode: Mode | None = Mode.get_mode_from(mode or args.mode)
         self._running: bool = False
 
-        # super().__init__(self.name)
+        super().__init__()
 
         # self.client.get_balance()
         # self.client.get_account()

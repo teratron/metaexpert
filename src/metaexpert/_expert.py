@@ -23,17 +23,17 @@ class Expert:
     _lots_max: float
     _lots_step: float
 
-    m_long_time: datetime
-    m_long_positions: int
-    m_long_profit: float
-    m_long_lots: float
-    m_short_time: datetime
-    m_short_positions: int
-    m_short_profit: float
-    m_short_lots: float
-    m_digits: int
-    m_digits_format: str
-    m_point: float
+    _long_time: datetime
+    _long_positions: int
+    _long_profit: float
+    _long_lots: float
+    _short_time: datetime
+    _short_positions: int
+    _short_profit: float
+    _short_lots: float
+    _digits: int
+    _digits_format: str
+    _point: float
 
     def __init__(self):
         pass
