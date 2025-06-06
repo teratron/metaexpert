@@ -1,3 +1,4 @@
+import json
 import traceback
 from abc import ABC, abstractmethod
 
@@ -34,3 +35,5 @@ class WebSocketClient(WebSocketApp, ABC):
     @abstractmethod
     def on_message(self, ws: WebSocket, message: str) -> None:
         print(f"Received message: {message}")
+        data = json.loads(message)
+        print(f"Parsed message: {data}")

@@ -70,10 +70,6 @@ class MetaExpert(Service):
 
         super().__init__()
 
-        # self.client.get_balance()
-        # self.client.get_account()
-        # print(self.client.client.time()["serverTime"])
-
         # Setup logger
         # self.logger: Logger = setup_logger(self.name, args.log_level)
         logger.info("Starting expert on %s", args.stock)
@@ -102,12 +98,7 @@ class MetaExpert(Service):
             Process.ON_INIT.run()
             logger.info("Expert initialized successfully")
 
-            # Process.ON_BAR.run()
-
-            # Launch the cycle of processing the events of timers
-            # Process.ON_TIMER.run()
-
-            # asyncio.run(Process.processing())
+            # Register the expert with the process
             Process.processing()
 
             # Запускаем основной цикл обработки событий

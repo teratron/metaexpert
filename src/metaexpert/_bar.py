@@ -1,7 +1,7 @@
-import asyncio
 import time
 from typing import Callable
 
+from metaexpert._ws_spot import WebSocketClient
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
@@ -21,10 +21,13 @@ class Bar:
         self._start_time = time.time()
         self.logger.debug("Bar with timeframe %s started.", self.timeframe)
 
-        while self._is_running:
-            await asyncio.sleep(7)
-            self._elapsed_time += 7
-            self.func(*self.args)
+        client = WebSocketClient("wss://fstream.binance.com/ws/btcusdt@kline_1m")
+        await client.start()
+
+        # while self._is_running:
+        #     await asyncio.sleep(7)
+        #     self._elapsed_time += 7
+        #     self.func(*self.args)
 
     def stop(self) -> None:
         if self._is_running:
