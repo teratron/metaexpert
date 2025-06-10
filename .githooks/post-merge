@@ -14,7 +14,7 @@ if [ "$(uname)" = "Windows_NT" ] || [ -n "$WINDIR" ] || [ -n "$windir" ]; then
     #cd .venv/Scripts || exit
     #activate
     #cd ../..
-    .venv/Scripts/activate || exit
+    .venv/Scripts/activate || .venv\Scripts\activate || exit
 else
     # Unix-like OS
     . .venv/bin/activate
