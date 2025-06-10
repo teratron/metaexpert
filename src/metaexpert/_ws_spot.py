@@ -17,9 +17,9 @@ class WebSocketClient(WebSocketApp):
             **kwargs
         )
         self.params = args[0] if args else None
-        # self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
+        self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
 
-    async def start(self) -> None:
+    def start(self) -> None:
         """Start the WebSocket client."""
         print(f"Starting WebSocket client for {self.url}")
         self.run_forever()

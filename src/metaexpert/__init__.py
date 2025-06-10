@@ -6,6 +6,7 @@ and integration with various stock exchanges.
 """
 from importlib import import_module
 from pathlib import Path
+from threading import Thread
 from types import ModuleType
 
 from metaexpert._argument import Namespace, parse_arguments
@@ -14,6 +15,7 @@ from metaexpert._instrument import Instrument
 from metaexpert._mode import Mode
 from metaexpert._process import Process
 from metaexpert._service import Service
+from metaexpert._ws_spot import WebSocketClient
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
 from metaexpert.logger import setup_logger, Logger
@@ -97,6 +99,12 @@ class MetaExpert(Service):
             # Initialize the expert
             Process.ON_INIT.run()
             logger.info("Expert initialized successfully")
+
+            Thread(
+                target=WebSocketClient,
+                args=("wss://fstream.binance.com/ws/btcusdt@kline_1m",),
+                daemon=True
+            ).start()
 
             # Register the expert with the process
             Process.processing()
