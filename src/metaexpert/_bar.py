@@ -8,9 +8,9 @@ from metaexpert.logger import Logger, get_logger
 
 class Bar:
     def __init__(self, timeframe: str = "1h", callback: Callable | None = None, args: tuple[str] = ()) -> None:
-        self.timeframe: str = timeframe
-        self.func: Callable = callback if callback is not None else lambda: None
-        self.args: tuple[str] = args
+        self._timeframe: str = timeframe
+        self._func: Callable = callback if callback is not None else lambda: None
+        self._args: tuple[str] = args
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0
         self._is_running: bool = False
@@ -19,21 +19,29 @@ class Bar:
     async def start(self) -> None:
         self._is_running = True
         self._start_time = time.time()
-        self.logger.debug("Bar with timeframe %s started.", self.timeframe)
-
-        # client = WebSocketClient("wss://fstream.binance.com/ws/btcusdt@kline_1m")
-        # await client.start()
+        self.logger.debug("Bar with timeframe %s started.", self._timeframe)
 
         while self._is_running:
             await asyncio.sleep(7)
             self._elapsed_time += 7
-            self.func(*self.args)
+            self._func(*self._args)
 
     def stop(self) -> None:
         if self._is_running:
             self._is_running = False
             self.logger.debug(
                 "Bar with timeframe %s stopped. Total time: %.1f seconds.",
-                self.timeframe,
+                self._timeframe,
                 self._elapsed_time,
             )
+
+    @property
+    def timeframe(self) -> str:
+        return self._timeframe
+
+    @timeframe.setter
+    def timeframe(self, value: str) -> None:
+        if not isinstance(value, str):
+            self.logger.error("Timeframe must be a string, got %s", type(value).__name__)
+            raise TypeError("Timeframe must be a string")
+        self._timeframe = value
