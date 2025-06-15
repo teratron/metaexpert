@@ -6,6 +6,7 @@ from threading import Thread
 from types import ModuleType
 from typing import Self
 
+from metaexpert._ws_spot import WebSocketClient
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
@@ -263,6 +264,12 @@ class Process(Enum):
         """
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
+
+        Thread(
+            target=WebSocketClient,
+            args=("wss://fstream.binance.com/ws/btcusdt@kline_1m",),
+            daemon=True
+        ).start()
 
         Thread(target=cls._run_tasks, daemon=True).start()
 
