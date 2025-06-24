@@ -16,8 +16,8 @@ dependencies = [
     #"pybit>=5.10.1",
     #"flask>=3.1.0",
     #"lightweight-charts>=2.1",
-    "numpy>=2.2.5",
-    "pandas>=2.2.3",
+    "numpy>=2.3.1",
+    "pandas>=2.3.0",
     #"ta-lib==0.6.3",
 ]
 
@@ -33,11 +33,12 @@ metaexpert = "metaexpert.__main__:main"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.15.0",
+    "mypy>=1.16.1",
     "python-dotenv-vault>=0.6.4",
-    "pandas-stubs>=2.2.3.250308",
     "types-defusedxml>=0.7.0.20250516",
-    "types-requests>=2.32.0.20250515",
+    "types-requests>=2.32.4",
+    "pyleak>=0.1.11",
+    "pandas-stubs>=2.2.3.250527",
 ]
 test = [
     "pytest>=8.3.4",
