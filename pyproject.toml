@@ -75,13 +75,44 @@ members = [
 ]
 
 [tool.ruff]
-line-length = 99
+fix = true
+line-length = 88
+target-version = "py312"
 src = [
-    #"src",
+    "src",
     #"app/src",
     #"examples/src",
     "tests",
 ]
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+]
+select = [
+    "E",
+    "F",
+    "W",
+    "I",
+    "UP",
+    "N",
+    "B",
+    "C4",
+    "RUF",
+]
+ignore = [
+    "E501", # line too long
+    "B008", # do not perform function call in argument default value
+]
+
+[tool.ruff.isort]
+known-first-party = ["metaexpert"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
 
 [build-system]
 requires = ["hatchling"]
