@@ -6,19 +6,19 @@ echo "--- post-merge ---"
 #npx dotenv-vault@latest pull
 
 # uv
-uv self update
+# uv self update
 
-# Activate virtual environment based on OS
-if [ "$(uname)" = "Windows_NT" ] || [ -n "$WINDIR" ] || [ -n "$windir" ]; then
-    # Windows
-    #cd .venv/Scripts || exit
-    #activate
-    #cd ../..
-    .venv/Scripts/activate || .venv\\Scripts\\activate || exit
-else
-    # Unix-like OS
-    . .venv/bin/activate
-fi
+# # Activate virtual environment based on OS
+# if [ "$(uname)" = "Windows_NT" ] || [ -n "$WINDIR" ] || [ -n "$windir" ]; then
+#     # Windows
+#     #cd .venv/Scripts || exit
+#     #activate
+#     #cd ../..
+#     .venv/Scripts/activate || .venv\\Scripts\\activate || exit
+# else
+#     # Unix-like OS
+#     . .venv/bin/activate
+# fi
 
-uv lock
-uv sync
+# uv lock
+# uv sync
