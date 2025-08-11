@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "git pull",
             "presentation": {
-                "reveal": "silent",
+                "reveal": "always",
                 "close": true
             },
             "problemMatcher": []
