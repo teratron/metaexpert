@@ -172,3 +172,13 @@ env.bak/
 !.env.project
 !.env.vault
 !.env.example
+
+### Spec Kit
+.github/prompts/
+.claude/commands/
+.gemini/commands/
+.cursor/commands/
+.specify/memory/
+!.specify/memory/constitution.md
+.specify/scripts/
+.specify/templates/

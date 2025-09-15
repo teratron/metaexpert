@@ -12,66 +12,53 @@ keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
 dependencies = [
     "websocket-client>=1.8.0",
     "matplotlib>=3.10.3",
-    #"binance-connector>=3.12.0",
-    #"pybit>=5.10.1",
-    #"flask>=3.1.0",
-    #"lightweight-charts>=2.1",
     "numpy>=2.3.1",
     "pandas>=2.3.0",
-    #"ta-lib==0.6.3",
 ]
 
 [project.urls]
 homepage = "https://teratron.github.io/metaexpert"
 documentation = "https://teratron.github.io/metaexpert/docs"
-github = "https://github.com/teratron/metaexpert"
 repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
 metaexpert = "metaexpert.__main__:main"
-#expert-ema = "examples/expert_ema:main"
+#binance-ema = "examples/expert_binance_ema:main"
 
 [dependency-groups]
 dev = [
     "mypy>=1.16.1",
     "python-dotenv-vault>=0.6.4",
+    #"python-dotenv>=1.1.1",
     "types-defusedxml>=0.7.0.20250516",
     "types-requests>=2.32.4",
     "pyleak>=0.1.11",
     "pandas-stubs>=2.2.3.250527",
 ]
-test = [
-    "pytest>=8.3.4",
-]
-lint = [
-    "ruff>=0.11.4",
-]
+test = ["pytest>=8.3.4"]
+lint = ["ruff>=0.11.4"]
 docs = []
 
 [tool.uv]
 package = true
 link-mode = "copy"
-default-groups = [
-    "dev",
-    "test",
-    "lint",
-    "docs",
-]
+default-groups = ["dev", "test", "lint", "docs"]
 
 [tool.uv.sources]
 #metaexpert-binance-api = { path = "packages/api/binance" }
 #metaexpert-bybit-api = { path = "packages/api/bybit" }
 #metaexpert-binance-api = { workspace = true }
 #metaexpert-bybit-api = { workspace = true }
-metaexpert-examples = { path = "examples" }
+#metaexpert-examples = { path = "examples" }
+#expert-binance-ema = { path = "examples/expert_binance_ema" }
+#expert-bybit-rsi = { path = "examples/expert_bybit_rsi" }
 
 [tool.uv.workspace]
 members = [
+    #".",
     "packages/app",
-    #"src/metaexpert",
-    #"packages/api/binance",
-    #"packages/api/bybit",
-    #"examples",
+    "examples/expert_binance_ema",
+    "examples/expert_bybit_rsi",
 ]
 
 [tool.ruff]
@@ -80,26 +67,12 @@ line-length = 88
 target-version = "py312"
 src = [
     "src",
-    #"app/src",
-    #"examples/src",
+    "packages/app/src",
+    "examples",
     "tests",
 ]
-exclude = [
-    ".git",
-    ".venv",
-    "__pycache__",
-]
-select = [
-    "E",
-    "F",
-    "W",
-    "I",
-    "UP",
-    "N",
-    "B",
-    "C4",
-    "RUF",
-]
+exclude = [".git", ".venv", "__pycache__"]
+select = ["E", "F", "W", "I", "UP", "N", "B", "C4", "RUF"]
 ignore = [
     "E501", # line too long
     "B008", # do not perform function call in argument default value
@@ -113,7 +86,6 @@ quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
 
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+#[build-system]
+#requires = ["hatchling"]
+#build-backend = "hatchling.build"

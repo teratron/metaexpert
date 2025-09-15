@@ -46,6 +46,46 @@
                 "close": true
             },
             "problemMatcher": []
+        },
+        {
+            "label": "npm-update-claude",
+            "type": "shell",
+            "command": "npm install -g @anthropic-ai/claude-code",
+            "presentation": {
+                "reveal": "silent",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "spec-kit-update-claude",
+            "type": "shell",
+            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai claude --script ps",
+            "presentation": {
+                "reveal": "always",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "npm-update-gemini",
+            "type": "shell",
+            "command": "npm install -g @google/gemini-cli",
+            "presentation": {
+                "reveal": "silent",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "spec-kit-update-gemini",
+            "type": "shell",
+            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai gemini --script ps",
+            "presentation": {
+                "reveal": "always",
+                "close": true
+            },
+            "problemMatcher": []
         }
     ]
 }

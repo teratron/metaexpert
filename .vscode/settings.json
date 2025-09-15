@@ -28,5 +28,5 @@
         }
     },
     "task.allowAutomaticTasks": "on",
-    "task.autoDetect": "on",
+    "task.autoDetect": "on"
 }
