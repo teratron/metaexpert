@@ -78,6 +78,16 @@
             "problemMatcher": []
         },
         {
+            "label": "npm-update-qwen",
+            "type": "shell",
+            "command": "npm install -g @qwen-code/qwen-code",
+            "presentation": {
+                "reveal": "silent",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
             "label": "spec-kit-update-gemini",
             "type": "shell",
             "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai gemini --script ps",
