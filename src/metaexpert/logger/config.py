@@ -2,7 +2,7 @@
 
 import os
 
-from dotenv_vault import load_dotenv  # type: ignore
+from dotenv import load_dotenv  # type: ignore
 
 from metaexpert.config import APP_NAME
 

@@ -1,14 +1,15 @@
 import json
+
 # import os
 import time
 
 # import psycopg
 import websocket
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 
 
 def on_message(ws, message):
-    data = json.loads(message)
+    _data = json.loads(message)
 
     # with psycopg.connect(
     #         f"dbname={os.getenv('DB_NAME')} user={os.getenv('DB_USER')} password={os.getenv('DB_PASSWORD')}"

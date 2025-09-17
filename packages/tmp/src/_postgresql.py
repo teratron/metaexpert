@@ -7,7 +7,7 @@ https://www.psycopg.org/psycopg3/docs/basic/usage.html
 import os
 
 import psycopg
-from dotenv_vault import load_dotenv
+from dotenv import load_dotenv
 
 if __name__ == "__main__":
     _ = load_dotenv()

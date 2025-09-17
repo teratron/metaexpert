@@ -1,6 +1,6 @@
 """Configuration for exchange APIs."""
 
-from dotenv_vault import load_dotenv  # type: ignore
+from dotenv import load_dotenv  # type: ignore
 
 _ = load_dotenv()
 

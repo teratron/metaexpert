@@ -3,7 +3,7 @@
 import os
 
 from binance.spot import Spot
-from flask import Flask, render_template, jsonify
+from flask import Flask, jsonify, render_template
 
 from metaexpert.logger import get_logger
 
@@ -97,7 +97,7 @@ def account():
           "updateTime": 1723039532543
     }
     """
-    from dotenv_vault import load_dotenv
+    from dotenv import load_dotenv
 
     _ = load_dotenv()
     api_key = os.getenv("BINANCE_API_KEY")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''Trading Expert Template for the MetaExpert library.
 Generated automatically by 'metaexpert new' command.
 
