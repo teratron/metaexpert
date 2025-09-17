@@ -1,11 +1,19 @@
-'''Template for a trading expert in MetaExpert — copied when running `metaexpert new`.
-Pre-configured for Binance Futures. User decides how to inject API keys and settings.
+# -*- coding: utf-8 -*-
+'''Trading Expert Template for the MetaExpert library.
+Generated automatically by 'metaexpert new' command.
+
+This file is the starting point for creating your own trading strategy.
+Fill in the parameters and add your logic to the corresponding event handlers.
 '''
 
 from metaexpert import MetaExpert
 
-
-# Initialize the trading expert with default configuration
+# -----------------------------------------------------------------------------
+# 1. EXPERT CORE CONFIGURATION (METAEXPERT)
+# -----------------------------------------------------------------------------
+# These parameters define the global behavior and connection of your expert.
+# They are usually configured once.
+# -----------------------------------------------------------------------------
 expert = MetaExpert(
     # --- Required Parameters ---
     exchange="binance",             # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin'
@@ -27,10 +35,6 @@ expert = MetaExpert(
     margin_mode="isolated",         # Only for futures: 'isolated' or 'cross' (ignored for spot)
     position_mode="hedge",          # 'hedge' (two-way) or 'oneway' (one-way) — Binance futures (required for Binance; ignored on other exchanges)
 
-    # --- Global Risk Management ---
-    max_drawdown_pct=0.2,           # Max drawdown from peak equity (0.2 = 20%)
-    daily_loss_limit=1000,          # Daily loss limit in auto-detected settlement currency (e.g., USDT for linear, BTC for inverse, auto-determined)
-
     # --- Logging Configuration ---
     log_level="INFO",               # 'DEBUG', 'INFO', 'WARNING', 'ERROR'
     log_file="expert.log",          # Main log file
@@ -45,7 +49,11 @@ expert = MetaExpert(
     state_file="state.json"         # State persistence file (relative to working directory)
 )
 
-
+# -----------------------------------------------------------------------------
+# 2. STRATEGY INITIALIZATION (ON_INIT)
+# -----------------------------------------------------------------------------
+# Here you define the unique parameters of YOUR trading strategy.
+# -----------------------------------------------------------------------------
 @expert.on_init(
     # --- Core Trading Parameters ---
     symbols=["BTCUSDT"],            # Trading symbols (str or list[str])
@@ -61,6 +69,8 @@ expert = MetaExpert(
 
     # --- Risk & Position Sizing ---
     leverage=10,                    # Leverage (verify per-symbol limits; ignored for spot, validated via API)
+    max_drawdown_pct=0.2,           # Max drawdown from peak equity (0.2 = 20%)
+    daily_loss_limit=1000,          # Daily loss limit in auto-detected settlement currency (e.g., USDT for linear, BTC for inverse, auto-determined)
     size_type="risk_based",         # Position sizing: 'fixed_base', 'fixed_quote', 'percent_equity', 'risk_based'
     size_value=1.5,                 # Size value: fixed_base (e.g., 0.01 BTC), fixed_quote (e.g., 1000 USDT), percent_equity (e.g., 0.01 = 1%), risk_based (e.g., 1.5% risk per trade)
     max_position_size_quote=50000.0,# Max position size in quote currency
@@ -88,7 +98,11 @@ def init() -> None:
     """Called once at expert startup. Initialize indicators or load data here."""
     pass
 
-
+# -----------------------------------------------------------------------------
+# 3. EVENT HANDLERS
+# -----------------------------------------------------------------------------
+# This is the core of your trading logic. Fill in the functions you need.
+# -----------------------------------------------------------------------------
 @expert.on_deinit
 def deinit(reason) -> None:
     """Called when expert stops. Clean up resources if needed.
@@ -111,8 +125,6 @@ def tick(rates) -> None:
 
 @expert.on_bar(
     timeframe="1h",                 # Bar timeframe. Defaults to init timeframe if omitted. Use for multi-timeframe strategies.
-    pyramid_levels=3,               # Max levels for position pyramiding
-    pyramid_factor=0.5,             # Size multiplier per level (e.g., 0.5 = half)
 )
 def bar(rates) -> None:
     """Called when a new bar closes. Implement core strategy logic here.
@@ -191,14 +203,17 @@ def account(acc) -> None:
     """
     pass
 
-
+# -----------------------------------------------------------------------------
+# 4. ENTRY POINT
+# -----------------------------------------------------------------------------
+# This part of the code is responsible for launching the expert.
+# -----------------------------------------------------------------------------
 def main() -> None:
     """Main entry point. Starts the trading expert."""
     expert.run(
         mode="paper",                        # 'paper' or 'live'
         backtest_start="2024-01-01",         # YYYY-MM-DD
         backtest_end="2025-08-31",           # YYYY-MM-DD
-        backtest_settlement_currency="USDT", # 'USDT' (linear), 'BTC'/'ETH' (inverse)
         initial_capital=10000,               # Starting capital in settlement_currency (used in 'paper' and 'backtest' modes; ignored in 'live')
     )
 
