@@ -86,16 +86,6 @@
                 "close": true
             },
             "problemMatcher": []
-        },
-        {
-            "label": "spec-kit-update-gemini",
-            "type": "shell",
-            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai gemini --script ps",
-            "presentation": {
-                "reveal": "always",
-                "close": true
-            },
-            "problemMatcher": []
         }
     ]
 }
