@@ -7,17 +7,16 @@ import shutil
 def create_expert_from_template(file_path: str) -> str:
     """
     Create a new expert file from template.
-    
+
     Args:
         file_path: Path to the new expert file (with or without extension)
-        
+
     Returns:
         Path to the created file
     """
     # Get the absolute path to the template file
     template_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        "template.py"
+        os.path.dirname(os.path.abspath(__file__)), "template.py"
     )
 
     # Split the path into directory and filename
