@@ -1,14 +1,17 @@
 from enum import Enum
-from typing import ClassVar, Self
+from typing import Self, TypedDict
 
 
-class Contract(Enum):
+class ContractTypeDict(TypedDict):
+    name: str
+
+class ContractType(Enum):
     """Enum for contract types."""
 
-    COIN_M: ClassVar[dict] = {
+    COIN_M = {
         "name": "coin_m"
     }
-    USD_M: ClassVar[dict] = {
+    USD_M = {
         "name": "usd_m"
     }
 

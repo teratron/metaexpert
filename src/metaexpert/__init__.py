@@ -10,8 +10,8 @@ from pathlib import Path
 from types import ModuleType
 
 from metaexpert._argument import Namespace, parse_arguments
-from metaexpert._contract_type import Contract
-from metaexpert._market_type import Instrument
+from metaexpert._contract_type import ContractType
+from metaexpert._market_type import MarketType
 from metaexpert._mode import Mode
 from metaexpert._process import Process
 from metaexpert._service import Service
