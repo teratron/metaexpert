@@ -212,8 +212,8 @@ def main() -> None:
     """Main entry point. Starts the trading expert."""
     expert.run(
         mode="paper",                        # 'paper' or 'live' or 'backtest'
-        backtest_start="2024-01-01",         # YYYY-MM-DD
-        backtest_end="2025-08-31",           # YYYY-MM-DD
+        backtest_start="2024-01-01",         # 'YYYY-MM-DD'
+        backtest_end="2025-08-31",           # 'YYYY-MM-DD'
         initial_capital=10000,               # Starting capital in settlement_currency (used in 'paper' and 'backtest' modes; ignored in 'live')
     )
 

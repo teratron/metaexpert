@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Self
 
 
-class TradingMode(Enum):
+class TradeMode(Enum):
     """Enum for different trading modes."""
 
     LIVE = {
@@ -19,7 +19,7 @@ class TradingMode(Enum):
     }
 
     @classmethod
-    def get_mode_from(cls, name: str) -> "TradingMode | None":
+    def get_mode_from(cls, name: str) -> Self | None:
         """Get the mode type from a string."""
         for item in cls:
             if item.value.get("name") == name.lower():

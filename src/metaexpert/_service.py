@@ -59,7 +59,7 @@ class Service(Expert):
             # Entry Filters
             trade_hours: list[int] | None = None,
             allowed_days: list[int] | None = None,
-            min_volume: int = 1000000,
+            min_volume: int = 10000,
             volatility_filter: bool = True,
             trend_filter: bool = True
     ) -> Callable:
@@ -93,13 +93,13 @@ class Service(Expert):
 
         # super().__init__()
 
-        def outer(func: Callable[[tuple[Any, ...], dict[str, Any]], Callable]) -> Callable:  # InitStatus:
+        def outer(func: Callable[[], None]) -> Callable[[], None]:
             def inner(*args, **kwargs) -> None:
                 # self.logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
                 logger.debug("Initializing...")
-                func(*args, **kwargs)
+                func()
 
-            return inner  # InitStatus.INIT_SUCCEEDED
+            return inner
 
         return outer
 
@@ -126,7 +126,7 @@ class Service(Expert):
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
     @staticmethod
     def on_tick(func: Callable) -> Callable:
-        def inner(rates: str = "tic-tac-toe") -> None:
+        def inner(rates) -> None:
             func(rates)
 
         return inner
@@ -147,7 +147,7 @@ class Service(Expert):
             raise TypeError("Timeframe must be a string")
 
         def outer(func: Callable[[str], Coroutine[Any, Any, None]]) -> Callable[[str], Coroutine[Any, Any, None]]:
-            async def inner(rates: str = "tram-pam-pam") -> None:
+            async def inner(rates) -> None:
                 bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
                 Process.ON_BAR.push_instance(bar)
                 await bar.start()
@@ -181,14 +181,41 @@ class Service(Expert):
         return outer
 
     def on_trade(self, func: Callable) -> Callable:
-        def inner() -> None:
-            func()
+        def inner(order) -> None:
+            func(order)
 
         return inner
 
     def on_transaction(self, func: Callable) -> Callable:
-        def inner(request: str = "", result: str = "") -> None:
+        def inner(request, result) -> None:
             func(request, result)
+
+        return inner
+    @staticmethod
+    def on_order(func: Callable) -> Callable:
+        def inner(order) -> None:
+            func(order)
+
+        return inner
+
+    @staticmethod
+    def on_position(func: Callable) -> Callable:
+        def inner(pos) -> None:
+            func(pos)
+
+        return inner
+
+    @staticmethod
+    def on_error(func: Callable) -> Callable:
+        def inner(err) -> None:
+            func(err)
+
+        return inner
+
+    @staticmethod
+    def on_account(func: Callable) -> Callable:
+        def inner(acc) -> None:
+            func(acc)
 
         return inner
 
@@ -197,49 +224,42 @@ class Service(Expert):
         """Decorator for book event handling.
 
         Args:
-            symbol (str | None): Symbol of the trading pair. Defaults to None.
+            symbol (str | set[str] | None): Symbol of the trading pair. Defaults to None.
 
         Returns:
             Callable: Decorated function that handles book events.
         """
-        if symbol is None:
-            raise ValueError("Symbol must be provided")
-        if isinstance(symbol, str):
-            symbol = {symbol}
-        if not isinstance(symbol, set):
-            raise TypeError("Symbol must be a string or a set of strings")
-
         def outer(func: Callable) -> Callable:
-            def inner() -> None:
-                func()
+            def inner(orderbook) -> None:
+                func(orderbook)
 
             return inner
 
         return outer
 
     @staticmethod
-    def on_tester_init(func: Callable) -> Callable:
+    def on_backtest_init(func: Callable) -> Callable:
         def inner() -> None:
             func()
 
         return inner
 
     @staticmethod
-    def on_tester_deinit(func: Callable) -> Callable:
+    def on_backtest_deinit(func: Callable) -> Callable:
         def inner() -> None:
             func()
 
         return inner
 
     @staticmethod
-    def on_tester(func: Callable) -> Callable:
+    def on_backtest(func: Callable) -> Callable:
         def inner() -> None:
             func()
 
         return inner
 
     @staticmethod
-    def on_tester_pass(self, func: Callable) -> Callable:
+    def on_backtest_pass(self, func: Callable) -> Callable:
         def inner() -> None:
             func()
 
