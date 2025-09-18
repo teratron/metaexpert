@@ -6,20 +6,22 @@ from threading import Thread
 from types import ModuleType
 from typing import Self
 
-from websocket._ws_spot import WebSocketClient
-
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
+from metaexpert.websocket._ws_spot import WebSocketClient
 
 logger: Logger = get_logger(APP_NAME)
 
 
 class Process(Enum):
-    """Event types for the trading system."""
+    """Event types for the trading system.
+
+    Each event type has a maximum number of callbacks defined by the 'max_callbacks' field.
+    """
 
     ON_INIT = {
         "name": "on_init",
-        "number": 1,
+        "max_callbacks": 1,
         "callback": [],
         "is_async": False,
         # "status": None,  # InitStatus.INIT_SUCCEEDED
@@ -27,45 +29,92 @@ class Process(Enum):
     }
     ON_DEINIT = {
         "name": "on_deinit",
-        "number": 1,
+        "max_callbacks": 1,
         "callback": [],
         "is_async": False
     }
     ON_TICK = {
         "name": "on_tick",
-        "number": 1,
+        "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": True
     }
     ON_BAR = {
         "name": "on_bar",
-        "number": 5,
+        "max_callbacks": 5,
         "callback": [],
         "instance": [],
         "is_async": True
     }
     ON_TIMER = {
         "name": "on_timer",
-        "number": 5,
+        "max_callbacks": 5,
         "callback": [],
         "instance": [],
         "is_async": True
     }
-    ON_TRADE = {
-        "name": "on_trade",
-        "number": 1,
-        "callback": [],
-        "is_async": False
-    }
     ON_TRANSACTION = {
         "name": "on_transaction",
-        "number": 1,
+        "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": True
     }
     ON_BOOK = {
         "name": "on_book",
-        "number": 1,
+        "max_callbacks": 1,
+        "callback": [],
+        "instance": [],
+        "is_async": True
+    }
+    ON_ORDER = {
+        "name": "on_order",
+        "max_callbacks": 1,
+        "callback": [],
+        "instance": [],
+        "is_async": True
+    }
+    ON_POSITION = {
+        "name": "on_position",
+        "max_callbacks": 1,
+        "callback": [],
+        "instance": [],
+        "is_async": True
+    }
+    ON_ERROR = {
+        "name": "on_error",
+        "max_callbacks": 1,
+        "callback": [],
+        "is_async": False
+    }
+    ON_ACCOUNT = {
+        "name": "on_account",
+        "max_callbacks": 1,
+        "callback": [],
+        "instance": [],
+        "is_async": True
+    }
+    ON_BACKTEST_INIT = {
+        "name": "on_backtest_init",
+        "max_callbacks": 1,
+        "callback": [],
+        "is_async": False
+    }
+    ON_BACKTEST_DEINIT = {
+        "name": "on_backtest_deinit",
+        "max_callbacks": 1,
+        "callback": [],
+        "is_async": False
+    }
+    ON_BACKTEST = {
+        "name": "on_backtest",
+        "max_callbacks": 1,
+        "callback": [],
+        "instance": [],
+        "is_async": True
+    }
+    ON_BACKTEST_PASS = {
+        "name": "on_backtest_pass",
+        "max_callbacks": 1,
         "callback": [],
         "is_async": False
     }
@@ -142,11 +191,11 @@ class Process(Enum):
         if not isinstance(callback, list):
             return
 
-        number = event.value.get("number")
-        if not isinstance(number, int):
+        max_callbacks = event.value.get("max_callbacks")
+        if not isinstance(max_callbacks, int):
             return
 
-        if len(callback) < number:
+        if len(callback) < max_callbacks:
             callback.append(getattr(*args))
             logger.debug(
                 "Registering callback for '%s:%s()'",
@@ -155,7 +204,7 @@ class Process(Enum):
         else:
             logger.warning(
                 "Too many callbacks for '%s': %d",
-                name, number + 1
+                name, max_callbacks + 1
             )
 
     def push_instance(self, instance: object) -> None:

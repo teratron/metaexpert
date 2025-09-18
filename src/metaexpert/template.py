@@ -55,7 +55,7 @@ expert = MetaExpert(
 # -----------------------------------------------------------------------------
 @expert.on_init(
     # --- Core Trading Parameters ---
-    symbol="BTCUSDT",               # Trading symbols (str or list[str]: "BTCUSDT" or ["BTCUSDT", "ETHUSDT"])
+    symbol="BTCUSDT",               # Trading symbols (str or set[str]: "BTCUSDT" or {"BTCUSDT", "ETHUSDT"})
     timeframe="1h",                 # Primary timeframe: '1m','5m','15m','1h','4h','1d',...
     lookback_bars=100,              # Number of historical bars to fetch for analysis
     # lookback_time="7d",           # Alternative: time period ('1h','4h','1d','7d','30d')
@@ -88,8 +88,8 @@ expert = MetaExpert(
     max_positions_per_symbol=1,     # Max positions per symbol
 
     # --- Entry Filters ---
-    trade_hours=[9, 10, 11, 15],    # Trade only during these UTC hours
-    allowed_days=[1, 2, 3, 4, 5],   # Trade only these days (1=Mon, 7=Sun)
+    trade_hours={9, 10, 11, 15},    # Trade only during these UTC hours
+    allowed_days={1, 2, 3, 4, 5},   # Trade only these days (1=Mon, 7=Sun)
     min_volume=1000000,             # Min volume in settlement_currency
     volatility_filter=True,         # Enable volatility filter (implement inside)
     trend_filter=True,              # Enable trend filter (implement inside)
@@ -136,7 +136,7 @@ def bar(rates) -> None:
 
 
 @expert.on_timer(
-    interval=1.0                    # Interval in seconds (float)
+    interval=60                     # Interval in seconds
 )
 def timer() -> None:
     """Called periodically. Useful for monitoring, heartbeat, non-market logic."""
@@ -211,10 +211,10 @@ def account(acc) -> None:
 def main() -> None:
     """Main entry point. Starts the trading expert."""
     expert.run(
-        mode="paper",                        # 'paper' or 'live' or 'backtest'
-        backtest_start="2024-01-01",         # 'YYYY-MM-DD'
-        backtest_end="2025-08-31",           # 'YYYY-MM-DD'
-        initial_capital=10000,               # Starting capital in settlement_currency (used in 'paper' and 'backtest' modes; ignored in 'live')
+        mode="paper",               # 'paper' or 'live' or 'backtest'
+        backtest_start="2024-01-01",# 'YYYY-MM-DD'
+        backtest_end="2025-08-31",  # 'YYYY-MM-DD'
+        initial_capital=10000,      # Starting capital in settlement_currency (used in 'paper' and 'backtest' modes; ignored in 'live')
     )
 
 

@@ -6,17 +6,45 @@ from metaexpert._timeframe import Timeframe
 
 @dataclass
 class Expert:
+    # Core Trading Parameters
     symbol: str | set[str] | None
-    timeframe: Timeframe | set[Timeframe] | None
-    shift: int
+    timeframe: Timeframe | None
+    lookback_bars: int
+    warmup_bars: int
+
+    # Strategy Metadata
     strategy_id: int
     strategy_name: str | None
+    comment: str | None
+
+    # Risk & Position Sizing
+    leverage: int
+    max_drawdown_pct: float
+    daily_loss_limit: float
+    size_type: str
     size_value: float
+    max_position_size_quote: float
+
+    # Trade Parameters
     stop_loss_pct: float
     take_profit_pct: float
     trailing_stop_pct: float
+    trailing_activation_pct: float
+    breakeven_pct: float
     slippage_pct: float
+    max_spread_pct: float
+
+    # Portfolio Management
     max_open_positions: int
+    max_positions_per_symbol: int
+
+    # Entry Filters
+    trade_hours: set[int] | None
+    allowed_days: set[int] | None
+    min_volume: int
+    volatility_filter: bool
+    trend_filter: bool
+
     _label: str | None
 
     _lots_min: float

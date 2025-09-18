@@ -10,10 +10,10 @@ from pathlib import Path
 from types import ModuleType
 
 from metaexpert._argument import Namespace, parse_arguments
-from metaexpert._trade_mode import TradeMode
 from metaexpert._process import Process
 from metaexpert._service import Service
-from metaexpert.config import APP_NAME
+from metaexpert._trade_mode import TradeMode
+from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
 from metaexpert.logger import Logger, setup_logger
 
@@ -27,41 +27,41 @@ class MetaExpert(Service):
     _filename: str | None = None
 
     def __init__(
-            self,
+        self,
 
-            # Required Parameters
-            exchange: str | None = None,
-            *,
+        # Required Parameters
+        exchange: str | None = None,
+        *,
 
-            # API Credentials (required for live mode)
-            api_key: str | None = None,
-            api_secret: str | None = None,
-            api_passphrase: str | None = None,
+        # API Credentials (required for live mode)
+        api_key: str | None = None,
+        api_secret: str | None = None,
+        api_passphrase: str | None = None,
 
-            # Connection Settings
-            subaccount: str | None = None,
-            base_url: str | None = None,
-            testnet: bool = True,
-            proxy: dict[str, str] | None = None,
+        # Connection Settings
+        subaccount: str | None = None,
+        base_url: str | None = None,
+        testnet: bool = True,
+        proxy: dict[str, str] | None = None,
 
-            # Market & Trading Mode
-            market_type: str | None = "futures",
-            contract_type: str | None = "inverse",
-            margin_mode: str | None = "isolated",
-            position_mode: str | None = "hedge",
+        # Market & Trading Mode
+        market_type: str | None = "futures",
+        contract_type: str | None = "inverse",
+        margin_mode: str | None = "isolated",
+        position_mode: str | None = "hedge",
 
-            # Logging Configuration
-            log_level: str = "INFO",
-            log_file: str = "expert.log",
-            trade_log_file: str = "trades.log",
-            error_log_file: str = "errors.log",
-            log_to_console: bool = True,
+        # Logging Configuration
+        log_level: str = "INFO",
+        log_file: str = "expert.log",
+        trade_log_file: str = "trades.log",
+        error_log_file: str = "errors.log",
+        log_to_console: bool = True,
 
-            # Advanced System Settings
-            rate_limit: int = 1200,
-            enable_metrics: bool = True,
-            persist_state: bool = True,
-            state_file: str = "state.json",
+        # Advanced System Settings
+        rate_limit: int = 1200,
+        enable_metrics: bool = True,
+        persist_state: bool = True,
+        state_file: str = "state.json"
     ) -> None:
         """Initialize the expert trading system.
 
@@ -74,8 +74,10 @@ class MetaExpert(Service):
             contract_type (str | None): Type of contract (e.g., coin_m, usdt_m).
         """
 
+        # Parse command line arguments
         self.args: Namespace = parse_arguments()
-        self.mode: TradeMode = self.args.mode
+        self.trade_mode: TradeMode = TradeMode.PAPER or self.args.trade_mode
+        self._running: bool = False
 
         # Initialize stock exchange
         self.client: Exchange = Exchange.init(
@@ -86,14 +88,13 @@ class MetaExpert(Service):
             market_type or self.args.market_type,
             contract_type or self.args.contract_type
         )
-        self._running: bool = False
 
-        super().__init__()
+        #super().__init__()
 
         # Setup logger
         # self.logger: Logger = setup_logger(self.name, args.log_level)
         logger.info("Starting expert on %s", self.args.exchange)
-        logger.info("Market type: %s, Contract type: %s, Mode: %s", self.args.market_type, self.args.contract_type, self.args.mode)
+        logger.info("Market type: %s, Contract type: %s, Mode: %s", self.args.market_type, self.args.contract_type, self.args.trade_mode)
         logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
 
     def __str__(self) -> str:
@@ -110,10 +111,10 @@ class MetaExpert(Service):
             initial_capital: float = 10000,
     ) -> None:
         """Run the expert trading system."""
-        self.mode: TradeMode = TradeMode.get_mode_from(mode or self.args.mode)
-        self._running: bool = True
+        self.trade_mode = TradeMode.get_mode_from(mode or self.args.trade_mode)
+        self._running = True
 
-        logger.info("Starting trading bot in %s mode", self.mode)
+        logger.info("Starting trading bot in %s mode", self.trade_mode)
 
         try:
             # Initialize event handling
@@ -129,14 +130,14 @@ class MetaExpert(Service):
             # Register the expert with the process
             Process.processing()
 
-            # Запускаем основной цикл обработки событий
-            # while self._running:
-            #     # Sleep until next candle
-            #     if self.mode != MODE_BACKTEST:
-            #         pass
-            #     else:
-            #         # In backtest mode, we process all data at once
-            #         self._running = False
+            # Main event loop
+            while self._running:
+                # Sleep until next candle
+                if self.trade_mode != MODE_BACKTEST:
+                    pass
+                else:
+                    # In backtest mode, we process all data at once
+                    self._running = False
 
         except KeyboardInterrupt:
             # Handle keyboard interrupt
