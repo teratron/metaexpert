@@ -1,19 +1,19 @@
 from enum import Enum
-from typing import Self
+from typing import ClassVar, Self
 
 
 class Mode(Enum):
     """Enum for different trading modes."""
 
-    LIVE = {
+    LIVE: ClassVar[dict] = {
         "name": "live",
         "description": "Live trading mode"
     }
-    PAPER = {
+    PAPER: ClassVar[dict] = {
         "name": "paper",
         "description": "Paper trading mode"
     }
-    BACKTEST = {
+    BACKTEST: ClassVar[dict] = {
         "name": "backtest",
         "description": "Backtesting mode"
     }

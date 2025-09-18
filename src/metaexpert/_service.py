@@ -75,7 +75,7 @@ class Service(Expert):
             trailing_stop_pct (float): Trailing stop value. Defaults to 0.0.
             slippage_pct (float): Slippage value. Defaults to 0.0.
             max_open_positions (int): Number of positions to manage. Defaults to 5.
-            
+
         Returns:
             Callable: Decorated function that handles the initialization event.
         """

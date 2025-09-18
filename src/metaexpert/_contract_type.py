@@ -1,14 +1,14 @@
 from enum import Enum
-from typing import Self
+from typing import ClassVar, Self
 
 
 class Contract(Enum):
     """Enum for contract types."""
 
-    COIN_M = {
+    COIN_M: ClassVar[dict] = {
         "name": "coin_m"
     }
-    USD_M = {
+    USD_M: ClassVar[dict] = {
         "name": "usd_m"
     }
 
@@ -20,4 +20,3 @@ class Contract(Enum):
                 return item
 
         return None
-        

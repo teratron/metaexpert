@@ -1,23 +1,28 @@
 from enum import Enum
-from typing import Self
+from typing import ClassVar, Self, TypedDict
 
 from metaexpert._contract_type import Contract
 
 
+class InstrumentDict(TypedDict):
+    name: str
+    description: str
+    contract: list[Contract]
+
 class Instrument(Enum):
     """Market type enumeration for supported instruments."""
 
-    SPOT = {
+    SPOT: ClassVar[dict] = {
         "name": "spot",
         "description": "Spot trading",
         "contract": [Contract.COIN_M, Contract.USD_M]
     }
-    FUTURES = {
+    FUTURES: ClassVar[dict] = {
         "name": "futures",
         "description": "Futures trading",
         "contract": [Contract.COIN_M, Contract.USD_M]
     }
-    OPTIONS = {
+    OPTIONS: ClassVar[dict] = {
         "name": "options",
         "description": "Options trading",
         "contract": [Contract.COIN_M, Contract.USD_M]
