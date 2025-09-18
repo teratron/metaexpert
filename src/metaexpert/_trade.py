@@ -16,9 +16,9 @@ class Trade:
     def __init__(self, symbol: str | None, **props: dict[str, Any]) -> None:
         self.symbol: str = symbol if symbol else ""
         self._lots: float = props.__getattribute__("lots")
-        self._stop_loss: float = props.get("stop_loss", 0)
-        self._take_profit: float = props.get("take_profit", 0)
-        self._trailing_stop: float = props.get("trailing_stop", 0)
+        self._stop_loss: float = props.get("stop_loss_pct", 0)
+        self._take_profit: float = props.get("take_profit_pct", 0)
+        self._trailing_stop: float = props.get("trailing_stop_pct", 0)
         self._positions: int = props.get("positions", 0)
         self._slippage: int = props.get("slippage", 0)
 
@@ -74,27 +74,27 @@ class Trade:
     #     self._lots = value
     #
     # @property
-    # def stop_loss(self) -> float:
+    # def stop_loss_pct(self) -> float:
     #     return self._stop_loss
     #
-    # @stop_loss.setter
-    # def stop_loss(self, value: float) -> None:
+    # @stop_loss_pct.setter
+    # def stop_loss_pct(self, value: float) -> None:
     #     self._stop_loss = value
     #
     # @property
-    # def take_profit(self) -> float:
+    # def take_profit_pct(self) -> float:
     #     return self._take_profit
     #
-    # @take_profit.setter
-    # def take_profit(self, value: float) -> None:
+    # @take_profit_pct.setter
+    # def take_profit_pct(self, value: float) -> None:
     #     self._take_profit = value
     #
     # @property
-    # def trailing_stop(self) -> float:
+    # def trailing_stop_pct(self) -> float:
     #     return self._trailing_stop
     #
-    # @trailing_stop.setter
-    # def trailing_stop(self, value: float) -> None:
+    # @trailing_stop_pct.setter
+    # def trailing_stop_pct(self, value: float) -> None:
     #     self._trailing_stop = value
     #
     # @property

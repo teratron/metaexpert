@@ -27,7 +27,7 @@ This command will create a new file `my_expert.py` in the `./experts` directory.
 MetaExpert supports various arguments for configuring trading parameters:
 
 ```bash
-metaexpert --stock binance --mode paper --type futures --contract usd_m --pair BTCUSDT
+metaexpert --exchange binance --mode paper --type futures --contract_type usd_m --pair BTCUSDT
 ```
 
 A complete list of arguments can be obtained using the command:

@@ -4,22 +4,20 @@ This module provides a framework for creating and managing expert trading system
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
+from datetime import datetime
 from importlib import import_module
 from pathlib import Path
 from types import ModuleType
 
 from metaexpert._argument import Namespace, parse_arguments
-from metaexpert._contract import Contract
-from metaexpert._instrument import Instrument
+from metaexpert._contract_type import Contract
+from metaexpert._market_type import Instrument
 from metaexpert._mode import Mode
 from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
 from metaexpert.logger import setup_logger, Logger
-
-# from metaexpert._market import Market
-# from metaexpert._trade import Trade
 
 logger: Logger = setup_logger(APP_NAME)
 
@@ -32,60 +30,92 @@ class MetaExpert(Service):
 
     def __init__(
             self,
-            stock: str | None = None,
+
+            # Required Parameters
+            exchange: str | None = None,
+            *,
+
+            # API Credentials (required for live mode)
             api_key: str | None = None,
             api_secret: str | None = None,
-            *,
+            api_passphrase: str | None = None,
+
+            # Connection Settings
+            subaccount: str | None = None,
             base_url: str | None = None,
-            instrument: str | None = None,
-            contract: str | None = None,
-            mode: str | None = None
+            testnet: bool = True,
+            proxy: dict[str, str] | None = None,
+
+            # Market & Trading Mode
+            market_type: str | None = "futures",
+            contract_type: str | None = "inverse",
+            margin_mode: str | None = "isolated",
+            position_mode: str | None = "hedge",
+
+            # Logging Configuration
+            log_level: str = "INFO",
+            log_file: str = "expert.log",
+            trade_log_file: str = "trades.log",
+            error_log_file: str = "errors.log",
+            log_to_console: bool = True,
+
+            # Advanced System Settings
+            rate_limit: int = 1200,
+            enable_metrics: bool = True,
+            persist_state: bool = True,
+            state_file: str = "state.json",
     ) -> None:
         """Initialize the expert trading system.
 
         Args:
-            stock (str | None): Stock exchange to use (e.g., Binance, Bybit).
+            exchange (str | None): Stock exchange to use (e.g., Binance, Bybit).
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             base_url (str | None): Base URL for the exchange API.
-            instrument (str | None): Type of financial instruments (e.g., spot, futures).
-            contract (str | None): Type of contract (e.g., coin_m, usdt_m).
-            mode (str | None): Mode of operation (e.g., live, paper, backtest).
+            market_type (str | None): Type of financial instruments (e.g., spot, futures).
+            contract_type (str | None): Type of contract (e.g., coin_m, usdt_m).
         """
 
-        # Parse command line arguments
-        args: Namespace = parse_arguments()
+        self.args: Namespace = parse_arguments()
+        self.mode: Mode = self.args.mode
 
         # Initialize stock exchange
         self.client: Exchange = Exchange.init(
-            stock or args.stock,
-            api_key or args.api_key,
-            api_secret or args.api_secret,
-            base_url or args.base_url,
-            instrument or args.type,
-            contract or args.contract
+            exchange or self.args.exchange,
+            api_key or self.args.api_key,
+            api_secret or self.args.api_secret,
+            base_url or self.args.base_url,
+            market_type or self.args.market_type,
+            contract_type or self.args.contract_type
         )
-        self.mode: Mode | None = Mode.get_mode_from(mode or args.mode)
         self._running: bool = False
 
         super().__init__()
 
         # Setup logger
         # self.logger: Logger = setup_logger(self.name, args.log_level)
-        logger.info("Starting expert on %s", args.stock)
-        logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
-        logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
+        logger.info("Starting expert on %s", self.args.exchange)
+        logger.info("Market type: %s, Contract type: %s, Mode: %s", self.args.market_type, self.args.contract_type, self.args.mode)
+        logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
 
     def __str__(self) -> str:
-        return f"{type(self).__name__} {self.name}"
+        return f"{type(self).__name__} {self.strategy_name}"
 
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} {self.name!r}>"
+        return f"<{type(self).__name__} {self.strategy_name!r}>"
 
-    def run(self) -> None:
+    def run(
+            self,
+            mode: str = "paper",
+            backtest_start: str | datetime = "2024-01-01",
+            backtest_end: str | datetime = "2025-08-31",
+            initial_capital: float = 10000,
+    ) -> None:
         """Run the expert trading system."""
+        self.mode: Mode = Mode.get_mode_from(mode or self.args.mode)
+        self._running: bool = True
+
         logger.info("Starting trading bot in %s mode", self.mode)
-        self._running = True
 
         try:
             # Initialize event handling
@@ -102,20 +132,13 @@ class MetaExpert(Service):
             Process.processing()
 
             # Запускаем основной цикл обработки событий
-            while self._running:
-                # Fetch latest market data
-                # data = self.fetch_historical_data()
-
-                # Sleep until next candle
-                if self.mode != MODE_BACKTEST:
-                    pass
-                    # self.logger.info("Waiting for next candle...")
-                    # Calculate sleep time based on timeframe
-                    # sleep_time = self._get_sleep_time()
-                    # time.sleep(sleep_time)
-                else:
-                    # In backtest mode, we process all data at once
-                    self._running = False
+            # while self._running:
+            #     # Sleep until next candle
+            #     if self.mode != MODE_BACKTEST:
+            #         pass
+            #     else:
+            #         # In backtest mode, we process all data at once
+            #         self._running = False
 
         except KeyboardInterrupt:
             # Handle keyboard interrupt

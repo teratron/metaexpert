@@ -9,14 +9,14 @@ class Expert:
     symbol: str | set[str] | None
     timeframe: Timeframe | set[Timeframe] | None
     shift: int
-    magic: int
-    name: str | None
-    lots: float
-    stop_loss: float
-    take_profit: float
-    trailing_stop: float
-    slippage: float
-    positions: int
+    strategy_id: int
+    strategy_name: str | None
+    size_value: float
+    stop_loss_pct: float
+    take_profit_pct: float
+    trailing_stop_pct: float
+    slippage_pct: float
+    max_open_positions: int
     _label: str | None
 
     _lots_min: float
@@ -39,11 +39,11 @@ class Expert:
         pass
 
     # @property
-    # def magic(self) -> int:
+    # def strategy_id(self) -> int:
     #     return self._magic
     #
-    # @magic.setter
-    # def magic(self, value: int) -> None:
+    # @strategy_id.setter
+    # def strategy_id(self, value: int) -> None:
     #     self._magic = value
     #
     # @property

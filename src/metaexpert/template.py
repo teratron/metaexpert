@@ -1,9 +1,9 @@
-'''Trading Expert Template for the MetaExpert library.
+"""Trading Expert Template for the MetaExpert library.
 Generated automatically by 'metaexpert new' command.
 
 This file is the starting point for creating your own trading strategy.
 Fill in the parameters and add your logic to the corresponding event handlers.
-'''
+"""
 
 from metaexpert import MetaExpert
 
@@ -55,21 +55,21 @@ expert = MetaExpert(
 # -----------------------------------------------------------------------------
 @expert.on_init(
     # --- Core Trading Parameters ---
-    symbols=["BTCUSDT"],            # Trading symbols (str or list[str])
+    symbol="BTCUSDT",               # Trading symbols (str or list[str]: "BTCUSDT" or ["BTCUSDT", "ETHUSDT"])
     timeframe="1h",                 # Primary timeframe: '1m','5m','15m','1h','4h','1d',...
     lookback_bars=100,              # Number of historical bars to fetch for analysis
     # lookback_time="7d",           # Alternative: time period ('1h','4h','1d','7d','30d')
     warmup_bars=0,                  # Skip initial bars to initialize indicators (optional, 0 = no warmup)
 
     # --- Strategy Metadata ---
-    strategy_name="My Strategy",    # Display name
     strategy_id=1001,               # Unique ID for order tagging
+    strategy_name="My Strategy",    # Display name
     comment="my_strategy",          # Order comment (max 32 chars Binance, 36 Bybit)
 
     # --- Risk & Position Sizing ---
     leverage=10,                    # Leverage (verify per-symbol limits; ignored for spot, validated via API)
     max_drawdown_pct=0.2,           # Max drawdown from peak equity (0.2 = 20%)
-    daily_loss_limit=1000,          # Daily loss limit in auto-detected settlement currency (e.g., USDT for linear, BTC for inverse, auto-determined)
+    daily_loss_limit=1000.0,        # Daily loss limit in auto-detected settlement currency (e.g., USDT for linear, BTC for inverse, auto-determined)
     size_type="risk_based",         # Position sizing: 'fixed_base', 'fixed_quote', 'percent_equity', 'risk_based'
     size_value=1.5,                 # Size value: fixed_base (e.g., 0.01 BTC), fixed_quote (e.g., 1000 USDT), percent_equity (e.g., 0.01 = 1%), risk_based (e.g., 1.5% risk per trade)
     max_position_size_quote=50000.0,# Max position size in quote currency
@@ -77,9 +77,10 @@ expert = MetaExpert(
     # --- Trade Parameters ---
     stop_loss_pct=2.0,              # Stop-Loss % from entry
     take_profit_pct=4.0,            # Take-Profit % from entry
-    trailing_stop_pct=1.0,          # Trailing stop distance (%)
+    trailing_stop_pct=1.0,          # Trailing stop distance %
     trailing_activation_pct=2.0,    # Activate after X% profit
     breakeven_pct=1.5,              # Move SL to breakeven after X% profit
+    slippage_pct=0.1,               # Expected slippage %
     max_spread_pct=0.1,             # Max allowed spread %
 
     # --- Portfolio Management ---

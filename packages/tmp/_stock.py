@@ -11,21 +11,21 @@ class Stocks(Enum):
         "name": "binance",
         "title": "Binance",
         "description": "Binance exchange",
-        "magic": 1,
+        "strategy_id": 1,
         "module": "metaexpert.exchanges.binance",
     }
     BYBIT = {
         "name": "bybit",
         "title": "Bybit",
         "description": "Bybit exchange",
-        "magic": 2,
+        "strategy_id": 2,
         "module": "metaexpert.exchanges.bybit"
     }
     OKX = {
         "name": "okx",
         "title": "OKX",
         "description": "OKX exchange",
-        "magic": 3,
+        "strategy_id": 3,
         "module": "metaexpert.exchanges.okx"
     }
 

@@ -44,12 +44,11 @@ def parse_arguments() -> Namespace:
 
     # Add arguments for trading parameters
     parser.add_argument(
-        "--stock",
         "--exchange",
         type=str,
         choices=AVAILABLE_EXCHANGES,
         default=DEFAULT_EXCHANGE,
-        help="Stock exchange to use (e.g., binance, bybit)",
+        help="Stock exchange to use (e.g., binance, bybit, okx, bitget, kucoin)",
     )
     parser.add_argument(
         "--mode",
@@ -59,15 +58,14 @@ def parse_arguments() -> Namespace:
         help="Trading mode: backtest, paper, or live",
     )
     parser.add_argument(
-        "--type",
-        "--instrument",
+        "--market_type",
         type=str,
         choices=[TRADE_TYPE_SPOT, TRADE_TYPE_FUTURES, TRADE_TYPE_OPTIONS, TRADE_TYPE_MARGIN],
         default=DEFAULT_TRADE_TYPE,
         help="Trading type: spot, futures, options, or margin",
     )
     parser.add_argument(
-        "--contract",
+        "--contract_type",
         type=str,
         choices=[CONTRACT_TYPE_USD_M, CONTRACT_TYPE_COIN_M],
         default=DEFAULT_CONTRACT_TYPE,

@@ -21,48 +21,74 @@ class Service(Expert):
 
     def on_init(
             self,
+
+            # Core Trading Parameters
             symbol: str | set[str] | None = None,
             timeframe: str | set[str] | None = None,
             *,
-            shift: int = 0,
-            magic: int = 0,
-            name: str | None = None,
-            lots: float = 0.01,
-            stop_loss: float = 0.0,
-            take_profit: float = 0.0,
-            trailing_stop: float = 0.0,
-            slippage: float = 0.0,
-            positions: int = 5
+            lookback_bars: int = 100,
+            warmup_bars: int = 0,
+
+            # Strategy Metadata
+            strategy_id: int = 42,
+            strategy_name: str | None = None,
+            comment: str | None = None,
+
+            # Risk & Position Sizing
+            leverage: int = 10,
+            max_drawdown_pct: float = 0.2,
+            daily_loss_limit: float = 1000.0,
+            size_type: str = "risk_based", # Position sizing: 'fixed_base', 'fixed_quote', 'percent_equity', 'risk_based'
+            size_value: float = 1.5,
+            max_position_size_quote: float = 50000.0,
+
+            # Trade Parameters
+            stop_loss_pct: float = 2.0,
+            take_profit_pct: float = 4.0,
+            trailing_stop_pct: float = 1.0,
+            trailing_activation_pct: float = 2.0,
+            breakeven_pct: float = 1.5,
+            slippage_pct: float = 0.1,
+            max_spread_pct: float = 0.1,
+
+            # Portfolio Management
+            max_open_positions: int = 3,
+            max_positions_per_symbol: int = 1,
+
+            # Entry Filters
+            trade_hours: list[int] | None = None,
+            allowed_days: list[int] | None = None,
+            min_volume: int = 1000000,
+            volatility_filter: bool = True,
+            trend_filter: bool = True
     ) -> Callable:
         """Decorator for initialization event handling.
 
         Args:
             symbol (str | set[str] | None): Symbol of the trading pair.
             timeframe (str | set[str] | None): Time frame for the trading data.
-            shift (int): A shift relative to the current bar on which the expert is traded. Defaults to 0.
-            magic (int): Magic number. Used to identify the expert. Defaults to 0.
-            name (str | None): The name of the expert.
-            lots (float): The number of lots for trading. Defaults to 0.01.
-            stop_loss (float): Stop loss value. Defaults to 0.0.
-            take_profit (float): Take profit value. Defaults to 0.0.
-            trailing_stop (float): Trailing stop value. Defaults to 0.0.
-            slippage (float): Slippage value. Defaults to 0.0.
-            positions (int): Number of positions to manage. Defaults to 5.
+            strategy_id (int): Magic number. Used to identify the expert. Defaults to 0.
+            strategy_name (str | None): The name of the expert.
+            size_value (float): The number of lots for trading. Defaults to 0.01.
+            stop_loss_pct (float): Stop loss value. Defaults to 0.0.
+            take_profit_pct (float): Take profit value. Defaults to 0.0.
+            trailing_stop_pct (float): Trailing stop value. Defaults to 0.0.
+            slippage_pct (float): Slippage value. Defaults to 0.0.
+            max_open_positions (int): Number of positions to manage. Defaults to 5.
             
         Returns:
             Callable: Decorated function that handles the initialization event.
         """
         self.symbol = symbol
         self.timeframe = Timeframe.get_period_from(timeframe)
-        self.shift = shift
-        self.magic = magic
-        self.name = name
-        self.lots = lots
-        self.stop_loss = stop_loss
-        self.take_profit = take_profit
-        self.trailing_stop = trailing_stop
-        self.slippage = slippage
-        self.positions = positions
+        self.strategy_id = strategy_id
+        self.strategy_name = strategy_name
+        self.size_value = size_value
+        self.stop_loss_pct = stop_loss_pct
+        self.take_profit_pct = take_profit_pct
+        self.trailing_stop_pct = trailing_stop_pct
+        self.slippage_pct = slippage_pct
+        self.max_open_positions = max_open_positions
 
         # super().__init__()
 

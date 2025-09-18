@@ -13,8 +13,8 @@ class Contract(Enum):
     }
 
     @classmethod
-    def get_contract_from(cls, name: str) -> Self | None:
-        """Get the contract type from a string."""
+    def get_contract_type_from(cls, name: str) -> Self | None:
+        """Get the contract_type type from a string."""
         for item in cls:
             if item.value.get("name") == name.lower():
                 return item

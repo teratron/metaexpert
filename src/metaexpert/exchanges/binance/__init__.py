@@ -27,7 +27,7 @@ class Stock(Exchange):
             raise ValueError("API key and secret are required for Binance operations.")
 
         if self.client is None:
-            match self.instrument if isinstance(self.instrument, str) else None:
+            match self.market_type if isinstance(self.market_type, str) else None:
                 case "spot":
                     self.client = self.__spot_client()
                 case "futures":
@@ -51,19 +51,19 @@ class Stock(Exchange):
         """Returns the Binance Futures client."""
         install_package(BINANCE_FUTURES_PACKAGE)
         try:
-            match self.contract if isinstance(self.contract, str) else None:
-                case "usdt_m":
+            match self.contract_type if isinstance(self.contract_type, str) else None:
+                case "linear":
                     pkg = import_module(BINANCE_FUTURES_MODULE_USDT_M)
                     return pkg.UMFutures(
                         key=self.api_key, secret=self.api_secret, base_url=self.base_url
                     )
-                case "coin_m":
+                case "inverse":
                     pkg = import_module(BINANCE_FUTURES_MODULE_COIN_M)
                     return pkg.CMFutures(
                         key=self.api_key, secret=self.api_secret, base_url=self.base_url
                     )
                 case _:
-                    raise ValueError(f"Unsupported contract type: {self.contract}")
+                    raise ValueError(f"Unsupported contract type: {self.contract_type}")
         except ImportError:
             raise ImportError(f"Please install {BINANCE_FUTURES_PACKAGE}: pip install {BINANCE_FUTURES_PACKAGE}")
 

@@ -27,7 +27,7 @@ metaexpert --new my_expert --dir ./experts
 MetaExpert поддерживает различные аргументы для настройки торговых параметров:
 
 ```bash
-metaexpert --stock binance --mode paper --type futures --contract usd_m --pair BTCUSDT
+metaexpert --exchange binance --mode paper --type futures --contract_type usd_m --pair BTCUSDT
 ```
 
 Полный список аргументов можно получить с помощью команды:
