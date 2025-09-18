@@ -1,9 +1,6 @@
 from enum import Enum
-from typing import Self, TypedDict
+from typing import Self
 
-
-class ContractTypeDict(TypedDict):
-    name: str
 
 class ContractType(Enum):
     """Enum for contract types."""

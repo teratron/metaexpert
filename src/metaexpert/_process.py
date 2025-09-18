@@ -4,7 +4,7 @@ from asyncio import Task
 from enum import Enum
 from threading import Thread
 from types import ModuleType
-from typing import ClassVar, Self
+from typing import Self
 
 from websocket._ws_spot import WebSocketClient
 
@@ -17,7 +17,7 @@ logger: Logger = get_logger(APP_NAME)
 class Process(Enum):
     """Event types for the trading system."""
 
-    ON_INIT: ClassVar[dict] = {
+    ON_INIT = {
         "name": "on_init",
         "number": 1,
         "callback": [],
@@ -25,45 +25,45 @@ class Process(Enum):
         # "status": None,  # InitStatus.INIT_SUCCEEDED
         "is_done": False,
     }
-    ON_DEINIT: ClassVar[dict] = {
+    ON_DEINIT = {
         "name": "on_deinit",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_TICK: ClassVar[dict] = {
+    ON_TICK = {
         "name": "on_tick",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_BAR: ClassVar[dict] = {
+    ON_BAR = {
         "name": "on_bar",
         "number": 5,
         "callback": [],
         "instance": [],
         "is_async": True
     }
-    ON_TIMER: ClassVar[dict] = {
+    ON_TIMER = {
         "name": "on_timer",
         "number": 5,
         "callback": [],
         "instance": [],
         "is_async": True
     }
-    ON_TRADE: ClassVar[dict] = {
+    ON_TRADE = {
         "name": "on_trade",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_TRANSACTION: ClassVar[dict] = {
+    ON_TRANSACTION = {
         "name": "on_transaction",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_BOOK: ClassVar[dict] = {
+    ON_BOOK = {
         "name": "on_book",
         "number": 1,
         "callback": [],

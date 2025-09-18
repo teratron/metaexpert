@@ -11,22 +11,28 @@ class MarketTypeDict(TypedDict):
 
 
 class MarketType(Enum):
-    """Market type enumeration for supported instruments."""
+    """Market type enumeration for supported instruments.
+
+    Supported market types:
+    - SPOT: Spot trading (no contracts)
+    - FUTURES: Futures trading with contract types (linear/usd_m or inverse/coin_m)
+    - OPTIONS: Options trading with contract types (linear/usd_m or inverse/coin_m)
+    """
 
     SPOT = {
         "name": "spot",
         "description": "Spot trading",
-        "contract": [ContractType.COIN_M, ContractType.USD_M]
+        "contract": []  # Spot trading has no contracts
     }
     FUTURES = {
         "name": "futures",
         "description": "Futures trading",
-        "contract": [ContractType.COIN_M, ContractType.USD_M]
+        "contract": [ContractType.COIN_M, ContractType.USD_M]  # inverse/coin_m or linear/usd_m
     }
     OPTIONS = {
         "name": "options",
         "description": "Options trading",
-        "contract": [ContractType.COIN_M, ContractType.USD_M]
+        "contract": [ContractType.COIN_M, ContractType.USD_M]  # inverse/coin_m or linear/usd_m
     }
 
     @classmethod
@@ -37,3 +43,11 @@ class MarketType(Enum):
                 return item
 
         return None
+
+    def has_contracts(self) -> bool:
+        """Check if this market type has contracts."""
+        return len(self.value.get("contract", [])) > 0
+
+    def get_contract_types(self) -> list[ContractType]:
+        """Get the contract types for this market type."""
+        return self.value.get("contract", [])
