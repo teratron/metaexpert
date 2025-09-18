@@ -12,12 +12,12 @@ from types import ModuleType
 from metaexpert._argument import Namespace, parse_arguments
 from metaexpert._contract_type import ContractType
 from metaexpert._market_type import MarketType
-from metaexpert._mode import Mode
+from metaexpert._mode import TradingMode
 from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import setup_logger, Logger
+from metaexpert.logger import Logger, setup_logger
 
 logger: Logger = setup_logger(APP_NAME)
 
@@ -77,7 +77,7 @@ class MetaExpert(Service):
         """
 
         self.args: Namespace = parse_arguments()
-        self.mode: Mode = self.args.mode
+        self.mode: TradingMode = self.args.mode
 
         # Initialize stock exchange
         self.client: Exchange = Exchange.init(
@@ -112,7 +112,7 @@ class MetaExpert(Service):
             initial_capital: float = 10000,
     ) -> None:
         """Run the expert trading system."""
-        self.mode: Mode = Mode.get_mode_from(mode or self.args.mode)
+        self.mode: TradingMode = TradingMode.get_mode_from(mode or self.args.mode)
         self._running: bool = True
 
         logger.info("Starting trading bot in %s mode", self.mode)
