@@ -1,6 +1,6 @@
 from threading import Thread
 
-from tmp._ws_spot import WebSocketClient
+from _ws_spot import WebSocketClient
 
 if __name__ == "__main__":
     # Thread(target=WebSocketClient, args=("wss://fstream.binance.com/ws/btcusdt@aggTrade",)).start()

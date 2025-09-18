@@ -2,7 +2,7 @@ import json
 import traceback
 from abc import ABC, abstractmethod
 
-from websocket import WebSocketApp, WebSocket
+from websocket import WebSocket, WebSocketApp
 
 from metaexpert import logger
 

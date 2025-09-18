@@ -3,7 +3,7 @@ import time
 import traceback
 from threading import Thread
 
-from websocket import WebSocketApp, WebSocket
+from websocket import WebSocket, WebSocketApp
 
 
 class WebSocketClient(WebSocketApp):

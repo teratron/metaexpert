@@ -1,0 +1,59 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "MetaExpert: Binance EMA",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/expert_binance_ema/__main__.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "MetaExpert: Bybit RSI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/examples/expert_bybit_rsi/__main__.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "MetaExpert: Main",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/metaexpert/__main__.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Flask App",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/packages/app/src/app.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development",
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}

@@ -4,9 +4,10 @@ from asyncio import Task
 from enum import Enum
 from threading import Thread
 from types import ModuleType
-from typing import Self
+from typing import ClassVar, Self
 
-from tmp._ws_spot import WebSocketClient
+from websocket._ws_spot import WebSocketClient
+
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
@@ -16,7 +17,7 @@ logger: Logger = get_logger(APP_NAME)
 class Process(Enum):
     """Event types for the trading system."""
 
-    ON_INIT = {
+    ON_INIT: ClassVar[dict] = {
         "name": "on_init",
         "number": 1,
         "callback": [],
@@ -24,50 +25,57 @@ class Process(Enum):
         # "status": None,  # InitStatus.INIT_SUCCEEDED
         "is_done": False,
     }
-    ON_DEINIT = {
+    ON_DEINIT: ClassVar[dict] = {
         "name": "on_deinit",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_TICK = {
+    ON_TICK: ClassVar[dict] = {
         "name": "on_tick",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_BAR = {
+    ON_BAR: ClassVar[dict] = {
         "name": "on_bar",
         "number": 5,
         "callback": [],
         "instance": [],
         "is_async": True
     }
-    ON_TIMER = {
+    ON_TIMER: ClassVar[dict] = {
         "name": "on_timer",
         "number": 5,
         "callback": [],
         "instance": [],
         "is_async": True
     }
-    ON_TRADE = {
+    ON_TRADE: ClassVar[dict] = {
         "name": "on_trade",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_TRANSACTION = {
+    ON_TRANSACTION: ClassVar[dict] = {
         "name": "on_transaction",
         "number": 1,
         "callback": [],
         "is_async": False
     }
-    ON_BOOK = {
+    ON_BOOK: ClassVar[dict] = {
         "name": "on_book",
         "number": 1,
         "callback": [],
         "is_async": False
     }
+
+    def __new__(cls, value: dict):
+        """Create a new enum member with a copy of the provided value."""
+        obj = object.__new__(cls)
+        # Create a copy of the dictionary and ensure mutable lists are independent
+        obj._value_ = {k: v if not isinstance(v, list) else [] for k, v in value.items()}
+        return obj
 
     @classmethod
     def init(cls) -> ModuleType | None:
@@ -90,9 +98,9 @@ class Process(Enum):
             # All the functions of the module with decorators or without shortcuts.
             if obj and callable(obj) and not isinstance(obj, type):
                 # List of hierarchy of objects, functions, decorators or closes.
-                qualif: list[str] = getattr(obj, "__qualname__", "").split(".")
-                if len(qualif) > 1:
-                    cls._push_callback(qualif[1], (module, attr))
+                qualname_parts: list[str] = getattr(obj, "__qualname__", "").split(".")
+                if len(qualname_parts) > 1:
+                    cls._push_callback(qualname_parts[1], (module, attr))
 
         return module
 
@@ -219,7 +227,7 @@ class Process(Enum):
             func()
             logger.debug("Launch task for '%s'", self.value.get("name"))
 
-        if hasattr(self.value, "is_done") and not self.value.get("is_done"):
+        if "is_done" in self.value and not self.value.get("is_done"):
             self.value["is_done"] = True
             logger.debug("Process '%s' is done", self.value.get("name"))
 
