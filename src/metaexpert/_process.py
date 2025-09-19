@@ -312,7 +312,7 @@ class Process(Enum):
         return tasks
 
     @classmethod
-    def processing(cls) -> bool:
+    def processing(cls, ws_url: str) -> bool:
         """Process the events for the trading system.
 
         This method initializes the process and starts running the tasks.
@@ -324,7 +324,7 @@ class Process(Enum):
 
         Thread(
             target=WebSocketClient,
-            args=("wss://fstream.binance.com/ws/btcusdt@kline_1m",),
+            args=(ws_url,),
             daemon=True
         ).start()
 

@@ -128,7 +128,8 @@ class MetaExpert(Service):
             logger.info("Expert initialized successfully")
 
             # Register the expert with the process
-            Process.processing()
+            ws_url = self.client.get_websocket_url(self.symbol, self.timeframe)
+            Process.processing(ws_url)
 
             # Main event loop
             while self._running:

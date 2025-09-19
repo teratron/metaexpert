@@ -349,8 +349,8 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles backtest events.
         """
-        def inner(rates: dict) -> None:
-            func(rates)
+        def inner() -> None:
+            func()
 
         return inner
 

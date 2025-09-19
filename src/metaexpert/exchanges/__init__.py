@@ -40,3 +40,7 @@ class Exchange(ABC):
     @abstractmethod
     def get_account(self) -> dict:
         pass
+
+    @abstractmethod
+    def get_websocket_url(self, symbol: str, timeframe: str) -> str:
+        pass

@@ -221,12 +221,8 @@ def backtest_deinit() -> None:
 
 
 @expert.on_backtest
-def backtest(rates) -> None:
-    """Called for each bar during a backtest.
-
-    Args:
-        rates: OHLCV data for the current backtest bar.
-    """
+def backtest() -> None:
+    """Called for each bar during a backtest."""
     pass
 
 

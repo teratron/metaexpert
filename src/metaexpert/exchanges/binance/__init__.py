@@ -92,25 +92,17 @@ class Stock(Exchange):
         #     # Catch specific exceptions from the library if possible
         #     raise RuntimeError(f"Failed to get Binance balance: {e}")
 
-    def get_account(self):
-        """Retrieves account information from Binance.
+    def get_websocket_url(self, symbol: str, timeframe: str) -> str:
+        """Constructs the WebSocket URL for a given symbol and timeframe."""
+        base_url = ""
+        if self.market_type == "spot":
+            base_url = BINANCE_SPOT_WS_BASE_URL
+        elif self.market_type == "futures":
+            base_url = BINANCE_FUTURES_WS_BASE_URL
+        else:
+            raise ValueError(f"Unsupported market type for WebSocket: {self.market_type}")
 
-        Returns:
-            dict: A dictionary representing the account information.
-
-        Raises:
-            RuntimeError: If the API call fails.
-            ValueError: If API key/secret are missing.
-            ImportError: If binance-connector is not installed.
-        """
-        print("Binance get_account")
-        # print(self.client.account())
-        # print(self.client.time())
-        # try:
-        #     account_info = self.client.account()
-        #     return account_info
-        # except Exception as e:
-        #     raise RuntimeError(f"Failed to get Binance account information: {e}")
+        return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
 
 
 def balance(self=None):
