@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "git-pull",
+            "label": "Git Pull",
             "type": "shell",
             "command": "git pull",
             "presentation": {
@@ -12,7 +12,7 @@
             "problemMatcher": []
         },
         {
-            "label": "activate-venv",
+            "label": "Activate Venv",
             "type": "shell",
             "command": "${command:workbench.action.terminal.new}",
             "windows": {
@@ -22,74 +22,26 @@
                 "command": ". .venv/bin/activate"
             },
             "presentation": {
+                "echo": true,
                 "reveal": "always",
-                "panel": "new"
+                "focus": false,
+                "panel": "shared"
             },
             "problemMatcher": []
         },
         {
-            "label": "uv-self-update",
+            "label": "Update UV",
             "type": "shell",
             "command": "uv self update",
+            "group": "build",
             "presentation": {
-                "reveal": "silent",
-                "close": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "uv-sync",
-            "type": "shell",
-            "command": "uv sync",
-            "presentation": {
-                "reveal": "silent",
-                "close": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "npm-update-claude",
-            "type": "shell",
-            "command": "npm install -g @anthropic-ai/claude-code",
-            "presentation": {
-                "reveal": "silent",
-                "close": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "spec-kit-update-claude",
-            "type": "shell",
-            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai claude --script ps",
-            "presentation": {
+                "echo": true,
                 "reveal": "always",
-                "close": true
+                "focus": false,
+                "panel": "shared"
             },
             "problemMatcher": []
         },
-        {
-            "label": "npm-update-gemini",
-            "type": "shell",
-            "command": "npm install -g @google/gemini-cli",
-            "presentation": {
-                "reveal": "silent",
-                "close": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "npm-update-qwen",
-            "type": "shell",
-            "command": "npm install -g @qwen-code/qwen-code",
-            "presentation": {
-                "reveal": "silent",
-                "close": true
-            },
-            "problemMatcher": []
-        },
-
-
-        
         {
             "label": "Install Dependencies",
             "type": "shell",
@@ -107,6 +59,58 @@
             "label": "Install All Dependencies",
             "type": "shell",
             "command": "uv sync --all-extras",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Update Spec Kit Claude",
+            "type": "shell",
+            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai claude --script ps",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Update Claude",
+            "type": "shell",
+            "command": "npm install -g @anthropic-ai/claude-code",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Update Gemini",
+            "type": "shell",
+            "command": "npm install -g @google/gemini-cli",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Update Qwen",
+            "type": "shell",
+            "command": "npm install -g @qwen-code/qwen-code",
             "group": "build",
             "presentation": {
                 "echo": true,

@@ -204,7 +204,40 @@ def account(acc) -> None:
     pass
 
 # -----------------------------------------------------------------------------
-# 4. ENTRY POINT
+# 4. BACKTESTING EVENT HANDLERS
+# -----------------------------------------------------------------------------
+# These handlers are only called when running in 'backtest' mode.
+# -----------------------------------------------------------------------------
+@expert.on_backtest_init
+def backtest_init() -> None:
+    """Called once at the start of a backtest run."""
+    pass
+
+
+@expert.on_backtest_deinit
+def backtest_deinit() -> None:
+    """Called once at the end of a backtest run."""
+    pass
+
+
+@expert.on_backtest
+def backtest(rates) -> None:
+    """Called for each bar during a backtest.
+
+    Args:
+        rates: OHLCV data for the current backtest bar.
+    """
+    pass
+
+
+@expert.on_backtest_pass
+def backtest_pass() -> None:
+    """Called at the end of each pass in an optimization run."""
+    pass
+
+
+# -----------------------------------------------------------------------------
+# 5. ENTRY POINT
 # -----------------------------------------------------------------------------
 # This part of the code is responsible for launching the expert.
 # -----------------------------------------------------------------------------

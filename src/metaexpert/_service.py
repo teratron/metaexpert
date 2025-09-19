@@ -66,7 +66,7 @@ class Service(Expert):
         """Decorator for initialization event handling.
 
         Args:
-            symbols (str | set[str] | None): Trading symbols (e.g., "BTCUSDT" or ["BTCUSDT", "ETHUSDT"]). Defaults to "BTCUSDT".
+            symbol (str | set[str] | None): Trading symbols (e.g., "BTCUSDT" or ["BTCUSDT", "ETHUSDT"]). Defaults to "BTCUSDT".
             timeframe (str | None): Time frame for trading data (e.g., "1h", "1m"). Defaults to "1h".
             lookback_bars (int): Number of historical bars to fetch for analysis. Defaults to 100.
             warmup_bars (int): Skip initial bars to initialize indicators. Defaults to 0.
@@ -160,7 +160,7 @@ class Service(Expert):
                     logger.debug("Stopping bar...")
                     bar.stop()
 
-            return inner
+        return inner
 
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
     @staticmethod
@@ -274,13 +274,10 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles book events.
         """
-        def outer(func: Callable[[dict], None]) -> Callable[[dict], None]:
-            def inner(orderbook: dict) -> None:
-                func(orderbook)
+        def inner(orderbook: dict) -> None:
+            func(orderbook)
 
-            return inner
-
-        return outer
+        return inner
 
     @staticmethod
     def on_error(func: Callable[[Exception], None]) -> Callable:
