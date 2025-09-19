@@ -5,7 +5,6 @@ using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
 """
 from datetime import datetime
-from importlib import import_module
 from pathlib import Path
 from types import ModuleType
 
@@ -80,13 +79,13 @@ class MetaExpert(Service):
         self._running: bool = False
 
         # Initialize stock exchange
-        self.client: Exchange = Exchange.init(
-            exchange or self.args.exchange,
-            api_key or self.args.api_key,
-            api_secret or self.args.api_secret,
-            base_url or self.args.base_url,
-            market_type or self.args.market_type,
-            contract_type or self.args.contract_type
+        self.client: Exchange = Exchange.create(
+            exchange_name=exchange or self.args.exchange,
+            api_key=api_key or self.args.api_key,
+            api_secret=api_secret or self.args.api_secret,
+            base_url=base_url or self.args.base_url,
+            market_type=market_type or self.args.market_type,
+            contract_type=contract_type or self.args.contract_type
         )
 
         #super().__init__()
@@ -158,4 +157,4 @@ class MetaExpert(Service):
             logger.info("Expert shutdown complete")
 
     # from metaexpert.exchanges.binance import balance
-    balance = import_module("metaexpert.exchanges.binance").balance
+    #balance = import_module("metaexpert.exchanges.binance").get_balance

@@ -221,16 +221,17 @@ def backtest_deinit() -> None:
 
 
 @expert.on_backtest
-def backtest() -> None:
+def backtest() -> float:
     """Called for each bar during a backtest."""
-    pass
+    ret: float = 0.0
+
+    return ret
 
 
 @expert.on_backtest_pass
 def backtest_pass() -> None:
     """Called at the end of each pass in an optimization run."""
     pass
-
 
 # -----------------------------------------------------------------------------
 # 5. ENTRY POINT

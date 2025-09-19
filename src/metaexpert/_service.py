@@ -342,7 +342,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_backtest(func: Callable[[dict], None]) -> Callable:
+    def on_backtest(func: Callable[[], float]) -> Callable[[], float]:
         """Decorator for backtest per-bar event handling.
 
         Args:
@@ -351,8 +351,8 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles backtest events.
         """
-        def inner() -> None:
-            func()
+        def inner() -> float:
+            return func()
 
         return inner
 

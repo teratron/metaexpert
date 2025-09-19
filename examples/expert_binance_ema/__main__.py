@@ -164,65 +164,65 @@ def timer_3min() -> None:
     print("*** Timer Tick 3 Minutes ***")
 
 
-@expert.on_order
-def order(order) -> None:
-    """Called when order status changes.
+# @expert.on_order
+# def order(order) -> None:
+#     """Called when order status changes.
 
-    Args:
-        order: Order object (symbol, side, status, price, qty, etc.)
-    """
-    print("*** EMA Order Update ***", order)
-
-
-@expert.on_position
-def position(pos) -> None:
-    """Called when position state changes. Ideal for dynamic risk management.
-
-    Args:
-        pos: Position object (symbol, size, entry_price, pnl, etc.)
-    """
-    print("*** EMA Position Update ***", pos)
+#     Args:
+#         order: Order object (symbol, side, status, price, qty, etc.)
+#     """
+#     print("*** EMA Order Update ***", order)
 
 
-@expert.on_transaction
-def transaction(request, result) -> None:
-    """Called when a transaction completes (e.g., order fill).
+# @expert.on_position
+# def position(pos) -> None:
+#     """Called when position state changes. Ideal for dynamic risk management.
 
-    Args:
-        request: Original request details
-        result: Execution result (status, filled_qty, avg_price, fees, etc.)
-    """
-    print("*** EMA Transaction Completed ***")
-
-
-@expert.on_book
-def book(orderbook) -> None:
-    """Called when order book changes. Useful for market making or liquidity analysis.
-
-    Args:
-        orderbook: Object with symbol, bids [(price, qty)], asks [(price, qty)]
-    """
-    print("*** EMA Order Book Update ***", orderbook)
+#     Args:
+#         pos: Position object (symbol, size, entry_price, pnl, etc.)
+#     """
+#     print("*** EMA Position Update ***", pos)
 
 
-@expert.on_error
-def error(err) -> None:
-    """Called on error (API, network, logic). Implement recovery or alerting here.
+# @expert.on_transaction
+# def transaction(request, result) -> None:
+#     """Called when a transaction completes (e.g., order fill).
 
-    Args:
-        err: Error object or message
-    """
-    print("*** EMA Error ***", err)
+#     Args:
+#         request: Original request details
+#         result: Execution result (status, filled_qty, avg_price, fees, etc.)
+#     """
+#     print("*** EMA Transaction Completed ***")
 
 
-@expert.on_account
-def account(acc) -> None:
-    """Called when account state updates (balance, equity, margin).
+# @expert.on_book
+# def book(orderbook) -> None:
+#     """Called when order book changes. Useful for market making or liquidity analysis.
 
-    Args:
-        acc: Account object (balance, currency, equity, timestamp, etc.)
-    """
-    print("*** EMA Account Update ***", acc)
+#     Args:
+#         orderbook: Object with symbol, bids [(price, qty)], asks [(price, qty)]
+#     """
+#     print("*** EMA Order Book Update ***", orderbook)
+
+
+# @expert.on_error
+# def error(err) -> None:
+#     """Called on error (API, network, logic). Implement recovery or alerting here.
+
+#     Args:
+#         err: Error object or message
+#     """
+#     print("*** EMA Error ***", err)
+
+
+# @expert.on_account
+# def account(acc) -> None:
+#     """Called when account state updates (balance, equity, margin).
+
+#     Args:
+#         acc: Account object (balance, currency, equity, timestamp, etc.)
+#     """
+#     print("*** EMA Account Update ***", acc)
 
 
 def main() -> None:
