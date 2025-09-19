@@ -7,7 +7,7 @@ from metaexpert.exchanges.binance.config import (
     BINANCE_SPOT_MODULE,
     BINANCE_FUTURES_PACKAGE,
     BINANCE_FUTURES_MODULE_USDT_M,
-    BINANCE_FUTURES_MODULE_COIN_M
+    BINANCE_FUTURES_MODULE_COIN_M, BINANCE_SPOT_WS_BASE_URL, BINANCE_FUTURES_WS_BASE_URL
 )
 from metaexpert.utils.package import install_package
 

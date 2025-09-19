@@ -8,7 +8,7 @@ from typing import Self
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
-from metaexpert.websocket._ws_spot import WebSocketClient
+from metaexpert.websocket._spot import WebSocketClient
 
 logger: Logger = get_logger(APP_NAME)
 
