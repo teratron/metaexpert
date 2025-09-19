@@ -97,33 +97,35 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles the initialization event.
         """
-        self.symbol = symbol
-        self.timeframe = Timeframe.get_period_from(timeframe)
-        self.lookback_bars = lookback_bars
-        self.warmup_bars = warmup_bars
-        self.strategy_id = strategy_id
-        self.strategy_name = strategy_name
-        self.comment = comment
-        self.leverage = leverage
-        self.max_drawdown_pct = max_drawdown_pct
-        self.daily_loss_limit = daily_loss_limit
-        self.size_type = size_type
-        self.size_value = size_value
-        self.max_position_size_quote = max_position_size_quote
-        self.stop_loss_pct = stop_loss_pct
-        self.take_profit_pct = take_profit_pct
-        self.trailing_stop_pct = trailing_stop_pct
-        self.trailing_activation_pct = trailing_activation_pct
-        self.breakeven_pct = breakeven_pct
-        self.slippage_pct = slippage_pct
-        self.max_spread_pct = max_spread_pct
-        self.max_open_positions = max_open_positions
-        self.max_positions_per_symbol = max_positions_per_symbol
-        self.trade_hours = trade_hours
-        self.allowed_days = allowed_days
-        self.min_volume = min_volume
-        self.volatility_filter = volatility_filter
-        self.trend_filter = trend_filter
+        super().__init__(
+            symbol=symbol,
+            timeframe=Timeframe.get_period_from(timeframe),
+            lookback_bars=lookback_bars,
+            warmup_bars=warmup_bars,
+            strategy_id=strategy_id,
+            strategy_name=strategy_name,
+            comment=comment,
+            leverage=leverage,
+            max_drawdown_pct=max_drawdown_pct,
+            daily_loss_limit=daily_loss_limit,
+            size_type=size_type,
+            size_value=size_value,
+            max_position_size_quote=max_position_size_quote,
+            stop_loss_pct=stop_loss_pct,
+            take_profit_pct=take_profit_pct,
+            trailing_stop_pct=trailing_stop_pct,
+            trailing_activation_pct=trailing_activation_pct,
+            breakeven_pct=breakeven_pct,
+            slippage_pct=slippage_pct,
+            max_spread_pct=max_spread_pct,
+            max_open_positions=max_open_positions,
+            max_positions_per_symbol=max_positions_per_symbol,
+            trade_hours=trade_hours,
+            allowed_days=allowed_days,
+            min_volume=min_volume,
+            volatility_filter=volatility_filter,
+            trend_filter=trend_filter,
+        )
 
         def outer(func: Callable[[], None]) -> Callable[[], None]:
             def inner() -> None:

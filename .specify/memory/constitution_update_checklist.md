@@ -8,9 +8,9 @@ When amending the constitution (`/memory/constitution.md`), ensure all dependent
 - [ ] `/templates/plan-template.md` - Update Constitution Check section
 - [ ] `/templates/spec-template.md` - Update if requirements/scope affected
 - [ ] `/templates/tasks-template.md` - Update if new task types needed
-- [ ] `/.qwen/commands/plan.md` - Update if planning process changes
-- [ ] `/.qwen/commands/tasks.md` - Update if task generation affected
-- [ ] `/QWEN.md` - Update runtime development guidelines
+- [ ] `/.gemini/commands/plan.md` or `/.qwen/commands/plan.md` - Update if planning process changes
+- [ ] `/.gemini/commands/tasks.md` or `/.qwen/commands/tasks.md` - Update if task generation affected
+- [ ] `/GEMINI.md` or `/QWEN.md` - Update runtime development guidelines
 
 ### Article-specific updates:
 

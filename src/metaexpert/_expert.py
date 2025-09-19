@@ -45,63 +45,19 @@ class Expert:
     volatility_filter: bool
     trend_filter: bool
 
-    _label: str | None
-
-    _lots_min: float
-    _lots_max: float
-    _lots_step: float
-
-    _long_time: datetime
-    _long_positions: int
-    _long_profit: float
-    _long_lots: float
-    _short_time: datetime
-    _short_positions: int
-    _short_profit: float
-    _short_lots: float
-    _digits: int
-    _digits_format: str
-    _point: float
-
-    def __init__(self):
-        pass
-
-    # @property
-    # def strategy_id(self) -> int:
-    #     return self._magic
-    #
-    # @strategy_id.setter
-    # def strategy_id(self, value: int) -> None:
-    #     self._magic = value
-    #
-    # @property
-    # def comment(self) -> str:
-    #     return self.__comment
-    #
-    # @comment.setter
-    # def comment(self, value: str) -> None:
-    #     self.__comment = value + f"Magic number: {self._magic}"
-
-
-class Position:
-    def __init__(self, symbol: str, lots: float, price: float, sl: float, tp: float):
-        self.symbol = symbol
-        self.lots = lots
-        self.price = price
-        self.sl = sl
-        self.tp = tp
-
-    def __repr__(self):
-        return f"Position(symbol={self.symbol}, lots={self.lots}, price={self.price}, sl={self.sl}, tp={self.tp})"
-
-
-class Order:
-    def __init__(self, symbol: str, lots: float, price: float, sl: float, tp: float):
-        self.symbol = symbol
-        self.lots = lots
-        self.price = price
-        self.sl = sl
-        self.tp = tp
-
-    def __repr__(self):
-        return f"Order(symbol={self.symbol}, lots={self.lots}, price={self.price}, sl={self.sl}, tp={self.tp})"
+    # Internal State
+    _label: str | None = None
+    _lots_min: float = 0.0
+    _lots_max: float = 0.0
+    _lots_step: float = 0.0
+    _long_time: datetime | None = None
+    _long_positions: int = 0
+    _long_profit: float = 0.0
+    _long_lots: float = 0.0
+    _short_time: datetime | None = None
+    _short_positions: int = 0
+    _short_profit: float = 0.0
+    _short_lots: float = 0.0
+    _digits: int = 0
+    _digits_format: str | None = None
+    _point: float = 0.0
