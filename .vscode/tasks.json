@@ -69,9 +69,9 @@
             "problemMatcher": []
         },
         {
-            "label": "Update Spec Kit Claude",
+            "label": "Update Spec Kit Gemini",
             "type": "shell",
-            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai claude --script ps",
+            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai gemini --script ps",
             "group": "build",
             "presentation": {
                 "echo": true,
