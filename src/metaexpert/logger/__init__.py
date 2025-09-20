@@ -21,7 +21,7 @@ import json
 import logging
 import os
 import sys
-from logging import Logger, Formatter, StreamHandler, getLogger
+from logging import Formatter, Logger, StreamHandler, getLogger
 from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
