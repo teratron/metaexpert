@@ -6,9 +6,14 @@ authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
 requires-python = ">=3.12"
-#classifiers = ["Private :: Do Not Upload"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+]
 keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
-#excluded = ["tests", "examples", "app", "docs", "src/data"]
 dependencies = [
     "websocket-client>=1.8.0",
     "matplotlib>=3.10.3",
@@ -27,14 +32,18 @@ metaexpert = "metaexpert.__main__:main"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.16.1",
+    "mypy>=1.18.2",
     "python-dotenv>=1.1.1",
     "types-defusedxml>=0.7.0.20250516",
     "types-requests>=2.32.4",
     "pyleak>=0.1.11",
     "pandas-stubs>=2.2.3.250527",
 ]
-test = ["pytest>=8.3.4"]
+test = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=7.0.0",
+]
 lint = ["ruff>=0.11.4"]
 docs = []
 
@@ -54,7 +63,6 @@ default-groups = ["dev", "test", "lint", "docs"]
 
 [tool.uv.workspace]
 members = [
-    #".",
     "packages/app",
     "examples/expert_binance_ema",
     "examples/expert_bybit_rsi",
@@ -85,7 +93,3 @@ known-first-party = ["metaexpert"]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
-
-#[build-system]
-#requires = ["hatchling"]
-#build-backend = "hatchling.build"
