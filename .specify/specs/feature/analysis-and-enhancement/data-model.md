@@ -1,4 +1,4 @@
-# Data Model: MetaExpert Library Template Enhancement
+# Updated Data Model: MetaExpert Library Template Enhancement
 
 ## Entities
 
@@ -23,6 +23,8 @@ Represents a configuration parameter in the template.
 - default_value: string - Default value of the parameter
 - category: string - Category/group the parameter belongs to
 - required: boolean - Whether the parameter is required
+- env_var_name: string - Corresponding environment variable name
+- cli_arg_name: string - Corresponding command-line argument name
 
 **Relationships:**
 - Belongs to TemplateFile (one-to-many)
@@ -46,6 +48,31 @@ Represents a supported exchange.
 - name: string - Name of the exchange
 - supported_features: list - List of features supported by the exchange
 - api_documentation_url: string - URL to the exchange's API documentation
+- requires_passphrase: boolean - Whether the exchange requires an API passphrase
 
 **Relationships:**
 - Referenced in TemplateFile configuration
+
+### ConfigurationSource
+Represents a source of configuration values.
+
+**Attributes:**
+- type: string - Type of configuration source (environment, cli, file, default)
+- priority: int - Priority order for applying configuration values
+- description: string - Description of the configuration source
+
+**Relationships:**
+- Used by ConfigurationParameter (many-to-many)
+
+### StrategyParameter
+Represents a strategy-specific parameter in the template.
+
+**Attributes:**
+- name: string - Name of the parameter
+- description: string - Description of what the parameter does
+- default_value: string - Default value of the parameter
+- category: string - Category/group the parameter belongs to
+- required: boolean - Whether the parameter is required
+
+**Relationships:**
+- Belongs to TemplateFile (one-to-many)

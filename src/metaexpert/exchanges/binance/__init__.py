@@ -73,15 +73,15 @@ class Adapter(Exchange):
         except Exception as e:
             raise RuntimeError(f"Failed to get Binance account info: {e}") from e
 
-    def get_balance(self) -> dict:
+    def get_balance(self) -> dict | float:
         """Retrieves the account balance from Binance."""
         account_info = self.get_account()
-        balances = {
+        balance = {
             item['asset']: item['free']
             for item in account_info.get('balances', [])
             if float(item['free']) > 0
         }
-        return balances
+        return balance
 
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:
         """Constructs the WebSocket URL for a given symbol and timeframe."""

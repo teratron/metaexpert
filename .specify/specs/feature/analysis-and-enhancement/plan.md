@@ -1,7 +1,6 @@
+# Updated Implementation Plan: MetaExpert Library Template Enhancement
 
-# Implementation Plan: MetaExpert Library Template Enhancement
-
-**Branch**: `feature/analysis-and-enhancement` | **Date**: 2025-09-20 | **Spec**: [link](spec.md)
+**Branch**: `feature/analysis-and-enhancement` | **Date**: 2025-09-21 | **Spec**: [link](spec.md)
 **Input**: Feature specification from `/specs/feature/analysis-and-enhancement/spec.md`
 
 ## Execution Flow (/plan command scope)
@@ -31,18 +30,18 @@
 - Phase 3-4: Implementation execution (manual or via tools)
 
 ## Summary
-This feature focuses on ensuring the template.py file serves as a robust starting point for developers creating trading strategies with the MetaExpert library. The template must preserve all core functionality while allowing for strategy-specific customization.
+This feature focuses on ensuring the template.py file serves as a robust starting point for developers creating trading strategies with the MetaExpert library. The template must preserve all core functionality while allowing for strategy-specific customization. Additionally, the configuration system has been enhanced to provide better alignment between environment variables, command-line arguments, and template parameters.
 
 ## Technical Context
 **Language/Version**: Python 3.12  
-**Primary Dependencies**: MetaExpert library, supported exchange APIs  
+**Primary Dependencies**: MetaExpert library, supported exchange APIs, python-dotenv  
 **Storage**: N/A  
 **Testing**: pytest  
 **Target Platform**: Cross-platform (Windows, Linux, macOS)  
 **Project Type**: single (library-based)  
 **Performance Goals**: N/A  
 **Constraints**: Template file structure must remain consistent with MetaExpert library requirements. For all tasks related to the MetaExpert project, use only the UV package manager (no pip, requirements.txt, setup.py, or similar). Always activate the virtual environment using .venv/Scripts/activate before executing any UV commands.  
-**Scale/Scope**: Single template file for all user projects
+**Scale/Scope**: Single template file for all user projects with enhanced configuration system
 
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
@@ -65,6 +64,8 @@ specs/feature/analysis-and-enhancement/
 ├── research.md          # Phase 0 output (/plan command)
 ├── data-model.md        # Phase 1 output (/plan command)
 ├── quickstart.md        # Phase 1 output (/plan command)
+├── config-research.md   # Research on configuration system enhancement
+├── enhanced-config-design.md # Design for enhanced configuration system
 ├── contracts/           # Phase 1 output (/plan command)
 └── tasks.md             # Phase 2 output (/tasks command - NOT created by /plan)
 ```
@@ -77,6 +78,11 @@ src/
 ├── services/
 ├── cli/
 └── lib/
+    └── metaexpert/
+        ├── config.py
+        ├── _argument.py
+        ├── template_creator.py
+        └── template.py
 
 tests/
 ├── contract/
@@ -105,7 +111,12 @@ tests/
    - Rationale: [why chosen]
    - Alternatives considered: [what else evaluated]
 
-**Output**: research.md with all NEEDS CLARIFICATION resolved
+4. **Additional Research Tasks**:
+   - Task: "Research best practices for environment variable management in Python CLI applications"
+   - Task: "Research patterns for aligning configuration systems with template parameters"
+   - Task: "Research best practices for command-line argument parsing with complex nested options"
+
+**Output**: research.md, config-research.md with all NEEDS CLARIFICATION resolved
 
 ## Phase 1: Design & Contracts
 *Prerequisites: research.md complete*
@@ -137,7 +148,13 @@ tests/
    - Keep under 150 lines for token efficiency
    - Output to repository root
 
-**Output**: data-model.md, /contracts/*, failing tests, quickstart.md, agent-specific file
+6. **Enhanced Configuration System Design**:
+   - Create comprehensive environment variable system supporting all exchanges
+   - Align config.py with template.py parameters
+   - Enhance command-line interface with all template parameters
+   - Improve template creator with configuration support
+
+**Output**: data-model.md, /contracts/*, failing tests, quickstart.md, agent-specific file, enhanced-config-design.md
 
 ## Phase 2: Task Planning Approach
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
@@ -155,7 +172,7 @@ tests/
 - Dependency order: Models before services before UI
 - Mark [P] for parallel execution (independent files)
 
-**Estimated Output**: 25-30 numbered, ordered tasks in tasks.md
+**Estimated Output**: 25-35 numbered, ordered tasks in tasks.md
 
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 
@@ -171,9 +188,7 @@ tests/
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
-
+| Enhanced configuration system | Provides better user experience and alignment with template | Separate configuration systems would increase maintenance overhead and user confusion |
 
 ## Progress Tracking
 *This checklist is updated during execution flow*
@@ -182,7 +197,7 @@ tests/
 - [x] Phase 0: Research complete (/plan command)
 - [x] Phase 1: Design complete (/plan command)
 - [x] Phase 2: Task planning complete (/plan command - describe approach only)
-- [x] Phase 3: Tasks generated (/tasks command)
+- [ ] Phase 3: Tasks generated (/tasks command)
 - [ ] Phase 4: Implementation complete
 - [ ] Phase 5: Validation passed
 
