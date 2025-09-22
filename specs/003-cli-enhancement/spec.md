@@ -1,6 +1,6 @@
 # Feature Specification: MetaExpert CLI System Enhancement
 
-**Feature Branch**: `feature/cli-enhancement`  
+**Feature Branch**: `003-cli-enhancement`  
 **Created**: 2025-09-20  
 **Status**: Draft  
 **Input**: User description: "Review the existing command-line interface system in src/metaexpert/_argument.py within the MetaExpert project, then fix, improve, optimize, and refactor it, and alignment with the template.py structure, while optimizing performance and maintainability."

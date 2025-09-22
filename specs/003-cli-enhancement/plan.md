@@ -1,8 +1,8 @@
 
 # Implementation Plan: MetaExpert CLI System Enhancement
 
-**Branch**: `feature/cli-enhancement` | **Date**: 2025-09-20 | **Spec**: [link](spec.md)
-**Input**: Feature specification from `/specs/feature/cli-enhancement/spec.md`
+**Branch**: `003-cli-enhancement` | **Date**: 2025-09-20 | **Spec**: [link](spec.md)
+**Input**: Feature specification from `/specs/003-cli-enhancement/spec.md`
 
 ## Execution Flow (/plan command scope)
 ```
@@ -60,7 +60,7 @@ Based on the MetaExpert Constitution v1.1.0, the following gates must be checked
 
 ### Documentation (this feature)
 ```
-specs/feature/cli-enhancement/
+specs/003-cli-enhancement/
 ├── plan.md              # This file (/plan command output)
 ├── research.md          # Phase 0 output (/plan command)
 ├── data-model.md        # Phase 1 output (/plan command)

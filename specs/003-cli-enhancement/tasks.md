@@ -1,6 +1,6 @@
 # Tasks: MetaExpert CLI System Enhancement
 
-**Input**: Design documents from `/specs/feature/cli-enhancement/`
+**Input**: Design documents from `/specs/003-cli-enhancement/`
 **Prerequisites**: plan.md (required), research.md, data-model.md, contracts/
 
 ## Execution Flow (main)
