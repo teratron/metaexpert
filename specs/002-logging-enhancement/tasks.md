@@ -1,6 +1,6 @@
 # Tasks: MetaExpert Logging System Enhancement
 
-**Input**: Design documents from `/specs/feature/logging-enhancement/`
+**Input**: Design documents from `/specs/002-logging-enhancement/`
 **Prerequisites**: plan.md (required), research.md, data-model.md, contracts/
 
 ## Execution Flow (main)
