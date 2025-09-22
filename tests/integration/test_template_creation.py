@@ -1,29 +1,63 @@
-# Template Creation Integration Test
+"""Integration test for template creation functionality."""
 
 import pytest
 import os
 import tempfile
-from src.metaexpert.template import expert
+from unittest.mock import patch, mock_open
 
-# Test that the template.py file is correctly copied when creating a new strategy
-def test_template_copy_on_new():
-    # Given a request to create a new trading strategy
+
+def test_template_creation_new_command():
+    """Test that the 'metaexpert new' command creates a new strategy template.
+    
+    Given a request to create a new trading strategy
+    When the metaexpert new command is executed
+    Then a new directory with template.py should be created
+    """
+    # Given
     with tempfile.TemporaryDirectory() as temp_dir:
         strategy_name = "test_strategy"
         output_path = os.path.join(temp_dir, strategy_name)
         
-        # When the metaexpert new command is executed
-        # (This would normally be tested by actually running the command)
+        # When
+        # This test should fail initially as the implementation doesn't exist yet
         
-        # Then the template.py file should be copied to the output directory
-        # and contain all the expected configuration options and event handlers
+        # Then
         assert False, "Not implemented"
 
-# Test that the copied template file maintains the correct structure
-def test_template_structure_preservation():
-    # Given a copied template file
+
+def test_template_creation_with_parameters():
+    """Test that the 'metaexpert new' command accepts and applies parameters.
     
-    # When the file is examined
+    Given a request to create a new trading strategy with parameters
+    When the metaexpert new command is executed
+    Then the template should be customized with the provided parameters
+    """
+    # Given
+    with tempfile.TemporaryDirectory() as temp_dir:
+        strategy_name = "test_strategy"
+        output_path = os.path.join(temp_dir, strategy_name)
+        
+        # When
+        # This test should fail initially as the implementation doesn't exist yet
+        
+        # Then
+        assert False, "Not implemented"
+
+
+def test_template_creation_directory_structure():
+    """Test that the created template has the correct directory structure.
     
-    # Then it should maintain the same structure as the original template
-    assert False, "Not implemented"
+    Given a request to create a new trading strategy
+    When the metaexpert new command is executed
+    Then the output directory should have the correct structure
+    """
+    # Given
+    with tempfile.TemporaryDirectory() as temp_dir:
+        strategy_name = "test_strategy"
+        output_path = os.path.join(temp_dir, strategy_name)
+        
+        # When
+        # This test should fail initially as the implementation doesn't exist yet
+        
+        # Then
+        assert False, "Not implemented"

@@ -1,6 +1,7 @@
 """Configuration file for Expert Trading Bot"""
 
 import os
+from typing import Any
 
 from dotenv import load_dotenv  # type: ignore
 
@@ -22,6 +23,27 @@ LOG_BACKUP_COUNT = int(str(os.getenv("LOG_BACKUP_COUNT", 5)))  # Number of backu
 API_KEY = os.getenv("API_KEY", "")  # Default API key for authentication
 API_SECRET = os.getenv("API_SECRET", "")  # Default API secret for authentication
 BASE_URL = os.getenv("BASE_URL", "")  # Default base URL for exchange API
+
+# Exchange-specific API configuration
+BINANCE_API_KEY = os.getenv("BINANCE_API_KEY", "")
+BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET", "")
+BINANCE_API_PASSPHRASE = os.getenv("BINANCE_API_PASSPHRASE", "")
+
+BYBIT_API_KEY = os.getenv("BYBIT_API_KEY", "")
+BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET", "")
+BYBIT_API_PASSPHRASE = os.getenv("BYBIT_API_PASSPHRASE", "")
+
+OKX_API_KEY = os.getenv("OKX_API_KEY", "")
+OKX_API_SECRET = os.getenv("OKX_API_SECRET", "")
+OKX_API_PASSPHRASE = os.getenv("OKX_API_PASSPHRASE", "")
+
+BITGET_API_KEY = os.getenv("BITGET_API_KEY", "")
+BITGET_API_SECRET = os.getenv("BITGET_API_SECRET", "")
+BITGET_API_PASSPHRASE = os.getenv("BITGET_API_PASSPHRASE", "")
+
+KUCOIN_API_KEY = os.getenv("KUCOIN_API_KEY", "")
+KUCOIN_API_SECRET = os.getenv("KUCOIN_API_SECRET", "")
+KUCOIN_API_PASSPHRASE = os.getenv("KUCOIN_API_PASSPHRASE", "")
 
 # Trading parameters
 TRADING_PAIRS = ["BTCUSDT", "ETHUSDT"]  # Trading pairs to monitor
@@ -83,7 +105,10 @@ DEFAULT_CONTRACT_TYPE = CONTRACT_TYPE_USD_M
 # Available Exchanges
 EXCHANGE_BINANCE = "binance"
 EXCHANGE_BYBIT = "bybit"
-AVAILABLE_EXCHANGES = [EXCHANGE_BINANCE, EXCHANGE_BYBIT]
+EXCHANGE_OKX = "okx"
+EXCHANGE_BITGET = "bitget"
+EXCHANGE_KUCOIN = "kucoin"
+AVAILABLE_EXCHANGES = [EXCHANGE_BINANCE, EXCHANGE_BYBIT, EXCHANGE_OKX, EXCHANGE_BITGET, EXCHANGE_KUCOIN]
 
 # Default exchange
 DEFAULT_EXCHANGE = EXCHANGE_BINANCE
@@ -91,3 +116,59 @@ DEFAULT_EXCHANGE = EXCHANGE_BINANCE
 # Trading strategy parameters
 ALLOW_LONG_BUYING = True
 ALLOW_SHORT_SELLING = True
+
+
+def get_config_value(parameter_name: str, default_value: Any = None) -> Any:
+    """Get a configuration value with proper priority handling.
+    
+    Args:
+        parameter_name: Name of the parameter to get
+        default_value: Default value if not found
+        
+    Returns:
+        Configuration value
+    """
+    # This function would implement the priority logic:
+    # 1. CLI arguments (highest priority)
+    # 2. Environment variables (medium priority)
+    # 3. Default values (lowest priority)
+    
+    # For now, we'll just check environment variables
+    env_var_name = _get_env_var_name(parameter_name)
+    if env_var_name and env_var_name in os.environ:
+        return os.environ[env_var_name]
+    
+    return default_value
+
+
+def _get_env_var_name(parameter_name: str) -> str:
+    """Get the environment variable name for a parameter.
+    
+    Args:
+        parameter_name: Name of the parameter
+        
+    Returns:
+        Environment variable name
+    """
+    # Mapping of parameter names to environment variable names
+    env_var_mapping = {
+        "exchange": "DEFAULT_EXCHANGE",
+        "symbol": "DEFAULT_SYMBOL",
+        "timeframe": "DEFAULT_TIMEFRAME",
+        "api_key": "API_KEY",
+        "api_secret": "API_SECRET",
+        "binance_api_key": "BINANCE_API_KEY",
+        "binance_api_secret": "BINANCE_API_SECRET",
+        "bybit_api_key": "BYBIT_API_KEY",
+        "bybit_api_secret": "BYBIT_API_SECRET",
+        "okx_api_key": "OKX_API_KEY",
+        "okx_api_secret": "OKX_API_SECRET",
+        "okx_api_passphrase": "OKX_API_PASSPHRASE",
+        "bitget_api_key": "BITGET_API_KEY",
+        "bitget_api_secret": "BITGET_API_SECRET",
+        "kucoin_api_key": "KUCOIN_API_KEY",
+        "kucoin_api_secret": "KUCOIN_API_SECRET",
+        "kucoin_api_passphrase": "KUCOIN_API_PASSPHRASE",
+    }
+    
+    return env_var_mapping.get(parameter_name, parameter_name.upper())

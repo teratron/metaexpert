@@ -78,12 +78,28 @@ src = [
     "examples",
     "tests",
 ]
-exclude = [".git", ".venv", "__pycache__", "template.py"]
-select = ["E", "F", "W", "I", "UP", "N", "B", "C4", "RUF"]
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "template.py",
+]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "C",      # flake8-comprehensions
+    "B",      # flake8-bugbear
+    "N",      # flake8-noqa
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "RUF",    # Ruff-specific rules
+]
 ignore = [
-    "E501",  # line too long
-    "B008",  # do not perform function call in argument default value
-    "RUF012" # use dataclass when appropriate
+    "E501",   # Line too long (handled by formatter)
+    "B008",   # Do not perform function calls in argument defaults
+    "RUF012"  # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 
 [tool.ruff.isort]
@@ -93,3 +109,21 @@ known-first-party = ["metaexpert"]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
+
+[tool.mypy]
+python_version = 3.12
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_optional = true
+strict_equality = true
+implicit_reexport = false
+show_error_codes = true
+show_column_numbers = true
