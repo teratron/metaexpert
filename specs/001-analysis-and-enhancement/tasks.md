@@ -49,45 +49,76 @@
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 In accordance with the Test-First Development principle (NON-NEGOTIABLE) from the MetaExpert Constitution:
 - [ ] T004 [P] Contract test POST /template/create in tests/contract/test_template_creation.py
-- [ ] T005 [P] Contract test template validation in tests/contract/test_template_validation.py
-- [ ] T006 [P] Integration test template creation in tests/integration/test_template_creation.py
-- [ ] T007 [P] Integration test template customization in tests/integration/test_template_customization.py
+- [ ] T005 [P] Contract test GET /template/exchanges in tests/contract/test_template_exchanges.py
+- [ ] T006 [P] Contract test GET /template/parameters in tests/contract/test_template_parameters.py
+- [ ] T007 [P] Contract test GET /config/parameters in tests/contract/test_config_parameters.py
+- [ ] T008 [P] Contract test POST /config/validate in tests/contract/test_config_validation.py
+- [ ] T009 [P] Integration test template creation in tests/integration/test_template_creation.py
+- [ ] T010 [P] Integration test template customization in tests/integration/test_template_customization.py
+- [ ] T011 [P] Integration test configuration management in tests/integration/test_config_management.py
+- [ ] T012 [P] Integration test environment variable handling in tests/integration/test_env_var_handling.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T008 [P] Template creation service in src/services/template_service.py
-- [ ] T009 [P] CLI command for template creation in src/cli/template_commands.py
-- [ ] T010 [P] Template validation service in src/services/template_validation_service.py
-- [ ] T011 Template file copying functionality
-- [ ] T012 Template parameter configuration
-- [ ] T013 Template structure validation
-- [ ] T014 Error handling and logging
+- [ ] T013 [P] TemplateFile model in src/models/template_file.py
+- [ ] T014 [P] ConfigurationParameter model in src/models/configuration_parameter.py
+- [ ] T015 [P] EventHandler model in src/models/event_handler.py
+- [ ] T016 [P] Exchange model in src/models/exchange.py
+- [ ] T017 [P] ConfigurationSource model in src/models/configuration_source.py
+- [ ] T018 [P] StrategyParameter model in src/models/strategy_parameter.py
+- [ ] T019 [P] Template creation service in src/services/template_service.py
+- [ ] T020 [P] Configuration management service in src/services/config_service.py
+- [ ] T021 [P] CLI command for template creation in src/cli/template_commands.py
+- [ ] T022 Template file copying functionality
+- [ ] T023 Template parameter configuration
+- [ ] T024 Template structure validation
+- [ ] T025 Configuration parameter alignment
+- [ ] T026 Error handling and logging
 
 ## Phase 3.4: Integration
-- [ ] T015 Connect template service to CLI
-- [ ] T016 Template file validation middleware
-- [ ] T017 Request/response logging
-- [ ] T018 Template version management
+- [ ] T027 Connect template service to CLI
+- [ ] T028 Template file validation middleware
+- [ ] T029 Request/response logging
+- [ ] T030 Template version management
+- [ ] T031 Configuration source priority handling
+- [ ] T032 Exchange API integration
 
 ## Phase 3.5: Polish
-- [ ] T019 [P] Unit tests for template validation in tests/unit/test_template_validation.py
-- [ ] T020 Performance tests (<200ms)
-- [ ] T021 [P] Update docs/template.md
-- [ ] T022 Remove duplication
-- [ ] T023 Run manual-testing.md
+- [ ] T033 [P] Unit tests for template validation in tests/unit/test_template_validation.py
+- [ ] T034 [P] Unit tests for configuration validation in tests/unit/test_config_validation.py
+- [ ] T035 Performance tests (<200ms)
+- [ ] T036 [P] Update docs/template.md
+- [ ] T037 [P] Update docs/configuration.md
+- [ ] T038 Remove duplication
+- [ ] T039 Run manual-testing.md
 
 ## Dependencies
-- Tests (T004-T007) before implementation (T008-T014)
-- T008 blocks T009, T015
-- T016 blocks T018
-- Implementation before polish (T019-T023)
+- Tests (T004-T012) before implementation (T013-T026)
+- T013-T018 blocks T019-T020
+- T019-T020 blocks T021-T027
+- Implementation before polish (T033-T039)
 
 ## Parallel Example
 ```
-# Launch T004-T007 together:
+# Launch T004-T008 together:
 Task: "Contract test POST /template/create in tests/contract/test_template_creation.py"
-Task: "Contract test template validation in tests/contract/test_template_validation.py"
+Task: "Contract test GET /template/exchanges in tests/contract/test_template_exchanges.py"
+Task: "Contract test GET /template/parameters in tests/contract/test_template_parameters.py"
+Task: "Contract test GET /config/parameters in tests/contract/test_config_parameters.py"
+Task: "Contract test POST /config/validate in tests/contract/test_config_validation.py"
+
+# Launch T009-T012 together:
 Task: "Integration test template creation in tests/integration/test_template_creation.py"
 Task: "Integration test template customization in tests/integration/test_template_customization.py"
+Task: "Integration test configuration management in tests/integration/test_config_management.py"
+Task: "Integration test environment variable handling in tests/integration/test_env_var_handling.py"
+
+# Launch T013-T018 together:
+Task: "TemplateFile model in src/models/template_file.py"
+Task: "ConfigurationParameter model in src/models/configuration_parameter.py"
+Task: "EventHandler model in src/models/event_handler.py"
+Task: "Exchange model in src/models/exchange.py"
+Task: "ConfigurationSource model in src/models/configuration_source.py"
+Task: "StrategyParameter model in src/models/strategy_parameter.py"
 ```
 
 ## Notes
@@ -118,9 +149,9 @@ Task: "Integration test template customization in tests/integration/test_templat
 ## Validation Checklist
 *GATE: Checked by main() before returning*
 
-In accordance with the MetaExpert Constitution v1.0.0:
+In accordance with the MetaExpert Constitution v1.1.0:
 - [x] All contracts have corresponding tests (Integration Testing Coverage principle)
-- [ ] All entities have model tasks (Library-First Development principle)
+- [x] All entities have model tasks (Library-First Development principle)
 - [x] All tests come before implementation (Test-First Development principle)
 - [x] Parallel tasks truly independent (Library-First Development principle)
 - [x] Each task specifies exact file path

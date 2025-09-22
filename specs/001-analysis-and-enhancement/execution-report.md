@@ -52,7 +52,7 @@ The implementation fully complies with the MetaExpert Constitution v1.1.0:
 - **CLI Interface Standard**: Functionality is exposed via Command Line Interface with text-based protocols
 - **Test-First Development**: Implementation follows Test-Driven Development principles
 - **Integration Testing Coverage**: Contracts and integration points are properly tested
-- **Observability & Versioning**: Structured logging and proper versioning are maintained
+- **Observability & Versioning**: Structured logging is required, and versioning follows MAJOR.MINOR.BUILD format
 - **Package Management**: Only the UV package manager is used for dependency management
 
 ## Files Modified
