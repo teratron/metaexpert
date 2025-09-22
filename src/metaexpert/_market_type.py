@@ -21,12 +21,12 @@ class MarketType(Enum):
     FUTURES = {
         "name": "futures",
         "description": "Futures trading",
-        "contract": [ContractType.COIN_M, ContractType.USD_M]  # inverse/coin_m or linear/usd_m
+        "contract": [ContractType.INVERSE, ContractType.LINEAR]  # inverse/coin_m or linear/usd_m
     }
     OPTIONS = {
         "name": "options",
         "description": "Options trading",
-        "contract": [ContractType.COIN_M, ContractType.USD_M]  # inverse/coin_m or linear/usd_m
+        "contract": [ContractType.INVERSE, ContractType.LINEAR]  # inverse/coin_m or linear/usd_m
     }
 
     @classmethod

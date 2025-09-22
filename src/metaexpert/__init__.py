@@ -3,6 +3,19 @@
 This module provides a framework for creating and managing expert trading systems
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
+
+The system supports multiple trading modes and configurations:
+- Market types: spot, futures, options
+- Contract types: linear (USD-M) or inverse (COIN-M) for futures
+- Margin modes: isolated or cross margin
+- Position modes: hedge (two-way) or oneway (one-way)
+- Position sizing: fixed base, fixed quote, percent equity, or risk-based
+
+Enums:
+- SizeType: Position sizing methods
+- ContractType: Contract types for futures trading
+- MarginMode: Margin modes for futures trading
+- PositionMode: Position modes for futures trading
 """
 from datetime import datetime
 from pathlib import Path
@@ -68,14 +81,28 @@ class MetaExpert(Service):
             exchange (str | None): Stock exchange to use (e.g., Binance, Bybit).
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
+            api_passphrase (str | None): API passphrase (required for some exchanges).
+            subaccount (str | None): Subaccount name (for exchanges that support it).
             base_url (str | None): Base URL for the exchange API.
-            market_type (str | None): Type of financial instruments (e.g., spot, futures).
-            contract_type (str | None): Type of contract (e.g., coin_m, usdt_m).
+            testnet (bool): Whether to use testnet.
+            proxy (dict[str, str] | None): Proxy settings.
+            market_type (str | None): Type of financial instruments (e.g., spot, futures, options).
+            contract_type (str | None): Type of contract for futures (e.g., linear, inverse).
+            margin_mode (str | None): Margin mode for futures (e.g., isolated, cross).
+            position_mode (str | None): Position mode for futures (e.g., hedge, oneway).
+            log_level (str): Logging level.
+            log_file (str): Main log file.
+            trade_log_file (str): Trade execution log file.
+            error_log_file (str): Error-specific log file.
+            log_to_console (bool): Whether to print logs to console.
+            rate_limit (int): Max requests per minute.
+            enable_metrics (bool): Enable performance metrics.
+            persist_state (bool): Persist state between runs.
+            state_file (str): State persistence file.
         """
 
         # Parse command line arguments
         self.args: Namespace = parse_arguments()
-        self.trade_mode: TradeMode = TradeMode.PAPER or self.args.trade_mode
         self._running: bool = False
 
         # Initialize stock exchange
@@ -104,13 +131,16 @@ class MetaExpert(Service):
 
     def run(
             self,
-            mode: str = "paper",
+            trade_mode: str = "paper",
             backtest_start: str | datetime = datetime.now().replace(year=datetime.now().year - 1).strftime("%Y-%m-%d"),
             backtest_end: str | datetime = datetime.now().strftime("%Y-%m-%d"),
             initial_capital: float = 10000,
     ) -> None:
         """Run the expert trading system."""
-        self.trade_mode = TradeMode.get_mode_from(mode or self.args.trade_mode)
+        self.trade_mode: TradeMode = TradeMode.get_mode_from(trade_mode or self.args.trade_mode)
+        self.backtest_start: str | datetime = backtest_start
+        self.backtest_end: str | datetime = backtest_end
+        self.initial_capital: float = initial_capital
         self._running = True
 
         logger.info("Starting trading bot in %s mode", self.trade_mode)

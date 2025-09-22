@@ -3,20 +3,38 @@ from typing import Self
 
 
 class ContractType(Enum):
-    """Enum for contract types."""
+    """Contract type enumeration for futures trading.
 
-    COIN_M = {
-        "name": "coin_m"
+    Supported contract types:
+    - INVERSE: Inverse contracts (COIN-M)
+    - LINEAR: Linear contracts (USD-M)
+    """
+
+    INVERSE = {
+        "name": "inverse",
+        "alias": "coin_m",
+        "description": "Inverse contracts (COIN-M)"
     }
-    USD_M = {
-        "name": "usd_m"
+    LINEAR = {
+        "name": "linear",
+        "alias": "usd_m",
+        "description": "Linear contracts (USD-M)"
     }
 
     @classmethod
     def get_contract_type_from(cls, name: str) -> Self | None:
-        """Get the contract_type type from a string."""
+        """Get the contract type from a string."""
+        # Normalize the name for comparison
+        normalized_name = name.lower()
+
+        # Handle aliases for backward compatibility
+        if normalized_name == "coin_m":
+            normalized_name = "inverse"
+        elif normalized_name == "usd_m":
+            normalized_name = "linear"
+
         for item in cls:
-            if item.value.get("name") == name.lower():
+            if item.value.get("name") == normalized_name:
                 return item
 
         return None
