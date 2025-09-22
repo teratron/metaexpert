@@ -1,13 +1,7 @@
 from enum import Enum
-from typing import Self, TypedDict
+from typing import Self
 
 from metaexpert._contract_type import ContractType
-
-
-class MarketTypeDict(TypedDict):
-    name: str
-    description: str
-    contract: list[ContractType]
 
 
 class MarketType(Enum):

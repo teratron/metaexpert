@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from metaexpert._size_type import SizeType
 from metaexpert._timeframe import Timeframe
 
 
@@ -21,7 +22,7 @@ class Expert:
     leverage: int
     max_drawdown_pct: float
     daily_loss_limit: float
-    size_type: str
+    size_type: SizeType
     size_value: float
     max_position_size_quote: float
 

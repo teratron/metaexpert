@@ -4,6 +4,7 @@ from typing import Any
 from metaexpert import Process
 from metaexpert._bar import Bar
 from metaexpert._expert import Expert
+from metaexpert._size_type import SizeType
 from metaexpert._timeframe import Timeframe
 from metaexpert._timer import Timer
 from metaexpert.config import APP_NAME
@@ -108,7 +109,7 @@ class Service(Expert):
             leverage=leverage,
             max_drawdown_pct=max_drawdown_pct,
             daily_loss_limit=daily_loss_limit,
-            size_type=size_type,
+            size_type=SizeType.get_size_type_from(size_type),
             size_value=size_value,
             max_position_size_quote=max_position_size_quote,
             stop_loss_pct=stop_loss_pct,
