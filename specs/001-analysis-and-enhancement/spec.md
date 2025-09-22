@@ -1,6 +1,6 @@
 # Feature Specification: MetaExpert Library Template Enhancement
 
-**Feature Branch**: `feature/analysis-and-enhancement`  
+**Feature Branch**: `001-analysis-and-enhancement`  
 **Created**: 2025-09-20  
 **Status**: Draft  
 **Input**: User description: "The template.py file is the primary (reference) template for the MetaExpert library, copied into a user's project when the metaexpert new or metaexpert --new command is executed. This file must not be modified without explicit approval from the library owner. For every new task, the AI agent must verify that its actions and outputs do not conflict with the structure, parameters, or functionality defined in template.py."

@@ -1,6 +1,6 @@
 # Tasks: MetaExpert Library Template Enhancement
 
-**Input**: Design documents from `/specs/feature/analysis-and-enhancement/`
+**Input**: Design documents from `/specs/001-analysis-and-enhancement/`
 **Prerequisites**: plan.md (required), research.md, data-model.md, contracts/
 
 ## Execution Flow (main)

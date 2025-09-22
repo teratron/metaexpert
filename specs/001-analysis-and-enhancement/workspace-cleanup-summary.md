@@ -2,14 +2,14 @@
 
 ## Issue Identified
 There were two directories with similar content causing confusion:
-1. `.specify/specs/feature/analysis-and-enhancement/` - The correct, git-tracked directory
+1. `specs/001-analysis-and-enhancement/` - The correct, git-tracked directory
 2. `specs/` - An untracked duplicate directory
 
 ## Action Taken
 Removed the duplicate `specs/` directory to maintain a clean workspace and avoid confusion.
 
 ## Current State
-- Working directory: `.specify/specs/feature/analysis-and-enhancement/`
+- Working directory: `specs/001-analysis-and-enhancement/`
 - Branch: `001-analysis-and-enhancement`
 - Modified files: 5 files with ongoing changes
 - New files: 4 untracked files with new content
