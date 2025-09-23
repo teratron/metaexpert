@@ -27,8 +27,9 @@ from metaexpert._service import Service
 from metaexpert._trade_mode import TradeMode
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import Logger, setup_logger
+from metaexpert.logger import Logger, configure_logging, get_logger, setup_logger
 
+# Set up the main logger for the MetaExpert system
 logger: Logger = setup_logger(APP_NAME)
 
 
@@ -68,6 +69,8 @@ class MetaExpert(Service):
         trade_log_file: str = "trades.log",
         error_log_file: str = "errors.log",
         log_to_console: bool = True,
+        structured_logging: bool = False,
+        async_logging: bool = False,
 
         # Advanced System Settings
         rate_limit: int = 1200,
@@ -95,6 +98,8 @@ class MetaExpert(Service):
             trade_log_file (str): Trade execution log file.
             error_log_file (str): Error-specific log file.
             log_to_console (bool): Whether to print logs to console.
+            structured_logging (bool): Whether to use structured JSON logging.
+            async_logging (bool): Whether to use asynchronous logging.
             rate_limit (int): Max requests per minute.
             enable_metrics (bool): Enable performance metrics.
             persist_state (bool): Persist state between runs.
@@ -115,13 +120,92 @@ class MetaExpert(Service):
             contract_type=contract_type or self.args.contract_type
         )
 
-        #super().__init__()
+        # Setup enhanced logger with new features
+        self._setup_enhanced_logging(
+            log_level=log_level,
+            log_file=log_file,
+            trade_log_file=trade_log_file,
+            error_log_file=error_log_file,
+            log_to_console=log_to_console,
+            structured_logging=structured_logging,
+            async_logging=async_logging
+        )
 
-        # Setup logger
-        # self.logger: Logger = setup_logger(self.name, args.log_level)
+        # Log initialization
         logger.info("Starting expert on %s", self.args.exchange)
         logger.info("Market type: %s, Contract type: %s, Mode: %s", self.args.market_type, self.args.contract_type, self.args.trade_mode)
         logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
+
+    def _setup_enhanced_logging(
+        self,
+        log_level: str,
+        log_file: str,
+        trade_log_file: str,
+        error_log_file: str,
+        log_to_console: bool,
+        structured_logging: bool,
+        async_logging: bool
+    ) -> None:
+        """Set up enhanced logging with the new features.
+
+        Args:
+            log_level: Logging level
+            log_file: Main log file
+            trade_log_file: Trade execution log file
+            error_log_file: Error-specific log file
+            log_to_console: Whether to print logs to console
+            structured_logging: Whether to use structured JSON logging
+            async_logging: Whether to use asynchronous logging
+        """
+        try:
+            # Configure centralized logging system
+            config = {
+                "default_level": log_level,
+                "handlers": {
+                    "console": {
+                        "level": log_level,
+                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
+                        "structured": structured_logging
+                    },
+                    "file": {
+                        "level": log_level,
+                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
+                        "structured": structured_logging,
+                        "filename": log_file,
+                        "max_size": 10485760,  # 10MB
+                        "backup_count": 5
+                    },
+                    "trade_file": {
+                        "level": "INFO",
+                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
+                        "structured": structured_logging,
+                        "filename": trade_log_file,
+                        "max_size": 10485760,  # 10MB
+                        "backup_count": 5
+                    },
+                    "error_file": {
+                        "level": "ERROR",
+                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
+                        "structured": structured_logging,
+                        "filename": error_log_file,
+                        "max_size": 10485760,  # 10MB
+                        "backup_count": 5
+                    }
+                },
+                "structured_logging": structured_logging,
+                "async_logging": async_logging
+            }
+            
+            # Apply configuration
+            result = configure_logging(config)
+            if result["status"] == "error":
+                logger.warning("Failed to configure enhanced logging: %s", result["message"])
+            
+            # Note: We don't reassign the global logger here to avoid the syntax error
+            # The enhanced features are configured through the centralized configuration system
+            
+        except Exception as e:
+            logger.error("Failed to set up enhanced logging: %s", str(e))
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.strategy_name}"
