@@ -1,27 +1,14 @@
 """Error handling and logging module."""
 
 import json
-import logging
-import sys
 from functools import wraps
 from typing import Any
 
-# Set up logging
-logger = logging.getLogger("metaexpert")
-logger.setLevel(logging.INFO)
+from metaexpert.exceptions import ConfigurationError as MetaExpertConfigurationError
+from metaexpert.exceptions import ProcessError
 
-# Create console handler
-console_handler = logging.StreamHandler(sys.stdout)
-console_handler.setLevel(logging.INFO)
 
-# Create formatter
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-console_handler.setFormatter(formatter)
-
-# Add handler to logger
-logger.addHandler(console_handler)
-
-class TemplateCreationError(Exception):
+class TemplateCreationError(ProcessError):
     """Exception raised for errors in template creation."""
 
     def __init__(self, message: str, error_code: str | None = None) -> None:
@@ -33,9 +20,10 @@ class TemplateCreationError(Exception):
         """
         self.message = message
         self.error_code = error_code
-        super().__init__(self.message)
+        super().__init__("template_creator", message)
 
-class ConfigurationError(Exception):
+
+class ConfigurationError(MetaExpertConfigurationError):
     """Exception raised for configuration errors."""
 
     def __init__(self, message: str, parameter: str | None = None) -> None:
@@ -47,7 +35,7 @@ class ConfigurationError(Exception):
         """
         self.message = message
         self.parameter = parameter
-        super().__init__(self.message)
+        super().__init__("config", message)
 
 def handle_template_errors(func):
     """Decorator to handle template-related errors.

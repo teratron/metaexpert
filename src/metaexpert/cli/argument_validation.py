@@ -1,9 +1,10 @@
 """Argument validation utilities for CLI arguments."""
 
 import re
+from metaexpert.exceptions import ValidationError
 
 
-class ArgumentValidationError(Exception):
+class ArgumentValidationError(ValidationError):
     """Exception raised for argument validation errors."""
 
     pass
