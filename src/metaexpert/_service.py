@@ -138,7 +138,7 @@ class Service(Expert):
         return outer
 
     @staticmethod
-    def on_deinit(func: Callable[[str], None]) -> Callable:
+    def on_deinit(func: Callable[[str], None]) -> Callable[[str], None]:
         """Decorator for deinitialization event handling.
 
         Args:
@@ -167,15 +167,14 @@ class Service(Expert):
 
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
     @staticmethod
-    def on_tick(func: Callable) -> Callable:
+    def on_tick(func: Callable[[dict], None]) -> Callable[[dict], None]:
         def inner(rates: dict) -> None:
             func(rates)
 
         return inner
 
-    # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
     @staticmethod
-    def on_bar(timeframe: str = "1h") -> Callable[[Callable[[Any], Coroutine[Any, Any, None]]], Callable[[Any], Coroutine[Any, Any, None]]]:
+    def on_bar(timeframe: str = "1h") -> Callable[[Callable[[dict], None]], Callable[[dict], Coroutine[Any, Any, None]]]:
         """Decorator for bar event handling.
 
         Args:
@@ -184,7 +183,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles bar events.
         """
-        def outer(func: Callable[[Any], Coroutine[Any, Any, None]]) -> Callable[[Any], Coroutine[Any, Any, None]]:
+        def outer(func: Callable[[dict], None]) -> Callable[[dict], Coroutine[Any, Any, None]]:
             async def inner(rates: dict) -> None:
                 bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
                 Process.ON_BAR.push_instance(bar)
@@ -193,6 +192,7 @@ class Service(Expert):
             return inner
 
         return outer
+
 
     @staticmethod
     def on_timer(interval: int = 60) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
@@ -219,7 +219,7 @@ class Service(Expert):
         return outer
 
     @staticmethod
-    def on_order(func: Callable[[dict], None]) -> Callable:
+    def on_order(func: Callable[[dict], None]) -> Callable[[dict], None]:
         """Decorator for order event handling.
 
         Args:
@@ -234,7 +234,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_position(func: Callable[[dict], None]) -> Callable:
+    def on_position(func: Callable[[dict], None]) -> Callable[[dict], None]:
         """Decorator for position event handling.
 
         Args:
@@ -249,7 +249,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_transaction(func: Callable[[dict, dict], None]) -> Callable:
+    def on_transaction(func: Callable[[dict, dict], None]) -> Callable[[dict, dict], None]:
         """Decorator for transaction event handling.
 
         Args:
@@ -264,7 +264,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_book(func: Callable[[dict], None]) -> Callable:
+    def on_book(func: Callable[[dict], None]) -> Callable[[dict], None]:
         """Decorator for book event handling.
 
         Args:
@@ -279,7 +279,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_error(func: Callable[[Exception], None]) -> Callable:
+    def on_error(func: Callable[[Exception], None]) -> Callable[[Exception], None]:
         """Decorator for error event handling.
 
         Args:
@@ -294,7 +294,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_account(func: Callable[[dict], None]) -> Callable:
+    def on_account(func: Callable[[dict], None]) -> Callable[[dict], None]:
         """Decorator for account event handling.
 
         Args:
@@ -309,7 +309,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_backtest_init(func: Callable[[], None]) -> Callable:
+    def on_backtest_init(func: Callable[[], None]) -> Callable[[], None]:
         """Decorator for backtest initialization event handling.
 
         Args:
@@ -324,7 +324,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_backtest_deinit(func: Callable[[], None]) -> Callable:
+    def on_backtest_deinit(func: Callable[[], None]) -> Callable[[], None]:
         """Decorator for backtest deinitialization event handling.
 
         Args:
@@ -354,7 +354,7 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_backtest_pass(func: Callable[[], None]) -> Callable:
+    def on_backtest_pass(func: Callable[[], None]) -> Callable[[], None]:
         """Decorator for backtest per-pass event handling.
 
         Args:
