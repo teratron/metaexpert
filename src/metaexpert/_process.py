@@ -6,6 +6,7 @@ from threading import Thread
 from types import ModuleType
 from typing import Self
 
+from metaexpert._event_handler import EventHandler
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 from metaexpert.websocket._spot import WebSocketClient
@@ -207,7 +208,7 @@ class Process(Enum):
                 name, max_callbacks + 1
             )
 
-    def push_instance(self, instance: object) -> None:
+    def push_instance(self, instance: EventHandler) -> None:
         """Push an instance to the process.
 
         This method adds an instance to the process's list of instances.
@@ -220,7 +221,7 @@ class Process(Enum):
         self.value["instance"].append(instance)
         logger.debug("Instance added for '%s'", self.value.get("name"))
 
-    def pop_instance(self) -> object | None:
+    def pop_instance(self) -> EventHandler | None:
         """Pop an instance from the process.
 
         This method removes the last instance from the process's list of instances.

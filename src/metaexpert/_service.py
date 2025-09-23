@@ -155,15 +155,13 @@ class Service(Expert):
                 timer = Process.ON_TIMER.pop_instance()
                 if timer is not None:
                     logger.debug("Stopping timer...")
-                    if hasattr(timer, "stop") and callable(getattr(timer, "stop", None)):
-                        timer.stop()
+                    timer.stop()
 
             while Process.ON_BAR.check_instance():
                 bar = Process.ON_BAR.pop_instance()
                 if bar is not None:
                     logger.debug("Stopping bar...")
-                    if hasattr(bar, "stop") and callable(getattr(bar, "stop", None)):
-                        bar.stop()
+                    bar.stop()
 
         return inner
 
