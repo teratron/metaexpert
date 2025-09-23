@@ -1,5 +1,5 @@
 <!-- 
-Version Change: 1.0.0 → 1.1.0
+Version Change: 1.1.0 → 1.2.0
 Modified Principles: None
 Added Sections: None
 Removed Sections: None
@@ -26,6 +26,9 @@ Integration testing is required for: New library contract validation, Contract m
 ### V. Observability & Versioning
 Text-based I/O ensures debuggability. Structured logging is required for all components. Versioning follows the MAJOR.MINOR.BUILD format with semantic versioning principles.
 
+### VI. Unified Logging System
+All modules must integrate with the centralized logging system located at `src/metaexpert/logger`. Logging must be consistent across all components, utilizing structured logging formats where appropriate. All log messages must follow established severity levels (DEBUG, INFO, WARNING, ERROR, CRITICAL) and include contextual information to aid in debugging and monitoring.
+
 ## Additional Constraints
 The technology stack requires Python 3.12 or higher. All dependencies must be explicitly declared in the pyproject.toml file. Compliance with MIT licensing standards is mandatory. For all tasks related to the MetaExpert project, use only the UV package manager (no pip, requirements.txt, setup.py, or similar). Always activate the virtual environment using .venv/Scripts/activate before executing any UV commands.
 
@@ -35,4 +38,4 @@ All code changes must go through pull request review. Testing gates include unit
 ## Governance
 This constitution supersedes all other development practices. Amendments require documentation, stakeholder approval, and a migration plan. All pull requests and reviews must verify compliance with these principles. Complexity must be justified with clear rationale. Refer to project documentation for runtime development guidance.
 
-**Version**: 1.1.0 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-09-20
+**Version**: 1.2.0 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-09-23
