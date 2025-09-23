@@ -27,11 +27,15 @@ This command will create a new file `my_expert.py` in the `./experts` directory.
 The CLI arguments are now organized into logical groups for better navigation:
 
 #### Core Configuration
+
 Basic settings for the trading system:
+
 - `--log-level`: Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
 
 #### Trading Parameters
+
 Market and trading configuration:
+
 - `--exchange`: Select the exchange to trade on
 - `--trade-mode`: Set trading mode (backtest, paper, live)
 - `--market-type`: Set market type (spot, futures, options, margin)
@@ -40,27 +44,35 @@ Market and trading configuration:
 - `--timeframe`: Set the trading timeframe
 
 #### Risk Management
+
 Position sizing and risk controls:
+
 - `--size`: Set maximum position size
 - `--stop-loss`: Set stop loss percentage
 - `--take-profit`: Set take profit percentage
 - `--trailing-stop`: Set trailing stop percentage
 
 #### Backtesting
+
 Parameters for backtesting strategies:
+
 - `--start-date`: Set backtest start date
 - `--end-date`: Set backtest end date
 - `--balance`: Set initial balance for backtesting
 - `--output`: Set output file for backtest results
 
 #### Authentication
+
 API credentials and security settings:
+
 - `--api-key`: Set API key for exchange authentication
 - `--api-secret`: Set API secret for exchange authentication
 - `--base-url`: Set base URL for the exchange API
 
 #### Template Management
+
 Options for creating and managing expert templates:
+
 - `--new`: Create a new expert file from template
 
 ### Group-Specific Help
