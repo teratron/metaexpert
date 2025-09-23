@@ -1,35 +1,35 @@
 """Logger factory for creating and managing logger instances."""
 
 import logging
-from typing import Optional, Dict, Any
 from logging import Logger
+from typing import Any, Optional
 
-from .structured_log_formatter import StructuredLogFormatter, KeyValueLogFormatter
 from .async_log_handler import AsyncLogHandler, BufferedAsyncLogHandler
+from .structured_log_formatter import StructuredLogFormatter
 
 
 class LoggerFactory:
     """Factory for creating and managing logger instances with enhanced features."""
 
     # Singleton instance
-    _instance: Optional['LoggerFactory'] = None
+    _instance: Optional["LoggerFactory"] = None
 
     # Logger registry to ensure singleton pattern
-    _logger_registry: Dict[str, Logger] = {}
+    _logger_registry: dict[str, Logger] = {}
 
-    def __new__(cls) -> 'LoggerFactory':
+    def __new__(cls) -> "LoggerFactory":
         """Create or return singleton instance."""
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
     def get_logger(
-        self, 
-        name: str, 
-        level: Optional[str] = None,
+        self,
+        name: str,
+        level: str | None = None,
         structured: bool = False,
         async_enabled: bool = False,
-        buffered: bool = False
+        buffered: bool = False,
     ) -> Logger:
         """Get a logger instance with specified configuration.
 
@@ -49,24 +49,24 @@ class LoggerFactory:
 
         # Create new logger
         logger = logging.getLogger(name)
-        
+
         # Clear existing handlers to avoid duplicates
         logger.handlers.clear()
-        
+
         # Set logging level
         if level:
             logger.setLevel(getattr(logging, level))
         else:
             logger.setLevel(logging.INFO)
-            
+
         # Choose appropriate formatter
         if structured:
             formatter = StructuredLogFormatter()
         else:
             formatter = logging.Formatter(
-                '[%(asctime)s] %(levelname)s: %(name)s: %(message)s'
+                "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
             )
-            
+
         # Choose appropriate handler
         if async_enabled:
             if buffered:
@@ -75,35 +75,34 @@ class LoggerFactory:
                 handler = AsyncLogHandler()
         else:
             handler = logging.StreamHandler()
-            
+
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-        
+
         # Add file handler with rotation
-        import os
-        from pathlib import Path
         from logging.handlers import RotatingFileHandler
-        
+        from pathlib import Path
+
         # Create logs directory if it doesn't exist
         log_dir = Path("logs")
         log_dir.mkdir(exist_ok=True)
-        
+
         # Add file handler
         file_handler = RotatingFileHandler(
             log_dir / f"{name}.log",
-            maxBytes=10*1024*1024,  # 10MB
+            maxBytes=10 * 1024 * 1024,  # 10MB
             backupCount=5,
             encoding="utf-8",
         )
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-        
+
         # Cache the logger
         self._logger_registry[name] = logger
-        
+
         return logger
 
-    def get_structured_logger(self, name: str, level: Optional[str] = None) -> Logger:
+    def get_structured_logger(self, name: str, level: str | None = None) -> Logger:
         """Get a structured logger instance.
 
         Args:
@@ -115,7 +114,9 @@ class LoggerFactory:
         """
         return self.get_logger(name, level, structured=True)
 
-    def get_async_logger(self, name: str, level: Optional[str] = None, buffered: bool = False) -> Logger:
+    def get_async_logger(
+        self, name: str, level: str | None = None, buffered: bool = False
+    ) -> Logger:
         """Get an async logger instance.
 
         Args:
@@ -128,7 +129,9 @@ class LoggerFactory:
         """
         return self.get_logger(name, level, async_enabled=True, buffered=buffered)
 
-    def get_structured_async_logger(self, name: str, level: Optional[str] = None, buffered: bool = False) -> Logger:
+    def get_structured_async_logger(
+        self, name: str, level: str | None = None, buffered: bool = False
+    ) -> Logger:
         """Get a structured async logger instance.
 
         Args:
@@ -139,9 +142,11 @@ class LoggerFactory:
         Returns:
             Structured async logger instance
         """
-        return self.get_logger(name, level, structured=True, async_enabled=True, buffered=buffered)
+        return self.get_logger(
+            name, level, structured=True, async_enabled=True, buffered=buffered
+        )
 
-    def configure_all_loggers(self, config: Dict[str, Any]) -> None:
+    def configure_all_loggers(self, config: dict[str, Any]) -> None:
         """Configure all registered loggers with specified settings.
 
         Args:
@@ -151,14 +156,14 @@ class LoggerFactory:
         for logger in self._logger_registry.values():
             if "level" in config:
                 logger.setLevel(getattr(logging, config["level"]))
-                
+
             # Update handlers if specified
             if "handlers" in config:
                 # Clear existing handlers
                 logger.handlers.clear()
-                
+
                 # Add new handlers based on configuration
-                for handler_config in config["handlers"]:
+                for _handler_config in config["handlers"]:
                     # Implementation would depend on specific handler types
                     pass
 
@@ -168,11 +173,11 @@ _factory = LoggerFactory()
 
 
 def get_logger(
-    name: str, 
-    level: Optional[str] = None,
+    name: str,
+    level: str | None = None,
     structured: bool = False,
     async_enabled: bool = False,
-    buffered: bool = False
+    buffered: bool = False,
 ) -> Logger:
     """Get a logger instance with specified configuration.
 
@@ -189,7 +194,7 @@ def get_logger(
     return _factory.get_logger(name, level, structured, async_enabled, buffered)
 
 
-def get_structured_logger(name: str, level: Optional[str] = None) -> Logger:
+def get_structured_logger(name: str, level: str | None = None) -> Logger:
     """Get a structured logger instance.
 
     Args:
@@ -202,7 +207,9 @@ def get_structured_logger(name: str, level: Optional[str] = None) -> Logger:
     return _factory.get_structured_logger(name, level)
 
 
-def get_async_logger(name: str, level: Optional[str] = None, buffered: bool = False) -> Logger:
+def get_async_logger(
+    name: str, level: str | None = None, buffered: bool = False
+) -> Logger:
     """Get an async logger instance.
 
     Args:
@@ -216,7 +223,9 @@ def get_async_logger(name: str, level: Optional[str] = None, buffered: bool = Fa
     return _factory.get_async_logger(name, level, buffered)
 
 
-def get_structured_async_logger(name: str, level: Optional[str] = None, buffered: bool = False) -> Logger:
+def get_structured_async_logger(
+    name: str, level: str | None = None, buffered: bool = False
+) -> Logger:
     """Get a structured async logger instance.
 
     Args:
@@ -230,7 +239,7 @@ def get_structured_async_logger(name: str, level: Optional[str] = None, buffered
     return _factory.get_structured_async_logger(name, level, buffered)
 
 
-def configure_all_loggers(config: Dict[str, Any]) -> None:
+def configure_all_loggers(config: dict[str, Any]) -> None:
     """Configure all registered loggers with specified settings.
 
     Args:

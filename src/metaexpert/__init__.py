@@ -17,17 +17,18 @@ Enums:
 - MarginMode: Margin modes for futures trading
 - PositionMode: Position modes for futures trading
 """
+
 from datetime import datetime
 from pathlib import Path
 from types import ModuleType
 
-from metaexpert._argument import Namespace, parse_arguments
 from metaexpert._process import Process
 from metaexpert._service import Service
 from metaexpert._trade_mode import TradeMode
+from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import Logger, configure_logging, get_logger, setup_logger
+from metaexpert.logger import Logger, configure_logging, setup_logger
 
 # Set up the main logger for the MetaExpert system
 logger: Logger = setup_logger(APP_NAME)
@@ -41,28 +42,23 @@ class MetaExpert(Service):
 
     def __init__(
         self,
-
         # Required Parameters
         exchange: str | None = None,
         *,
-
         # API Credentials (required for live mode)
         api_key: str | None = None,
         api_secret: str | None = None,
         api_passphrase: str | None = None,
-
         # Connection Settings
         subaccount: str | None = None,
         base_url: str | None = None,
         testnet: bool = True,
         proxy: dict[str, str] | None = None,
-
         # Market & Trading Mode
         market_type: str | None = "futures",
         contract_type: str | None = "inverse",
         margin_mode: str | None = "isolated",
         position_mode: str | None = "hedge",
-
         # Logging Configuration
         log_level: str = "INFO",
         log_file: str = "expert.log",
@@ -71,12 +67,11 @@ class MetaExpert(Service):
         log_to_console: bool = True,
         structured_logging: bool = False,
         async_logging: bool = False,
-
         # Advanced System Settings
         rate_limit: int = 1200,
         enable_metrics: bool = True,
         persist_state: bool = True,
-        state_file: str = "state.json"
+        state_file: str = "state.json",
     ) -> None:
         """Initialize the expert trading system.
 
@@ -117,7 +112,7 @@ class MetaExpert(Service):
             api_secret=api_secret or self.args.api_secret,
             base_url=base_url or self.args.base_url,
             market_type=market_type or self.args.market_type,
-            contract_type=contract_type or self.args.contract_type
+            contract_type=contract_type or self.args.contract_type,
         )
 
         # Setup enhanced logger with new features
@@ -128,12 +123,17 @@ class MetaExpert(Service):
             error_log_file=error_log_file,
             log_to_console=log_to_console,
             structured_logging=structured_logging,
-            async_logging=async_logging
+            async_logging=async_logging,
         )
 
         # Log initialization
         logger.info("Starting expert on %s", self.args.exchange)
-        logger.info("Market type: %s, Contract type: %s, Mode: %s", self.args.market_type, self.args.contract_type, self.args.trade_mode)
+        logger.info(
+            "Market type: %s, Contract type: %s, Mode: %s",
+            self.args.market_type,
+            self.args.contract_type,
+            self.args.trade_mode,
+        )
         logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
 
     def _setup_enhanced_logging(
@@ -144,7 +144,7 @@ class MetaExpert(Service):
         error_log_file: str,
         log_to_console: bool,
         structured_logging: bool,
-        async_logging: bool
+        async_logging: bool,
     ) -> None:
         """Set up enhanced logging with the new features.
 
@@ -165,7 +165,7 @@ class MetaExpert(Service):
                     "console": {
                         "level": log_level,
                         "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
-                        "structured": structured_logging
+                        "structured": structured_logging,
                     },
                     "file": {
                         "level": log_level,
@@ -173,7 +173,7 @@ class MetaExpert(Service):
                         "structured": structured_logging,
                         "filename": log_file,
                         "max_size": 10485760,  # 10MB
-                        "backup_count": 5
+                        "backup_count": 5,
                     },
                     "trade_file": {
                         "level": "INFO",
@@ -181,7 +181,7 @@ class MetaExpert(Service):
                         "structured": structured_logging,
                         "filename": trade_log_file,
                         "max_size": 10485760,  # 10MB
-                        "backup_count": 5
+                        "backup_count": 5,
                     },
                     "error_file": {
                         "level": "ERROR",
@@ -189,21 +189,23 @@ class MetaExpert(Service):
                         "structured": structured_logging,
                         "filename": error_log_file,
                         "max_size": 10485760,  # 10MB
-                        "backup_count": 5
-                    }
+                        "backup_count": 5,
+                    },
                 },
                 "structured_logging": structured_logging,
-                "async_logging": async_logging
+                "async_logging": async_logging,
             }
-            
+
             # Apply configuration
             result = configure_logging(config)
             if result["status"] == "error":
-                logger.warning("Failed to configure enhanced logging: %s", result["message"])
-            
+                logger.warning(
+                    "Failed to configure enhanced logging: %s", result["message"]
+                )
+
             # Note: We don't reassign the global logger here to avoid the syntax error
             # The enhanced features are configured through the centralized configuration system
-            
+
         except Exception as e:
             logger.error("Failed to set up enhanced logging: %s", str(e))
 
@@ -214,14 +216,18 @@ class MetaExpert(Service):
         return f"<{type(self).__name__} {self.strategy_name!r}>"
 
     def run(
-            self,
-            trade_mode: str = "paper",
-            backtest_start: str | datetime = datetime.now().replace(year=datetime.now().year - 1).strftime("%Y-%m-%d"),
-            backtest_end: str | datetime = datetime.now().strftime("%Y-%m-%d"),
-            initial_capital: float = 10000,
+        self,
+        trade_mode: str = "paper",
+        backtest_start: str | datetime = datetime.now()
+        .replace(year=datetime.now().year - 1)
+        .strftime("%Y-%m-%d"),
+        backtest_end: str | datetime = datetime.now().strftime("%Y-%m-%d"),
+        initial_capital: float = 10000,
     ) -> None:
         """Run the expert trading system."""
-        self.trade_mode: TradeMode = TradeMode.get_mode_from(trade_mode or self.args.trade_mode)
+        self.trade_mode: TradeMode = TradeMode.get_mode_from(
+            trade_mode or self.args.trade_mode
+        )
         self.backtest_start: str | datetime = backtest_start
         self.backtest_end: str | datetime = backtest_end
         self.initial_capital: float = initial_capital
@@ -271,4 +277,4 @@ class MetaExpert(Service):
             logger.info("Expert shutdown complete")
 
     # from metaexpert.exchanges.binance import balance
-    #balance = import_module("metaexpert.exchanges.binance").get_balance
+    # balance = import_module("metaexpert.exchanges.binance").get_balance

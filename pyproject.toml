@@ -68,22 +68,7 @@ members = [
     "examples/expert_bybit_rsi",
 ]
 
-[tool.ruff]
-fix = true
-line-length = 88
-target-version = "py312"
-src = [
-    "src",
-    "packages/app/src",
-    "examples",
-    "tests",
-]
-exclude = [
-    ".git",
-    ".venv",
-    "__pycache__",
-    "template.py",
-]
+[tool.ruff.lint]
 select = [
     "E",      # pycodestyle errors
     "W",      # pycodestyle warnings
@@ -102,7 +87,7 @@ ignore = [
     "RUF012"  # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["metaexpert"]
 
 [tool.ruff.format]
@@ -111,7 +96,7 @@ indent-style = "space"
 line-ending = "lf"
 
 [tool.mypy]
-python_version = 3.12
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -127,3 +112,13 @@ strict_equality = true
 implicit_reexport = false
 show_error_codes = true
 show_column_numbers = true
+
+# Игнорировать определенные файлы и директории
+[[tool.mypy.overrides]]
+module = [
+    "matplotlib.*",
+    "numpy.*",
+    "pandas.*",
+    "websocket_client.*",
+]
+ignore_missing_imports = true

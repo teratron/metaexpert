@@ -1,44 +1,44 @@
 """Help documentation generator for CLI arguments."""
 
-from typing import Dict, List, Optional
-from argparse import ArgumentParser
-
-from .argument_group_manager import ArgumentGroupManager, ArgumentGroup, CommandLineArgument
+from metaexpert.cli.argument_group_manager import ArgumentGroupManager
 
 
 class HelpDocumentationGenerator:
     """Generates user-facing documentation for command-line options and usage."""
-    
+
     def __init__(self, group_manager: ArgumentGroupManager):
         """Initialize the help documentation generator.
-        
+
         Args:
             group_manager: ArgumentGroupManager instance
         """
         self.group_manager = group_manager
-        
-    def generate_help_text(self, program_name: str = "metaexpert", 
-                          description: str = "Expert Trading System") -> str:
+
+    def generate_help_text(
+        self,
+        program_name: str = "metaexpert",
+        description: str = "Expert Trading System",
+    ) -> str:
         """Generate comprehensive help text for all arguments.
-        
+
         Args:
             program_name: Name of the program
             description: Overall description of the program
-            
+
         Returns:
             Formatted help text as string
         """
         help_text = f"usage: {program_name} [-h] [options]\n\n{description}\n\n"
-        
+
         # Add global options section
         help_text += "optional arguments:\n"
         help_text += "  -h, --help            show this help message and exit\n\n"
-        
+
         # Add grouped arguments
         for group in self.group_manager.get_groups():
             help_text += f"{group.name}:\n"
             help_text += f"  {group.description}\n"
-            
+
             # Get arguments for this group
             group_args = self.group_manager.get_group_arguments(group.name)
             if group_args:
@@ -48,41 +48,41 @@ class HelpDocumentationGenerator:
                         arg_display = f"  {arg.short_name}, --{arg.name}"
                     else:
                         arg_display = f"  --{arg.name}"
-                        
+
                     # Add type and choices information
                     if arg.type != "string":
                         arg_display += f" {arg.type.upper()}"
                     if arg.choices:
                         arg_display += f" {{{', '.join(arg.choices)}}}"
-                        
+
                     help_text += f"{arg_display:<30} {arg.help_text}\n"
-                    
+
                     # Add default value if present
                     if arg.default_value is not None:
                         help_text += f"{'':<30} (default: {arg.default_value})\n"
             else:
                 help_text += "  No arguments in this group.\n"
-                
+
             help_text += "\n"
-            
+
         return help_text
-        
+
     def generate_group_help(self, group_name: str) -> str:
         """Generate help text for a specific argument group.
-        
+
         Args:
             group_name: Name of the group to generate help for
-            
+
         Returns:
             Formatted help text for the group
         """
         group = self.group_manager.groups.get(group_name)
         if not group:
             return f"Group '{group_name}' not found."
-            
+
         help_text = f"{group.name}:\n"
         help_text += f"  {group.description}\n\n"
-        
+
         # Get arguments for this group
         group_args = self.group_manager.get_group_arguments(group_name)
         if group_args:
@@ -92,32 +92,32 @@ class HelpDocumentationGenerator:
                     arg_display = f"  {arg.short_name}, --{arg.name}"
                 else:
                     arg_display = f"  --{arg.name}"
-                    
+
                 # Add type and choices information
                 if arg.type != "string":
                     arg_display += f" {arg.type.upper()}"
                 if arg.choices:
                     arg_display += f" {{{', '.join(arg.choices)}}}"
-                    
+
                 help_text += f"{arg_display:<30} {arg.help_text}\n"
-                
+
                 # Add default value if present
                 if arg.default_value is not None:
                     help_text += f"{'':<30} (default: {arg.default_value})\n"
         else:
             help_text += "  No arguments in this group.\n"
-            
+
         return help_text
-        
+
     def generate_usage_examples(self) -> str:
         """Generate usage examples for common scenarios.
-        
+
         Returns:
             Formatted usage examples as string
         """
         examples = """
 Examples:
-  # Create a new trading strategy
+ # Create a new trading strategy
   metaexpert --new my_trading_strategy
 
   # Run a trading strategy with specific parameters
@@ -131,5 +131,5 @@ Examples:
   # Configure risk management
   python template.py --stop-loss 2.0 --take-profit 4.0 --size 0.1
         """.strip()
-        
+
         return examples

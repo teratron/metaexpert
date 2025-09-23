@@ -1,10 +1,10 @@
 """Performance monitoring and metrics for the enhanced logging system."""
 
-import time
 import logging
-from typing import Dict, Any, Optional
+import time
 from collections import defaultdict
 from threading import Lock
+from typing import Any
 
 
 class PerformanceMonitor:
@@ -12,7 +12,7 @@ class PerformanceMonitor:
 
     def __init__(self) -> None:
         """Initialize the performance monitor."""
-        self.metrics: Dict[str, Dict[str, Any]] = defaultdict(dict)
+        self.metrics: dict[str, dict[str, Any]] = defaultdict(dict)
         self.lock = Lock()
         self.logger = logging.getLogger("metaexpert.logger.performance")
 
@@ -26,16 +26,16 @@ class PerformanceMonitor:
             Operation ID for later completion tracking
         """
         operation_id = f"{operation_name}_{int(time.time() * 1000000)}"
-        
+
         with self.lock:
             self.metrics[operation_id] = {
                 "operation": operation_name,
                 "start_time": time.time(),
                 "end_time": None,
                 "duration": None,
-                "success": None
+                "success": None,
             }
-            
+
         return operation_id
 
     def end_operation(self, operation_id: str, success: bool = True) -> None:
@@ -46,23 +46,25 @@ class PerformanceMonitor:
             success: Whether the operation succeeded
         """
         end_time = time.time()
-        
+
         with self.lock:
             if operation_id in self.metrics:
                 metric = self.metrics[operation_id]
                 metric["end_time"] = end_time
                 metric["duration"] = end_time - metric["start_time"]
                 metric["success"] = success
-                
+
                 # Log performance warning if operation took too long
                 if metric["duration"] > 0.01:  # 10ms threshold
                     self.logger.warning(
-                        "Slow operation detected: %s took %.2fms", 
-                        metric["operation"], 
-                        metric["duration"] * 1000
+                        "Slow operation detected: %s took %.2fms",
+                        metric["operation"],
+                        metric["duration"] * 1000,
                     )
 
-    def record_metric(self, metric_name: str, value: float, tags: Optional[Dict[str, str]] = None) -> None:
+    def record_metric(
+        self, metric_name: str, value: float, tags: dict[str, str] | None = None
+    ) -> None:
         """Record a custom metric.
 
         Args:
@@ -75,10 +77,10 @@ class PerformanceMonitor:
         tag_str = ""
         if tags:
             tag_str = " " + " ".join([f"{k}={v}" for k, v in tags.items()])
-            
+
         self.logger.info("Metric recorded: %s=%.2f%s", metric_name, value, tag_str)
 
-    def get_performance_report(self) -> Dict[str, Any]:
+    def get_performance_report(self) -> dict[str, Any]:
         """Get a performance report.
 
         Returns:
@@ -87,48 +89,51 @@ class PerformanceMonitor:
         with self.lock:
             # Calculate aggregate metrics
             completed_operations = [
-                m for m in self.metrics.values() 
-                if m["end_time"] is not None
+                m for m in self.metrics.values() if m["end_time"] is not None
             ]
-            
+
             if not completed_operations:
                 return {"message": "No completed operations to report"}
-                
+
             total_operations = len(completed_operations)
             successful_operations = sum(1 for m in completed_operations if m["success"])
             failed_operations = total_operations - successful_operations
-            
-            durations = [m["duration"] for m in completed_operations if m["duration"] is not None]
+
+            durations = [
+                m["duration"] for m in completed_operations if m["duration"] is not None
+            ]
             if not durations:
                 return {"message": "No duration data available"}
-                
+
             avg_duration = sum(durations) / len(durations)
             min_duration = min(durations)
             max_duration = max(durations)
-            
+
             # Group by operation type
             operation_stats = defaultdict(list)
             for m in completed_operations:
                 operation_stats[m["operation"]].append(m["duration"])
-                
+
             operation_summary = {}
             for op_name, durations in operation_stats.items():
                 operation_summary[op_name] = {
                     "count": len(durations),
                     "avg_duration_ms": (sum(durations) / len(durations)) * 1000,
                     "min_duration_ms": min(durations) * 1000,
-                    "max_duration_ms": max(durations) * 1000
+                    "max_duration_ms": max(durations) * 1000,
                 }
-            
+
             return {
                 "total_operations": total_operations,
                 "successful_operations": successful_operations,
                 "failed_operations": failed_operations,
-                "success_rate": successful_operations / total_operations if total_operations > 0 else 0,
+                "success_rate": successful_operations / total_operations
+                if total_operations > 0
+                else 0,
                 "average_duration_ms": avg_duration * 1000,
                 "min_duration_ms": min_duration * 1000,
                 "max_duration_ms": max_duration * 1000,
-                "operation_summary": operation_summary
+                "operation_summary": operation_summary,
             }
 
 
@@ -167,7 +172,9 @@ def end_operation(operation_id: str, success: bool = True) -> None:
     _performance_monitor.end_operation(operation_id, success)
 
 
-def record_metric(metric_name: str, value: float, tags: Optional[Dict[str, str]] = None) -> None:
+def record_metric(
+    metric_name: str, value: float, tags: dict[str, str] | None = None
+) -> None:
     """Record a custom metric.
 
     Args:
@@ -178,7 +185,7 @@ def record_metric(metric_name: str, value: float, tags: Optional[Dict[str, str]]
     _performance_monitor.record_metric(metric_name, value, tags)
 
 
-def get_performance_report() -> Dict[str, Any]:
+def get_performance_report() -> dict[str, Any]:
     """Get a performance report.
 
     Returns:
@@ -197,7 +204,7 @@ class PerformanceTimer:
             operation_name: Name of the operation to time
         """
         self.operation_name = operation_name
-        self.operation_id: Optional[str] = None
+        self.operation_id: str | None = None
 
     def __enter__(self) -> "PerformanceTimer":
         """Start timing the operation."""
@@ -221,9 +228,12 @@ def time_operation(operation_name: str):
     Returns:
         Decorator function
     """
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             with PerformanceTimer(operation_name):
                 return func(*args, **kwargs)
+
         return wrapper
+
     return decorator
