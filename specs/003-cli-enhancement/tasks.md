@@ -41,38 +41,38 @@
 - Paths shown below assume single project - adjust based on plan.md structure
 
 ## Phase 3.1: Setup
-- [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize Python project with dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [x] T001 Create project structure per implementation plan
+- [x] T002 Initialize Python project with dependencies
+- [x] T003 [P] Configure linting and formatting tools
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 In accordance with the Test-First Development principle (NON-NEGOTIABLE) from the MetaExpert Constitution:
-- [ ] T004 [P] Contract test POST /cli/parse in tests/contract/test_cli_parsing.py
-- [ ] T005 [P] Integration test argument grouping in tests/integration/test_argument_grouping.py
-- [ ] T006 [P] Integration test backward compatibility in tests/integration/test_backward_compatibility.py
-- [ ] T007 [P] Integration test help documentation in tests/integration/test_help_documentation.py
+- [x] T004 [P] Contract test POST /cli/parse in tests/contract/test_cli_parsing.py
+- [x] T005 [P] Integration test argument grouping in tests/integration/test_argument_grouping.py
+- [x] T006 [P] Integration test backward compatibility in tests/integration/test_backward_compatibility.py
+- [x] T007 [P] Integration test help documentation in tests/integration/test_help_documentation.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T008 [P] Enhanced argument parser in src/metaexpert/_argument.py
-- [ ] T009 [P] Argument group manager in src/lib/argument_group_manager.py
-- [ ] T010 [P] Help documentation generator in src/lib/help_generator.py
-- [ ] T011 Argument validation utilities in src/lib/argument_validation.py
-- [ ] T012 Error handling for argument parsing
-- [ ] T013 Performance optimization for argument parsing
+- [x] T008 [P] Enhanced argument parser in src/metaexpert/_argument.py
+- [x] T009 [P] Argument group manager in src/lib/argument_group_manager.py
+- [x] T010 [P] Help documentation generator in src/lib/help_generator.py
+- [x] T011 Argument validation utilities in src/lib/argument_validation.py
+- [x] T012 Error handling for argument parsing
+- [x] T013 Performance optimization for argument parsing
 
 ## Phase 3.4: Integration
-- [ ] T015 Connect enhanced parser to MetaExpert core
-- [ ] T016 Align with template.py configuration parameters
-- [ ] T017 Add backward compatibility layer
-- [ ] T018 Performance monitoring and metrics
+- [x] T015 Connect enhanced parser to MetaExpert core
+- [x] T016 Align with template.py configuration parameters
+- [x] T017 Add backward compatibility layer
+- [x] T018 Performance monitoring and metrics
 
 ## Phase 3.5: Polish
-- [ ] T019 [P] Unit tests for argument validation in tests/unit/test_argument_validation.py
-- [ ] T020 Performance tests (<100ms parsing time)
-- [ ] T021 [P] Update docs/cli.md
-- [ ] T022 Remove duplication with existing CLI code
-- [ ] T023 Run manual-testing.md
+- [x] T019 [P] Unit tests for argument validation in tests/unit/test_argument_validation.py
+- [x] T020 Performance tests (<100ms parsing time)
+- [x] T021 [P] Update docs/cli.md
+- [x] T022 Remove duplication with existing CLI code
+- [x] T023 Run manual-testing.md
 
 ## Dependencies
 - Tests (T004-T007) before implementation (T008-T014)

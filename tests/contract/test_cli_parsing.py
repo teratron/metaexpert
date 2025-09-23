@@ -1,7 +1,8 @@
 # CLI Parsing Contract Test
 
 import pytest
-from unittest.mock import patch, mock_open
+from src.metaexpert.cli_endpoint import parse_cli_arguments
+
 
 # Test that the CLI parsing endpoint works correctly
 def test_cli_parsing_success():
@@ -12,10 +13,14 @@ def test_cli_parsing_success():
     }
     
     # When the CLI parsing endpoint is called
-    # (This test should fail initially as the implementation doesn't exist yet)
+    response = parse_cli_arguments(request)
     
     # Then a success response with parsed arguments should be returned
-    assert False, "Not implemented"
+    assert response["status"] == "success"
+    assert response["parsed_arguments"]["exchange"] == "binance"
+    assert response["parsed_arguments"]["pair"] == "BTCUSDT"
+    assert response["parsed_arguments"]["timeframe"] == "1h"
+
 
 # Test that the CLI parsing fails with invalid arguments
 def test_cli_parsing_invalid_arguments():
@@ -26,6 +31,8 @@ def test_cli_parsing_invalid_arguments():
     }
     
     # When the CLI parsing endpoint is called
+    response = parse_cli_arguments(request)
     
     # Then an error response should be returned
-    assert False, "Not implemented"
+    assert response["status"] == "error"
+    assert "unrecognized arguments" in response["errors"][0]
