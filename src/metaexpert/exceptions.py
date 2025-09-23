@@ -26,7 +26,7 @@ class MetaExpertError(Exception):
         return self.message
 
 # -----------------------------------------------------------------------------
-# Configuration Exceptions
+# CONFIGURATION EXCEPTIONS
 # -----------------------------------------------------------------------------
 # These exceptions handle errors related to configuration issues.
 # -----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ class MissingConfigurationError(ConfigurationError):
         self.config_key = config_key
 
 # -----------------------------------------------------------------------------
-# API Exceptions
+# API EXCEPTIONS
 # -----------------------------------------------------------------------------
 # These exceptions handle errors related to API interactions.
 # -----------------------------------------------------------------------------
@@ -149,7 +149,7 @@ class NetworkError(APIError):
         self.reason = reason
 
 # -----------------------------------------------------------------------------
-# Trading Exceptions
+# TRADING EXCEPTIONS
 # -----------------------------------------------------------------------------
 # These exceptions handle errors related to trading operations.
 # -----------------------------------------------------------------------------
@@ -217,7 +217,7 @@ class OrderNotFoundError(TradingError):
         self.order_id = order_id
 
 # -----------------------------------------------------------------------------
-# Data Validation Exceptions
+# DATA VALIDATION EXCEPTIONS
 # -----------------------------------------------------------------------------
 # These exceptions handle errors related to data validation.
 # -----------------------------------------------------------------------------
@@ -266,7 +266,7 @@ class MissingDataError(ValidationError):
         self.field_name = field_name
 
 # -----------------------------------------------------------------------------
-# Market Data Exceptions
+# MARKET DATA EXCEPTIONS
 # -----------------------------------------------------------------------------
 # These exceptions handle errors related to market data.
 # -----------------------------------------------------------------------------
@@ -308,7 +308,7 @@ class InvalidTimeframeError(MarketDataError):
         self.timeframe = timeframe
 
 # -----------------------------------------------------------------------------
-# Process Exceptions
+# PROCESS EXCEPTIONS
 # -----------------------------------------------------------------------------
 # These exceptions handle errors related to process management.
 # -----------------------------------------------------------------------------

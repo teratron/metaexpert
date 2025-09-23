@@ -57,7 +57,7 @@ expert = MetaExpert(
 # -----------------------------------------------------------------------------
 @expert.on_init(
     # --- Core Trading Parameters ---
-    symbol="BTCUSDT",               # Trading symbols (str or set[str]: "BTCUSDT" or {"BTCUSDT", "ETHUSDT"})
+    symbol="BTCUSDT",               # Trading symbol (e.g., 'BTCUSDT', 'ETHUSDT', 'AAPL')
     timeframe="1h",                 # Primary timeframe: '1m','5m','15m','1h','4h','1d',...
     lookback_bars=100,              # Number of historical bars to fetch for analysis
     # lookback_time="7d",           # Alternative: time period ('1h','4h','1d','7d','30d')

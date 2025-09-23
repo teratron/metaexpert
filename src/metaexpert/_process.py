@@ -291,7 +291,8 @@ class Process(Enum):
             return
 
         logger.debug("Launch task for '%s(s)'", self.value.get("name"))
-        await asyncio.gather(*tuple(self._get_tasks()))
+        tasks = self._get_tasks() or []
+        await asyncio.gather(*tasks)
 
     def _get_tasks(self) -> list[Task] | None:
         """Get the tasks for the process.

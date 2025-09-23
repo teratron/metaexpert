@@ -6,6 +6,10 @@ from typing import Any
 
 from metaexpert.exceptions import ConfigurationError as MetaExpertConfigurationError
 from metaexpert.exceptions import ProcessError
+from metaexpert.logger import get_logger
+
+# Get the logger instance
+logger = get_logger("metaexpert.services.error_handling")
 
 
 class TemplateCreationError(ProcessError):

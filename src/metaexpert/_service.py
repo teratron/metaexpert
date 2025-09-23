@@ -25,7 +25,7 @@ class Service(Expert):
         self,
 
         # Core Trading Parameters
-        symbol: str | set[str] | None = None,
+        symbol: str | None = None,
         timeframe: str | None = None,
         *,
         lookback_bars: int = 100,
@@ -63,11 +63,11 @@ class Service(Expert):
         min_volume: int = 10000,
         volatility_filter: bool = True,
         trend_filter: bool = True
-    ) -> Callable:
+    ) -> Callable[[Callable[[], None]], Callable[[], None]]:
         """Decorator for initialization event handling.
 
         Args:
-            symbol (str | set[str] | None): Trading symbols (e.g., "BTCUSDT" or ["BTCUSDT", "ETHUSDT"]). Defaults to "BTCUSDT".
+            symbol (str | None): Trading symbols (e.g., "BTCUSDT", "ETHUSDT"). Defaults to "BTCUSDT".
             timeframe (str | None): Time frame for trading data (e.g., "1h", "1m"). Defaults to "1h".
             lookback_bars (int): Number of historical bars to fetch for analysis. Defaults to 100.
             warmup_bars (int): Skip initial bars to initialize indicators. Defaults to 0.
@@ -155,27 +155,29 @@ class Service(Expert):
                 timer = Process.ON_TIMER.pop_instance()
                 if timer is not None:
                     logger.debug("Stopping timer...")
-                    timer.stop()
+                    if hasattr(timer, "stop") and callable(getattr(timer, "stop", None)):
+                        timer.stop()
 
             while Process.ON_BAR.check_instance():
                 bar = Process.ON_BAR.pop_instance()
                 if bar is not None:
                     logger.debug("Stopping bar...")
-                    bar.stop()
+                    if hasattr(bar, "stop") and callable(getattr(bar, "stop", None)):
+                        bar.stop()
 
         return inner
 
     # def on_tick(self, func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
     @staticmethod
     def on_tick(func: Callable) -> Callable:
-        def inner(rates) -> None:
+        def inner(rates: dict) -> None:
             func(rates)
 
         return inner
 
     # Call: TypeAlias = Callable[[list[Any], dict[str, Any]], None]
     @staticmethod
-    def on_bar(timeframe: str = "1h") -> Callable:
+    def on_bar(timeframe: str = "1h") -> Callable[[Callable[[Any], Coroutine[Any, Any, None]]], Callable[[Any], Coroutine[Any, Any, None]]]:
         """Decorator for bar event handling.
 
         Args:
@@ -184,12 +186,8 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles bar events.
         """
-        if not isinstance(timeframe, str):
-            logger.error("Timeframe must be a string, got %s", type(timeframe).__name__)
-            raise TypeError("Timeframe must be a string")
-
-        def outer(func: Callable[[str], Coroutine[Any, Any, None]]) -> Callable[[str], Coroutine[Any, Any, None]]:
-            async def inner(rates) -> None:
+        def outer(func: Callable[[Any], Coroutine[Any, Any, None]]) -> Callable[[Any], Coroutine[Any, Any, None]]:
+            async def inner(rates: dict) -> None:
                 bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
                 Process.ON_BAR.push_instance(bar)
                 await bar.start()

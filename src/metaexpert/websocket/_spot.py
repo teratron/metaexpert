@@ -5,6 +5,11 @@ from threading import Thread
 
 from websocket import WebSocket, WebSocketApp
 
+from metaexpert.logger import get_logger
+
+# Get the logger instance
+logger = get_logger("metaexpert.websocket.spot")
+
 
 class WebSocketClient(WebSocketApp):
     def __init__(self, url, *args, **kwargs) -> None:  #
@@ -21,23 +26,23 @@ class WebSocketClient(WebSocketApp):
 
     def start(self) -> None:
         """Start the WebSocket client."""
-        print(f"Starting WebSocket client for {self.url}")
+        logger.info(f"Starting WebSocket client for {self.url}")
         self.run_forever()
 
     def on_open(self, ws: WebSocket) -> None:
-        print(ws, "Websocket connection opened")
+        logger.info(f"{ws} Websocket connection opened")
         if self.params and isinstance(self.params, list):
             ws.send(json.dumps({"op": "subscribe", "args": self.params}))
 
     def on_close(self, ws: WebSocket, status, message: str, *args, **kwargs) -> None:
-        print(f"{ws} Websocket connection closed: {status} {message}")
+        logger.info(f"{ws} Websocket connection closed: {status} {message}")
 
     def on_error(self, ws: WebSocket, error: Exception) -> None:
-        print(f"{ws} Websocket connection error: {error}")
-        print(traceback.format_exc())
+        logger.error(f"{ws} Websocket connection error: {error}")
+        logger.error(traceback.format_exc())
 
     def on_message(self, ws: WebSocket, message: str) -> None:
-        print(f"{ws} Received message: {message}")
+        logger.debug(f"{ws} Received message: {message}")
 
 
 if __name__ == "__main__":

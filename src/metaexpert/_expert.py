@@ -8,7 +8,7 @@ from metaexpert._timeframe import Timeframe
 @dataclass
 class Expert:
     # Core Trading Parameters
-    symbol: str | set[str] | None
+    symbol: str | None
     timeframe: Timeframe | None
     lookback_bars: int
     warmup_bars: int
@@ -22,7 +22,7 @@ class Expert:
     leverage: int
     max_drawdown_pct: float
     daily_loss_limit: float
-    size_type: SizeType
+    size_type: SizeType | None
     size_value: float
     max_position_size_quote: float
 

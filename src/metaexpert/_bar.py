@@ -1,16 +1,16 @@
 import asyncio
 import time
-from typing import Callable
+from collections.abc import Callable
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 
 
 class Bar:
-    def __init__(self, timeframe: str = "1h", callback: Callable | None = None, args: tuple[str] = ()) -> None:
+    def __init__(self, timeframe: str = "1h", callback: Callable | None = None, args: tuple[dict, ...] = ()) -> None:
         self._timeframe: str = timeframe
         self._func: Callable = callback if callback is not None else lambda: None
-        self._args: tuple[str] = args
+        self._args: tuple[dict, ...] = args
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0
         self._is_running: bool = False

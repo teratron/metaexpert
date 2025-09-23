@@ -32,12 +32,12 @@ metaexpert = "metaexpert.__main__:main"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.18.2",
     "python-dotenv>=1.1.1",
     "types-defusedxml>=0.7.0.20250516",
     "types-requests>=2.32.4",
     "pyleak>=0.1.11",
     "pandas-stubs>=2.2.3.250527",
+    "pyright>=1.1.405",
 ]
 test = [
     "pytest>=8.3.4",
@@ -87,38 +87,58 @@ ignore = [
     "RUF012"  # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 
-[tool.ruff.lint.isort]
-known-first-party = ["metaexpert"]
-
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
 
-[tool.mypy]
-python_version = "3.12"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-check_untyped_defs = true
-disallow_untyped_decorators = true
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_no_return = true
-warn_unreachable = true
-strict_optional = true
-strict_equality = true
-implicit_reexport = false
-show_error_codes = true
-show_column_numbers = true
+[tool.ruff.lint.isort]
+known-first-party = ["metaexpert"]
 
-# Игнорировать определенные файлы и директории
-[[tool.mypy.overrides]]
-module = [
-    "matplotlib.*",
-    "numpy.*",
-    "pandas.*",
-    "websocket_client.*",
-]
-ignore_missing_imports = true
+[tool.pyright]
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
+pythonPlatform = "Darwin"
+include = [
+    "metaexpert",
+    "examples",
+    "tests"
+  ]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "dist"
+  ]
+  ignore = [
+    "tests/**"
+  ]
+  defineConstant = { "DEBUG" = true }
+  typeshedPath = ""
+  stubPath = ""
+  useLibraryCodeForTypes = true
+  typeCheckingMode = "basic"
+  strictListInference = true
+  strictDictionaryInference = true
+  strictSetInference = true
+  enableTypeIgnoreComments = true
+  reportMissingImports = "error"
+  reportMissingTypeStubs = "warning"
+  reportIncompatibleMethodOverride = "error"
+  reportIncompatibleVariableOverride = "error"
+  reportMissingSuperCall = "none"
+  reportUninitializedInstanceVariable = "error"
+  reportInvalidTypeVarUse = "error"
+  reportCallInDefaultInitializer = "none"
+  reportPropertyTypeMismatch = "error"
+  reportUntypedFunctionDecorator = "warning"
+  reportUntypedClassDecorator = "warning"
+  reportUntypedBaseClass = "error"
+  reportUntypedNamedTuple = "error"
+  reportPrivateUsage = "warning"
+  reportConstantRedefinition = "error"
+  reportDeprecated = "warning"
+  reportInconsistentConstructor = "error"

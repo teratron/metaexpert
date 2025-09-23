@@ -103,6 +103,10 @@ class MetaExpert(Service):
 
         # Parse command line arguments
         self.args: Namespace = parse_arguments()
+        self.trade_mode: TradeMode | None = None
+        self.backtest_start: str | datetime | None = None
+        self.backtest_end: str | datetime | None = None
+        self.initial_capital: float | None = None
         self._running: bool = False
 
         # Initialize stock exchange
@@ -225,12 +229,12 @@ class MetaExpert(Service):
         initial_capital: float = 10000,
     ) -> None:
         """Run the expert trading system."""
-        self.trade_mode: TradeMode = TradeMode.get_mode_from(
+        self.trade_mode = TradeMode.get_mode_from(
             trade_mode or self.args.trade_mode
         )
-        self.backtest_start: str | datetime = backtest_start
-        self.backtest_end: str | datetime = backtest_end
-        self.initial_capital: float = initial_capital
+        self.backtest_start = backtest_start
+        self.backtest_end = backtest_end
+        self.initial_capital = initial_capital
         self._running = True
 
         logger.info("Starting trading bot in %s mode", self.trade_mode)
@@ -240,7 +244,7 @@ class MetaExpert(Service):
             self._module = Process.init()
 
             if self._module and self._module.__file__:
-                self._filename: str = Path(self._module.__file__).stem
+                self._filename = Path(self._module.__file__).stem
 
             # Initialize the expert
             Process.ON_INIT.run()

@@ -2,7 +2,11 @@
 
 from typing import Any
 
+from metaexpert.logger import get_logger
 from metaexpert.services.template_service import TemplateCreationService
+
+# Get the logger instance
+logger = get_logger("metaexpert.template_creator")
 
 
 def create_expert_from_template(
@@ -31,8 +35,10 @@ def create_expert_from_template(
 
     # Create the template
     output_path = template_service.create_template(
-        strategy_name=strategy_name, output_directory=output_dir, parameters=parameters
+        strategy_name=strategy_name,
+        output_directory=output_dir,
+        parameters=parameters
     )
 
-    print(f"Created new expert file: {output_path}")
+    logger.info(f"Created new expert file: {output_path}")
     return output_path

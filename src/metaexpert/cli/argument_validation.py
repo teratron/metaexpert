@@ -1,7 +1,12 @@
 """Argument validation utilities for CLI arguments."""
 
 import re
+
 from metaexpert.exceptions import ValidationError
+from metaexpert.logger import get_logger
+
+# Get the logger instance
+logger = get_logger("metaexpert.cli.argument_validation")
 
 
 class ArgumentValidationError(ValidationError):

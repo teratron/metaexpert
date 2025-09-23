@@ -116,22 +116,12 @@ class Timeframe(Enum):
     #         yield item
 
     @classmethod
-    def get_period_from(cls, name: str | set[str] | None) -> Self | set[Self] | None:
+    def get_period_from(cls, name: str | None) -> Self | None:
         """Get the period type from a string."""
         if isinstance(name, str):
             for item in cls:
                 if item.value.get("name") == name.lower():
                     return item
-
-        if isinstance(name, set):
-            value: set = set()
-            for tf in name:
-                if isinstance(tf, str):
-                    timeframe = cls.get_period_from(tf)
-                    if isinstance(timeframe, Timeframe):
-                        value.add(timeframe)
-
-            return value
 
         return None
 
@@ -181,9 +171,3 @@ class Timeframe(Enum):
                 raise ValueError(f"Unsupported timeframe: {self.value.get("name")}")
 
         return next_time
-
-# if __name__ == "__main__":
-#     for i in Timeframe:
-#         print(i.name, i.value.get("name"), i.value.get("sec"))
-#
-#     print(Timeframe()._get_period_from("1m"))
