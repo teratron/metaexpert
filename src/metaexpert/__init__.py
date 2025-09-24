@@ -27,7 +27,7 @@ from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import configure_logging, get_logger
+from metaexpert.logger import configure_expert_logging, get_logger
 
 # Get the logger instance. Configuration will be applied in MetaExpert.__init__
 logger: Logger = get_logger(APP_NAME)
@@ -102,26 +102,20 @@ class MetaExpert(Service):
         self.initial_capital: float | None = None
         self._running: bool = False
 
-        # Configure logging using the new centralized function
-        handlers_config = {
-            "file": {"type": "file", "filename": log_file},
-            "trade_file": {"type": "file", "filename": trade_log_file, "level": "INFO"},
-            "error_file": {
-                "type": "file",
-                "filename": error_log_file,
-                "level": "ERROR",
-            },
-        }
-        if log_to_console:
-            handlers_config["console"] = {"type": "console"}
-
-        log_config = {
-            "default_level": log_level,
-            "async_logging": async_logging,
-            "structured_logging": structured_logging,
-            "handlers": handlers_config,
-        }
-        configure_logging(log_config)
+        # Configure logging using the enhanced expert integration
+        configure_expert_logging(
+            log_level=log_level,
+            log_file=log_file,
+            trade_log_file=trade_log_file,
+            error_log_file=error_log_file,
+            log_to_console=log_to_console,
+            structured_logging=structured_logging,
+            async_logging=async_logging,
+            rate_limit=rate_limit,
+            enable_metrics=enable_metrics,
+            persist_state=persist_state,
+            state_file=state_file,
+        )
 
         # Initialize stock exchange
         self.client: Exchange = Exchange.create(
