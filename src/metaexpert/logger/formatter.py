@@ -1,13 +1,14 @@
 """Structured log formatter for JSON-based logging."""
 
 import json
-import logging
+from logging import Formatter, LogRecord
+from typing import Any
 
 
-class StructuredLogFormatter(logging.Formatter):
+class LogFormatter(Formatter):
     """Formatter for structured logging with JSON output."""
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: LogRecord) -> str:
         """Format a log record as structured JSON.
 
         Args:
@@ -17,7 +18,7 @@ class StructuredLogFormatter(logging.Formatter):
             Formatted log record as JSON string
         """
         # Create a dictionary with log record attributes
-        log_entry = {
+        log_entry: dict[str, Any] = {
             "timestamp": self.formatTime(record),
             "level": record.levelname,
             "logger": record.name,

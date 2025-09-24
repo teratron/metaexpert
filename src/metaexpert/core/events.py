@@ -1,5 +1,9 @@
 from collections.abc import Callable, Coroutine
+from logging import Logger
 from typing import Any
+
+from metaexpert.config import APP_NAME
+from metaexpert.logger import get_logger
 
 from ._bar import Bar
 from ._size_type import SizeType
@@ -7,8 +11,6 @@ from ._timeframe import Timeframe
 from ._timer import Timer
 from .expert import Expert
 from .process import Process
-from metaexpert.config import APP_NAME
-from metaexpert.logger import Logger, get_logger
 
 logger: Logger = get_logger(APP_NAME)
 

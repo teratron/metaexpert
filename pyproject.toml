@@ -38,6 +38,7 @@ dev = [
     "pyleak>=0.1.11",
     "pandas-stubs>=2.2.3.250527",
     "pyright>=1.1.405",
+    "specify-cli"
 ]
 test = [
     "pytest>=8.3.4",
@@ -53,6 +54,7 @@ link-mode = "copy"
 default-groups = ["dev", "test", "lint", "docs"]
 
 [tool.uv.sources]
+specify-cli = { git = "git+https://github.com/github/spec-kit" }
 #metaexpert-binance-api = { path = "packages/api/binance" }
 #metaexpert-bybit-api = { path = "packages/api/bybit" }
 #metaexpert-binance-api = { workspace = true }

@@ -2,8 +2,9 @@ import asyncio
 import time
 from collections.abc import Callable
 
+from logging import Logger
 from metaexpert.config import APP_NAME
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import get_logger
 
 
 class Bar:
