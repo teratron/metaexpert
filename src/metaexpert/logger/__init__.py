@@ -12,7 +12,7 @@ from typing import Any
 
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.config import LOG_NAME
-from metaexpert.logger.formatter import LogFormatter
+from metaexpert.logger.formatter import Formatter
 
 from . import config as logger_config_module
 
@@ -28,7 +28,7 @@ def get_logger(name: str | None = None) -> logging.Logger:
 def _create_formatter(use_structured: bool, log_format: str) -> logging.Formatter:
     """Create a log formatter."""
     if use_structured:
-        return LogFormatter()
+        return Formatter()
     return logging.Formatter(log_format)
 
 

@@ -1,14 +1,14 @@
 """Structured log formatter for JSON-based logging."""
 
 import json
-from logging import Formatter, LogRecord
+import logging
 from typing import Any
 
 
-class LogFormatter(Formatter):
+class Formatter(logging.Formatter):
     """Formatter for structured logging with JSON output."""
 
-    def format(self, record: LogRecord) -> str:
+    def format(self, record: logging.LogRecord) -> str:
         """Format a log record as structured JSON.
 
         Args:

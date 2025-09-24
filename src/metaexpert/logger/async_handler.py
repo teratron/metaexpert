@@ -1,18 +1,18 @@
 """Asynchronous log handler that wraps another handler."""
 
+import logging
 import queue
 import sys
 import threading
-from logging import Formatter, Handler, LogRecord
 
 
-class AsyncHandler(Handler):
+class AsyncHandler(logging.Handler):
     """
     Asynchronous log handler that wraps a synchronous handler to prevent
     blocking the main thread.
     """
 
-    def __init__(self, handler: Handler, max_queue_size: int = 10000):
+    def __init__(self, handler: logging.Handler, max_queue_size: int = 10000):
         """
         Initialize the async log handler.
 
@@ -22,7 +22,9 @@ class AsyncHandler(Handler):
                             is full, new log records will be dropped.
         """
         super().__init__()
-        self.queue: queue.Queue[LogRecord | None] = queue.Queue(maxsize=max_queue_size)
+        self.queue: queue.Queue[logging.LogRecord | None] = queue.Queue(
+            maxsize=max_queue_size
+        )
         self.handler = handler
         self.shutdown_event = threading.Event()
         self.worker_thread = threading.Thread(
@@ -47,7 +49,7 @@ class AsyncHandler(Handler):
 
                 traceback.print_exc(file=sys.stderr)
 
-    def emit(self, record: LogRecord) -> None:
+    def emit(self, record: logging.LogRecord) -> None:
         """
         Emit a log record asynchronously by adding it to the queue.
         If the queue is full, the record is dropped.
@@ -74,7 +76,7 @@ class AsyncHandler(Handler):
         self.handler.close()
         super().close()
 
-    def set_formatter(self, fmt: Formatter | None) -> None:
+    def set_formatter(self, fmt: logging.Formatter | None) -> None:
         """Set the formatter for the wrapped handler."""
         super().setFormatter(fmt)
         self.handler.setFormatter(fmt)
