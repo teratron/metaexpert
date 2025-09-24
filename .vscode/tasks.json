@@ -69,19 +69,6 @@
             "problemMatcher": []
         },
         {
-            "label": "Update Spec Kit Gemini",
-            "type": "shell",
-            "command": "uvx --from git+https://github.com/github/spec-kit.git specify init --here --no-git --ai gemini --script ps",
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
-            "problemMatcher": []
-        },
-        {
             "label": "Update Claude",
             "type": "shell",
             "command": "npm install -g @anthropic-ai/claude-code",
