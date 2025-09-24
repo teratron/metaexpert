@@ -1,6 +1,9 @@
 """Setup functions for the enhanced logger system."""
 
-from metaexpert.logger import Logger, configure_logging, setup_logger
+from logging import Logger
+from pathlib import Path
+
+from metaexpert.logger import configure_logging, setup_logger
 
 
 def setup_enhanced_logging(
@@ -74,6 +77,10 @@ def setup_enhanced_logging(
             logger.warning(
                 "Failed to configure enhanced logging: %s", result["message"]
             )
+
+        # Create logs directory if it doesn't exist
+        log_dir = Path("logs")
+        log_dir.mkdir(exist_ok=True)
 
         # Return the configured logger
         return setup_logger(
