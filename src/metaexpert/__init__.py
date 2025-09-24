@@ -24,11 +24,13 @@ from types import ModuleType
 
 from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
-from metaexpert.core._trade_mode import TradeMode
-from metaexpert.core.events import Service
-from metaexpert.core.process import Process
+from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import Logger, configure_logging, setup_logger
+from metaexpert.logger import (
+    Logger,
+    setup_enhanced_logging,
+    setup_logger,
+)
 
 # Set up the main logger for the MetaExpert system
 logger: Logger = setup_logger(APP_NAME)
@@ -42,24 +44,19 @@ class MetaExpert(Service):
 
     def __init__(
         self,
-        # Required Parameters
         exchange: str | None = None,
         *,
-        # API Credentials (required for live mode)
         api_key: str | None = None,
         api_secret: str | None = None,
         api_passphrase: str | None = None,
-        # Connection Settings
         subaccount: str | None = None,
         base_url: str | None = None,
         testnet: bool = True,
         proxy: dict[str, str] | None = None,
-        # Market & Trading Mode
         market_type: str | None = "futures",
         contract_type: str | None = "inverse",
         margin_mode: str | None = "isolated",
         position_mode: str | None = "hedge",
-        # Logging Configuration
         log_level: str = "INFO",
         log_file: str = "expert.log",
         trade_log_file: str = "trades.log",
@@ -67,7 +64,6 @@ class MetaExpert(Service):
         log_to_console: bool = True,
         structured_logging: bool = False,
         async_logging: bool = False,
-        # Advanced System Settings
         rate_limit: int = 1200,
         enable_metrics: bool = True,
         persist_state: bool = True,
@@ -114,13 +110,20 @@ class MetaExpert(Service):
             exchange_name=exchange or self.args.exchange,
             api_key=api_key or self.args.api_key,
             api_secret=api_secret or self.args.api_secret,
+            api_passphrase=api_passphrase or self.args.api_passphrase,
+            subaccount=subaccount or self.args.subaccount,
             base_url=base_url or self.args.base_url,
+            testnet=testnet or self.args.testnet,
+            proxy=proxy or self.args.proxy,
             market_type=market_type or self.args.market_type,
             contract_type=contract_type or self.args.contract_type,
+            margin_mode=margin_mode or self.args.margin_mode,
+            position_mode=position_mode or self.args.position_mode,
         )
 
         # Setup enhanced logger with new features
-        self._setup_enhanced_logging(
+        logger = setup_enhanced_logging(
+            name=APP_NAME,
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
@@ -140,78 +143,6 @@ class MetaExpert(Service):
         )
         logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
 
-    def _setup_enhanced_logging(
-        self,
-        log_level: str,
-        log_file: str,
-        trade_log_file: str,
-        error_log_file: str,
-        log_to_console: bool,
-        structured_logging: bool,
-        async_logging: bool,
-    ) -> None:
-        """Set up enhanced logging with the new features.
-
-        Args:
-            log_level: Logging level
-            log_file: Main log file
-            trade_log_file: Trade execution log file
-            error_log_file: Error-specific log file
-            log_to_console: Whether to print logs to console
-            structured_logging: Whether to use structured JSON logging
-            async_logging: Whether to use asynchronous logging
-        """
-        try:
-            # Configure centralized logging system
-            config = {
-                "default_level": log_level,
-                "handlers": {
-                    "console": {
-                        "level": log_level,
-                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
-                        "structured": structured_logging,
-                    },
-                    "file": {
-                        "level": log_level,
-                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
-                        "structured": structured_logging,
-                        "filename": log_file,
-                        "max_size": 10485760,  # 10MB
-                        "backup_count": 5,
-                    },
-                    "trade_file": {
-                        "level": "INFO",
-                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
-                        "structured": structured_logging,
-                        "filename": trade_log_file,
-                        "max_size": 10485760,  # 10MB
-                        "backup_count": 5,
-                    },
-                    "error_file": {
-                        "level": "ERROR",
-                        "format": "[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
-                        "structured": structured_logging,
-                        "filename": error_log_file,
-                        "max_size": 10485760,  # 10MB
-                        "backup_count": 5,
-                    },
-                },
-                "structured_logging": structured_logging,
-                "async_logging": async_logging,
-            }
-
-            # Apply configuration
-            result = configure_logging(config)
-            if result["status"] == "error":
-                logger.warning(
-                    "Failed to configure enhanced logging: %s", result["message"]
-                )
-
-            # Note: We don't reassign the global logger here to avoid the syntax error
-            # The enhanced features are configured through the centralized configuration system
-
-        except Exception as e:
-            logger.error("Failed to set up enhanced logging: %s", str(e))
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.strategy_name}"
@@ -251,7 +182,11 @@ class MetaExpert(Service):
             logger.info("Expert initialized successfully")
 
             # Register the expert with the process
-            ws_url = self.client.get_websocket_url(self.symbol, self.timeframe)
+            if self.symbol is None:
+                raise ValueError("Cannot get websocket URL without a symbol.")
+            if self.timeframe is None:
+                raise ValueError("Cannot get websocket URL without a timeframe.")
+            ws_url = self.client.get_websocket_url(self.symbol, self.timeframe.get_name())
             Process.processing(ws_url)
 
             # Main event loop

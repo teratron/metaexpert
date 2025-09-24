@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from importlib import import_module
 from typing import Any
 
+
 @dataclass
 class Exchange(ABC):
     """Abstract base class for stock exchanges."""
@@ -17,14 +18,24 @@ class Exchange(ABC):
             base_url: str | None = None,
             market_type: str | None = None,
             contract_type: str | None = None,
+            testnet: bool = False,
+            proxy: dict[str, str] | None = None,
+            margin_mode: str | None = None,
+            position_mode: str | None = None,
             **kwargs: Any
     ):
-        self.exchange_name = exchange_name.lower()
+        self.exchange_name = exchange_name.lower().strip() if isinstance(exchange_name, str) else None
         self.api_key = api_key
         self.api_secret = api_secret
+        self.api_passphrase = api_passphrase
+        self.subaccount = subaccount
         self.base_url = base_url
-        self.market_type = market_type.lower() if isinstance(market_type, str) else None
-        self.contract_type = contract_type.lower() if isinstance(contract_type, str) else None
+        self.market_type = market_type.lower().strip() if isinstance(market_type, str) else None
+        self.contract_type = contract_type.lower().strip() if isinstance(contract_type, str) else None
+        self.testnet = testnet
+        self.proxy = proxy
+        self.margin_mode = margin_mode.lower().strip() if isinstance(margin_mode, str) else None
+        self.position_mode = position_mode.lower().strip() if isinstance(position_mode, str) else None
         self.client: Any | None = None
 
     @staticmethod

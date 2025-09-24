@@ -162,7 +162,7 @@ def get_logger(name: str | None = None) -> Logger:
         from .logger_factory import get_logger as factory_get_logger
 
         # Use the logger factory to get the logger
-        return factory_get_logger(name)
+        return factory_get_logger(name or LOG_NAME)
     except Exception as e:
         # Handle any unexpected errors
         error_msg = f"Error getting logger '{name}': {e!s}"

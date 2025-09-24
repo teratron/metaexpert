@@ -18,15 +18,17 @@ class TradeMode(Enum):
         "description": "Backtesting mode"
     }
 
+    def get_name(self) -> str:
+        """Return the name of the trading mode."""
+        name = self.value["name"]
+        if isinstance(name, str):
+            return name
+        raise TypeError(f"Trade mode name must be a string, got {type(name).__name__}")
+
     @classmethod
     def get_mode_from(cls, name: str) -> Self | None:
         """Get the mode type from a string."""
         for item in cls:
-            if item.value.get("name") == name.lower():
+            if item.get_name() == name.lower():
                 return item
-
         return None
-
-    def __str__(self) -> str:
-        """Return the name of the trading mode."""
-        return self.value["name"]
