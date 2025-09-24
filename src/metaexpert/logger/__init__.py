@@ -37,7 +37,7 @@ from typing import Any
 
 from metaexpert.logger.async_log_handler import AsyncLogHandler
 
-# Legacy imports for backward compatibility
+# Configuration imports
 from metaexpert.logger.enhanced_config import (
     ASYNC_LOGGING_ENABLED,
     DEFAULT_LOG_FILE_PATH,
@@ -51,10 +51,10 @@ from metaexpert.logger.enhanced_config import (
     STRUCTURED_LOGGING_ENABLED,
     LoggingConfig,
 )
+
+# Integration imports
 from metaexpert.logger.integration import (
     configure_logging as configure_expert_logging,
-)
-from metaexpert.logger.integration import (
     create_handlers_config,
     get_logger_config,
     log_expert_error,
@@ -64,7 +64,7 @@ from metaexpert.logger.integration import (
     validate_logging_params,
 )
 
-# Import core components
+# Core components
 from metaexpert.logger.log_manager import LogManager, log_manager
 from metaexpert.logger.structured_formatter import (
     ErrorFormatter,
@@ -225,6 +225,7 @@ def shutdown_logging() -> None:
 
 
 # Legacy compatibility functions
+# Legacy helper functions - kept for backward compatibility
 def _create_formatter(use_structured: bool, log_format: str) -> logging.Formatter:
     """Legacy formatter creation function."""
     if use_structured:
@@ -260,6 +261,7 @@ def _create_file_handler(handler_config: dict[str, Any]) -> logging.Handler | No
 
 # Export all public components
 __all__ = [
+    # Configuration constants
     "ASYNC_LOGGING_ENABLED",
     "DEFAULT_LOG_FILE_PATH",
     "LOG_BACKUP_COUNT",
@@ -268,35 +270,34 @@ __all__ = [
     "LOG_FORMAT",
     "LOG_LEVEL",
     "LOG_MAX_SIZE",
-    # Legacy constants
     "LOG_NAME",
     "STRUCTURED_LOGGING_ENABLED",
+    # Classes
     "AsyncLogHandler",
     "ErrorFormatter",
-    # Classes
     "LogManager",
     "LoggingConfig",
     "StructuredFormatter",
     "TradeFormatter",
-    # Expert integration functions
+    # Main functions
     "configure_expert_logging",
     "configure_from_template_params",
-    # Main functions
     "configure_logging",
-    "create_handlers_config",
     "get_error_logger",
     "get_logger",
-    "get_logger_config",
     "get_main_logger",
     "get_trade_logger",
     "log_error",
+    "log_trade",
+    "shutdown_logging",
+    # Integration functions
+    "create_handlers_config",
+    "get_logger_config",
     "log_expert_error",
     "log_expert_shutdown",
     "log_expert_startup",
+    "log_trade_execution",
+    "validate_logging_params",
     # Global instances
     "log_manager",
-    "log_trade",
-    "log_trade_execution",
-    "shutdown_logging",
-    "validate_logging_params",
 ]
