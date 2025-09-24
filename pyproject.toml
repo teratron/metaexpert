@@ -13,7 +13,14 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.12",
 ]
-keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
+keywords = [
+    "trading",
+    "crypto",
+    "binance",
+    "technical analysis",
+    "finance",
+    "investment",
+]
 dependencies = [
     "websocket-client>=1.8.0",
     "matplotlib>=3.10.3",
@@ -38,7 +45,7 @@ dev = [
     "pyleak>=0.1.11",
     "pandas-stubs>=2.2.3.250527",
     "pyright>=1.1.405",
-    "specify-cli"
+    "specify-cli",
 ]
 test = [
     "pytest>=8.3.4",
@@ -86,7 +93,7 @@ select = [
 ignore = [
     "E501",   # Line too long (handled by formatter)
     "B008",   # Do not perform function calls in argument defaults
-    "RUF012"  # Mutable class attributes should be annotated with `typing.ClassVar`
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 
 [tool.ruff.format]
@@ -103,44 +110,44 @@ venvPath = "."
 venv = ".venv"
 pythonPlatform = "Darwin"
 include = [
-    "metaexpert",
+    "src/metaexpert",
     "examples",
-    "tests"
-  ]
+    "tests",
+]
 exclude = [
     "**/node_modules",
     "**/__pycache__",
     ".venv",
     "venv",
     "build",
-    "dist"
-  ]
-  ignore = [
-    "tests/**"
-  ]
-  defineConstant = { "DEBUG" = true }
-  typeshedPath = ""
-  stubPath = ""
-  useLibraryCodeForTypes = true
-  typeCheckingMode = "basic"
-  strictListInference = true
-  strictDictionaryInference = true
-  strictSetInference = true
-  enableTypeIgnoreComments = true
-  reportMissingImports = "error"
-  reportMissingTypeStubs = "warning"
-  reportIncompatibleMethodOverride = "error"
-  reportIncompatibleVariableOverride = "error"
-  reportMissingSuperCall = "none"
-  reportUninitializedInstanceVariable = "error"
-  reportInvalidTypeVarUse = "error"
-  reportCallInDefaultInitializer = "none"
-  reportPropertyTypeMismatch = "error"
-  reportUntypedFunctionDecorator = "warning"
-  reportUntypedClassDecorator = "warning"
-  reportUntypedBaseClass = "error"
-  reportUntypedNamedTuple = "error"
-  reportPrivateUsage = "warning"
-  reportConstantRedefinition = "error"
-  reportDeprecated = "warning"
-  reportInconsistentConstructor = "error"
+    "dist",
+]
+ignore = [
+    "tests/**",
+]
+defineConstant = { "DEBUG" = true }
+typeshedPath = ""
+stubPath = ""
+useLibraryCodeForTypes = true
+typeCheckingMode = "basic"
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
+enableTypeIgnoreComments = true
+reportMissingImports = "error"
+reportMissingTypeStubs = "warning"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportMissingSuperCall = "none"
+reportUninitializedInstanceVariable = "error"
+reportInvalidTypeVarUse = "error"
+reportCallInDefaultInitializer = "none"
+reportPropertyTypeMismatch = "error"
+reportUntypedFunctionDecorator = "warning"
+reportUntypedClassDecorator = "warning"
+reportUntypedBaseClass = "error"
+reportUntypedNamedTuple = "error"
+reportPrivateUsage = "warning"
+reportConstantRedefinition = "error"
+reportDeprecated = "warning"
+reportInconsistentConstructor = "error"
