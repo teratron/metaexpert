@@ -4,7 +4,7 @@ import argparse
 import sys
 
 from metaexpert.cli import add_template_commands
-from metaexpert.template_creator import create_expert_from_template
+from metaexpert.template.template_creator import create_expert_from_template
 
 
 def main() -> None:

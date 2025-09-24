@@ -1,7 +1,7 @@
 """Integration test for exception handling in existing components."""
 
 import pytest
-from src.metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     MetaExpertError,
     ConfigurationError,
     InvalidConfigurationError,

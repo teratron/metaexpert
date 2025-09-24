@@ -2,7 +2,7 @@
 
 import time
 import pytest
-from src.metaexpert.exceptions import MetaExpertError
+from metaexpert.core.exceptions import MetaExpertError
 
 
 def test_exception_creation_performance():

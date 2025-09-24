@@ -7,9 +7,9 @@ from dotenv import load_dotenv  # type: ignore
 _ = load_dotenv()
 
 # Binance
-BINANCE_API_KEY: str = os.getenv("BINANCE_API_KEY", "")
-BINANCE_API_SECRET: str = os.getenv("BINANCE_API_SECRET", "")
-BINANCE_BASE_URL: str = os.getenv("BINANCE_BASE_URL", "")
+BINANCE_API_KEY: str = os.getenv("API_KEY", "")
+BINANCE_API_SECRET: str = os.getenv("API_SECRET", "")
+BINANCE_BASE_URL: str = os.getenv("BASE_URL", "")
 
 # Spot trading
 BINANCE_SPOT_PACKAGE: str = "binance-connector"

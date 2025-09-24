@@ -14,6 +14,47 @@ class HelpDocumentationGenerator:
         """
         self.group_manager = group_manager
 
+    @staticmethod
+    def _format_argument_display(arg) -> str:
+        """Format argument display string based on argument properties.
+
+        Args:
+            arg: Argument object with properties like name, short_name, type, choices
+
+        Returns:
+            Formatted argument display string
+        """
+        if arg.short_name:
+            arg_display = f"  {arg.short_name}, --{arg.name}"
+        else:
+            arg_display = f"  --{arg.name}"
+
+        # Add type and choices information
+        if arg.type != "string":
+            arg_display += f" {arg.type.upper()}"
+        if arg.choices:
+            arg_display += f" {{{', '.join(arg.choices)}}}"
+
+        return arg_display
+
+    def _add_argument_to_help_text(self, help_text: str, arg) -> str:
+        """Add argument information to help text with proper formatting.
+
+        Args:
+            help_text: Current help text being built
+            arg: Argument object with properties like help_text, default_value
+
+        Returns:
+            Updated help text with argument information added
+        """
+        arg_display = self._format_argument_display(arg)
+        help_text += f"{arg_display:<30} {arg.help_text}\n"
+
+        # Add default value if present
+        if arg.default_value is not None:
+            help_text += f"{'':<30} (default: {arg.default_value})\n"
+        return help_text
+
     def generate_help_text(
         self,
         program_name: str = "metaexpert",
@@ -43,23 +84,7 @@ class HelpDocumentationGenerator:
             group_args = self.group_manager.get_group_arguments(group.name)
             if group_args:
                 for arg in group_args:
-                    # Format argument display
-                    if arg.short_name:
-                        arg_display = f"  {arg.short_name}, --{arg.name}"
-                    else:
-                        arg_display = f"  --{arg.name}"
-
-                    # Add type and choices information
-                    if arg.type != "string":
-                        arg_display += f" {arg.type.upper()}"
-                    if arg.choices:
-                        arg_display += f" {{{', '.join(arg.choices)}}}"
-
-                    help_text += f"{arg_display:<30} {arg.help_text}\n"
-
-                    # Add default value if present
-                    if arg.default_value is not None:
-                        help_text += f"{'':<30} (default: {arg.default_value})\n"
+                    help_text = self._add_argument_to_help_text(help_text, arg)
             else:
                 help_text += "  No arguments in this group.\n"
 
@@ -87,29 +112,14 @@ class HelpDocumentationGenerator:
         group_args = self.group_manager.get_group_arguments(group_name)
         if group_args:
             for arg in group_args:
-                # Format argument display
-                if arg.short_name:
-                    arg_display = f"  {arg.short_name}, --{arg.name}"
-                else:
-                    arg_display = f"  --{arg.name}"
-
-                # Add type and choices information
-                if arg.type != "string":
-                    arg_display += f" {arg.type.upper()}"
-                if arg.choices:
-                    arg_display += f" {{{', '.join(arg.choices)}}}"
-
-                help_text += f"{arg_display:<30} {arg.help_text}\n"
-
-                # Add default value if present
-                if arg.default_value is not None:
-                    help_text += f"{'':<30} (default: {arg.default_value})\n"
+                help_text = self._add_argument_to_help_text(help_text, arg)
         else:
             help_text += "  No arguments in this group.\n"
 
         return help_text
 
-    def generate_usage_examples(self) -> str:
+    @staticmethod
+    def generate_usage_examples() -> str:
         """Generate usage examples for common scenarios.
 
         Returns:
@@ -125,7 +135,7 @@ Examples:
 
   # Run in different modes
   python template.py --trade-mode paper
-  python template.py --trade-mode backtest --start-date 2024-01-01 --end-date 2024-12-31
+  python template.py --trade-mode backtest --start-date 2024-01-01 --end-date 2025-12-31
   python template.py --trade-mode live --api-key YOUR_API_KEY --api-secret YOUR_API_SECRET
 
   # Configure risk management

@@ -4,8 +4,10 @@ import json
 from functools import wraps
 from typing import Any
 
-from metaexpert.exceptions import ConfigurationError as MetaExpertConfigurationError
-from metaexpert.exceptions import ProcessError
+from metaexpert.core.exceptions import (
+    ConfigurationError as MetaExpertConfigurationError,
+)
+from metaexpert.core.exceptions import ProcessError
 from metaexpert.logger import get_logger
 
 # Get the logger instance

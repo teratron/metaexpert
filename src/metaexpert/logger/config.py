@@ -3,7 +3,7 @@
 import os
 from typing import Any
 
-from dotenv import load_dotenv  # type: ignore
+from dotenv import load_dotenv
 
 from metaexpert.config import APP_NAME
 

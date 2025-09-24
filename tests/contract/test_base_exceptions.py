@@ -1,7 +1,7 @@
 """Contract test for base exceptions in the MetaExpert library."""
 
 import pytest
-from src.metaexpert.exceptions import MetaExpertError
+from metaexpert.core.exceptions import MetaExpertError
 
 
 def test_metaexpert_error_creation():

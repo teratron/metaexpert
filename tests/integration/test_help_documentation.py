@@ -2,7 +2,7 @@
 
 import pytest
 from argparse import ArgumentParser
-from src.metaexpert.cli.argument_parser import parse_arguments
+from metaexpert.cli.argument_parser import parse_arguments
 
 # Test that help documentation is properly formatted
 def test_help_documentation_format():

@@ -1,7 +1,7 @@
 """Unit tests for argument validation utilities."""
 
 import pytest
-from src.metaexpert.cli.argument_validation import ArgumentValidationUtils, ArgumentValidationError
+from metaexpert.cli.argument_validation import ArgumentValidationUtils, ArgumentValidationError
 
 
 def test_validate_exchange():

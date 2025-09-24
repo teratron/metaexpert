@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Self
 
-from metaexpert._contract_type import ContractType
+from ._contract_type import ContractType
 
 
 class MarketType(Enum):

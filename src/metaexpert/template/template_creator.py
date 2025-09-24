@@ -3,7 +3,7 @@
 from typing import Any
 
 from metaexpert.logger import get_logger
-from metaexpert.services.template_service import TemplateCreationService
+from metaexpert.template.template_service import TemplateCreationService
 
 # Get the logger instance
 logger = get_logger("metaexpert.template_creator")

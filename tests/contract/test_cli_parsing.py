@@ -1,6 +1,6 @@
 # CLI Parsing Contract Test
 
-from src.metaexpert.cli.endpoint import parse_cli_arguments
+from metaexpert.cli.endpoint import parse_cli_arguments
 
 
 # Test that the CLI parsing endpoint works correctly

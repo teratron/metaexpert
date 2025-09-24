@@ -65,54 +65,6 @@ class Trade:
     def close_all_orders(self, side: str) -> bool:
         return False
 
-    # @property
-    # def lots(self) -> float:
-    #     return self._lots
-    #
-    # @lots.setter
-    # def lots(self, value: float) -> None:
-    #     self._lots = value
-    #
-    # @property
-    # def stop_loss_pct(self) -> float:
-    #     return self._stop_loss
-    #
-    # @stop_loss_pct.setter
-    # def stop_loss_pct(self, value: float) -> None:
-    #     self._stop_loss = value
-    #
-    # @property
-    # def take_profit_pct(self) -> float:
-    #     return self._take_profit
-    #
-    # @take_profit_pct.setter
-    # def take_profit_pct(self, value: float) -> None:
-    #     self._take_profit = value
-    #
-    # @property
-    # def trailing_stop_pct(self) -> float:
-    #     return self._trailing_stop
-    #
-    # @trailing_stop_pct.setter
-    # def trailing_stop_pct(self, value: float) -> None:
-    #     self._trailing_stop = value
-    #
-    # @property
-    # def positions(self) -> int:
-    #     return self._positions
-    #
-    # @positions.setter
-    # def positions(self, value: int) -> None:
-    #     self._positions = value
-    #
-    # @property
-    # def slippage(self) -> int:
-    #     return self._slippage
-    #
-    # @slippage.setter
-    # def slippage(self, value: int) -> None:
-    #     self._slippage = value
-
 #    datetime          m_long_timer;
 #    datetime          m_short_timer;
 #    int               m_long_position;

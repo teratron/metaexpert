@@ -10,7 +10,7 @@ The exceptions module is part of the MetaExpert library. No additional installat
 
 ### Importing Exceptions
 ```python
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     MetaExpertError,
     ConfigurationError,
     APIError,
@@ -21,7 +21,7 @@ from metaexpert.exceptions import (
 
 ### Handling Configuration Errors
 ```python
-from metaexpert.exceptions import InvalidConfigurationError, MissingConfigurationError
+from metaexpert.core.exceptions import InvalidConfigurationError, MissingConfigurationError
 
 try:
     # Some code that might raise configuration errors
@@ -34,7 +34,7 @@ except MissingConfigurationError as e:
 
 ### Handling API Errors
 ```python
-from metaexpert.exceptions import AuthenticationError, RateLimitError, NetworkError
+from metaexpert.core.exceptions import AuthenticationError, RateLimitError, NetworkError
 
 try:
     # Some code that interacts with an exchange API
@@ -51,7 +51,7 @@ except NetworkError as e:
 
 ### Handling Trading Errors
 ```python
-from metaexpert.exceptions import InsufficientFundsError, InvalidOrderError
+from metaexpert.core.exceptions import InsufficientFundsError, InvalidOrderError
 
 try:
     # Some code that places trades
@@ -64,7 +64,7 @@ except InvalidOrderError as e:
 
 ### Custom Exception Handling
 ```python
-from metaexpert.exceptions import MetaExpertError
+from metaexpert.core.exceptions import MetaExpertError
 
 try:
     # Some code that might raise MetaExpert exceptions
@@ -85,7 +85,7 @@ except MetaExpertError as e:
 ```python
 import logging
 from metaexpert import MetaExpert
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     AuthenticationError,
     InsufficientFundsError,
     NetworkError,

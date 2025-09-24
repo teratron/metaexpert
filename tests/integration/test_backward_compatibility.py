@@ -3,7 +3,7 @@
 import pytest
 import sys
 from io import StringIO
-from src.metaexpert.cli.argument_parser import parse_arguments
+from metaexpert.cli.argument_parser import parse_arguments
 
 # Test that existing command-line usage patterns continue to work
 def test_backward_compatibility():

@@ -1,7 +1,7 @@
 """Contract test for POST /logging/configure endpoint."""
 
 import pytest
-from src.metaexpert.logger.logging_endpoint import configure_logging_endpoint
+from metaexpert.logger.logging_endpoint import configure_logging_endpoint
 
 
 def test_logging_configuration_success():

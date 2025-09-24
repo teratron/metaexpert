@@ -291,7 +291,7 @@ ShutdownError(component: str, message: Optional[str] = None)
 ### Basic Exception Handling
 
 ```python
-from metaexpert.exceptions import MetaExpertError
+from metaexpert.core.exceptions import MetaExpertError
 
 try:
     # Some operation that might fail
@@ -303,7 +303,7 @@ except MetaExpertError as e:
 ### Handling Specific Exceptions
 
 ```python
-from metaexpert.exceptions import InsufficientFundsError
+from metaexpert.core.exceptions import InsufficientFundsError
 
 try:
     # Trading operation
@@ -315,7 +315,7 @@ except InsufficientFundsError as e:
 ### Handling Multiple Exception Types
 
 ```python
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     AuthenticationError,
     NetworkError,
     RateLimitError

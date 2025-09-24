@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from datetime import datetime
 
-from metaexpert._size_type import SizeType
-from metaexpert._timeframe import Timeframe
+from ._size_type import SizeType
+from ._timeframe import Timeframe
 
 
 @dataclass
@@ -47,18 +46,18 @@ class Expert:
     trend_filter: bool
 
     # Internal State
-    _label: str | None = None
-    _lots_min: float = 0.0
-    _lots_max: float = 0.0
-    _lots_step: float = 0.0
-    _long_time: datetime | None = None
-    _long_positions: int = 0
-    _long_profit: float = 0.0
-    _long_lots: float = 0.0
-    _short_time: datetime | None = None
-    _short_positions: int = 0
-    _short_profit: float = 0.0
-    _short_lots: float = 0.0
-    _digits: int = 0
-    _digits_format: str | None = None
-    _point: float = 0.0
+    # _label: str | None = None
+    # _lots_min: float = 0.0
+    # _lots_max: float = 0.0
+    # _lots_step: float = 0.0
+    # _long_time: datetime | None = None
+    # _long_positions: int = 0
+    # _long_profit: float = 0.0
+    # _long_lots: float = 0.0
+    # _short_time: datetime | None = None
+    # _short_positions: int = 0
+    # _short_profit: float = 0.0
+    # _short_lots: float = 0.0
+    # _digits: int = 0
+    # _digits_format: str | None = None
+    # _point: float = 0.0

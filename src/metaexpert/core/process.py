@@ -6,10 +6,11 @@ from threading import Thread
 from types import ModuleType
 from typing import Self
 
-from metaexpert._event_handler import EventHandler
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
-from metaexpert.websocket._spot import WebSocketClient
+from metaexpert.websocket import WebSocketClient
+
+from ._event_handler import EventHandler
 
 logger: Logger = get_logger(APP_NAME)
 

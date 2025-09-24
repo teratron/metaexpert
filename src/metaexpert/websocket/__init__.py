@@ -4,7 +4,10 @@ from abc import ABC, abstractmethod
 
 from websocket import WebSocket, WebSocketApp
 
-from metaexpert import logger
+from metaexpert.logger import get_logger
+
+# Get the logger instance
+logger = get_logger("metaexpert.websocket")
 
 
 class WebSocketClient(WebSocketApp, ABC):
@@ -19,21 +22,26 @@ class WebSocketClient(WebSocketApp, ABC):
         )
         self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
 
+    # def start(self) -> None:
+    #     """Start the WebSocket client."""
+    #     logger.info(f"Starting WebSocket client for {self.url}")
+    #     self.run_forever()
+
     @abstractmethod
     def on_open(self, ws: WebSocket) -> None:
-        logger.debug("Websocket connection opened")
+        logger.debug(f"{ws} Websocket connection opened")
 
     @abstractmethod
     def on_close(self, ws: WebSocket, status: int, message: str) -> None:
-        logger.debug("Websocket connection closed: %d %s", status, message)
+        logger.debug(f"{ws} Websocket connection closed: {status} {message}")
 
     @abstractmethod
     def on_error(self, ws: WebSocket, error: Exception) -> None:
-        logger.error("Websocket connection error: %s", error)
+        logger.error(f"{ws} Websocket connection error: {error}")
         logger.error(traceback.format_exc())
 
     @abstractmethod
     def on_message(self, ws: WebSocket, message: str) -> None:
-        print(f"Received message: {message}")
+        logger.debug(f"{ws} Received message: {message}")
         data = json.loads(message)
-        print(f"Parsed message: {data}")
+        logger.debug(f"Parsed message: {data}")

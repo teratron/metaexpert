@@ -2,7 +2,7 @@
 
 import pytest
 from argparse import ArgumentParser
-from src.metaexpert.cli.argument_parser import parse_arguments
+from metaexpert.cli.argument_parser import parse_arguments
 
 # Test that arguments are properly grouped in help output
 def test_argument_grouping():

@@ -1,12 +1,12 @@
 from collections.abc import Callable, Coroutine
 from typing import Any
 
-from metaexpert import Process
-from metaexpert._bar import Bar
-from metaexpert._expert import Expert
-from metaexpert._size_type import SizeType
-from metaexpert._timeframe import Timeframe
-from metaexpert._timer import Timer
+from ._bar import Bar
+from ._size_type import SizeType
+from ._timeframe import Timeframe
+from ._timer import Timer
+from .expert import Expert
+from .process import Process
 from metaexpert.config import APP_NAME
 from metaexpert.logger import Logger, get_logger
 

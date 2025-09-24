@@ -22,11 +22,11 @@ from datetime import datetime
 from pathlib import Path
 from types import ModuleType
 
-from metaexpert._process import Process
-from metaexpert._service import Service
-from metaexpert._trade_mode import TradeMode
 from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
+from metaexpert.core._trade_mode import TradeMode
+from metaexpert.core.events import Service
+from metaexpert.core.process import Process
 from metaexpert.exchanges import Exchange
 from metaexpert.logger import Logger, configure_logging, setup_logger
 

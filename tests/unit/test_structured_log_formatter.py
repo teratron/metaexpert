@@ -3,7 +3,7 @@
 import pytest
 import json
 import logging
-from src.metaexpert.logger.structured_log_formatter import StructuredLogFormatter
+from metaexpert.logger.structured_log_formatter import StructuredLogFormatter
 
 # Test that the structured log formatter produces valid JSON
 def test_structured_log_formatter_json():

@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from importlib import import_module
 from typing import Any
 
-
+@dataclass
 class Exchange(ABC):
     """Abstract base class for stock exchanges."""
 
@@ -11,12 +12,14 @@ class Exchange(ABC):
             exchange_name: str | None = None,
             api_key: str | None = None,
             api_secret: str | None = None,
+            api_passphrase: str | None = None,
+            subaccount: str | None = None,
             base_url: str | None = None,
             market_type: str | None = None,
             contract_type: str | None = None,
             **kwargs: Any
     ):
-        self.exchange_name = exchange_name
+        self.exchange_name = exchange_name.lower()
         self.api_key = api_key
         self.api_secret = api_secret
         self.base_url = base_url
@@ -30,7 +33,7 @@ class Exchange(ABC):
         if not exchange_name:
             raise ValueError("Stock exchange name must be specified.")
         try:
-            module = import_module(f"metaexpert.exchanges.{exchange_name.lower()}")
+            module = import_module(f"metaexpert.exchanges.{exchange_name}")
             exchange_class: type[Exchange] = module.Adapter
             return exchange_class(exchange_name=exchange_name, **kwargs)
         except (ImportError, AttributeError) as e:

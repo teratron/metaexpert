@@ -2,7 +2,7 @@
 
 import re
 
-from metaexpert.exceptions import ValidationError
+from metaexpert.core.exceptions import ValidationError
 from metaexpert.logger import get_logger
 
 # Get the logger instance

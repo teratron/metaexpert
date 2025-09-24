@@ -229,7 +229,7 @@ metaexpert validate exchange=binance symbol=BTCUSDT timeframe=1h
 You can also create templates programmatically:
 
 ```python
-from metaexpert.template_creator import create_expert_from_template
+from metaexpert.template.template_creator import create_expert_from_template
 
 # Create a new expert file from template
 create_expert_from_template("./strategies/my_strategy.py")

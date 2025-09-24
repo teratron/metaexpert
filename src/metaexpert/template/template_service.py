@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any
 
 from metaexpert.models.configuration_parameter import ConfigurationParameter
-from metaexpert.models.template_file import TemplateFile
+from metaexpert.template import TemplateFile
 
 
 class TemplateCreationService:

@@ -20,7 +20,7 @@ Each test file validates one aspect of the exception module contract.
 ### test_base_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import MetaExpertError
+from metaexpert.core.exceptions import MetaExpertError
 
 def test_metaexpert_error_inheritance():
     """Test that MetaExpertError inherits from Exception"""
@@ -41,7 +41,7 @@ def test_metaexpert_error_with_args():
 ### test_configuration_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     ConfigurationError,
     InvalidConfigurationError,
     MissingConfigurationError
@@ -77,7 +77,7 @@ def test_missing_configuration_error_message():
 ### test_api_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     APIError,
     AuthenticationError,
     RateLimitError,
@@ -126,7 +126,7 @@ def test_network_error_optional_reason():
 ### test_trading_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     TradingError,
     InsufficientFundsError,
     InvalidOrderError,
@@ -171,7 +171,7 @@ def test_order_not_found_error_message():
 ### test_validation_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     ValidationError,
     InvalidDataError,
     MissingDataError
@@ -208,7 +208,7 @@ def test_missing_data_error_message():
 ### test_market_data_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     MarketDataError,
     UnsupportedPairError,
     InvalidTimeframeError
@@ -242,7 +242,7 @@ def test_invalid_timeframe_error_message():
 ### test_process_exceptions.py
 ```python
 import pytest
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     ProcessError,
     InitializationError,
     ShutdownError

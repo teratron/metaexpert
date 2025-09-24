@@ -2,8 +2,6 @@
 
 import json
 import logging
-import traceback
-from typing import Any, Dict
 
 
 class StructuredLogFormatter(logging.Formatter):
@@ -158,6 +156,6 @@ class KeyValueLogFormatter(logging.Formatter):
             error_message = f"[UNEXPECTED_ERROR] Failed to format log record - Error: {str(e)}"
             try:
                 return f'timestamp="{getattr(record, "asctime", "unknown")}" level="{getattr(record, "levelname", "UNKNOWN")}" message="Failed to format log record" error="{str(e)}"'
-            except:
+            except Exception:
                 # Ultimate fallback
                 return error_message

@@ -4,11 +4,10 @@ import pytest
 import time
 import tempfile
 import os
-from unittest.mock import patch, mock_open
 
-from metaexpert.services.template_service import TemplateCreationService
+from metaexpert.template.template_service import TemplateCreationService
 from metaexpert.services.config_service import ConfigurationManagementService
-from metaexpert.template_creator import create_expert_from_template
+from metaexpert.template.template_creator import create_expert_from_template
 
 
 def test_template_creation_performance():

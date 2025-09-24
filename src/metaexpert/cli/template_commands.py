@@ -4,7 +4,7 @@ import argparse
 import sys
 
 from metaexpert.services.config_service import ConfigurationManagementService
-from metaexpert.services.template_service import TemplateCreationService
+from metaexpert.template.template_service import TemplateCreationService
 
 
 def create_template(args: argparse.Namespace) -> None:

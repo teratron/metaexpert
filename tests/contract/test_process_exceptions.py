@@ -1,7 +1,7 @@
 """Contract test for process exceptions in the MetaExpert library."""
 
 import pytest
-from src.metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     ProcessError,
     InitializationError,
     ShutdownError,

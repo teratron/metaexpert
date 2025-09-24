@@ -1,7 +1,7 @@
 """Unit tests for exception classes in the MetaExpert library."""
 
 import pytest
-from src.metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     MetaExpertError,
     ConfigurationError,
     InvalidConfigurationError,

@@ -7,7 +7,7 @@ This document describes the API contract for the MetaExpert exceptions module. T
 
 ### Import
 ```python
-from metaexpert.exceptions import (
+from metaexpert.core.exceptions import (
     MetaExpertError,
     ConfigurationError,
     InvalidConfigurationError,
