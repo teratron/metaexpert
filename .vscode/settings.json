@@ -1,0 +1,32 @@
+{
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "bash",
+            "args": [
+                "-l"
+            ]
+        }
+    },
+    "terminal.integrated.profiles.windows": {
+        "cmd": {
+            "path": "cmd.exe",
+            "args": [
+                "/k"
+            ]
+        },
+        "powershell": {
+            "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+                "-NoExit"
+            ]
+        },
+        "pwsh": {
+            "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+            "args": [
+                "-NoExit"
+            ]
+        }
+    },
+    "task.allowAutomaticTasks": "on",
+    "task.autoDetect": "on"
+}
