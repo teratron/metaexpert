@@ -35,7 +35,6 @@ repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
 metaexpert = "metaexpert.__main__:main"
-#binance-ema = "examples/expert_binance_ema:main"
 
 [dependency-groups]
 dev = [
@@ -52,29 +51,29 @@ test = [
     "pytest-asyncio>=1.2.0",
     "pytest-cov>=7.0.0",
 ]
-lint = ["ruff>=0.11.4"]
+lint = [
+    "ruff>=0.11.4",
+    ]
 docs = []
 
 [tool.uv]
 package = true
 link-mode = "copy"
-default-groups = ["dev", "test", "lint", "docs"]
+default-groups = [
+    "dev",
+    "test",
+    "lint",
+    "docs",
+]
 
 [tool.uv.sources]
 specify-cli = { git = "git+https://github.com/github/spec-kit" }
-#metaexpert-binance-api = { path = "packages/api/binance" }
-#metaexpert-bybit-api = { path = "packages/api/bybit" }
-#metaexpert-binance-api = { workspace = true }
-#metaexpert-bybit-api = { workspace = true }
-#metaexpert-examples = { path = "examples" }
-#expert-binance-ema = { path = "examples/expert_binance_ema" }
-#expert-bybit-rsi = { path = "examples/expert_bybit_rsi" }
 
 [tool.uv.workspace]
 members = [
-    "packages/app",
     "examples/expert_binance_ema",
     "examples/expert_bybit_rsi",
+    "examples/expert_okx_macd",
 ]
 
 [tool.ruff.lint]
@@ -118,7 +117,6 @@ exclude = [
     "**/node_modules",
     "**/__pycache__",
     ".venv",
-    "venv",
     "build",
     "dist",
 ]

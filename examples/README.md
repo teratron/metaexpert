@@ -6,6 +6,7 @@ This directory contains example trading experts that demonstrate how to use the 
 
 1. [Binance EMA Expert](expert_binance_ema/) - An Exponential Moving Average strategy for Binance
 2. [Bybit RSI Expert](expert_bybit_rsi/) - A Relative Strength Index strategy for Bybit
+3. [OKX MACD Expert](expert_okx_macd/) - A Moving Average Convergence Divergence strategy for OKX
 
 ## Getting Started
 

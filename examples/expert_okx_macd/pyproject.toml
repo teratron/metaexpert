@@ -1,7 +1,7 @@
 [project]
-name = "expert-bybit-rsi"
+name = "expert-okx-macd"
 version = "0.1.0"
-description = "RSI expert for Bybit"
+description = "MACD expert for OKX"
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.12"

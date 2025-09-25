@@ -13,12 +13,12 @@ expert = MetaExpert(
     # --- Required Parameters ---
     exchange="binance",  # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin'
     # --- API Credentials (required for live mode) ---
-    api_key=os.getenv("BINANCE_API_KEY"),  # User to provide API key
-    api_secret=os.getenv("BINANCE_API_SECRET"),  # User to provide secret key
+    api_key=os.getenv("API_KEY"),  # User to provide API key
+    api_secret=os.getenv("API_SECRET"),  # User to provide secret key
     api_passphrase=None,  # Required only for OKX/KuCoin
     # --- Connection Settings ---
     subaccount=None,  # For Bybit multi-account (optional)
-    base_url=os.getenv("BINANCE_BASE_URL"),  # Custom API URL (optional)
+    base_url=os.getenv("BASE_URL"),  # Custom API URL (optional)
     testnet=True,  # True to use exchange testnet
     proxy=None,  # Proxy settings: dict like {"http": "...", "https": "..."} (optional)
     # --- Market & Trading Mode ---
