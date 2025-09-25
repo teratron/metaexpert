@@ -180,5 +180,5 @@ env.bak/
 .cursor/commands/
 .qwen/commands/
 .kilocode/workflows/
-.specify/scripts/
-.specify/templates/
+#.specify/scripts/
+#.specify/templates/
