@@ -122,11 +122,7 @@ class MetaExpert(Service):
             error_log_file=error_log_file,
             log_to_console=log_to_console,
             structured_logging=structured_logging,
-            async_logging=async_logging,
-            rate_limit=rate_limit,
-            enable_metrics=enable_metrics,
-            persist_state=persist_state,
-            state_file=state_file,
+            async_logging=async_logging
         )
 
         # Initialize stock exchange
