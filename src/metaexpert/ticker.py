@@ -1,10 +1,9 @@
-import asyncio
 import json
 import time
 from datetime import datetime
 
 import matplotlib.pyplot as plt
-from websocket import WebSocketApp, WebSocket
+from websocket import WebSocket
 
 
 class Chart:
@@ -87,22 +86,22 @@ def ms_to_datetime_ms(ms: int) -> str:
     return datetime.fromtimestamp(ms / 1000).strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
 
 
-async def main():
-    url = "wss://stream.binance.com:9443/stream?streams=ethusdt@miniTicker"
-    client = WebSocketApp(
-        url=url,
-        on_open=on_open,
-        on_close=on_close,
-        on_error=on_error,
-        on_message=on_message
-    )
-    client.run_forever()
+# async def main():
+#     url = "wss://stream.binance.com:9443/stream?streams=ethusdt@miniTicker"
+#     client = WebSocketApp(
+#         url=url,
+#         on_open=on_open,
+#         on_close=on_close,
+#         on_error=on_error,
+#         on_message=on_message
+#     )
+#     client.run_forever()
 
 
-if __name__ == "__main__":
-    # loop = asyncio.get_event_loop()
-    # loop.run_until_complete(main())
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(main())
-    # asyncio.set_event_loop(asyncio.new_event_loop())
-    # asyncio.run(main())
+# if __name__ == "__main__":
+#     # loop = asyncio.get_event_loop()
+#     # loop.run_until_complete(main())
+#     loop = asyncio.new_event_loop()
+#     loop.run_until_complete(main())
+#     # asyncio.set_event_loop(asyncio.new_event_loop())
+#     # asyncio.run(main())

@@ -178,7 +178,7 @@ env.bak/
 .claude/commands/
 .gemini/commands/
 .cursor/commands/
-.specify/memory/
-!.specify/memory/constitution.md
+.qwen/commands/
+.kilocode/workflows/
 .specify/scripts/
 .specify/templates/

@@ -6,9 +6,21 @@ authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
 requires-python = ">=3.12"
-#classifiers = ["Private :: Do Not Upload"]
-keywords = ["trading", "crypto", "binance", "ta-lib", "technical analysis"]
-#excluded = ["tests", "examples", "app", "docs", "src/data"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = [
+    "trading",
+    "crypto",
+    "binance",
+    "technical analysis",
+    "finance",
+    "investment",
+]
 dependencies = [
     "websocket-client>=1.8.0",
     "matplotlib>=3.10.3",
@@ -23,69 +35,117 @@ repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
 metaexpert = "metaexpert.__main__:main"
-#binance-ema = "examples/expert_binance_ema:main"
 
 [dependency-groups]
 dev = [
-    "mypy>=1.16.1",
-    "python-dotenv-vault>=0.6.4",
-    #"python-dotenv>=1.1.1",
+    "python-dotenv>=1.1.1",
     "types-defusedxml>=0.7.0.20250516",
     "types-requests>=2.32.4",
     "pyleak>=0.1.11",
     "pandas-stubs>=2.2.3.250527",
+    "pyright>=1.1.405",
+    "specify-cli",
 ]
-test = ["pytest>=8.3.4"]
-lint = ["ruff>=0.11.4"]
+test = [
+    "pytest>=8.3.4",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=7.0.0",
+]
+lint = [
+    "ruff>=0.11.4",
+    ]
 docs = []
 
 [tool.uv]
 package = true
 link-mode = "copy"
-default-groups = ["dev", "test", "lint", "docs"]
+default-groups = [
+    "dev",
+    "test",
+    "lint",
+    "docs",
+]
 
 [tool.uv.sources]
-#metaexpert-binance-api = { path = "packages/api/binance" }
-#metaexpert-bybit-api = { path = "packages/api/bybit" }
-#metaexpert-binance-api = { workspace = true }
-#metaexpert-bybit-api = { workspace = true }
-#metaexpert-examples = { path = "examples" }
-#expert-binance-ema = { path = "examples/expert_binance_ema" }
-#expert-bybit-rsi = { path = "examples/expert_bybit_rsi" }
+specify-cli = { git = "git+https://github.com/github/spec-kit" }
 
 [tool.uv.workspace]
 members = [
-    #".",
-    "packages/app",
     "examples/expert_binance_ema",
     "examples/expert_bybit_rsi",
+    "examples/expert_okx_macd",
 ]
 
-[tool.ruff]
-fix = true
-line-length = 88
-target-version = "py312"
-src = [
-    "src",
-    "packages/app/src",
-    "examples",
-    "tests",
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "C",      # flake8-comprehensions
+    "B",      # flake8-bugbear
+    "N",      # flake8-noqa
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "RUF",    # Ruff-specific rules
 ]
-exclude = [".git", ".venv", "__pycache__", "template.py"]
-select = ["E", "F", "W", "I", "UP", "N", "B", "C4", "RUF"]
 ignore = [
-    "E501", # line too long
-    "B008", # do not perform function call in argument default value
+    "E501",   # Line too long (handled by formatter)
+    "B008",   # Do not perform function calls in argument defaults
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
-
-[tool.ruff.isort]
-known-first-party = ["metaexpert"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
 
-#[build-system]
-#requires = ["hatchling"]
-#build-backend = "hatchling.build"
+[tool.ruff.lint.isort]
+known-first-party = ["metaexpert"]
+
+[tool.pyright]
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
+pythonPlatform = "Darwin"
+include = [
+    "src/metaexpert",
+    "examples",
+    "tests",
+]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+    "build",
+    "dist",
+]
+ignore = [
+    "tests/**",
+]
+defineConstant = { "DEBUG" = true }
+typeshedPath = ""
+stubPath = ""
+useLibraryCodeForTypes = true
+typeCheckingMode = "basic"
+strictListInference = true
+strictDictionaryInference = true
+strictSetInference = true
+enableTypeIgnoreComments = true
+reportMissingImports = "error"
+reportMissingTypeStubs = "warning"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportMissingSuperCall = "none"
+reportUninitializedInstanceVariable = "error"
+reportInvalidTypeVarUse = "error"
+reportCallInDefaultInitializer = "none"
+reportPropertyTypeMismatch = "error"
+reportUntypedFunctionDecorator = "warning"
+reportUntypedClassDecorator = "warning"
+reportUntypedBaseClass = "error"
+reportUntypedNamedTuple = "error"
+reportPrivateUsage = "warning"
+reportConstantRedefinition = "error"
+reportDeprecated = "warning"
+reportInconsistentConstructor = "error"

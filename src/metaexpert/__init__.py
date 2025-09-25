@@ -3,25 +3,34 @@
 This module provides a framework for creating and managing expert trading systems
 using the MetaExpert library. It includes features for event handling, logging,
 and integration with various stock exchanges.
+
+The system supports multiple trading modes and configurations:
+- Market types: spot, futures, options
+- Contract types: linear (USD-M) or inverse (COIN-M) for futures
+- Margin modes: isolated or cross margin
+- Position modes: hedge (two-way) or oneway (one-way)
+- Position sizing: fixed base, fixed quote, percent equity, or risk-based
+
+Enums:
+- SizeType: Position sizing methods
+- ContractType: Contract types for futures trading
+- MarginMode: Margin modes for futures trading
+- PositionMode: Position modes for futures trading
 """
-from importlib import import_module
+
+from datetime import datetime
+from logging import Logger
 from pathlib import Path
 from types import ModuleType
 
-from metaexpert._argument import Namespace, parse_arguments
-from metaexpert._contract import Contract
-from metaexpert._instrument import Instrument
-from metaexpert._mode import Mode
-from metaexpert._process import Process
-from metaexpert._service import Service
+from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
+from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import setup_logger, Logger
+from metaexpert.logger import configure_expert_logging, get_logger
 
-# from metaexpert._market import Market
-# from metaexpert._trade import Trade
-
-logger: Logger = setup_logger(APP_NAME)
+# Get the logger instance. Configuration will be applied in MetaExpert.__init__
+logger: Logger = get_logger(APP_NAME)
 
 
 class MetaExpert(Service):
@@ -31,88 +40,159 @@ class MetaExpert(Service):
     _filename: str | None = None
 
     def __init__(
-            self,
-            stock: str | None = None,
-            api_key: str | None = None,
-            api_secret: str | None = None,
-            *,
-            base_url: str | None = None,
-            instrument: str | None = None,
-            contract: str | None = None,
-            mode: str | None = None
+        self,
+        exchange: str | None = None,
+        *,
+        api_key: str | None = None,
+        api_secret: str | None = None,
+        api_passphrase: str | None = None,
+        subaccount: str | None = None,
+        base_url: str | None = None,
+        testnet: bool = True,
+        proxy: dict[str, str] | None = None,
+        market_type: str | None = "futures",
+        contract_type: str | None = "inverse",
+        margin_mode: str | None = "isolated",
+        position_mode: str | None = "hedge",
+        log_level: str = "INFO",
+        log_file: str = "expert.log",
+        trade_log_file: str = "trades.log",
+        error_log_file: str = "errors.log",
+        log_to_console: bool = True,
+        structured_logging: bool = False,
+        async_logging: bool = False,
+        rate_limit: int = 1200,
+        enable_metrics: bool = True,
+        persist_state: bool = True,
+        state_file: str = "state.json",
     ) -> None:
         """Initialize the expert trading system.
 
         Args:
-            stock (str | None): Stock exchange to use (e.g., Binance, Bybit).
+            exchange (str | None): Stock exchange to use (e.g., Binance, Bybit).
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
+            api_passphrase (str | None): API passphrase (required for some exchanges).
+            subaccount (str | None): Subaccount name (for exchanges that support it).
             base_url (str | None): Base URL for the exchange API.
-            instrument (str | None): Type of financial instruments (e.g., spot, futures).
-            contract (str | None): Type of contract (e.g., coin_m, usdt_m).
-            mode (str | None): Mode of operation (e.g., live, paper, backtest).
+            testnet (bool): Whether to use testnet.
+            proxy (dict[str, str] | None): Proxy settings.
+            market_type (str | None): Type of financial instruments (e.g., spot, futures, options).
+            contract_type (str | None): Type of contract for futures (e.g., linear, inverse).
+            margin_mode (str | None): Margin mode for futures (e.g., isolated, cross).
+            position_mode (str | None): Position mode for futures (e.g., hedge, oneway).
+            log_level (str): Logging level.
+            log_file (str): Main log file.
+            trade_log_file (str): Trade execution log file.
+            error_log_file (str): Error-specific log file.
+            log_to_console (bool): Whether to print logs to console.
+            structured_logging (bool): Whether to use structured JSON logging.
+            async_logging (bool): Whether to use asynchronous logging.
+            rate_limit (int): Max requests per minute.
+            enable_metrics (bool): Enable performance metrics.
+            persist_state (bool): Persist state between runs.
+            state_file (str): State persistence file.
         """
 
         # Parse command line arguments
-        args: Namespace = parse_arguments()
-
-        # Initialize stock exchange
-        self.client: Exchange = Exchange.init(
-            stock or args.stock,
-            api_key or args.api_key,
-            api_secret or args.api_secret,
-            base_url or args.base_url,
-            instrument or args.type,
-            contract or args.contract
-        )
-        self.mode: Mode | None = Mode.get_mode_from(mode or args.mode)
+        self.args: Namespace = parse_arguments()
+        self.trade_mode: TradeMode | None = None
+        self.backtest_start: str | datetime | None = None
+        self.backtest_end: str | datetime | None = None
+        self.initial_capital: float | None = None
         self._running: bool = False
 
-        super().__init__()
+        # Configure logging using the enhanced expert integration
+        configure_expert_logging(
+            log_level=log_level,
+            log_file=log_file,
+            trade_log_file=trade_log_file,
+            error_log_file=error_log_file,
+            log_to_console=log_to_console,
+            structured_logging=structured_logging,
+            async_logging=async_logging,
+            rate_limit=rate_limit,
+            enable_metrics=enable_metrics,
+            persist_state=persist_state,
+            state_file=state_file,
+        )
 
-        # Setup logger
-        # self.logger: Logger = setup_logger(self.name, args.log_level)
-        logger.info("Starting expert on %s", args.stock)
-        logger.info("Type: %s, Contract: %s, Mode: %s", args.type, args.contract, args.mode)
-        logger.info("Pair: %s, Timeframe: %s", args.pair, args.timeframe)
+        # Initialize stock exchange
+        self.client: Exchange = Exchange.create(
+            exchange_name=exchange or self.args.exchange,
+            api_key=api_key or self.args.api_key,
+            api_secret=api_secret or self.args.api_secret,
+            api_passphrase=api_passphrase or self.args.api_passphrase,
+            subaccount=subaccount or self.args.subaccount,
+            base_url=base_url or self.args.base_url,
+            testnet=testnet or self.args.testnet,
+            proxy=proxy or self.args.proxy,
+            market_type=market_type or self.args.market_type,
+            contract_type=contract_type or self.args.contract_type,
+            margin_mode=margin_mode or self.args.margin_mode,
+            position_mode=position_mode or self.args.position_mode,
+        )
+
+        # Log initialization
+        logger.info("Starting expert on %s", self.args.exchange)
+        logger.info(
+            "Market type: %s, Contract type: %s, Mode: %s",
+            self.args.market_type,
+            self.args.contract_type,
+            self.args.trade_mode,
+        )
+        logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
 
     def __str__(self) -> str:
-        return f"{type(self).__name__} {self.name}"
+        return f"{type(self).__name__} {self.strategy_name}"
 
     def __repr__(self) -> str:
-        return f"<{type(self).__name__} {self.name!r}>"
+        return f"<{type(self).__name__} {self.strategy_name!r}>"
 
-    def run(self) -> None:
+    def run(
+        self,
+        trade_mode: str = "paper",
+        backtest_start: str | datetime = datetime.now()
+        .replace(year=datetime.now().year - 1)
+        .strftime("%Y-%m-%d"),
+        backtest_end: str | datetime = datetime.now().strftime("%Y-%m-%d"),
+        initial_capital: float = 10000,
+    ) -> None:
         """Run the expert trading system."""
-        logger.info("Starting trading bot in %s mode", self.mode)
+        self.trade_mode = TradeMode.get_mode_from(trade_mode or self.args.trade_mode)
+        self.backtest_start = backtest_start
+        self.backtest_end = backtest_end
+        self.initial_capital = initial_capital
         self._running = True
+
+        logger.info("Starting trading bot in %s mode", self.trade_mode)
 
         try:
             # Initialize event handling
             self._module = Process.init()
 
             if self._module and self._module.__file__:
-                self._filename: str = Path(self._module.__file__).stem
+                self._filename = Path(self._module.__file__).stem
 
             # Initialize the expert
             Process.ON_INIT.run()
             logger.info("Expert initialized successfully")
 
             # Register the expert with the process
-            Process.processing()
+            if self.symbol is None:
+                raise ValueError("Cannot get websocket URL without a symbol.")
+            if self.timeframe is None:
+                raise ValueError("Cannot get websocket URL without a timeframe.")
+            ws_url = self.client.get_websocket_url(
+                self.symbol, self.timeframe.get_name()
+            )
+            Process.processing(ws_url)
 
-            # Запускаем основной цикл обработки событий
+            # Main event loop
             while self._running:
-                # Fetch latest market data
-                # data = self.fetch_historical_data()
-
                 # Sleep until next candle
-                if self.mode != MODE_BACKTEST:
+                if self.trade_mode != MODE_BACKTEST:
                     pass
-                    # self.logger.info("Waiting for next candle...")
-                    # Calculate sleep time based on timeframe
-                    # sleep_time = self._get_sleep_time()
-                    # time.sleep(sleep_time)
                 else:
                     # In backtest mode, we process all data at once
                     self._running = False
@@ -135,4 +215,4 @@ class MetaExpert(Service):
             logger.info("Expert shutdown complete")
 
     # from metaexpert.exchanges.binance import balance
-    balance = import_module("metaexpert.exchanges.binance").balance
+    # balance = import_module("metaexpert.exchanges.binance").get_balance

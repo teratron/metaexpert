@@ -2,14 +2,14 @@
 
 import os
 
-from dotenv_vault import load_dotenv  # type: ignore
+from dotenv import load_dotenv  # type: ignore
 
 _ = load_dotenv()
 
 # Bybit
-BYBIT_API_KEY: str = os.getenv("BYBIT_API_KEY", "")
-BYBIT_API_SECRET: str = os.getenv("BYBIT_API_SECRET", "")
-BYBIT_BASE_URL: str = os.getenv("BYBIT_BASE_URL", "")
+BYBIT_API_KEY: str = os.getenv("API_KEY", "")
+BYBIT_API_SECRET: str = os.getenv("API_SECRET", "")
+BYBIT_BASE_URL: str = os.getenv("BASE_URL", "")
 
 # WebSocket public stream:
 

@@ -1,0 +1,18 @@
+[project]
+name = "expert-okx-macd"
+version = "0.1.0"
+description = "MACD expert for OKX"
+authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "metaexpert",
+    "python-dotenv",
+]
+
+[tool.uv.sources]
+metaexpert = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
