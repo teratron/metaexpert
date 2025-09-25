@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any
 
 
-class StructuredFormatter(logging.Formatter):
+class MainFormatter(logging.Formatter):
     """Enhanced formatter for structured logging with JSON output."""
 
     def __init__(self, include_extra: bool = True, timestamp_format: str = "iso"):
@@ -102,7 +102,8 @@ class StructuredFormatter(logging.Formatter):
             dt = datetime.fromtimestamp(created)
             return dt.strftime("%Y-%m-%d %H:%M:%S")
 
-    def _format_exception(self, exc_info) -> str:
+    @staticmethod
+    def _format_exception(exc_info) -> str:
         """Format exception information.
 
         Args:
@@ -131,7 +132,8 @@ class StructuredFormatter(logging.Formatter):
                 extra[key] = value
         return extra
 
-    def _json_serializer(self, obj: Any) -> str:
+    @staticmethod
+    def _json_serializer(obj: Any) -> str:
         """Custom JSON serializer for non-standard types.
 
         Args:
@@ -148,7 +150,7 @@ class StructuredFormatter(logging.Formatter):
             return repr(obj)
 
 
-class TradeFormatter(StructuredFormatter):
+class TradeFormatter(MainFormatter):
     """Specialized formatter for trade-related logs."""
 
     def format(self, record: logging.LogRecord) -> str:
@@ -171,7 +173,7 @@ class TradeFormatter(StructuredFormatter):
         return json.dumps(base_entry, ensure_ascii=False, default=self._json_serializer)
 
 
-class ErrorFormatter(StructuredFormatter):
+class ErrorFormatter(MainFormatter):
     """Specialized formatter for error logs."""
 
     def format(self, record: logging.LogRecord) -> str:
@@ -194,7 +196,8 @@ class ErrorFormatter(StructuredFormatter):
 
         return json.dumps(base_entry, ensure_ascii=False, default=self._json_serializer)
 
-    def _get_error_severity(self, levelno: int) -> str:
+    @staticmethod
+    def _get_error_severity(levelno: int) -> str:
         """Get error severity based on log level.
 
         Args:

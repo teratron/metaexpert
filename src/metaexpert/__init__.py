@@ -41,19 +41,29 @@ class MetaExpert(Service):
 
     def __init__(
         self,
+        #
+        # --- Required Parameters ---
         exchange: str | None = None,
         *,
+        #
+        # --- API Credentials (required for live mode) ---
         api_key: str | None = None,
         api_secret: str | None = None,
         api_passphrase: str | None = None,
+        #
+        # --- Connection Settings ---
         subaccount: str | None = None,
         base_url: str | None = None,
         testnet: bool = True,
         proxy: dict[str, str] | None = None,
+        #
+        # --- Market & Trading Mode ---
         market_type: str | None = "futures",
         contract_type: str | None = "inverse",
         margin_mode: str | None = "isolated",
         position_mode: str | None = "hedge",
+        #
+        # --- Logging Configuration ---
         log_level: str = "INFO",
         log_file: str = "expert.log",
         trade_log_file: str = "trades.log",
@@ -61,6 +71,8 @@ class MetaExpert(Service):
         log_to_console: bool = True,
         structured_logging: bool = False,
         async_logging: bool = False,
+        #
+        # --- Advanced System Settings ---
         rate_limit: int = 1200,
         enable_metrics: bool = True,
         persist_state: bool = True,

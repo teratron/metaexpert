@@ -14,13 +14,14 @@ import sys
 from pathlib import Path
 from typing import Any, TypedDict
 
-from metaexpert.logger.async_log_handler import AsyncLogHandler
-from metaexpert.logger.enhanced_config import LoggingConfig
-from metaexpert.logger.structured_formatter import StructuredFormatter
+from metaexpert.logger.async_handler import AsyncHandler
+from metaexpert.logger.config import LOG_NAME, LogConfig
+from metaexpert.logger.formatter import MainFormatter
 
 
 class HandlerConfig(TypedDict):
     """Type definition for handler configuration."""
+
     name: str
     file: Path
     level: str
@@ -72,7 +73,7 @@ class LogManager:
             self._clear_existing_loggers()
 
             # Set up log directory
-            log_dir = Path(log_directory or LoggingConfig.get_log_directory())
+            log_dir = Path(log_directory or LogConfig.get_log_directory())
             log_dir.mkdir(exist_ok=True)
 
             # Create formatters
@@ -88,20 +89,20 @@ class LogManager:
                     name="main",
                     file=log_dir / log_file,
                     level=log_level,
-                    logger_name=LoggingConfig.LOG_NAME
+                    logger_name=LOG_NAME,
                 ),
                 HandlerConfig(
                     name="trade",
                     file=log_dir / trade_log_file,
                     level="INFO",
-                    logger_name=f"{LoggingConfig.LOG_NAME}.trade"
+                    logger_name=f"{LOG_NAME}.trade",
                 ),
                 HandlerConfig(
                     name="error",
                     file=log_dir / error_log_file,
                     level="ERROR",
-                    logger_name=f"{LoggingConfig.LOG_NAME}.error"
-                )
+                    logger_name=f"{LOG_NAME}.error",
+                ),
             ]
 
             # Create file handlers
@@ -111,11 +112,11 @@ class LogManager:
                     config["level"],
                     formatter,
                     max_file_size,
-                    backup_count
+                    backup_count,
                 )
 
                 if async_logging:
-                    handler = AsyncLogHandler(handler)
+                    handler = AsyncHandler(handler)
 
                 self._handlers[f"{config['name']}_file"] = handler
 
@@ -130,7 +131,7 @@ class LogManager:
             if log_to_console:
                 console_handler = self._create_console_handler(formatter)
                 if async_logging:
-                    console_handler = AsyncLogHandler(console_handler)
+                    console_handler = AsyncHandler(console_handler)
 
                 self._handlers["console"] = console_handler
                 root_logger.addHandler(console_handler)
@@ -141,7 +142,7 @@ class LogManager:
                 "status": "success",
                 "message": "Enhanced logging system configured successfully",
                 "handlers": list(self._handlers.keys()),
-                "loggers": list(self._loggers.keys())
+                "loggers": list(self._loggers.keys()),
             }
 
         except Exception as e:
@@ -153,7 +154,7 @@ class LogManager:
             logging.error("Failed to configure enhanced logging: %s", e, exc_info=True)
             return {
                 "status": "error",
-                "message": f"Failed to configure enhanced logging: {e}"
+                "message": f"Failed to configure enhanced logging: {e}",
             }
 
     def get_logger(self, name: str = "main") -> logging.Logger:
@@ -167,9 +168,9 @@ class LogManager:
         """
         if not self._configured:
             # Return basic logger if not configured
-            return logging.getLogger(LoggingConfig.LOG_NAME)
+            return logging.getLogger(LOG_NAME)
 
-        return self._loggers.get(name, logging.getLogger(LoggingConfig.LOG_NAME))
+        return self._loggers.get(name, logging.getLogger(LOG_NAME))
 
     def get_main_logger(self) -> logging.Logger:
         """Get the main application logger."""
@@ -196,7 +197,9 @@ class LogManager:
         else:
             trade_logger.info(message)
 
-    def log_error(self, message: str, exception: Exception | None = None, **kwargs) -> None:
+    def log_error(
+        self, message: str, exception: Exception | None = None, **kwargs
+    ) -> None:
         """Log an error message.
 
         Args:
@@ -216,7 +219,7 @@ class LogManager:
     def shutdown(self) -> None:
         """Shutdown the logging system and clean up resources."""
         for handler in self._handlers.values():
-            if hasattr(handler, 'close'):
+            if hasattr(handler, "close"):
                 handler.close()
 
         self._handlers.clear()
@@ -229,18 +232,19 @@ class LogManager:
         root_logger = logging.getLogger()
         for handler in root_logger.handlers[:]:
             root_logger.removeHandler(handler)
-            if hasattr(handler, 'close'):
+            if hasattr(handler, "close"):
                 handler.close()
 
         # Clear our managed handlers
         for handler in self._handlers.values():
-            if hasattr(handler, 'close'):
+            if hasattr(handler, "close"):
                 handler.close()
 
         self._handlers.clear()
         self._loggers.clear()
 
-    def _create_formatter(self, structured: bool) -> logging.Formatter:
+    @staticmethod
+    def _create_formatter(structured: bool) -> logging.Formatter:
         """Create appropriate formatter based on configuration.
 
         Args:
@@ -250,17 +254,17 @@ class LogManager:
             Formatter instance
         """
         if structured:
-            return StructuredFormatter()
+            return MainFormatter()
         else:
-            return logging.Formatter(LoggingConfig.get_log_format())
+            return logging.Formatter(LogConfig.get_log_format())
 
+    @staticmethod
     def _create_file_handler(
-        self,
-        filepath: Path,
+            filepath: Path,
         level: str,
         formatter: logging.Formatter,
         max_size: int,
-        backup_count: int
+        backup_count: int,
     ) -> logging.Handler:
         """Create a rotating file handler.
 
@@ -275,16 +279,14 @@ class LogManager:
             Configured file handler
         """
         handler = logging.handlers.RotatingFileHandler(
-            filepath,
-            maxBytes=max_size,
-            backupCount=backup_count,
-            encoding="utf-8"
+            filepath, maxBytes=max_size, backupCount=backup_count, encoding="utf-8"
         )
         handler.setLevel(level.upper())
         handler.setFormatter(formatter)
         return handler
 
-    def _create_console_handler(self, formatter: logging.Formatter) -> logging.Handler:
+    @staticmethod
+    def _create_console_handler(formatter: logging.Formatter) -> logging.Handler:
         """Create a console handler.
 
         Args:

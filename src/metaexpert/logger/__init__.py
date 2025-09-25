@@ -35,10 +35,10 @@ Usage:
 import logging
 from typing import Any
 
-from metaexpert.logger.async_log_handler import AsyncLogHandler
+from metaexpert.logger.async_handler import AsyncHandler
 
 # Configuration imports
-from metaexpert.logger.enhanced_config import (
+from metaexpert.logger.config import (
     ASYNC_LOGGING_ENABLED,
     DEFAULT_LOG_FILE_PATH,
     LOG_BACKUP_COUNT,
@@ -51,10 +51,17 @@ from metaexpert.logger.enhanced_config import (
     STRUCTURED_LOGGING_ENABLED,
     LoggingConfig,
 )
+from metaexpert.logger.formatter import (
+    ErrorFormatter,
+    MainFormatter,
+    TradeFormatter,
+)
 
 # Integration imports
 from metaexpert.logger.integration import (
     configure_logging as configure_expert_logging,
+)
+from metaexpert.logger.integration import (
     create_handlers_config,
     get_logger_config,
     log_expert_error,
@@ -65,12 +72,7 @@ from metaexpert.logger.integration import (
 )
 
 # Core components
-from metaexpert.logger.log_manager import LogManager, log_manager
-from metaexpert.logger.structured_formatter import (
-    ErrorFormatter,
-    StructuredFormatter,
-    TradeFormatter,
-)
+from metaexpert.logger.manager import LogManager, log_manager
 
 
 def get_logger(name: str | None = None) -> logging.Logger:
@@ -229,7 +231,7 @@ def shutdown_logging() -> None:
 def _create_formatter(use_structured: bool, log_format: str) -> logging.Formatter:
     """Legacy formatter creation function."""
     if use_structured:
-        return StructuredFormatter()
+        return MainFormatter()
     return logging.Formatter(log_format)
 
 
@@ -261,7 +263,8 @@ def _create_file_handler(handler_config: dict[str, Any]) -> logging.Handler | No
 
 # Export all public components
 __all__ = [
-    # Configuration constants
+    #
+    # --- Configuration constants ---
     "ASYNC_LOGGING_ENABLED",
     "DEFAULT_LOG_FILE_PATH",
     "LOG_BACKUP_COUNT",
@@ -272,32 +275,36 @@ __all__ = [
     "LOG_MAX_SIZE",
     "LOG_NAME",
     "STRUCTURED_LOGGING_ENABLED",
-    # Classes
-    "AsyncLogHandler",
+    #
+    # --- Classes ---
+    "AsyncHandler",
     "ErrorFormatter",
     "LogManager",
     "LoggingConfig",
-    "StructuredFormatter",
+    "MainFormatter",
     "TradeFormatter",
-    # Main functions
+    #
+    # --- Main functions ---
     "configure_expert_logging",
     "configure_from_template_params",
     "configure_logging",
+    #
+    # --- Integration functions ---
+    "create_handlers_config",
     "get_error_logger",
     "get_logger",
+    "get_logger_config",
     "get_main_logger",
     "get_trade_logger",
     "log_error",
-    "log_trade",
-    "shutdown_logging",
-    # Integration functions
-    "create_handlers_config",
-    "get_logger_config",
     "log_expert_error",
     "log_expert_shutdown",
     "log_expert_startup",
-    "log_trade_execution",
-    "validate_logging_params",
-    # Global instances
+    #
+    # --- Global instances ---
     "log_manager",
+    "log_trade",
+    "log_trade_execution",
+    "shutdown_logging",
+    "validate_logging_params",
 ]

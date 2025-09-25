@@ -6,7 +6,7 @@ import sys
 import threading
 
 
-class AsyncLogHandler(logging.Handler):
+class AsyncHandler(logging.Handler):
     """
     Asynchronous log handler that wraps a synchronous handler to prevent
     blocking the main thread.

@@ -7,8 +7,8 @@ providing enhanced functionality.
 
 from typing import Any
 
-from metaexpert.logger.enhanced_config import LoggingConfig
-from metaexpert.logger.log_manager import log_manager
+from metaexpert.logger.config import LogConfig
+from metaexpert.logger.manager import log_manager
 
 
 def configure_logging(
@@ -19,11 +19,7 @@ def configure_logging(
     log_to_console: bool = True,
     structured_logging: bool = False,
     async_logging: bool = False,
-    log_directory: str | None = None,
-    rate_limit: int = 1200,
-    enable_metrics: bool = True,
-    persist_state: bool = True,
-    state_file: str = "state.json",
+    log_directory: str | None = None
 ) -> dict[str, Any]:
     """
     Configure logging specifically for MetaExpert with all template parameters.
@@ -40,10 +36,6 @@ def configure_logging(
         structured_logging: Whether to use structured JSON logging
         async_logging: Whether to use asynchronous logging
         log_directory: Directory for log files (optional)
-        rate_limit: Max requests per minute (for future rate limiting features)
-        enable_metrics: Enable performance metrics (for future metrics features)
-        persist_state: Persist state between runs (for future state features)
-        state_file: State persistence file (for future state features)
 
     Returns:
         Configuration result with status and message
@@ -59,17 +51,6 @@ def configure_logging(
         async_logging=async_logging,
         log_directory=log_directory,
     )
-
-    # Add MetaExpert-specific configuration to result
-    if result["status"] == "success":
-        result["expert_config"] = {
-            "rate_limit": rate_limit,
-            "enable_metrics": enable_metrics,
-            "persist_state": persist_state,
-            "state_file": state_file,
-        }
-        result["message"] = "Expert logging system configured successfully"
-
     return result
 
 
@@ -119,7 +100,7 @@ def get_logger_config() -> dict[str, Any]:
     Returns:
         Current logging configuration dictionary
     """
-    return LoggingConfig.create_default_config()
+    return LogConfig.create_default_config()
 
 
 def validate_logging_params(**kwargs) -> dict[str, Any]:
@@ -160,12 +141,17 @@ def validate_logging_params(**kwargs) -> dict[str, Any]:
 
 
 # Convenience functions for common logging scenarios
-def log_expert_startup(expert_name: str, exchange: str, symbol: str, timeframe: str) -> None:
+def log_expert_startup(
+    expert_name: str, exchange: str, symbol: str, timeframe: str
+) -> None:
     """Log expert startup information."""
     main_logger = log_manager.get_main_logger()
     main_logger.info(
         "Expert started: %s on %s, Symbol: %s, Timeframe: %s",
-        expert_name, exchange, symbol, timeframe
+        expert_name,
+        exchange,
+        symbol,
+        timeframe,
     )
 
 
