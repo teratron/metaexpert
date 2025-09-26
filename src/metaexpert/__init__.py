@@ -27,7 +27,7 @@ from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import configure_expert_logging, get_logger, MetaLogger
+from metaexpert.logger import MetaLogger, configure_expert_logging, get_logger
 
 # Get the logger instance. Configuration will be applied in MetaExpert.__init__
 logger: Logger = get_logger(APP_NAME)

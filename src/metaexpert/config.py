@@ -8,42 +8,8 @@ from dotenv import load_dotenv  # type: ignore
 _ = load_dotenv()
 
 # Application configuration
-APP_NAME = "MetaExpert"
-
-# Logging configuration
-LOG_NAME = APP_NAME  # Logger name
-LOG_LEVEL = os.getenv("LOG_LEVEL", "")  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
-LOG_FORMAT = os.getenv("LOG_FORMAT", "")  # Log format
-LOG_CONFIG = os.getenv("LOG_CONFIG", "")  # Log configuration file name
-LOG_FILE = os.getenv("LOG_FILE", "")  # Log file name
-LOG_MAX_SIZE = int(str(os.getenv("LOG_MAX_SIZE", 1000)))  # Maximum log file size (10*1024*1024 = 10MB)
-LOG_BACKUP_COUNT = int(str(os.getenv("LOG_BACKUP_COUNT", 5)))  # Number of backup log files
-
-# API Configuration
-API_KEY = os.getenv("API_KEY", "")  # Default API key for authentication
-API_SECRET = os.getenv("API_SECRET", "")  # Default API secret for authentication
-BASE_URL = os.getenv("BASE_URL", "")  # Default base URL for exchange API
-
-# Exchange-specific API configuration
-BINANCE_API_KEY = os.getenv("BINANCE_API_KEY", "")
-BINANCE_API_SECRET = os.getenv("BINANCE_API_SECRET", "")
-BINANCE_API_PASSPHRASE = os.getenv("BINANCE_API_PASSPHRASE", "")
-
-BYBIT_API_KEY = os.getenv("BYBIT_API_KEY", "")
-BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET", "")
-BYBIT_API_PASSPHRASE = os.getenv("BYBIT_API_PASSPHRASE", "")
-
-OKX_API_KEY = os.getenv("OKX_API_KEY", "")
-OKX_API_SECRET = os.getenv("OKX_API_SECRET", "")
-OKX_API_PASSPHRASE = os.getenv("OKX_API_PASSPHRASE", "")
-
-BITGET_API_KEY = os.getenv("BITGET_API_KEY", "")
-BITGET_API_SECRET = os.getenv("BITGET_API_SECRET", "")
-BITGET_API_PASSPHRASE = os.getenv("BITGET_API_PASSPHRASE", "")
-
-KUCOIN_API_KEY = os.getenv("KUCOIN_API_KEY", "")
-KUCOIN_API_SECRET = os.getenv("KUCOIN_API_SECRET", "")
-KUCOIN_API_PASSPHRASE = os.getenv("KUCOIN_API_PASSPHRASE", "")
+APP_NAME = os.getenv("APP_NAME", "MetaExpert")
+LIB_NAME = os.getenv("LIB_NAME", "metaexpert")
 
 # Trading parameters
 TRADING_PAIRS = ["BTCUSDT", "ETHUSDT"]  # Trading pairs to monitor
