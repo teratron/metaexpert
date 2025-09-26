@@ -27,7 +27,7 @@ from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import APP_NAME, MODE_BACKTEST
 from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import configure_expert_logging, get_logger
+from metaexpert.logger import configure_expert_logging, get_logger, MetaLogger
 
 # Get the logger instance. Configuration will be applied in MetaExpert.__init__
 logger: Logger = get_logger(APP_NAME)
@@ -106,16 +106,8 @@ class MetaExpert(Service):
             state_file (str): State persistence file.
         """
 
-        # Parse command line arguments
-        self.args: Namespace = parse_arguments()
-        self.trade_mode: TradeMode | None = None
-        self.backtest_start: str | datetime | None = None
-        self.backtest_end: str | datetime | None = None
-        self.initial_capital: float | None = None
-        self._running: bool = False
-
         # Configure logging using the enhanced expert integration
-        configure_expert_logging(
+        self.logger: Logger = MetaLogger(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
@@ -124,6 +116,14 @@ class MetaExpert(Service):
             structured_logging=structured_logging,
             async_logging=async_logging
         )
+
+        # Parse command line arguments
+        self.args: Namespace = parse_arguments()
+        self.trade_mode: TradeMode | None = None
+        self.backtest_start: str | datetime | None = None
+        self.backtest_end: str | datetime | None = None
+        self.initial_capital: float | None = None
+        self._running: bool = False
 
         # Initialize stock exchange
         self.client: Exchange = Exchange.create(
