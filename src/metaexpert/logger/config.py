@@ -1,50 +1,41 @@
 """Configuration for the MetaExpert logging system."""
 
-import os
-from pathlib import Path
-from typing import Any
-
-from dotenv import load_dotenv
-
 from metaexpert.config import APP_NAME
-
-_ = load_dotenv()
-
-
-def _is_logging_enabled(key: str, default: str = "true") -> bool:
-    return os.getenv(key, default).lower() == "true"
 
 
 # Logging configuration constants
 LOG_NAME: str = APP_NAME
 
 # Default log levels
-LOG_LEVEL: str = os.getenv("LOG_LEVEL", "DEBUG")
-LOG_TRADE_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-LOG_ERROR_LEVEL: str = os.getenv("LOG_LEVEL", "ERROR")
+LOG_LEVEL: str = "DEBUG"
+LOG_TRADE_LEVEL: str = "INFO"
+LOG_ERROR_LEVEL: str = "ERROR"
 
 # Default file names
-LOG_FILE: str = os.getenv("LOG_FILE", "expert.log")
-LOG_TRADE_FILE: str = os.getenv("LOG_TRADE_FILE", "trades.log")
-LOG_ERROR_FILE: str = os.getenv("LOG_ERROR_FILE", "errors.log")
+LOG_FILE: str = "expert.log"
+LOG_TRADE_FILE: str = "trades.log"
+LOG_ERROR_FILE: str = "errors.log"
 
 # Directory configuration
-LOG_DIRECTORY: str = os.getenv("LOG_DIRECTORY", "logs")
+LOG_DIRECTORY: str = "logs"
 
 # File rotation settings
-LOG_MAX_FILE_SIZE: int = int(os.getenv("LOG_MAX_FILE_SIZE", 10485760))  # 10485760 = 10 * 1024 * 1024 (10MB)
-LOG_BACKUP_COUNT: int = int(os.getenv("LOG_BACKUP_COUNT", 5))
+LOG_MAX_FILE_SIZE: int = 10485760  # 10 * 1024 * 1024 (10MB)
+LOG_BACKUP_COUNT: int = 5
 
 # Format settings
-LOG_FORMAT: str = os.getenv("LOG_FORMAT", "[%(asctime)s] %(levelname)s: %(name)s: %(message)s")
-LOG_DETAILED_FORMAT: str = os.getenv("LOG_DETAILED_FORMAT", "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s")
-LOG_CONFIG_FILE: str = os.getenv("LOG_CONFIG_FILE", "config.json")
+LOG_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
+LOG_DETAILED_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s"
+LOG_CONFIG_FILE: str = "config.json"
 
 # Enhanced configuration flags
-LOG_CONSOLE_LOGGING_ENABLED: bool = _is_logging_enabled("LOG_CONSOLE_LOGGING_ENABLED", "false")
-LOG_STRUCTURED_LOGGING_ENABLED: bool = _is_logging_enabled("LOG_STRUCTURED_LOGGING_ENABLED", "false")
-LOG_ASYNC_LOGGING_ENABLED: bool = _is_logging_enabled("LOG_ASYNC_LOGGING_ENABLED")
+LOG_CONSOLE_LOGGING_ENABLED: bool = True
+LOG_STRUCTURED_LOGGING_ENABLED: bool = False
+LOG_ASYNC_LOGGING_ENABLED: bool = False
 
+
+# def _is_logging_enabled(key: str, default: str = "true") -> bool:
+#     return os.getenv(key, default).lower() == "true"
 
 # class LogConfig:
 #     """Configuration class for logging with validation and environment variable handling."""
@@ -151,5 +142,3 @@ LOG_ASYNC_LOGGING_ENABLED: bool = _is_logging_enabled("LOG_ASYNC_LOGGING_ENABLED
 #             "max_file_size": LogConfig.get_max_file_size(),
 #             "backup_count": LogConfig.get_backup_count(),
 #         }
-#
-#

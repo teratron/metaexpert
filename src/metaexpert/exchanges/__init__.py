@@ -1,64 +1,71 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from importlib import import_module
-from typing import Any
+from typing import Any, Self
 
 
 @dataclass
 class Exchange(ABC):
     """Abstract base class for stock exchanges."""
 
-    def __init__(
-            self,
-            exchange_name: str | None = None,
-            api_key: str | None = None,
-            api_secret: str | None = None,
-            api_passphrase: str | None = None,
-            subaccount: str | None = None,
-            base_url: str | None = None,
-            market_type: str | None = None,
-            contract_type: str | None = None,
-            testnet: bool = False,
-            proxy: dict[str, str] | None = None,
-            margin_mode: str | None = None,
-            position_mode: str | None = None,
-            **kwargs: Any
-    ):
-        self.exchange_name = exchange_name.lower().strip() if isinstance(exchange_name, str) else None
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.api_passphrase = api_passphrase
-        self.subaccount = subaccount
-        self.base_url = base_url
-        self.market_type = market_type.lower().strip() if isinstance(market_type, str) else None
-        self.contract_type = contract_type.lower().strip() if isinstance(contract_type, str) else None
-        self.testnet = testnet
-        self.proxy = proxy
-        self.margin_mode = margin_mode.lower().strip() if isinstance(margin_mode, str) else None
-        self.position_mode = position_mode.lower().strip() if isinstance(position_mode, str) else None
-        self.client: Any | None = None
+    exchange: str
+    api_key: str | None
+    api_secret: str | None
+    api_passphrase: str | None
+    subaccount: str | None
+    base_url: str | None
+    testnet: bool
+    proxy: dict[str, str] | None
+    market_type: str
+    contract_type: str
+    margin_mode: str
+    position_mode: str
 
-    @staticmethod
-    def create(exchange_name: str, **kwargs: Any) -> "Exchange":
+    @classmethod
+    def create(
+            cls,
+            exchange: str,
+            api_key: str | None,
+            api_secret: str | None,
+            api_passphrase: str | None,
+            subaccount: str | None,
+            base_url: str | None,
+            testnet: bool,
+            proxy: dict[str, str] | None,
+            market_type: str,
+            contract_type: str,
+            margin_mode: str,
+            position_mode: str
+    ) -> Self:
         """Factory method to create an exchange instance."""
-        if not exchange_name:
-            raise ValueError("Stock exchange name must be specified.")
+        cls.exchange = exchange.lower().strip()
+        cls.api_key = api_key
+        cls.api_secret = api_secret
+        cls.api_passphrase = api_passphrase
+        cls.subaccount = subaccount
+        cls.base_url = base_url
+        cls.testnet = testnet
+        cls.proxy = proxy
+        cls.market_type = market_type.lower().strip()
+        cls.contract_type = contract_type.lower().strip()
+        cls.margin_mode = margin_mode.lower().strip()
+        cls.position_mode = position_mode.lower().strip()
+
         try:
-            module = import_module(f"metaexpert.exchanges.{exchange_name}")
-            exchange_class: type[Exchange] = module.Adapter
-            return exchange_class(exchange_name=exchange_name, **kwargs)
+            module = import_module(f"metaexpert.exchanges.{cls.exchange}")
+            return module.Adapter()
         except (ImportError, AttributeError) as e:
-            raise ValueError(f"Unsupported exchange: {exchange_name}") from e
+            raise ValueError(f"Unsupported exchange: {cls.exchange}") from e
 
-    @abstractmethod
-    def get_balance(self) -> dict | float:
-        """Get account balance."""
-        pass
-
-    @abstractmethod
-    def get_account(self) -> dict:
-        """Get account details."""
-        pass
+    # @abstractmethod
+    # def get_balance(self) -> dict | float:
+    #     """Get account balance."""
+    #     pass
+    #
+    # @abstractmethod
+    # def get_account(self) -> dict:
+    #     """Get account details."""
+    #     pass
 
     @abstractmethod
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:

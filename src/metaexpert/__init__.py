@@ -24,13 +24,10 @@ from pathlib import Path
 from types import ModuleType
 
 from metaexpert.cli.argument_parser import Namespace, parse_arguments
-from metaexpert.config import APP_NAME, MODE_BACKTEST
+from metaexpert.config import LIB_NAME, DEFAULT_TRADE_MODE, DEFAULT_TRADE_MODE
 from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
-from metaexpert.logger import MetaLogger, configure_expert_logging, get_logger
-
-# Get the logger instance. Configuration will be applied in MetaExpert.__init__
-logger: Logger = get_logger(APP_NAME)
+from metaexpert.logger import MetaLogger
 
 
 class MetaExpert(Service):
@@ -43,9 +40,8 @@ class MetaExpert(Service):
         self,
         #
         # --- Required Parameters ---
-        exchange: str | None = None,
+        exchange: str,
         *,
-        #
         # --- API Credentials (required for live mode) ---
         api_key: str | None = None,
         api_secret: str | None = None,
@@ -58,10 +54,10 @@ class MetaExpert(Service):
         proxy: dict[str, str] | None = None,
         #
         # --- Market & Trading Mode ---
-        market_type: str | None = "futures",
-        contract_type: str | None = "inverse",
-        margin_mode: str | None = "isolated",
-        position_mode: str | None = "hedge",
+        market_type: str = "futures",
+        contract_type: str = "inverse",
+        margin_mode: str = "isolated",
+        position_mode: str = "hedge",
         #
         # --- Logging Configuration ---
         log_level: str = "INFO",
@@ -76,12 +72,12 @@ class MetaExpert(Service):
         rate_limit: int = 1200,
         enable_metrics: bool = True,
         persist_state: bool = True,
-        state_file: str = "state.json",
+        state_file: str = "state.json"
     ) -> None:
         """Initialize the expert trading system.
 
         Args:
-            exchange (str | None): Stock exchange to use (e.g., Binance, Bybit).
+            exchange (str): Stock exchange to use (e.g., Binance, Bybit).
             api_key (str | None): API key for authentication.
             api_secret (str | None): API secret for authentication.
             api_passphrase (str | None): API passphrase (required for some exchanges).
@@ -108,6 +104,7 @@ class MetaExpert(Service):
 
         # Configure logging using the enhanced expert integration
         self.logger: Logger = MetaLogger(
+            name=LIB_NAME,
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
@@ -118,38 +115,39 @@ class MetaExpert(Service):
         )
 
         # Parse command line arguments
-        self.args: Namespace = parse_arguments()
+        #self.args: Namespace = parse_arguments()
+
+        # Initialize stock exchange
+        self.client: Exchange = Exchange.create(
+            exchange=exchange,
+            api_key=api_key,
+            api_secret=api_secret,
+            api_passphrase=api_passphrase,
+            subaccount=subaccount,
+            base_url=base_url,
+            testnet=testnet,
+            proxy=proxy,
+            market_type=market_type,
+            contract_type=contract_type,
+            margin_mode=margin_mode,
+            position_mode=position_mode
+        )
+
         self.trade_mode: TradeMode | None = None
         self.backtest_start: str | datetime | None = None
         self.backtest_end: str | datetime | None = None
         self.initial_capital: float | None = None
         self._running: bool = False
 
-        # Initialize stock exchange
-        self.client: Exchange = Exchange.create(
-            exchange_name=exchange or self.args.exchange,
-            api_key=api_key or self.args.api_key,
-            api_secret=api_secret or self.args.api_secret,
-            api_passphrase=api_passphrase or self.args.api_passphrase,
-            subaccount=subaccount or self.args.subaccount,
-            base_url=base_url or self.args.base_url,
-            testnet=testnet or self.args.testnet,
-            proxy=proxy or self.args.proxy,
-            market_type=market_type or self.args.market_type,
-            contract_type=contract_type or self.args.contract_type,
-            margin_mode=margin_mode or self.args.margin_mode,
-            position_mode=position_mode or self.args.position_mode,
-        )
-
         # Log initialization
-        logger.info("Starting expert on %s", self.args.exchange)
-        logger.info(
-            "Market type: %s, Contract type: %s, Mode: %s",
-            self.args.market_type,
-            self.args.contract_type,
-            self.args.trade_mode,
+        self.logger.info("Starting expert on %s", exchange)
+        self.logger.info(
+            "Market type: %s, Contract type: %s, Margin mode: %s, Position mode: %s",
+            market_type,
+            contract_type,
+            margin_mode,
+            position_mode
         )
-        logger.info("Pair: %s, Timeframe: %s", self.args.pair, self.args.timeframe)
 
     def __str__(self) -> str:
         return f"{type(self).__name__} {self.strategy_name}"
@@ -167,24 +165,23 @@ class MetaExpert(Service):
         initial_capital: float = 10000,
     ) -> None:
         """Run the expert trading system."""
-        self.trade_mode = TradeMode.get_mode_from(trade_mode or self.args.trade_mode)
+        self.trade_mode = TradeMode.get_mode_from(trade_mode)
         self.backtest_start = backtest_start
         self.backtest_end = backtest_end
         self.initial_capital = initial_capital
         self._running = True
 
-        logger.info("Starting trading bot in %s mode", self.trade_mode)
+        self.logger.info("Starting trading bot in %s mode", self.trade_mode.get_name() if self.trade_mode else DEFAULT_TRADE_MODE)
 
         try:
             # Initialize event handling
             self._module = Process.init()
-
             if self._module and self._module.__file__:
                 self._filename = Path(self._module.__file__).stem
 
             # Initialize the expert
             Process.ON_INIT.run()
-            logger.info("Expert initialized successfully")
+            self.logger.info("Expert initialized successfully")
 
             # Register the expert with the process
             if self.symbol is None:
@@ -196,31 +193,22 @@ class MetaExpert(Service):
             )
             Process.processing(ws_url)
 
-            # Main event loop
-            while self._running:
-                # Sleep until next candle
-                if self.trade_mode != MODE_BACKTEST:
-                    pass
-                else:
-                    # In backtest mode, we process all data at once
-                    self._running = False
-
         except KeyboardInterrupt:
             # Handle keyboard interrupt
-            logger.info("Expert stopped by user")
+            self.logger.info("Expert stopped by user")
         except (ConnectionError, TimeoutError) as e:
             # Handle network-related errors
-            logger.error("Network error occurred: %s", e)
+            self.logger.error("Network error occurred: %s", e)
         except ValueError as e:
             # Handle data validation errors
-            logger.error("Data validation error: %s", e)
+            self.logger.error("Data validation error: %s", e)
         except RuntimeError as e:
             # Handle runtime-specific errors
-            logger.error("Runtime error: %s", e)
+            self.logger.error("Runtime error: %s", e)
         finally:
             self._running = False
             Process.ON_DEINIT.run()
-            logger.info("Expert shutdown complete")
+            self.logger.info("Expert shutdown complete")
 
     # from metaexpert.exchanges.binance import balance
     # balance = import_module("metaexpert.exchanges.binance").get_balance

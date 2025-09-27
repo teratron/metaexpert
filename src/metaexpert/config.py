@@ -3,17 +3,17 @@
 import os
 from typing import Any
 
-from dotenv import load_dotenv  # type: ignore
+from dotenv import load_dotenv
 
 _ = load_dotenv()
 
 # Application configuration
-APP_NAME = os.getenv("APP_NAME", "MetaExpert")
-LIB_NAME = os.getenv("LIB_NAME", "metaexpert")
+APP_NAME: str = "MetaExpert"
+LIB_NAME: str = "metaexpert"
 
 # Trading parameters
-TRADING_PAIRS = ["BTCUSDT", "ETHUSDT"]  # Trading pairs to monitor
-BASE_CURRENCY = "USDT"  # Base currency for trading
+TRADING_PAIRS: str = "BTCUSDT"  # Trading pairs to monitor
+BASE_CURRENCY: str = "USDT"  # Base currency for trading
 QUOTE_CURRENCIES = ["BTC", "ETH"]  # Quote currencies for trading
 
 # Position sizing and risk management
@@ -45,12 +45,12 @@ API_RATE_LIMIT = 1200  # Maximum number of requests per minute
 REQUEST_TIMEOUT = 10  # Timeout for API requests in seconds
 
 # Trading bot operation modes
-MODE_BACKTEST = "backtest"  # Backtesting mode
-MODE_PAPER = "paper"  # Paper trading mode
-MODE_LIVE = "live"  # Live trading mode
+TRADE_MODE_BACKTEST = "backtest"  # Backtesting mode
+TRADE_MODE_PAPER = "paper"  # Paper trading mode
+TRADE_MODE_LIVE = "live"  # Live trading mode
 
 # Default operation mode
-DEFAULT_MODE = MODE_PAPER
+DEFAULT_TRADE_MODE = TRADE_MODE_PAPER
 
 # Trading types
 TRADE_TYPE_SPOT = "spot"  # Spot trading

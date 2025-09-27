@@ -15,7 +15,7 @@ from metaexpert import MetaExpert
 # -----------------------------------------------------------------------------
 expert = MetaExpert(
     # --- Required Parameters ---
-    exchange="binance",             # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin'
+    exchange="binance",             # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin',...
 
     # --- API Credentials (required for live mode) ---
     api_key=None,                   # User to provide API key
@@ -146,11 +146,11 @@ def timer() -> None:
 
 
 @expert.on_order
-def order(order) -> None:
+def order(ord) -> None:
     """Called when order status changes.
 
     Args:
-        order: Order object (symbol, side, status, price, qty, etc.)
+        ord: Order object (symbol, side, status, price, qty, etc.)
     """
     pass
 

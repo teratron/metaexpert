@@ -25,28 +25,28 @@ class Service(Expert):
 
     def on_init(
         self,
-
-        # Core Trading Parameters
+        #
+        # --- Core Trading Parameters ---
         symbol: str | None = None,
         timeframe: str | None = None,
         *,
         lookback_bars: int = 100,
         warmup_bars: int = 0,
-
-        # Strategy Metadata
+        #
+        # --- Strategy Metadata ---
         strategy_id: int = 42,
         strategy_name: str | None = None,
         comment: str | None = None,
-
-        # Risk & Position Sizing
+        #
+        # --- Risk & Position Sizing ---
         leverage: int = 10,
         max_drawdown_pct: float = 0.2,
         daily_loss_limit: float = 1000.0,
         size_type: str = "risk_based",
         size_value: float = 1.5,
         max_position_size_quote: float = 50000.0,
-
-        # Trade Parameters
+        #
+        # --- Trade Parameters ---
         stop_loss_pct: float = 2.0,
         take_profit_pct: float = 4.0,
         trailing_stop_pct: float = 1.0,
@@ -54,12 +54,12 @@ class Service(Expert):
         breakeven_pct: float = 1.5,
         slippage_pct: float = 0.1,
         max_spread_pct: float = 0.1,
-
-        # Portfolio Management
+        #
+        # --- Portfolio Management
         max_open_positions: int = 3,
         max_positions_per_symbol: int = 1,
-
-        # Entry Filters
+        #
+        # --- Entry Filters ---
         trade_hours: set[int] | None = None,
         allowed_days: set[int] | None = None,
         min_volume: int = 10000,
@@ -129,6 +129,8 @@ class Service(Expert):
             volatility_filter=volatility_filter,
             trend_filter=trend_filter,
         )
+
+        self.logger.info("Symbol: %s, Timeframe: %s", self.symbol, self.timeframe)
 
         def outer(func: Callable[[], None]) -> Callable[[], None]:
             def inner() -> None:

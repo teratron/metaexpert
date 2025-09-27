@@ -6,26 +6,26 @@ from ._timeframe import Timeframe
 
 @dataclass
 class Expert:
-    # Core Trading Parameters
+    # --- Core Trading Parameters ---
     symbol: str | None
     timeframe: Timeframe | None
     lookback_bars: int
     warmup_bars: int
-
-    # Strategy Metadata
+    #
+    # --- Strategy Metadata ---
     strategy_id: int
     strategy_name: str | None
     comment: str | None
-
-    # Risk & Position Sizing
+    #
+    # --- Risk & Position Sizing ---
     leverage: int
     max_drawdown_pct: float
     daily_loss_limit: float
     size_type: SizeType | None
     size_value: float
     max_position_size_quote: float
-
-    # Trade Parameters
+    #
+    # --- Trade Parameters ---
     stop_loss_pct: float
     take_profit_pct: float
     trailing_stop_pct: float
@@ -33,19 +33,19 @@ class Expert:
     breakeven_pct: float
     slippage_pct: float
     max_spread_pct: float
-
-    # Portfolio Management
+    #
+    # --- Portfolio Management ---
     max_open_positions: int
     max_positions_per_symbol: int
-
-    # Entry Filters
+    #
+    # --- Entry Filters ---
     trade_hours: set[int] | None
     allowed_days: set[int] | None
     min_volume: int
     volatility_filter: bool
     trend_filter: bool
-
-    # Internal State
+    #
+    # --- Internal State ---
     # _label: str | None = None
     # _lots_min: float = 0.0
     # _lots_max: float = 0.0

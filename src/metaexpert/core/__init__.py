@@ -4,14 +4,14 @@ from ._bar import Bar
 from ._contract_type import ContractType
 from ._event_handler import EventHandler
 from ._margin_mode import MarginMode
-from ._market import Market
+from .market import Market
 from ._market_type import MarketType
 from ._position_mode import PositionMode
 from ._size_type import SizeType
 from ._status import InitStatus
 from ._timeframe import Timeframe
 from ._timer import Timer
-from ._trade import Trade
+from .trade import Trade
 from ._trade_mode import TradeMode
 from .events import Service
 from .exceptions import (
