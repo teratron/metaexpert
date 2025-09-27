@@ -8,7 +8,12 @@ specialized handlers for trade and error logging.
 
 from logging import Logger
 
-from metaexpert.logger.config import LOG_BACKUP_COUNT, LOG_DIRECTORY, LOG_MAX_FILE_SIZE, LOG_NAME
+from metaexpert.logger.config import (
+    LOG_BACKUP_COUNT,
+    LOG_DIRECTORY,
+    LOG_MAX_FILE_SIZE,
+    LOG_NAME,
+)
 
 
 class MetaLogger(Logger):
@@ -64,7 +69,7 @@ import json
 import logging
 import os
 import sys
-from logging import Logger, Formatter, StreamHandler, getLogger
+from logging import Formatter, Logger, StreamHandler, getLogger
 from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
@@ -78,6 +83,7 @@ from metaexpert.logger.config import (
     LOG_MAX_FILE_SIZE,
     LOG_NAME,
 )
+
 
 def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
     """Set up and configure the logger.

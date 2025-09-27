@@ -24,7 +24,14 @@ from pathlib import Path
 from types import ModuleType
 
 from metaexpert.cli.argument_parser import Namespace, parse_arguments
-from metaexpert.config import LIB_NAME, DEFAULT_TRADE_MODE, DEFAULT_TRADE_MODE
+from metaexpert.config import (
+    LIB_NAME,
+    DEFAULT_TRADE_MODE,
+    DEFAULT_TRADE_MODE,
+    BACKTEST_START_DATE,
+    BACKTEST_END_DATE,
+    INITIAL_CAPITAL,
+)
 from metaexpert.core import Process, Service, TradeMode
 from metaexpert.exchanges import Exchange
 from metaexpert.logger import MetaLogger
@@ -158,11 +165,9 @@ class MetaExpert(Service):
     def run(
         self,
         trade_mode: str = "paper",
-        backtest_start: str | datetime = datetime.now()
-        .replace(year=datetime.now().year - 1)
-        .strftime("%Y-%m-%d"),
-        backtest_end: str | datetime = datetime.now().strftime("%Y-%m-%d"),
-        initial_capital: float = 10000,
+        backtest_start: str | datetime = BACKTEST_START_DATE,
+        backtest_end: str | datetime = BACKTEST_END_DATE,
+        initial_capital: float = INITIAL_CAPITAL,
     ) -> None:
         """Run the expert trading system."""
         self.trade_mode = TradeMode.get_mode_from(trade_mode)
