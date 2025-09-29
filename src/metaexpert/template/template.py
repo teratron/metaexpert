@@ -35,7 +35,7 @@ expert = MetaExpert(
     position_mode="hedge",          # 'hedge' (two-way) or 'oneway' (one-way) — Binance futures (required for Binance; ignored on other exchanges)
 
     # --- Logging Configuration ---
-    log_level="INFO",               # 'DEBUG', 'INFO', 'WARNING', 'ERROR'
+    log_level="INFO",               # 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
     log_file="expert.log",          # Main log file
     trade_log_file="trades.log",    # Trade execution log
     error_log_file="errors.log",    # Error-specific log

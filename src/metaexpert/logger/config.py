@@ -1,7 +1,6 @@
-"""Configuration for the MetaExpert logging system."""
+"""Configuration logging system."""
 
 from metaexpert.config import APP_NAME
-
 
 # Logging configuration constants
 LOG_NAME: str = APP_NAME

@@ -23,18 +23,28 @@ from logging import Logger
 from pathlib import Path
 from types import ModuleType
 
-from metaexpert.cli.argument_parser import Namespace, parse_arguments
+#from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import (
-    LIB_NAME,
-    DEFAULT_TRADE_MODE,
-    DEFAULT_TRADE_MODE,
-    BACKTEST_START_DATE,
     BACKTEST_END_DATE,
+    BACKTEST_START_DATE,
+    ENABLE_METRICS,
     INITIAL_CAPITAL,
+    LIB_NAME,
+    PERSIST_STATE,
+    RATE_LIMIT,
+    STATE_FILE,
+    TRADE_MODE_PAPER,
 )
-from metaexpert.core import Process, Service, TradeMode
-from metaexpert.exchanges import Exchange
-from metaexpert.logger import MetaLogger
+from metaexpert.core import MetaProcess, Process, Service, TradeMode
+from metaexpert.exchanges import MetaExchange
+from metaexpert.logger import LOG_FILE, LOG_LEVEL, MetaLogger
+from metaexpert.logger.config import (
+    LOG_ASYNC_LOGGING_ENABLED,
+    LOG_CONSOLE_LOGGING_ENABLED,
+    LOG_ERROR_FILE,
+    LOG_STRUCTURED_LOGGING_ENABLED,
+    LOG_TRADE_FILE,
+)
 
 
 class MetaExpert(Service):
@@ -67,19 +77,19 @@ class MetaExpert(Service):
         position_mode: str = "hedge",
         #
         # --- Logging Configuration ---
-        log_level: str = "INFO",
-        log_file: str = "expert.log",
-        trade_log_file: str = "trades.log",
-        error_log_file: str = "errors.log",
-        log_to_console: bool = True,
-        structured_logging: bool = False,
-        async_logging: bool = False,
+        log_level: str = LOG_LEVEL,
+        log_file: str = LOG_FILE,
+        trade_log_file: str = LOG_TRADE_FILE,
+        error_log_file: str = LOG_ERROR_FILE,
+        log_to_console: bool = LOG_CONSOLE_LOGGING_ENABLED,
+        structured_logging: bool = LOG_STRUCTURED_LOGGING_ENABLED,
+        async_logging: bool = LOG_ASYNC_LOGGING_ENABLED,
         #
         # --- Advanced System Settings ---
-        rate_limit: int = 1200,
-        enable_metrics: bool = True,
-        persist_state: bool = True,
-        state_file: str = "state.json"
+        rate_limit: int = RATE_LIMIT,
+        enable_metrics: bool = ENABLE_METRICS,
+        persist_state: bool = PERSIST_STATE,
+        state_file: str = STATE_FILE
     ) -> None:
         """Initialize the expert trading system.
 
@@ -125,7 +135,7 @@ class MetaExpert(Service):
         #self.args: Namespace = parse_arguments()
 
         # Initialize stock exchange
-        self.client: Exchange = Exchange.create(
+        self.client: MetaExchange = MetaExchange.create(
             exchange=exchange,
             api_key=api_key,
             api_secret=api_secret,
@@ -138,6 +148,15 @@ class MetaExpert(Service):
             contract_type=contract_type,
             margin_mode=margin_mode,
             position_mode=position_mode
+        )
+
+        #  Initialize process
+        self.system: MetaProcess = MetaProcess(
+            client=self.client,
+            rate_limit=rate_limit,
+            enable_metrics=enable_metrics,
+            persist_state=persist_state,
+            state_file=state_file
         )
 
         self.trade_mode: TradeMode | None = None
@@ -164,7 +183,7 @@ class MetaExpert(Service):
 
     def run(
         self,
-        trade_mode: str = "paper",
+        trade_mode: str = TRADE_MODE_PAPER,
         backtest_start: str | datetime = BACKTEST_START_DATE,
         backtest_end: str | datetime = BACKTEST_END_DATE,
         initial_capital: float = INITIAL_CAPITAL,
@@ -176,7 +195,10 @@ class MetaExpert(Service):
         self.initial_capital = initial_capital
         self._running = True
 
-        self.logger.info("Starting trading bot in %s mode", self.trade_mode.get_name() if self.trade_mode else DEFAULT_TRADE_MODE)
+        self.logger.info(
+            "Starting trading bot in %s mode",
+            self.trade_mode.get_name() if self.trade_mode else TRADE_MODE_PAPER
+        )
 
         try:
             # Initialize event handling

@@ -1,64 +1,73 @@
 """Config for Bybit exchange APIs."""
 
-import os
 
-from dotenv import load_dotenv  # type: ignore
+# Spot trading
+SPOT_PACKAGE: str = "binance-connector"
+SPOT_PACKAGE_VERSION: str = "3.12.0"
+SPOT_MODULE: str = "binance.spot"
+SPOT_WS_PORT: set[int] = {9443, 443}
 
-_ = load_dotenv()
+# Futures trading
+FUTURES_PACKAGE: str = "bybit-connector"
+FUTURES_PACKAGE_VERSION: str = ""
+FUTURES_MODULE_LINEAR: str = "binance.um_futures"  # USDT-M Futures /fapi/*
+FUTURES_MODULE_INVERSE: str = "binance.cm_futures"  # COIN-M Delivery /dapi/*
+FUTURES_WS_PORT: set[int] = {9443, 443}
 
-# Bybit
-BYBIT_API_KEY: str = os.getenv("API_KEY", "")
-BYBIT_API_SECRET: str = os.getenv("API_SECRET", "")
-BYBIT_BASE_URL: str = os.getenv("BASE_URL", "")
-
-# WebSocket public stream:
+# -----------------------------------------------------------------------------
+# WEBSOCKET PUBLIC STREAM
+# -----------------------------------------------------------------------------
 
 # Mainnet:
 
 # Spot:
-BYBIT_SPOT_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/spot"
+SPOT_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/spot"
 
 # USDT, USDC perpetual & USDT Futures:
-BYBIT_LINEAR_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/linear"
+LINEAR_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/linear"
 
 # Inverse contract:
-BYBIT_INVERSE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/inverse"
+INVERSE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/inverse"
 
 # Spread trading:
-BYBIT_SPREAD_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/spread"
+SPREAD_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/spread"
 
 # USDT/USDC Options:
-BYBIT_OPTION_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/option"
+OPTION_WS_BASE_URL: str = "wss://stream.bybit.com/v5/public/option"
 
 # Testnet:
 
 # Spot:
-BYBIT_SPOT_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/spot"
+SPOT_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/spot"
 
 # USDT,USDC perpetual & USDT Futures:
-BYBIT_LINEAR_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/linear"
+LINEAR_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/linear"
 
 # Inverse contract:
-BYBIT_INVERSE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/inverse"
+INVERSE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/inverse"
 
 # Spread trading:
-BYBIT_SPREAD_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/spread"
+SPREAD_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/spread"
 
 # USDT/USDC Options:
-BYBIT_OPTION_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/option"
+OPTION_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/public/option"
 
-# WebSocket private stream:
-
-# Mainnet:
-BYBIT_PRIVATE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/private"
-
-# Testnet:
-BYBIT_PRIVATE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/private"
-
-# WebSocket Order Entry:
+# -----------------------------------------------------------------------------
+# WEBSOCKET PRIVATE STREAM
+# -----------------------------------------------------------------------------
 
 # Mainnet:
-BYBIT_TRADE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/trade"  # Spread trading is not supported
+PRIVATE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/private"
 
 # Testnet:
-BYBIT_TRADE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/trade"  # Spread trading is not supported
+PRIVATE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/private"
+
+# -----------------------------------------------------------------------------
+# WEBSOCKET ORDER ENTRY
+# -----------------------------------------------------------------------------
+
+# Mainnet:
+TRADE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/trade"  # Spread trading is not supported
+
+# Testnet:
+TRADE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/trade"  # Spread trading is not supported

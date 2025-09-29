@@ -21,31 +21,51 @@ STOP_LOSS_PERCENT = 0.02  # Stop loss percentage
 TAKE_PROFIT_PERCENT = 0.04  # Take profit percentage
 TRAILING_STOP_PERCENT = 0.01  # Trailing stop percentage
 
-# Trading timeframes
-TIMEFRAMES = {
-    "1m": "1m",  # 1 minute
-    "5m": "5m",  # 5 minutes
-    "15m": "15m",  # 15 minutes
-    "30m": "30m",  # 30 minutes
-    "1h": "1h",  # 1 hour
-    "4h": "4h",  # 4 hours
-    "1d": "1d",  # 1 day
-}
+# Market types
+MARKET_TYPE_SPOT: str = "spot"
+MARKET_TYPE_FUTURES: str = "futures"
+MARKET_TYPE_OPTIONS: str = "options"
 
-# Default timeframe for analysis
-DEFAULT_TIMEFRAME = TIMEFRAMES["5m"]
+# Default market type
+DEFAULT_MARKET_TYPE: str = MARKET_TYPE_FUTURES
+
+# Contract types for futures trading
+CONTRACT_TYPE_LINEAR: str = "linear"    # USDT-M Futures /fapi/*
+CONTRACT_TYPE_INVERSE: str = "inverse"  # COIN-M Delivery /dapi/*
+
+# Default contract type for futures trading
+DEFAULT_CONTRACT_TYPE: str = CONTRACT_TYPE_LINEAR
+
+# Position modes for futures trading
+MARGIN_MODE_ISOLATED: str = "isolated"
+MARGIN_MODE_CROSS: str = "cross"
+
+# Default position mode for futures trading
+DEFAULT_MARGIN_MODE: str = MARGIN_MODE_ISOLATED
+
+# Position modes for futures trading
+POSITION_MODE_HEDGE: str = "hedge"
+POSITION_MODE_ONEWAY: str = "oneway"
+
+# Default position mode for futures trading
+DEFAULT_POSITION_MODE: str = POSITION_MODE_HEDGE
 
 # API request parameters
-API_RATE_LIMIT = 1200  # Maximum number of requests per minute
-REQUEST_TIMEOUT = 10  # Timeout for API requests in seconds
+RATE_LIMIT: int = 1200                  # Max requests per minute (RPM). Varies by exchange and API tier.
+REQUEST_TIMEOUT: int = 10               # Timeout for API requests in seconds
+
+# Advanced System Settings
+ENABLE_METRICS: bool = True             # Enable performance metrics
+PERSIST_STATE: bool = True              # Persist state between runs
+STATE_FILE: str = "state.json"          # State persistence file (relative to working directory)
 
 # Trading bot operation modes
-TRADE_MODE_BACKTEST = "backtest"  # Backtesting mode
-TRADE_MODE_PAPER = "paper"  # Paper trading mode
-TRADE_MODE_LIVE = "live"  # Live trading mode
+TRADE_MODE_BACKTEST: str = "backtest"  # Backtesting mode
+TRADE_MODE_PAPER: str = "paper"  # Paper trading mode
+TRADE_MODE_LIVE: str = "live"  # Live trading mode
 
-# Default operation mode
-DEFAULT_TRADE_MODE = TRADE_MODE_PAPER
+# Default trading bot operation mode
+DEFAULT_TRADE_MODE: str = TRADE_MODE_PAPER
 
 # Backtesting parameters
 BACKTEST_START_DATE: str | datetime = datetime.now().replace(year=datetime.now().year - 1).strftime("%Y-%m-%d")
@@ -53,34 +73,3 @@ BACKTEST_END_DATE: str | datetime = datetime.now().strftime("%Y-%m-%d")
 
 # Initial capital for backtesting or paper trading
 INITIAL_CAPITAL: float = 10000.0
-
-# Trading types
-TRADE_TYPE_SPOT = "spot"  # Spot trading
-TRADE_TYPE_FUTURES = "futures"  # Futures trading
-TRADE_TYPE_OPTIONS = "options"  # Options trading
-TRADE_TYPE_MARGIN = "margin"  # Margin trading
-
-# Default trade type
-DEFAULT_TRADE_TYPE = TRADE_TYPE_SPOT
-
-# Contract types for futures trading
-CONTRACT_TYPE_USD_M = "usd_m"  # USDⓈ-M Futures (USDT/BUSD margined contracts)
-CONTRACT_TYPE_COIN_M = "coin_m"  # COIN-M Futures (Coin margined contracts)
-
-# Default contract type
-DEFAULT_CONTRACT_TYPE = CONTRACT_TYPE_USD_M
-
-# Available Exchanges
-EXCHANGE_BINANCE = "binance"
-EXCHANGE_BYBIT = "bybit"
-EXCHANGE_OKX = "okx"
-EXCHANGE_BITGET = "bitget"
-EXCHANGE_KUCOIN = "kucoin"
-AVAILABLE_EXCHANGES = [EXCHANGE_BINANCE, EXCHANGE_BYBIT, EXCHANGE_OKX, EXCHANGE_BITGET, EXCHANGE_KUCOIN]
-
-# Default exchange
-DEFAULT_EXCHANGE = EXCHANGE_BINANCE
-
-# Trading strategy parameters
-ALLOW_LONG_BUYING = True
-ALLOW_SHORT_SELLING = True

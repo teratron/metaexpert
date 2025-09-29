@@ -1,6 +1,6 @@
 from typing import Any
 
-from metaexpert.exchanges import Exchange
+from metaexpert.exchanges import MetaExchange
 from metaexpert.exchanges.bybit.config import (
     BYBIT_INVERSE_WS_BASE_URL,
     BYBIT_LINEAR_WS_BASE_URL,
@@ -9,7 +9,7 @@ from metaexpert.exchanges.bybit.config import (
 )
 
 
-class Adapter(Exchange):
+class Adapter(MetaExchange):
     """Implementation for the Bybit exchange."""
 
     def __init__(self, **kwargs: Any) -> None:

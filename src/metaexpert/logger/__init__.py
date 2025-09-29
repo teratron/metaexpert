@@ -8,12 +8,7 @@ specialized handlers for trade and error logging.
 
 from logging import Logger
 
-from metaexpert.logger.config import (
-    LOG_BACKUP_COUNT,
-    LOG_DIRECTORY,
-    LOG_MAX_FILE_SIZE,
-    LOG_NAME,
-)
+from metaexpert.logger.config import LOG_BACKUP_COUNT, LOG_DIRECTORY, LOG_MAX_FILE_SIZE
 
 
 class MetaLogger(Logger):
@@ -28,6 +23,7 @@ class MetaLogger(Logger):
     def __init__(
         self,
         name: str,
+        *,
         log_level: str,
         log_file: str,
         trade_log_file: str,
@@ -63,7 +59,7 @@ class MetaLogger(Logger):
         self.backup_count = LOG_BACKUP_COUNT
 
         # Initialize the Logger with the application name
-        super().__init__(LOG_NAME)
+        super().__init__(self.name)
 
 import json
 import logging
@@ -74,15 +70,7 @@ from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from metaexpert.logger.config import (
-    LOG_BACKUP_COUNT,
-    LOG_CONFIG_FILE,
-    LOG_FILE,
-    LOG_FORMAT,
-    LOG_LEVEL,
-    LOG_MAX_FILE_SIZE,
-    LOG_NAME,
-)
+from metaexpert.logger.config import LOG_CONFIG_FILE, LOG_FILE, LOG_FORMAT, LOG_LEVEL
 
 
 def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
@@ -97,7 +85,7 @@ def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
     """
     # Set default logger name if not provided
     if name is None:
-        name = LOG_NAME
+        name = ""#LOG_NAME
 
     # Create logger instance
     logger = get_logger(name)

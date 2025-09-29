@@ -39,6 +39,7 @@ from .exceptions import (
 )
 from .expert import Expert
 from .process import Process
+from .meta_process import MetaProcess
 
 __all__ = [
     "APIError",
@@ -60,6 +61,7 @@ __all__ = [
     "MarketDataError",
     "MarketType",
     "MetaExpertError",
+    "MetaProcess",
     "MissingConfigurationError",
     "MissingDataError",
     "NetworkError",

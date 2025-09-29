@@ -1,9 +1,9 @@
 from importlib import import_module
-from typing import Any, Self
+from typing import Self
 
-from metaexpert.exchanges import Exchange
+from metaexpert.exchanges import MetaExchange
 from metaexpert.exchanges.binance.config import (
-    BINANCE_FUTURES_MODULE_COIN_M,
+    BINANCE_FUTURES_MODULE_,
     BINANCE_FUTURES_MODULE_USDT_M,
     BINANCE_FUTURES_PACKAGE,
     BINANCE_FUTURES_WS_BASE_URL,
@@ -14,14 +14,14 @@ from metaexpert.exchanges.binance.config import (
 from metaexpert.utils.package import install_package
 
 
-class Adapter(Exchange):
+class Adapter(MetaExchange):
     """Implementation for the Binance exchange."""
 
     def __init__(self):
         """Initializes the Binance class."""
-        self.client: Self | None = self._create_client()
+        self.client: Self = self._create_client()
 
-    def _create_client(self) -> Self | None:
+    def _create_client(self) -> Self:
         """Initializes and returns the Binance client based on market type."""
         if not self.api_key or not self.api_secret:
             raise ValueError("API key and secret are required for Binance operations.")
@@ -63,24 +63,24 @@ class Adapter(Exchange):
         except ImportError as e:
             raise ImportError(f"Please install {BINANCE_FUTURES_PACKAGE}: pip install {BINANCE_FUTURES_PACKAGE}") from e
 
-    # def get_account(self) -> dict:
-    #     """Retrieves account information from Binance."""
-    #     if not self.client:
-    #         raise ConnectionError("Client is not initialized.")
-    #     try:
-    #         return self.client.account()
-    #     except Exception as e:
-    #         raise RuntimeError(f"Failed to get Binance account info: {e}") from e
-    #
-    # def get_balance(self) -> dict | float:
-    #     """Retrieves the account balance from Binance."""
-    #     account_info = self.get_account()
-    #     balance = {
-    #         item['asset']: item['free']
-    #         for item in account_info.get('balances', [])
-    #         if float(item['free']) > 0
-    #     }
-    #     return balance
+    def get_account(self) -> dict:
+        """Retrieves account information from Binance."""
+        if not self.client:
+            raise ConnectionError("Client is not initialized.")
+        try:
+            return {}  #self.client.account()
+        except Exception as e:
+            raise RuntimeError(f"Failed to get Binance account info: {e}") from e
+
+    def get_balance(self) -> dict | float:
+        """Retrieves the account balance from Binance."""
+        account_info = self.get_account()
+        balance = {
+            item['asset']: item['free']
+            for item in account_info.get('balances', [])
+            if float(item['free']) > 0
+        }
+        return balance
 
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:
         """Constructs the WebSocket URL for a given symbol and timeframe."""
@@ -92,3 +92,45 @@ class Adapter(Exchange):
             raise ValueError(f"Unsupported market type for WebSocket: {self.market_type}")
 
         return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
+
+    # POSITION
+    def open_position(self, side: str) -> bool:
+        """Open a position."""
+        # TODO: Implement position opening logic
+        return False
+
+    def close_position(self, side: str) -> bool:
+        """Close a position."""
+        # TODO: Implement position closing logic
+        return False
+
+    def close_all_positions(self, side: str) -> bool:
+        """Close all positions."""
+        # TODO: Implement closing all positions logic
+        return False
+
+    def modify_position(self) -> bool:
+        """Modify a position."""
+        # TODO: Implement position modification logic
+        return False
+
+    def modify_all_positions(self) -> bool:
+        """Modify all positions."""
+        # TODO: Implement modification of all positions logic
+        return False
+
+    # ORDER
+    def open_order(self, side: str) -> bool:
+        """Open an order."""
+        # TODO: Implement order opening logic
+        return False
+
+    def close_order(self, side: str) -> bool:
+        """Close an order."""
+        # TODO: Implement order closing logic
+        return False
+
+    def close_all_orders(self, side: str) -> bool:
+        """Close all orders."""
+        # TODO: Implement closing all orders logic
+        return False
