@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Self
 
+from metaexpert.config import DEFAULT_CONTRACT_TYPE
+
 
 class ContractType(Enum):
     """Contract type enumeration for futures trading.
@@ -22,10 +24,10 @@ class ContractType(Enum):
     }
 
     @classmethod
-    def get_contract_type_from(cls, name: str) -> Self | None:
+    def get_contract_type_from(cls, name: str) -> Self:
         """Get the contract type from a string."""
         # Normalize the name for comparison
-        normalized_name = name.lower()
+        normalized_name: str = name.lower().strip()
 
         # Handle aliases for backward compatibility
         if normalized_name == "coin_m":
@@ -37,4 +39,4 @@ class ContractType(Enum):
             if item.value.get("name") == normalized_name:
                 return item
 
-        return None
+        return cls.get_contract_type_from(DEFAULT_CONTRACT_TYPE)

@@ -3,7 +3,14 @@ from dataclasses import dataclass
 from importlib import import_module
 from typing import Self
 
-from metaexpert.core import Market, Trade
+from metaexpert.core import (
+    ContractType,
+    MarginMode,
+    Market,
+    MarketType,
+    PositionMode,
+    Trade,
+)
 
 
 @dataclass
@@ -18,10 +25,10 @@ class MetaExchange(Trade, Market, ABC):
     base_url: str | None
     testnet: bool
     proxy: dict[str, str] | None
-    market_type: str
-    contract_type: str
-    margin_mode: str
-    position_mode: str
+    market_type: MarketType
+    contract_type: ContractType
+    margin_mode: MarginMode
+    position_mode: PositionMode
 
     # def __init__(
     #         self,
@@ -77,10 +84,10 @@ class MetaExchange(Trade, Market, ABC):
         cls.base_url = base_url
         cls.testnet = testnet
         cls.proxy = proxy
-        cls.market_type = market_type.lower().strip()
-        cls.contract_type = contract_type.lower().strip()
-        cls.margin_mode = margin_mode.lower().strip()
-        cls.position_mode = position_mode.lower().strip()
+        cls.market_type = MarketType.get_market_type_from(market_type)
+        cls.contract_type = ContractType.get_contract_type_from(contract_type)
+        cls.margin_mode = MarginMode.get_margin_mode_from(margin_mode)
+        cls.position_mode = PositionMode.get_position_mode_from(position_mode)
 
         try:
             module = import_module(f"metaexpert.exchanges.{cls.exchange}")

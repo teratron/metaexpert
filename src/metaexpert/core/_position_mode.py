@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Self
 
+from metaexpert.config import DEFAULT_POSITION_MODE
+
 
 class PositionMode(Enum):
     """Position mode enumeration for futures trading.
@@ -20,13 +22,13 @@ class PositionMode(Enum):
     }
 
     @classmethod
-    def get_position_mode_from(cls, name: str) -> Self | None:
+    def get_position_mode_from(cls, name: str) -> Self:
         """Get the position mode from a string."""
         # Normalize the name for comparison
-        normalized_name = name.lower()
+        normalized_name = name.lower().strip()
 
         for item in cls:
             if item.value.get("name") == normalized_name:
                 return item
 
-        return None
+        return cls.get_position_mode_from(DEFAULT_POSITION_MODE)

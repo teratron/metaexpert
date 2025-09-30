@@ -30,6 +30,13 @@ from metaexpert.config import (
     ENABLE_METRICS,
     INITIAL_CAPITAL,
     LIB_NAME,
+    LOG_ASYNC_LOGGING_ENABLED,
+    LOG_CONSOLE_LOGGING_ENABLED,
+    LOG_ERROR_FILE,
+    LOG_FILE,
+    LOG_LEVEL,
+    LOG_STRUCTURED_LOGGING_ENABLED,
+    LOG_TRADE_FILE,
     PERSIST_STATE,
     RATE_LIMIT,
     STATE_FILE,
@@ -37,14 +44,7 @@ from metaexpert.config import (
 )
 from metaexpert.core import MetaProcess, Process, Service, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert.logger import LOG_FILE, LOG_LEVEL, MetaLogger
-from metaexpert.logger.config import (
-    LOG_ASYNC_LOGGING_ENABLED,
-    LOG_CONSOLE_LOGGING_ENABLED,
-    LOG_ERROR_FILE,
-    LOG_STRUCTURED_LOGGING_ENABLED,
-    LOG_TRADE_FILE,
-)
+from metaexpert.logger import MetaLogger
 
 
 class MetaExpert(Service):
