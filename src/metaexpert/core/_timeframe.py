@@ -52,7 +52,7 @@ class Timeframe(Enum):
         "sec": 3600,
         "min": 60,
         "hour": 1,
-        "delta": timedelta(hours=1)
+        "delta": timedelta(hours=1),
     }
     H2 = {
         "name": "2h",
