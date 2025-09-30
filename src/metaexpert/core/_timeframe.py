@@ -47,7 +47,13 @@ class Timeframe(Enum):
         "hour": None,
         "delta": timedelta(minutes=30),
     }
-    H1 = {"name": "1h", "sec": 3600, "min": 60, "hour": 1, "delta": timedelta(hours=1)}
+    H1 = {
+        "name": "1h",
+        "sec": 3600,
+        "min": 60,
+        "hour": 1,
+        "delta": timedelta(hours=1)
+    }
     H2 = {
         "name": "2h",
         "sec": 7200,
@@ -105,17 +111,42 @@ class Timeframe(Enum):
         "delta": timedelta(weeks=1),
     }
 
-    # def __iter__(self) -> Generator:
-    #     """Iterate over the items in the enumeration."""
-    #     for item in self.value.items():
-    #         yield item
-
     def get_name(self) -> str:
         """Get the string representation of the timeframe name."""
         name = self.value["name"]
         if isinstance(name, str):
             return name
         raise TypeError(f"Timeframe name must be a string, got {type(name).__name__}")
+
+    def get_seconds(self) -> int:
+        """Get the number of seconds in the timeframe."""
+        sec = self.value["sec"]
+        if isinstance(sec, int):
+            return sec
+        raise TypeError(f"Timeframe seconds must be an integer, got {type(sec).__name__}")
+
+    def get_minutes(self) -> int:
+        """Get the number of minutes in the timeframe."""
+        minute = self.value["min"]
+        if isinstance(minute, int):
+            return minute
+        raise TypeError(f"Timeframe minutes must be an integer, got {type(minute).__name__}")
+
+    def get_hours(self) -> int | None:
+        """Get the number of hours in the timeframe."""
+        hour = self.value["hour"]
+        if hour is None:
+            return None
+        if isinstance(hour, int):
+            return hour
+        raise TypeError(f"Timeframe hours must be an integer, got {type(hour).__name__}")
+
+    def get_delta(self) -> timedelta:
+        """Get the timedelta object representing the timeframe."""
+        delta = self.value["delta"]
+        if isinstance(delta, timedelta):
+            return delta
+        raise TypeError(f"Timeframe delta must be a timedelta, got {type(delta).__name__}")
 
     @classmethod
     def get_period_from(cls, name: str | None) -> Self | None:
@@ -126,6 +157,33 @@ class Timeframe(Enum):
                     return item
         return None
 
+    @staticmethod
+    def _get_next_weekly_candle_time(now: datetime) -> datetime:
+        """Calculates the start of the next weekly candle (Monday)."""
+        # weekday() is 0 for Monday, 6 for Sunday
+        days_to_add = 7 - now.weekday()
+        next_monday = now + timedelta(days=days_to_add)
+        return next_monday.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    def _get_next_regular_candle_time(self, now: datetime) -> datetime:
+        """Calculates the start of the next candle for m, h, d timeframes."""
+        timeframe_delta = self.get_delta()
+        if not isinstance(timeframe_delta, timedelta):
+            logger.error("Invalid timedelta value for timeframe: %s", self.get_name())
+            raise ValueError(f"Invalid timedelta value for timeframe: {self.get_name()}")
+
+        timeframe_seconds = timeframe_delta.total_seconds()
+        if timeframe_seconds <= 0:
+            logger.error("Timeframe duration must be positive: %s", self.get_name())
+            raise ValueError(f"Timeframe duration must be positive: {self.get_name()}")
+
+        now_timestamp = now.timestamp()
+        # Floor division to find the start of the current candle interval
+        current_candle_start_ts = (now_timestamp // timeframe_seconds) * timeframe_seconds
+        # Add one interval to get the start of the next candle
+        next_candle_start_ts = current_candle_start_ts + timeframe_seconds
+        return datetime.fromtimestamp(next_candle_start_ts)
+
     def get_next_candle_time(self) -> datetime:
         """Calculate the timestamp of the next candle based on the timeframe.
 
@@ -133,41 +191,7 @@ class Timeframe(Enum):
             datetime: Timestamp of the next candle
         """
         now = datetime.now()
-        next_time = now
         name = self.get_name()
-
-        match str(name)[-1]:
-            case "m":
-                # For minute timeframes
-                minutes = self.value.get("min")
-                if not isinstance(minutes, int):
-                    logger.error("Invalid minute value for timeframe: %d", name)
-                    raise ValueError(f"Invalid minute value for timeframe: {name}")
-                next_minute = ((now.minute // minutes) + 1) * minutes
-                next_time = now.replace(
-                    minute=next_minute % 60, second=0, microsecond=0
-                )
-                if next_minute >= 60:
-                    next_time += timedelta(hours=next_minute // 60)
-            case "h":
-                # For hour timeframes
-                hours = self.value.get("hour")
-                if not isinstance(hours, int):
-                    logger.error("Invalid hour value for timeframe: %d", name)
-                    raise ValueError(f"Invalid hour value for timeframe: {name}")
-                next_hour = ((now.hour // hours) + 1) * hours
-                next_time = now.replace(
-                    hour=next_hour % 24, minute=0, second=0, microsecond=0
-                )
-                if next_hour >= 24:
-                    next_time += timedelta(days=next_hour // 24)
-            case "d":
-                # For day timeframes
-                next_time = now.replace(
-                    hour=0, minute=0, second=0, microsecond=0
-                ) + timedelta(days=1)
-            case "w":
-                pass
-            case _:
-                raise ValueError(f"Unsupported timeframe: {name}")
-        return next_time
+        if name[-1] == "w":
+            return self._get_next_weekly_candle_time(now)
+        return self._get_next_regular_candle_time(now)
