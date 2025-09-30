@@ -30,14 +30,19 @@ class MarketType(Enum):
         "contract": [ContractType.LINEAR, ContractType.INVERSE]
     }
 
-    @classmethod
-    def get_market_type_from(cls, name: str) -> Self:
-        """Get the market type from a string."""
-        for item in cls:
-            if item.value.get("name") == name.lower().strip():
-                return item
+    def get_name(self) -> str:
+        """Return the name of the market type."""
+        name = self.value["name"]
+        if isinstance(name, str):
+            return name
+        raise TypeError(f"Market type name must be a string, got {type(name).__name__}")
 
-        return cls.get_market_type_from(DEFAULT_MARKET_TYPE)
+    def get_description(self) -> str:
+        """Return the description of the market type."""
+        description = self.value["description"]
+        if isinstance(description, str):
+            return description
+        raise TypeError(f"Market type description must be a string, got {type(description).__name__}")
 
     def has_contracts(self) -> bool:
         """Check if this market type has contracts."""
@@ -51,5 +56,13 @@ class MarketType(Enum):
         contract: str | list[ContractType] = self.value["contract"]
         if isinstance(contract, list):
             return contract
-
         return None
+
+    @classmethod
+    def get_market_type_from(cls, name: str) -> Self:
+        """Get the market type from a string."""
+        normalized_name = name.lower().strip()
+        for item in cls:
+            if item.get_name() == normalized_name:
+                return item
+        return cls.get_market_type_from(DEFAULT_MARKET_TYPE)

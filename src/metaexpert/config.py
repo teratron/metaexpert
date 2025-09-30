@@ -3,13 +3,13 @@
 from datetime import datetime
 
 # -----------------------------------------------------------------------------
-# Application configuration
+# APPLICATION CONFIGURATION
 # -----------------------------------------------------------------------------
 APP_NAME: str = "MetaExpert"
 LIB_NAME: str = "metaexpert"
 
 # -----------------------------------------------------------------------------
-# Logging configuration
+# LOGGING CONFIGURATION
 # -----------------------------------------------------------------------------
 
 # Default log levels
@@ -40,7 +40,7 @@ LOG_STRUCTURED_LOGGING_ENABLED: bool = False
 LOG_ASYNC_LOGGING_ENABLED: bool = False
 
 # -----------------------------------------------------------------------------
-# Exchange-specific configuration
+# EXCHANGE-SPECIFIC CONFIGURATION
 # -----------------------------------------------------------------------------
 
 # Market types
@@ -73,7 +73,7 @@ POSITION_MODE_ONEWAY: str = "oneway"
 DEFAULT_POSITION_MODE: str = POSITION_MODE_HEDGE
 
 # -----------------------------------------------------------------------------
-# API configuration
+# API CONFIGURATION
 # -----------------------------------------------------------------------------
 
 # API request parameters
@@ -86,10 +86,10 @@ PERSIST_STATE: bool = True              # Persist state between runs
 STATE_FILE: str = "state.json"          # State persistence file (relative to working directory)
 
 # -----------------------------------------------------------------------------
-# Trading strategy configuration
+# TRADING STRATEGY CONFIGURATION
 # -----------------------------------------------------------------------------
 
-# Core Trading Parameters
+# Core trading parameters
 SYMBOL: str = "BTCUSDT"
 TIMEFRAME: str = "1h"
 LOOKBACK_BARS: int = 100
@@ -101,15 +101,23 @@ STRATEGY_ID: int = 1001
 STRATEGY_NAME: str = "My Strategy"
 COMMENT: str = "my_strategy"
 
-# Risk & Position Sizing
+# Risk & position sizing
 LEVERAGE: int = 10
 MAX_DRAWDOWN_PCT: float = 0.2
 DAILY_LOSS_LIMIT: float = 1000.0
-SIZE_TYPE: str = "risk_based"
 SIZE_VALUE: float = 1.5
 MAX_POSITION_SIZE_QUOTE: float = 50000.0
 
-# Trade Parameters
+# Size types
+SIZE_TYPE_FIXED_BASE: str = "fixed_base"
+SIZE_TYPE_FIXED_QUOTE: str = "fixed_quote"
+SIZE_TYPE_PERCENT_EQUITY: str = "percent_equity"
+SIZE_TYPE_RISK_BASED: str = "risk_based"
+
+# Default size type
+DEFAULT_SIZE_TYPE: str = SIZE_TYPE_RISK_BASED
+
+# Trade parameters
 STOP_LOSS_PCT: float = 2.0
 TAKE_PROFIT_PCT: float = 4.0
 TRAILING_STOP_PCT: float = 1.0
@@ -118,11 +126,11 @@ BREAKEVEN_PCT: float = 1.5
 SLIPPAGE_PCT: float = 0.1
 MAX_SPREAD_PCT: float = 0.1
 
-# Portfolio Management
+# Portfolio management
 MAX_OPEN_POSITIONS: int = 3
 MAX_POSITIONS_PER_SYMBOL: int = 1
 
-# Entry Filters
+# Entry filters
 TRADE_HOURS: set[int] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}
 ALLOWED_DAYS: set[int] = {1, 2, 3, 4, 5, 6, 7}
 MIN_VOLUME: int = 1000000
@@ -130,7 +138,7 @@ VOLATILITY_FILTER: bool = True
 TREND_FILTER: bool = True
 
 # -----------------------------------------------------------------------------
-# Trading bot operation modes
+# TRADING BOT OPERATION MODES
 # -----------------------------------------------------------------------------
 
 TRADE_MODE_BACKTEST: str = "backtest"   # Backtesting mode

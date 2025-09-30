@@ -21,14 +21,25 @@ class PositionMode(Enum):
         "description": "One-way mode (single position)"
     }
 
+    def get_name(self) -> str:
+        """Return the name of the position mode."""
+        name = self.value["name"]
+        if isinstance(name, str):
+            return name
+        raise TypeError(f"Position mode name must be a string, got {type(name).__name__}")
+
+    def get_description(self) -> str:
+        """Return the description of the position mode."""
+        description = self.value["description"]
+        if isinstance(description, str):
+            return description
+        raise TypeError(f"Position mode description must be a string, got {type(description).__name__}")
+
     @classmethod
     def get_position_mode_from(cls, name: str) -> Self:
         """Get the position mode from a string."""
-        # Normalize the name for comparison
         normalized_name = name.lower().strip()
-
         for item in cls:
-            if item.value.get("name") == normalized_name:
+            if item.get_name() == normalized_name:
                 return item
-
         return cls.get_position_mode_from(DEFAULT_POSITION_MODE)

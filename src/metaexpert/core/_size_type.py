@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Self
 
+from metaexpert.config import DEFAULT_SIZE_TYPE
+
 
 class SizeType(Enum):
     """Position sizing method enumeration for trade size calculation.
@@ -29,16 +31,25 @@ class SizeType(Enum):
         "description": "Risk-based position sizing"
     }
 
+    def get_name(self) -> str:
+        """Return the name of the size type."""
+        name = self.value["name"]
+        if isinstance(name, str):
+            return name
+        raise TypeError(f"Size type name must be a string, got {type(name).__name__}")
+
+    def get_description(self) -> str:
+        """Return the description of the size type."""
+        description = self.value["description"]
+        if isinstance(description, str):
+            return description
+        raise TypeError(f"Size type description must be a string, got {type(description).__name__}")
+
     @classmethod
-    def get_size_type_from(cls, name: str) -> Self | None:
+    def get_size_type_from(cls, name: str) -> Self:
         """Get the size type from a string."""
+        normalized_name = name.lower().strip()
         for item in cls:
-            if item.value.get("name") == name.lower():
+            if item.get_name() == normalized_name:
                 return item
-
-        return None
-
-    @classmethod
-    def get_default(cls) -> "SizeType":
-        """Get the default size type."""
-        return cls.RISK_BASED
+        return cls.get_size_type_from(DEFAULT_SIZE_TYPE)

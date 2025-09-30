@@ -189,7 +189,7 @@ class MetaExpert(Service):
         initial_capital: float = INITIAL_CAPITAL,
     ) -> None:
         """Run the expert trading system."""
-        self.trade_mode = TradeMode.get_mode_from(trade_mode)
+        self.trade_mode = TradeMode.get_trade_mode_from(trade_mode)
         self.backtest_start = backtest_start
         self.backtest_end = backtest_end
         self.initial_capital = initial_capital
@@ -197,7 +197,7 @@ class MetaExpert(Service):
 
         self.logger.info(
             "Starting trading bot in %s mode",
-            self.trade_mode.get_name() if self.trade_mode else TRADE_MODE_PAPER
+            self.trade_mode.get_name()
         )
 
         try:
