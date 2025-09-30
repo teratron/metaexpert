@@ -89,7 +89,7 @@ class MetaExpert(Service):
         rate_limit: int = RATE_LIMIT,
         enable_metrics: bool = ENABLE_METRICS,
         persist_state: bool = PERSIST_STATE,
-        state_file: str = STATE_FILE
+        state_file: str = STATE_FILE,
     ) -> None:
         """Initialize the expert trading system.
 
@@ -128,7 +128,7 @@ class MetaExpert(Service):
             error_log_file=error_log_file,
             log_to_console=log_to_console,
             structured_logging=structured_logging,
-            async_logging=async_logging
+            async_logging=async_logging,
         )
 
         # Parse command line arguments
@@ -147,7 +147,7 @@ class MetaExpert(Service):
             market_type=market_type,
             contract_type=contract_type,
             margin_mode=margin_mode,
-            position_mode=position_mode
+            position_mode=position_mode,
         )
 
         #  Initialize process
@@ -156,7 +156,7 @@ class MetaExpert(Service):
             rate_limit=rate_limit,
             enable_metrics=enable_metrics,
             persist_state=persist_state,
-            state_file=state_file
+            state_file=state_file,
         )
 
         self.trade_mode: TradeMode | None = None
@@ -172,7 +172,7 @@ class MetaExpert(Service):
             market_type,
             contract_type,
             margin_mode,
-            position_mode
+            position_mode,
         )
 
     def __str__(self) -> str:
@@ -197,7 +197,7 @@ class MetaExpert(Service):
 
         self.logger.info(
             "Starting trading bot in %s mode",
-            self.trade_mode.get_name()
+            self.trade_mode.get_name(),
         )
 
         try:

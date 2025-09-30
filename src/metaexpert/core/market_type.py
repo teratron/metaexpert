@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Self
 
 from ..config import DEFAULT_MARKET_TYPE
-from ._contract_type import ContractType
+from .contract_type import ContractType
 
 
 class MarketType(Enum):

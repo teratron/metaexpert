@@ -15,39 +15,34 @@ from metaexpert import MetaExpert
 # -----------------------------------------------------------------------------
 expert = MetaExpert(
     # --- Required Parameters ---
-    exchange="binance",             # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin',...
-
+    exchange="binance",  # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin',...
     # --- API Credentials (required for live mode) ---
-    api_key=None,                   # User to provide API key
-    api_secret=None,                # User to provide secret key
-    api_passphrase=None,            # Required only for OKX/KuCoin
-
+    api_key=None,  # User to provide API key
+    api_secret=None,  # User to provide secret key
+    api_passphrase=None,  # Required only for OKX/KuCoin
     # --- Connection Settings ---
-    subaccount=None,                # For Bybit multi-account (optional)
-    base_url=None,                  # Custom API URL (optional)
-    testnet=False,                  # True to use exchange testnet
-    proxy=None,                     # Proxy settings: dict like {"http": "...", "https": "..."} (optional)
-
+    subaccount=None,  # For Bybit multi-account (optional)
+    base_url=None,  # Custom API URL (optional)
+    testnet=False,  # True to use exchange testnet
+    proxy=None,  # Proxy settings: dict like {"http": "...", "https": "..."} (optional)
     # --- Market & Trading Mode ---
-    market_type="futures",          # 'spot', 'futures', 'options' (note: 'options' only on Binance, OKX)
-    contract_type="linear",         # Only for futures: 'linear' (USDT-M) or 'inverse' (COIN-M)
-    margin_mode="isolated",         # Only for futures: 'isolated' or 'cross' (ignored for spot)
-    position_mode="hedge",          # 'hedge' (two-way) or 'oneway' (one-way) — Binance futures (required for Binance; ignored on other exchanges)
-
+    market_type="futures",  # 'spot', 'futures', 'options' (note: 'options' only on Binance, OKX)
+    contract_type="linear",  # Only for futures: 'linear' (USDT-M) or 'inverse' (COIN-M)
+    margin_mode="isolated",  # Only for futures: 'isolated' or 'cross' (ignored for spot)
+    position_mode="hedge",  # 'hedge' (two-way) or 'oneway' (one-way) — Binance futures (required for Binance; ignored on other exchanges)
     # --- Logging Configuration ---
-    log_level="INFO",               # 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
-    log_file="expert.log",          # Main log file
-    trade_log_file="trades.log",    # Trade execution log
-    error_log_file="errors.log",    # Error-specific log
-    log_to_console=True,            # Print logs to console
-    structured_logging=False,       # Use structured JSON logging
-    async_logging=False,            # Use asynchronous logging
-
+    log_level="INFO",  # 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+    log_file="expert.log",  # Main log file
+    trade_log_file="trades.log",  # Trade execution log
+    error_log_file="errors.log",  # Error-specific log
+    log_to_console=True,  # Print logs to console
+    structured_logging=False,  # Use structured JSON logging
+    async_logging=False,  # Use asynchronous logging
     # --- Advanced System Settings ---
-    rate_limit=1200,                # Max requests per minute (RPM). Varies by exchange and API tier.
-    enable_metrics=True,            # Enable performance metrics
-    persist_state=True,             # Persist state between runs
-    state_file="state.json"         # State persistence file (relative to working directory)
+    rate_limit=1200,  # Max requests per minute (RPM). Varies by exchange and API tier.
+    enable_metrics=True,  # Enable performance metrics
+    persist_state=True,  # Persist state between runs
+    state_file="state.json",  # State persistence file (relative to working directory)
 )
 
 # -----------------------------------------------------------------------------

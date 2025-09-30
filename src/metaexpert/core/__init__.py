@@ -1,18 +1,11 @@
 """Core components of the MetaExpert library."""
 
 from ._bar import Bar
-from ._contract_type import ContractType
 from ._event_handler import EventHandler
-from ._margin_mode import MarginMode
-from .market import Market
-from ._market_type import MarketType
-from ._position_mode import PositionMode
-from ._size_type import SizeType
 from ._status import InitStatus
 from ._timeframe import Timeframe
 from ._timer import Timer
-from .trade import Trade
-from ._trade_mode import TradeMode
+from .contract_type import ContractType
 from .events import Service
 from .exceptions import (
     APIError,
@@ -38,8 +31,15 @@ from .exceptions import (
     ValidationError,
 )
 from .expert import Expert
+from .margin_mode import MarginMode
+from .market import Market
+from .market_type import MarketType
+from .position_mode import PositionMode
 from .process import Process
+from .size_type import SizeType
 from .system import MetaProcess
+from .trade import Trade
+from .trade_mode import TradeMode
 
 __all__ = [
     "APIError",

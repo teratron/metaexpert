@@ -6,11 +6,11 @@ from metaexpert.config import APP_NAME
 from metaexpert.logger import get_logger
 
 from ._bar import Bar
-from ._size_type import SizeType
 from ._timeframe import Timeframe
 from ._timer import Timer
 from .expert import Expert
 from .process import Process
+from .size_type import SizeType
 
 logger: Logger = get_logger(APP_NAME)
 

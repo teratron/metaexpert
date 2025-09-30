@@ -73,7 +73,7 @@ class MetaExchange(Trade, Market, ABC):
         market_type: str,
         contract_type: str,
         margin_mode: str,
-        position_mode: str
+        position_mode: str,
     ) -> Self:
         """Factory method to create an exchange instance."""
         cls.exchange = exchange.lower().strip()

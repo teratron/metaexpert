@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-from ._size_type import SizeType
 from ._timeframe import Timeframe
+from .size_type import SizeType
 
 
 @dataclass

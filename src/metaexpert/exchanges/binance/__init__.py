@@ -1,15 +1,17 @@
 from importlib import import_module
 from typing import Self
 
+from metaexpert.core.contract_type import ContractType
+from metaexpert.core.market_type import MarketType
 from metaexpert.exchanges import MetaExchange
 from metaexpert.exchanges.binance.config import (
-    BINANCE_FUTURES_MODULE_,
-    BINANCE_FUTURES_MODULE_USDT_M,
-    BINANCE_FUTURES_PACKAGE,
-    BINANCE_FUTURES_WS_BASE_URL,
-    BINANCE_SPOT_MODULE,
-    BINANCE_SPOT_PACKAGE,
-    BINANCE_SPOT_WS_BASE_URL,
+    FUTURES_MODULE_INVERSE,
+    FUTURES_MODULE_LINEAR,
+    FUTURES_PACKAGE,
+    FUTURES_WS_BASE_URL,
+    SPOT_MODULE,
+    SPOT_PACKAGE,
+    SPOT_WS_BASE_URL,
 )
 from metaexpert.utils.package import install_package
 
@@ -26,42 +28,42 @@ class Adapter(MetaExchange):
         if not self.api_key or not self.api_secret:
             raise ValueError("API key and secret are required for Binance operations.")
 
-        if self.market_type == "spot":
-            return self._spot_client()
-        elif self.market_type == "futures":
-            return self._futures_client()
-        else:
-            raise ValueError(f"Unsupported market type for Binance: {self.market_type}")
+        match self.market_type:
+            case MarketType.SPOT:
+                return self._spot_client()
+            case MarketType.FUTURES:
+                return self._futures_client()
+            case _:
+                raise ValueError(f"Unsupported market type for Binance: {self.market_type}")
 
     def _spot_client(self) -> Self:
         """Returns the Binance Spot client."""
-        install_package(BINANCE_SPOT_PACKAGE)
+        install_package(SPOT_PACKAGE)
         try:
-            pkg = import_module(BINANCE_SPOT_MODULE)
+            pkg = import_module(SPOT_MODULE)
             return pkg.Spot(
                 api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url
             )
         except ImportError as e:
-            raise ImportError(f"Please install {BINANCE_SPOT_PACKAGE}: pip install {BINANCE_SPOT_PACKAGE}") from e
+            raise ImportError(f"Please install {SPOT_PACKAGE}: pip install {SPOT_PACKAGE}") from e
 
     def _futures_client(self) -> Self:
         """Returns the Binance Futures client."""
-        install_package(BINANCE_FUTURES_PACKAGE)
+        install_package(FUTURES_PACKAGE)
         try:
-            if self.contract_type == "linear":
-                pkg = import_module(BINANCE_FUTURES_MODULE_USDT_M)
-                return pkg.UMFutures(
-                    key=self.api_key, secret=self.api_secret, base_url=self.base_url
-                )
-            elif self.contract_type == "inverse":
-                pkg = import_module(BINANCE_FUTURES_MODULE_COIN_M)
-                return pkg.CMFutures(
-                    key=self.api_key, secret=self.api_secret, base_url=self.base_url
-                )
-            else:
-                raise ValueError(f"Unsupported contract type: {self.contract_type}")
+            match self.contract_type:
+                case ContractType.LINEAR:
+                    pkg = import_module(FUTURES_MODULE_LINEAR)
+                    return pkg.UMFutures(
+                        key=self.api_key, secret=self.api_secret, base_url=self.base_url
+                    )
+                case ContractType.INVERSE:
+                    pkg = import_module(FUTURES_MODULE_INVERSE)
+                    return pkg.CMFutures(
+                        key=self.api_key, secret=self.api_secret, base_url=self.base_url
+                    )
         except ImportError as e:
-            raise ImportError(f"Please install {BINANCE_FUTURES_PACKAGE}: pip install {BINANCE_FUTURES_PACKAGE}") from e
+            raise ImportError(f"Please install {FUTURES_PACKAGE}: pip install {FUTURES_PACKAGE}") from e
 
     def get_account(self) -> dict:
         """Retrieves account information from Binance."""
@@ -84,12 +86,14 @@ class Adapter(MetaExchange):
 
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:
         """Constructs the WebSocket URL for a given symbol and timeframe."""
-        if self.market_type == "spot":
-            base_url = BINANCE_SPOT_WS_BASE_URL
-        elif self.market_type == "futures":
-            base_url = BINANCE_FUTURES_WS_BASE_URL
-        else:
-            raise ValueError(f"Unsupported market type for WebSocket: {self.market_type}")
+        base_url: str = ""
+        match self.market_type:
+            case MarketType.SPOT:
+                base_url = SPOT_WS_BASE_URL
+            case MarketType.FUTURES:
+                base_url = FUTURES_WS_BASE_URL
+            case _:
+                raise ValueError(f"Unsupported market type for WebSocket: {self.market_type}")
 
         return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
 

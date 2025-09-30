@@ -2,10 +2,10 @@ from typing import Any
 
 from metaexpert.exchanges import MetaExchange
 from metaexpert.exchanges.bybit.config import (
-    BYBIT_INVERSE_WS_BASE_URL,
-    BYBIT_LINEAR_WS_BASE_URL,
-    BYBIT_OPTION_WS_BASE_URL,
-    BYBIT_SPOT_WS_BASE_URL,
+    INVERSE_WS_BASE_URL,
+    LINEAR_WS_BASE_URL,
+    OPTION_WS_BASE_URL,
+    SPOT_WS_BASE_URL,
 )
 
 
@@ -46,16 +46,16 @@ class Adapter(MetaExchange):
         # Bybit uses different streams for different market types
         # Docs: https://bybit-exchange.github.io/docs/v5/websocket/public/kline
         if self.market_type == "spot":
-            base_url = BYBIT_SPOT_WS_BASE_URL
+            base_url = SPOT_WS_BASE_URL
         elif self.market_type == "futures":
             if self.contract_type == "linear":
-                base_url = BYBIT_LINEAR_WS_BASE_URL
+                base_url = LINEAR_WS_BASE_URL
             elif self.contract_type == "inverse":
-                base_url = BYBIT_INVERSE_WS_BASE_URL
+                base_url = INVERSE_WS_BASE_URL
             else:
                 raise ValueError(f"Unsupported contract type for Bybit futures: {self.contract_type}")
         elif self.market_type == "option":
-            base_url = BYBIT_OPTION_WS_BASE_URL
+            base_url = OPTION_WS_BASE_URL
         else:
             raise ValueError(f"Unsupported market type for Bybit WebSocket: {self.market_type}")
 
