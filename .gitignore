@@ -10,6 +10,9 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+### GigaIDE
+.gigaide/
+
 ### VisualStudioCode template
 .vscode/*
 !.vscode/settings.json
