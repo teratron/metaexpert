@@ -10,7 +10,6 @@ from typing import Self
 from metaexpert.config import APP_NAME
 from metaexpert.logger import get_logger
 from metaexpert.websocket import WebSocketClient
-
 from ._event_handler import EventHandler
 
 logger: Logger = get_logger(APP_NAME)
@@ -325,13 +324,11 @@ class Process(Enum):
         """
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
-
         Thread(
             target=WebSocketClient,
             args=(ws_url,),
             daemon=True
         ).start()
-
         Thread(target=cls._run_tasks, daemon=True).start()
 
         return True

@@ -23,24 +23,28 @@ from logging import Logger
 from pathlib import Path
 from types import ModuleType
 
-#from metaexpert.cli.argument_parser import Namespace, parse_arguments
+# from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import (
     BACKTEST_END_DATE,
     BACKTEST_START_DATE,
+    DEFAULT_CONTRACT_TYPE,
+    DEFAULT_MARGIN_MODE,
+    DEFAULT_MARKET_TYPE,
+    DEFAULT_POSITION_MODE,
     ENABLE_METRICS,
     INITIAL_CAPITAL,
     LIB_NAME,
-    LOG_ASYNC_LOGGING_ENABLED,
-    LOG_CONSOLE_LOGGING_ENABLED,
+    LOG_ASYNC_LOGGING,
+    LOG_CONSOLE_LOGGING,
     LOG_ERROR_FILE,
     LOG_FILE,
-    LOG_LEVEL,
-    LOG_STRUCTURED_LOGGING_ENABLED,
+    LOG_STRUCTURED_LOGGING,
     LOG_TRADE_FILE,
     PERSIST_STATE,
     RATE_LIMIT,
     STATE_FILE,
     TRADE_MODE_PAPER,
+    DEFAULT_LOG_LEVEL,
 )
 from metaexpert.core import MetaProcess, Process, Service, TradeMode
 from metaexpert.exchanges import MetaExchange
@@ -54,42 +58,42 @@ class MetaExpert(Service):
     _filename: str | None = None
 
     def __init__(
-        self,
-        #
-        # --- Required Parameters ---
-        exchange: str,
-        *,
-        # --- API Credentials (required for live mode) ---
-        api_key: str | None = None,
-        api_secret: str | None = None,
-        api_passphrase: str | None = None,
-        #
-        # --- Connection Settings ---
-        subaccount: str | None = None,
-        base_url: str | None = None,
-        testnet: bool = True,
-        proxy: dict[str, str] | None = None,
-        #
-        # --- Market & Trading Mode ---
-        market_type: str = "futures",
-        contract_type: str = "inverse",
-        margin_mode: str = "isolated",
-        position_mode: str = "hedge",
-        #
-        # --- Logging Configuration ---
-        log_level: str = LOG_LEVEL,
-        log_file: str = LOG_FILE,
-        trade_log_file: str = LOG_TRADE_FILE,
-        error_log_file: str = LOG_ERROR_FILE,
-        log_to_console: bool = LOG_CONSOLE_LOGGING_ENABLED,
-        structured_logging: bool = LOG_STRUCTURED_LOGGING_ENABLED,
-        async_logging: bool = LOG_ASYNC_LOGGING_ENABLED,
-        #
-        # --- Advanced System Settings ---
-        rate_limit: int = RATE_LIMIT,
-        enable_metrics: bool = ENABLE_METRICS,
-        persist_state: bool = PERSIST_STATE,
-        state_file: str = STATE_FILE,
+            self,
+            #
+            # --- Required Parameters ---
+            exchange: str,
+            *,
+            # --- API Credentials (required for live mode) ---
+            api_key: str | None = None,
+            api_secret: str | None = None,
+            api_passphrase: str | None = None,
+            #
+            # --- Connection Settings ---
+            subaccount: str | None = None,
+            base_url: str | None = None,
+            testnet: bool = True,
+            proxy: dict[str, str] | None = None,
+            #
+            # --- Market & Trading Mode ---
+            market_type: str = DEFAULT_MARKET_TYPE,
+            contract_type: str = DEFAULT_CONTRACT_TYPE,
+            margin_mode: str = DEFAULT_MARGIN_MODE,
+            position_mode: str = DEFAULT_POSITION_MODE,
+            #
+            # --- Logging Configuration ---
+            log_level: str = DEFAULT_LOG_LEVEL,
+            log_file: str = LOG_FILE,
+            trade_log_file: str = LOG_TRADE_FILE,
+            error_log_file: str = LOG_ERROR_FILE,
+            log_to_console: bool = LOG_CONSOLE_LOGGING,
+            structured_logging: bool = LOG_STRUCTURED_LOGGING,
+            async_logging: bool = LOG_ASYNC_LOGGING,
+            #
+            # --- Advanced System Settings ---
+            rate_limit: int = RATE_LIMIT,
+            enable_metrics: bool = ENABLE_METRICS,
+            persist_state: bool = PERSIST_STATE,
+            state_file: str = STATE_FILE,
     ) -> None:
         """Initialize the expert trading system.
 
@@ -132,7 +136,7 @@ class MetaExpert(Service):
         )
 
         # Parse command line arguments
-        #self.args: Namespace = parse_arguments()
+        # self.args: Namespace = parse_arguments()
 
         # Initialize stock exchange
         self.client: MetaExchange = MetaExchange.create(
@@ -182,13 +186,21 @@ class MetaExpert(Service):
         return f"<{type(self).__name__} {self.strategy_name!r}>"
 
     def run(
-        self,
-        trade_mode: str = TRADE_MODE_PAPER,
-        backtest_start: str | datetime = BACKTEST_START_DATE,
-        backtest_end: str | datetime = BACKTEST_END_DATE,
-        initial_capital: float = INITIAL_CAPITAL,
+            self,
+            trade_mode: str = TRADE_MODE_PAPER,
+            backtest_start: str | datetime = BACKTEST_START_DATE,
+            backtest_end: str | datetime = BACKTEST_END_DATE,
+            initial_capital: float = INITIAL_CAPITAL,
     ) -> None:
-        """Run the expert trading system."""
+        """Run the expert trading system.
+
+         Args:
+
+            trade_mode (str): Trading mode ('paper', 'live', 'backtest').
+            backtest_start (str | datetime): Start date for backtesting.
+            backtest_end (str | datetime): End date for backtesting.
+            initial_capital (float): Initial capital for paper trading or backtesting.
+         """
         self.trade_mode = TradeMode.get_trade_mode_from(trade_mode)
         self.backtest_start = backtest_start
         self.backtest_end = backtest_end

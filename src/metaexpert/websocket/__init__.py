@@ -11,9 +11,9 @@ logger = get_logger("metaexpert.websocket")
 
 
 class WebSocketClient(WebSocketApp, ABC):
-    def __init__(self, *args, **kwargs) -> None:  #
+    def __init__(self, url: str, **kwargs) -> None:
         super().__init__(
-            url=args[0],
+            url=url,
             on_open=self.on_open,
             on_close=self.on_close,
             on_error=self.on_error,
@@ -21,11 +21,6 @@ class WebSocketClient(WebSocketApp, ABC):
             **kwargs
         )
         self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
-
-    # def start(self) -> None:
-    #     """Start the WebSocket client."""
-    #     logger.info(f"Starting WebSocket client for {self.url}")
-    #     self.run_forever()
 
     @abstractmethod
     def on_open(self, ws: WebSocket) -> None:

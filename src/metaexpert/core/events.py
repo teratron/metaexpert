@@ -4,15 +4,12 @@ from typing import Any
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import get_logger
-
 from ._bar import Bar
 from ._timeframe import Timeframe
 from ._timer import Timer
 from .expert import Expert
 from .process import Process
 from .size_type import SizeType
-
-logger: Logger = get_logger(APP_NAME)
 
 
 class Service(Expert):
@@ -23,59 +20,61 @@ class Service(Expert):
     trading, transactions, ticks, bars, timers, and book events.
     """
 
+    logger: Logger = get_logger(APP_NAME)
+
     def on_init(
-        self,
-        #
-        # --- Core Trading Parameters ---
-        symbol: str | None = None,
-        timeframe: str | None = None,
-        *,
-        lookback_bars: int = 100,
-        warmup_bars: int = 0,
-        #
-        # --- Strategy Metadata ---
-        strategy_id: int = 42,
-        strategy_name: str | None = None,
-        comment: str | None = None,
-        #
-        # --- Risk & Position Sizing ---
-        leverage: int = 10,
-        max_drawdown_pct: float = 0.2,
-        daily_loss_limit: float = 1000.0,
-        size_type: str = "risk_based",
-        size_value: float = 1.5,
-        max_position_size_quote: float = 50000.0,
-        #
-        # --- Trade Parameters ---
-        stop_loss_pct: float = 2.0,
-        take_profit_pct: float = 4.0,
-        trailing_stop_pct: float = 1.0,
-        trailing_activation_pct: float = 2.0,
-        breakeven_pct: float = 1.5,
-        slippage_pct: float = 0.1,
-        max_spread_pct: float = 0.1,
-        #
-        # --- Portfolio Management
-        max_open_positions: int = 3,
-        max_positions_per_symbol: int = 1,
-        #
-        # --- Entry Filters ---
-        trade_hours: set[int] | None = None,
-        allowed_days: set[int] | None = None,
-        min_volume: int = 10000,
-        volatility_filter: bool = True,
-        trend_filter: bool = True
+            self,
+            #
+            # --- Core Trading Parameters ---
+            symbol: str,
+            timeframe: str,
+            *,
+            lookback_bars: int = 100,
+            warmup_bars: int = 0,
+            #
+            # --- Strategy Metadata ---
+            strategy_id: int = 42,
+            strategy_name: str = "My Strategy",
+            comment: str = "my_strategy",
+            #
+            # --- Risk & Position Sizing ---
+            leverage: int = 10,
+            max_drawdown_pct: float = 0.2,
+            daily_loss_limit: float = 1000.0,
+            size_type: str = "risk_based",
+            size_value: float = 1.5,
+            max_position_size_quote: float = 50000.0,
+            #
+            # --- Trade Parameters ---
+            stop_loss_pct: float = 2.0,
+            take_profit_pct: float = 4.0,
+            trailing_stop_pct: float = 1.0,
+            trailing_activation_pct: float = 2.0,
+            breakeven_pct: float = 1.5,
+            slippage_pct: float = 0.1,
+            max_spread_pct: float = 0.1,
+            #
+            # --- Portfolio Management
+            max_open_positions: int = 3,
+            max_positions_per_symbol: int = 1,
+            #
+            # --- Entry Filters ---
+            trade_hours: set[int] | None = None,
+            allowed_days: set[int] | None = None,
+            min_volume: int = 10000,
+            volatility_filter: bool = True,
+            trend_filter: bool = True
     ) -> Callable[[Callable[[], None]], Callable[[], None]]:
         """Decorator for initialization event handling.
 
         Args:
-            symbol (str | None): Trading symbols (e.g., "BTCUSDT", "ETHUSDT"). Defaults to "BTCUSDT".
-            timeframe (str | None): Time frame for trading data (e.g., "1h", "1m"). Defaults to "1h".
+            symbol (str): Trading symbols (e.g., "BTCUSDT", "ETHUSDT"). Defaults to "BTCUSDT".
+            timeframe (str): Time frame for trading data (e.g., "1h", "1m"). Defaults to "1h".
             lookback_bars (int): Number of historical bars to fetch for analysis. Defaults to 100.
             warmup_bars (int): Skip initial bars to initialize indicators. Defaults to 0.
             strategy_id (int): Unique ID for order tagging. Defaults to 1001.
-            strategy_name (str | None): Display name of the strategy. Defaults to "My Strategy".
-            comment (str | None): Order comment (max 32 chars for Binance, 36 for Bybit). Defaults to "my_strategy".
+            strategy_name (str): Display name of the strategy. Defaults to "My Strategy".
+            comment (str): Order comment (max 32 chars for Binance, 36 for Bybit). Defaults to "my_strategy".
             leverage (int): Leverage for margin trading (ignored for spot). Defaults to 10.
             max_drawdown_pct (float): Max drawdown from peak equity (0.2 = 20%). Defaults to 0.2.
             daily_loss_limit (float): Daily loss limit in settlement currency (auto-detected). Defaults to 1000.0.
@@ -134,15 +133,14 @@ class Service(Expert):
 
         def outer(func: Callable[[], None]) -> Callable[[], None]:
             def inner() -> None:
-                logger.debug("Initializing strategy: %s", self.strategy_name)
+                self.logger.debug("Initializing strategy: %s", self.strategy_name)
                 func()
 
             return inner
 
         return outer
 
-    @staticmethod
-    def on_deinit(func: Callable[[str], None]) -> Callable[[str], None]:
+    def on_deinit(self, func: Callable[[str], None]) -> Callable[[str], None]:
         """Decorator for deinitialization event handling.
 
         Args:
@@ -151,20 +149,21 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles the deinitialization event.
         """
+
         def inner(reason: str = "user_stop") -> None:
-            logger.debug("Deinitializing with reason: %s", reason)
+            self.logger.debug("Deinitializing with reason: %s", reason)
             func(reason)
 
             while Process.ON_TIMER.check_instance():
                 timer = Process.ON_TIMER.pop_instance()
                 if timer is not None:
-                    logger.debug("Stopping timer...")
+                    self.logger.debug("Stopping timer...")
                     timer.stop()
 
             while Process.ON_BAR.check_instance():
                 bar = Process.ON_BAR.pop_instance()
                 if bar is not None:
-                    logger.debug("Stopping bar...")
+                    self.logger.debug("Stopping bar...")
                     bar.stop()
 
         return inner
@@ -178,7 +177,8 @@ class Service(Expert):
         return inner
 
     @staticmethod
-    def on_bar(timeframe: str = "1h") -> Callable[[Callable[[dict], None]], Callable[[dict], Coroutine[Any, Any, None]]]:
+    def on_bar(timeframe: str = "1h") -> Callable[
+        [Callable[[dict], None]], Callable[[dict], Coroutine[Any, Any, None]]]:
         """Decorator for bar event handling.
 
         Args:
@@ -187,6 +187,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles bar events.
         """
+
         def outer(func: Callable[[dict], None]) -> Callable[[dict], Coroutine[Any, Any, None]]:
             async def inner(rates: dict) -> None:
                 bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
@@ -197,9 +198,7 @@ class Service(Expert):
 
         return outer
 
-
-    @staticmethod
-    def on_timer(interval: int = 60) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
+    def on_timer(self, interval: int = 60) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
         """Decorator for timer-based event handling.
 
         Args:
@@ -209,7 +208,7 @@ class Service(Expert):
             Callable: Decorated function that executes at specified intervals.
         """
         if interval <= 0:
-            logger.error("Interval must be greater than 0, got %d", interval)
+            self.logger.error("Interval must be greater than 0, got %d", interval)
             raise ValueError("Interval must be greater than 0")
 
         def outer(func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
@@ -232,6 +231,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles order events.
         """
+
         def inner(order: dict) -> None:
             func(order)
 
@@ -247,6 +247,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles position events.
         """
+
         def inner(pos: dict) -> None:
             func(pos)
 
@@ -262,6 +263,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles transaction events.
         """
+
         def inner(request: dict, result: dict) -> None:
             func(request, result)
 
@@ -277,6 +279,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles book events.
         """
+
         def inner(orderbook: dict) -> None:
             func(orderbook)
 
@@ -292,6 +295,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles error events.
         """
+
         def inner(err: Exception) -> None:
             func(err)
 
@@ -307,6 +311,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles account events.
         """
+
         def inner(acc: dict) -> None:
             func(acc)
 
@@ -322,6 +327,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles backtest init events.
         """
+
         def inner() -> None:
             func()
 
@@ -337,6 +343,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles backtest deinit events.
         """
+
         def inner() -> None:
             func()
 
@@ -352,6 +359,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles backtest events.
         """
+
         def inner() -> float:
             return func()
 
@@ -367,6 +375,7 @@ class Service(Expert):
         Returns:
             Callable: Decorated function that handles backtest pass events.
         """
+
         def inner() -> None:
             func()
 

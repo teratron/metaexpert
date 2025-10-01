@@ -12,10 +12,27 @@ LIB_NAME: str = "metaexpert"
 # LOGGING CONFIGURATION
 # -----------------------------------------------------------------------------
 
-# Default log levels
+# Log levels
+LOG_LEVEL_DEBUG: str = "DEBUG"
+LOG_LEVEL_INFO: str = "INFO"
+LOG_LEVEL_WARNING: str = "WARNING"
+LOG_LEVEL_ERROR: str = "ERROR"
+LOG_LEVEL_CRITICAL: str = "CRITICAL"
+LOG_LEVEL_MAP: dict[str, str] = {
+    LOG_LEVEL_DEBUG: "DEBUG",
+    LOG_LEVEL_INFO: "INFO",
+    LOG_LEVEL_WARNING: "WARNING",
+    LOG_LEVEL_ERROR: "ERROR",
+    LOG_LEVEL_CRITICAL: "CRITICAL",
+}
+
+# Default log level
+DEFAULT_LOG_LEVEL: str = LOG_LEVEL_DEBUG
+
+# Logging configuration
 LOG_LEVEL: str = "DEBUG"
-LOG_TRADE_LEVEL: str = "INFO"
-LOG_ERROR_LEVEL: str = "ERROR"
+LOG_TRADE_LEVEL: str = LOG_LEVEL_INFO
+LOG_ERROR_LEVEL: str = LOG_LEVEL_ERROR
 
 # Default file names
 LOG_FILE: str = "expert.log"
@@ -35,9 +52,9 @@ LOG_DETAILED_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%
 LOG_CONFIG_FILE: str = "config.json"
 
 # Enhanced configuration flags
-LOG_CONSOLE_LOGGING_ENABLED: bool = True
-LOG_STRUCTURED_LOGGING_ENABLED: bool = False
-LOG_ASYNC_LOGGING_ENABLED: bool = False
+LOG_CONSOLE_LOGGING: bool = True
+LOG_STRUCTURED_LOGGING: bool = False
+LOG_ASYNC_LOGGING: bool = False
 
 # -----------------------------------------------------------------------------
 # EXCHANGE-SPECIFIC CONFIGURATION
@@ -52,7 +69,7 @@ MARKET_TYPE_OPTIONS: str = "options"
 DEFAULT_MARKET_TYPE: str = MARKET_TYPE_FUTURES
 
 # Contract types for futures trading
-CONTRACT_TYPE_LINEAR: str = "linear"    # USDT-M Futures /fapi/*
+CONTRACT_TYPE_LINEAR: str = "linear"  # USDT-M Futures /fapi/*
 CONTRACT_TYPE_INVERSE: str = "inverse"  # COIN-M Delivery /dapi/*
 
 # Default contract type for futures trading
@@ -77,13 +94,13 @@ DEFAULT_POSITION_MODE: str = POSITION_MODE_HEDGE
 # -----------------------------------------------------------------------------
 
 # API request parameters
-RATE_LIMIT: int = 1200                  # Max requests per minute (RPM). Varies by exchange and API tier.
-REQUEST_TIMEOUT: int = 10               # Timeout for API requests in seconds
+RATE_LIMIT: int = 1200  # Max requests per minute (RPM). Varies by exchange and API tier.
+REQUEST_TIMEOUT: int = 10  # Timeout for API requests in seconds
 
 # Advanced System Settings
-ENABLE_METRICS: bool = True             # Enable performance metrics
-PERSIST_STATE: bool = True              # Persist state between runs
-STATE_FILE: str = "state.json"          # State persistence file (relative to working directory)
+ENABLE_METRICS: bool = True  # Enable performance metrics
+PERSIST_STATE: bool = True  # Persist state between runs
+STATE_FILE: str = "state.json"  # State persistence file (relative to working directory)
 
 # -----------------------------------------------------------------------------
 # TRADING STRATEGY CONFIGURATION
@@ -141,9 +158,9 @@ TREND_FILTER: bool = True
 # TRADING BOT OPERATION MODES
 # -----------------------------------------------------------------------------
 
-TRADE_MODE_BACKTEST: str = "backtest"   # Backtesting mode
-TRADE_MODE_PAPER: str = "paper"         # Paper trading mode
-TRADE_MODE_LIVE: str = "live"           # Live trading mode
+TRADE_MODE_BACKTEST: str = "backtest"  # Backtesting mode
+TRADE_MODE_PAPER: str = "paper"  # Paper trading mode
+TRADE_MODE_LIVE: str = "live"  # Live trading mode
 
 # Default trading bot operation mode
 DEFAULT_TRADE_MODE: str = TRADE_MODE_PAPER
