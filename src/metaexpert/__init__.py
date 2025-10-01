@@ -46,16 +46,13 @@ from metaexpert.config import (
     TRADE_MODE_PAPER,
     DEFAULT_LOG_LEVEL,
 )
-from metaexpert.core import MetaProcess, Process, Service, TradeMode
+from metaexpert.core import MetaProcess, EventType, Events, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import MetaLogger
 
 
-class MetaExpert(Service):
+class MetaExpert(Events):
     """Expert trading system"""
-
-    _module: ModuleType | None = None
-    _filename: str | None = None
 
     def __init__(
             self,
@@ -167,6 +164,8 @@ class MetaExpert(Service):
         self.backtest_start: str | datetime | None = None
         self.backtest_end: str | datetime | None = None
         self.initial_capital: float | None = None
+        self._module: ModuleType | None = None
+        self._filename: str | None = None
         self._running: bool = False
 
         # Log initialization
@@ -214,12 +213,12 @@ class MetaExpert(Service):
 
         try:
             # Initialize event handling
-            self._module = Process.init()
+            self._module = EventType.init()
             if self._module and self._module.__file__:
                 self._filename = Path(self._module.__file__).stem
 
             # Initialize the expert
-            Process.ON_INIT.run()
+            EventType.ON_INIT.run()
             self.logger.info("Expert initialized successfully")
 
             # Register the expert with the process
@@ -230,7 +229,7 @@ class MetaExpert(Service):
             ws_url = self.client.get_websocket_url(
                 self.symbol, self.timeframe.get_name()
             )
-            Process.processing(ws_url)
+            EventType.processing(ws_url)
 
         except KeyboardInterrupt:
             # Handle keyboard interrupt
@@ -246,7 +245,7 @@ class MetaExpert(Service):
             self.logger.error("Runtime error: %s", e)
         finally:
             self._running = False
-            Process.ON_DEINIT.run()
+            EventType.ON_DEINIT.run()
             self.logger.info("Expert shutdown complete")
 
     # from metaexpert.exchanges.binance import balance

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from metaexpert.logger import get_logger
 
-_logger = get_logger(__name__)
+logger = get_logger(__name__)
 
 
 @dataclass

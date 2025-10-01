@@ -5,6 +5,10 @@ from datetime import datetime
 # -----------------------------------------------------------------------------
 # APPLICATION CONFIGURATION
 # -----------------------------------------------------------------------------
+
+# Application metadata
+APP_VERSION: str = "0.1.0"
+APP_DESCRIPTION: str = "Expert trading system for algorithmic trading."
 APP_NAME: str = "MetaExpert"
 LIB_NAME: str = "metaexpert"
 
@@ -107,8 +111,8 @@ STATE_FILE: str = "state.json"  # State persistence file (relative to working di
 # -----------------------------------------------------------------------------
 
 # Core trading parameters
-SYMBOL: str = "BTCUSDT"
-TIMEFRAME: str = "1h"
+DEFAULT_SYMBOL: str = "BTCUSDT"
+DEFAULT_TIMEFRAME: str = "1h"
 LOOKBACK_BARS: int = 100
 LOOKBACK_TIME: str = "7d"
 WARMUP_BARS: int = 0
@@ -158,11 +162,12 @@ TREND_FILTER: bool = True
 # TRADING BOT OPERATION MODES
 # -----------------------------------------------------------------------------
 
+# Trading modes
 TRADE_MODE_BACKTEST: str = "backtest"  # Backtesting mode
 TRADE_MODE_PAPER: str = "paper"  # Paper trading mode
 TRADE_MODE_LIVE: str = "live"  # Live trading mode
 
-# Default trading bot operation mode
+# Default trading mode
 DEFAULT_TRADE_MODE: str = TRADE_MODE_PAPER
 
 # Backtesting parameters

@@ -5,9 +5,8 @@ from typing import Self
 
 from metaexpert.config import APP_NAME
 from metaexpert.logger import get_logger
-
+from .event_type import EventType
 from ..exchanges import MetaExchange
-from .process import Process
 
 logger: Logger = get_logger(APP_NAME)
 
@@ -21,15 +20,15 @@ class MetaProcess:
     """
 
     def __init__(
-        self,
-        client: MetaExchange,
-        name: str = "MetaProcess",
-        auto_start: bool = False,
-        max_processes: int = 100,
-        rate_limit: int = 1200,
-        enable_metrics: bool = True,
-        persist_state: bool = True,
-        state_file: str = "state.json"
+            self,
+            client: MetaExchange,
+            name: str = "MetaProcess",
+            auto_start: bool = False,
+            max_processes: int = 100,
+            rate_limit: int = 1200,
+            enable_metrics: bool = True,
+            persist_state: bool = True,
+            state_file: str = "state.json"
     ) -> None:
         """Initialize the MetaProcess manager.
         
@@ -50,7 +49,7 @@ class MetaProcess:
         self.persist_state = persist_state
         self.state_file = state_file
         self.max_processes = max_processes
-        self._processes: dict[str, Process] = {}
+        self._processes: dict[str, EventType] = {}
         self._is_running: bool = False
 
         if auto_start:
@@ -60,15 +59,15 @@ class MetaProcess:
 
     @classmethod
     def create(
-        cls,
-        client: MetaExchange,
-        name: str = "MetaProcess",
-        auto_start: bool = False,
-        max_processes: int = 100,
-        rate_limit: int = 1200,
-        enable_metrics: bool = True,
-        persist_state: bool = True,
-        state_file: str = "state.json"
+            cls,
+            client: MetaExchange,
+            name: str = "MetaProcess",
+            auto_start: bool = False,
+            max_processes: int = 100,
+            rate_limit: int = 1200,
+            enable_metrics: bool = True,
+            persist_state: bool = True,
+            state_file: str = "state.json"
     ) -> Self:
         """Create a new MetaProcess instance.
         
@@ -96,7 +95,7 @@ class MetaProcess:
             state_file=state_file
         )
 
-    def register_process(self, name: str, process: Process) -> bool:
+    def register_process(self, name: str, process: EventType) -> bool:
         """Register a process with the manager.
         
         Args:
@@ -118,14 +117,14 @@ class MetaProcess:
         logger.debug("Registered process '%s' with manager '%s'", name, self.name)
         return True
 
-    def get_process(self, name: str) -> Process | None:
+    def get_process(self, name: str) -> EventType | None:
         """Get a registered process by name.
         
         Args:
             name: The name of the process to retrieve.
             
         Returns:
-            Process | None: The Process instance if found, otherwise None.
+            EventType | None: The Process instance if found, otherwise None.
         """
         return self._processes.get(name)
 

@@ -3,7 +3,7 @@ from enum import Enum
 from logging import Logger
 from typing import Self
 
-from metaexpert.config import APP_NAME
+from metaexpert.config import APP_NAME, DEFAULT_TIMEFRAME
 from metaexpert.logger import get_logger
 
 logger: Logger = get_logger(APP_NAME)
@@ -149,13 +149,14 @@ class Timeframe(Enum):
         raise TypeError(f"Timeframe delta must be a timedelta, got {type(delta).__name__}")
 
     @classmethod
-    def get_period_from(cls, name: str | None) -> Self | None:
+    def get_timeframe_from(cls, name: str) -> Self:
         """Get the period type from a string."""
+        normalized_name: str = name.lower().strip()
         if isinstance(name, str):
             for item in cls:
-                if item.get_name() == name.lower():
+                if item.get_name() == normalized_name:
                     return item
-        return None
+        return cls.get_timeframe_from(DEFAULT_TIMEFRAME)
 
     @staticmethod
     def _get_next_weekly_candle_time(now: datetime) -> datetime:

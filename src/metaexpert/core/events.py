@@ -2,17 +2,42 @@ from collections.abc import Callable, Coroutine
 from logging import Logger
 from typing import Any
 
-from metaexpert.config import APP_NAME
+from metaexpert.config import (
+    APP_NAME,
+    BREAKEVEN_PCT,
+    COMMENT,
+    DAILY_LOSS_LIMIT,
+    DEFAULT_SIZE_TYPE,
+    LEVERAGE,
+    LOOKBACK_BARS,
+    MAX_DRAWDOWN_PCT,
+    MAX_OPEN_POSITIONS,
+    MAX_POSITION_SIZE_QUOTE,
+    MAX_POSITIONS_PER_SYMBOL,
+    MAX_SPREAD_PCT,
+    MIN_VOLUME,
+    SIZE_VALUE,
+    SLIPPAGE_PCT,
+    STOP_LOSS_PCT,
+    STRATEGY_ID,
+    STRATEGY_NAME,
+    TAKE_PROFIT_PCT,
+    TRAILING_ACTIVATION_PCT,
+    TRAILING_STOP_PCT,
+    TREND_FILTER,
+    VOLATILITY_FILTER,
+    WARMUP_BARS,
+)
+from metaexpert.core._bar import Bar
+from metaexpert.core._timer import Timer
+from metaexpert.core.event_type import EventType
+from metaexpert.core.expert import Expert
+from metaexpert.core.size_type import SizeType
+from metaexpert.core.timeframe import Timeframe
 from metaexpert.logger import get_logger
-from ._bar import Bar
-from ._timeframe import Timeframe
-from ._timer import Timer
-from .expert import Expert
-from .process import Process
-from .size_type import SizeType
 
 
-class Service(Expert):
+class Events(Expert):
     """Expert trading system service.
 
     This class handles the initialization and management of the trading system's events.
@@ -29,47 +54,47 @@ class Service(Expert):
             symbol: str,
             timeframe: str,
             *,
-            lookback_bars: int = 100,
-            warmup_bars: int = 0,
+            lookback_bars: int = LOOKBACK_BARS,
+            warmup_bars: int = WARMUP_BARS,
             #
             # --- Strategy Metadata ---
-            strategy_id: int = 42,
-            strategy_name: str = "My Strategy",
-            comment: str = "my_strategy",
+            strategy_id: int = STRATEGY_ID,
+            strategy_name: str = STRATEGY_NAME,
+            comment: str = COMMENT,
             #
             # --- Risk & Position Sizing ---
-            leverage: int = 10,
-            max_drawdown_pct: float = 0.2,
-            daily_loss_limit: float = 1000.0,
-            size_type: str = "risk_based",
-            size_value: float = 1.5,
-            max_position_size_quote: float = 50000.0,
+            leverage: int = LEVERAGE,
+            max_drawdown_pct: float = MAX_DRAWDOWN_PCT,
+            daily_loss_limit: float = DAILY_LOSS_LIMIT,
+            size_type: str = DEFAULT_SIZE_TYPE,
+            size_value: float = SIZE_VALUE,
+            max_position_size_quote: float = MAX_POSITION_SIZE_QUOTE,
             #
             # --- Trade Parameters ---
-            stop_loss_pct: float = 2.0,
-            take_profit_pct: float = 4.0,
-            trailing_stop_pct: float = 1.0,
-            trailing_activation_pct: float = 2.0,
-            breakeven_pct: float = 1.5,
-            slippage_pct: float = 0.1,
-            max_spread_pct: float = 0.1,
+            stop_loss_pct: float = STOP_LOSS_PCT,
+            take_profit_pct: float = TAKE_PROFIT_PCT,
+            trailing_stop_pct: float = TRAILING_STOP_PCT,
+            trailing_activation_pct: float = TRAILING_ACTIVATION_PCT,
+            breakeven_pct: float = BREAKEVEN_PCT,
+            slippage_pct: float = SLIPPAGE_PCT,
+            max_spread_pct: float = MAX_SPREAD_PCT,
             #
             # --- Portfolio Management
-            max_open_positions: int = 3,
-            max_positions_per_symbol: int = 1,
+            max_open_positions: int = MAX_OPEN_POSITIONS,
+            max_positions_per_symbol: int = MAX_POSITIONS_PER_SYMBOL,
             #
             # --- Entry Filters ---
             trade_hours: set[int] | None = None,
             allowed_days: set[int] | None = None,
-            min_volume: int = 10000,
-            volatility_filter: bool = True,
-            trend_filter: bool = True
+            min_volume: int = MIN_VOLUME,
+            volatility_filter: bool = VOLATILITY_FILTER,
+            trend_filter: bool = TREND_FILTER
     ) -> Callable[[Callable[[], None]], Callable[[], None]]:
         """Decorator for initialization event handling.
 
         Args:
-            symbol (str): Trading symbols (e.g., "BTCUSDT", "ETHUSDT"). Defaults to "BTCUSDT".
-            timeframe (str): Time frame for trading data (e.g., "1h", "1m"). Defaults to "1h".
+            symbol (str): Trading symbols (e.g., "BTCUSDT", "ETHUSDT").
+            timeframe (str): Time frame for trading data (e.g., "1h", "1m").
             lookback_bars (int): Number of historical bars to fetch for analysis. Defaults to 100.
             warmup_bars (int): Skip initial bars to initialize indicators. Defaults to 0.
             strategy_id (int): Unique ID for order tagging. Defaults to 1001.
@@ -90,8 +115,8 @@ class Service(Expert):
             max_spread_pct (float): Max allowed spread (%). Defaults to 0.1.
             max_open_positions (int): Max total open positions. Defaults to 3.
             max_positions_per_symbol (int): Max positions per symbol. Defaults to 1.
-            trade_hours (set[int] | None): Trade only during these UTC hours. Defaults to {9, 10, 11, 15}.
-            allowed_days (set[int] | None): Trade only these days (1=Mon, 7=Sun). Defaults to {1, 2, 3, 4, 5}.
+            trade_hours (set[int] | None): Trade only during these UTC hours. Defaults to None.
+            allowed_days (set[int] | None): Trade only these days (1=Mon, 7=Sun). Defaults to None.
             min_volume (int): Min volume in settlement currency. Defaults to 1000000.
             volatility_filter (bool): Enable volatility filter (implement inside). Defaults to True.
             trend_filter (bool): Enable trend filter (implement inside). Defaults to True.
@@ -101,7 +126,7 @@ class Service(Expert):
         """
         super().__init__(
             symbol=symbol,
-            timeframe=Timeframe.get_period_from(timeframe),
+            timeframe=Timeframe.get_timeframe_from(timeframe),
             lookback_bars=lookback_bars,
             warmup_bars=warmup_bars,
             strategy_id=strategy_id,
@@ -154,14 +179,14 @@ class Service(Expert):
             self.logger.debug("Deinitializing with reason: %s", reason)
             func(reason)
 
-            while Process.ON_TIMER.check_instance():
-                timer = Process.ON_TIMER.pop_instance()
+            while EventType.ON_TIMER.check_instance():
+                timer = EventType.ON_TIMER.pop_instance()
                 if timer is not None:
                     self.logger.debug("Stopping timer...")
                     timer.stop()
 
-            while Process.ON_BAR.check_instance():
-                bar = Process.ON_BAR.pop_instance()
+            while EventType.ON_BAR.check_instance():
+                bar = EventType.ON_BAR.pop_instance()
                 if bar is not None:
                     self.logger.debug("Stopping bar...")
                     bar.stop()
@@ -191,7 +216,7 @@ class Service(Expert):
         def outer(func: Callable[[dict], None]) -> Callable[[dict], Coroutine[Any, Any, None]]:
             async def inner(rates: dict) -> None:
                 bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
-                Process.ON_BAR.push_instance(bar)
+                EventType.ON_BAR.push_instance(bar)
                 await bar.start()
 
             return inner
@@ -214,7 +239,7 @@ class Service(Expert):
         def outer(func: Callable[[], None]) -> Callable[[], Coroutine[Any, Any, None]]:
             async def inner() -> None:
                 timer = Timer(interval=interval, callback=func)
-                Process.ON_TIMER.push_instance(timer)
+                EventType.ON_TIMER.push_instance(timer)
                 await timer.start()
 
             return inner

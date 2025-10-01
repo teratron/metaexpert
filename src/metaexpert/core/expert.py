@@ -1,27 +1,27 @@
 from dataclasses import dataclass
 
-from ._timeframe import Timeframe
 from .size_type import SizeType
+from .timeframe import Timeframe
 
 
 @dataclass
 class Expert:
     # --- Core Trading Parameters ---
-    symbol: str | None
-    timeframe: Timeframe | None
+    symbol: str
+    timeframe: Timeframe
     lookback_bars: int
     warmup_bars: int
     #
     # --- Strategy Metadata ---
     strategy_id: int
-    strategy_name: str | None
-    comment: str | None
+    strategy_name: str
+    comment: str
     #
     # --- Risk & Position Sizing ---
     leverage: int
     max_drawdown_pct: float
     daily_loss_limit: float
-    size_type: SizeType | None
+    size_type: SizeType
     size_value: float
     max_position_size_quote: float
     #

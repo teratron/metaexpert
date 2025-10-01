@@ -8,14 +8,14 @@ from types import ModuleType
 from typing import Self
 
 from metaexpert.config import APP_NAME
+from metaexpert.core._event_handler import EventHandler
 from metaexpert.logger import get_logger
 from metaexpert.websocket import WebSocketClient
-from ._event_handler import EventHandler
 
 logger: Logger = get_logger(APP_NAME)
 
 
-class Process(Enum):
+class EventType(Enum):
     """Event types for the trading system.
 
     Each event type has a maximum number of callbacks defined by the 'max_callbacks' field.

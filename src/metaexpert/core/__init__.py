@@ -3,10 +3,10 @@
 from ._bar import Bar
 from ._event_handler import EventHandler
 from ._status import InitStatus
-from ._timeframe import Timeframe
 from ._timer import Timer
 from .contract_type import ContractType
-from .events import Service
+from .event_type import EventType
+from .events import Events
 from .exceptions import (
     APIError,
     AuthenticationError,
@@ -35,9 +35,9 @@ from .margin_mode import MarginMode
 from .market import Market
 from .market_type import MarketType
 from .position_mode import PositionMode
-from .process import Process
 from .size_type import SizeType
 from .system import MetaProcess
+from .timeframe import Timeframe
 from .trade import Trade
 from .trade_mode import TradeMode
 
@@ -67,10 +67,10 @@ __all__ = [
     "NetworkError",
     "OrderNotFoundError",
     "PositionMode",
-    "Process",
+    "EventType",
     "ProcessError",
     "RateLimitError",
-    "Service",
+    "Events",
     "ShutdownError",
     "SizeType",
     "Timeframe",
