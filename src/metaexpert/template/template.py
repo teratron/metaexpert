@@ -15,42 +15,40 @@ from metaexpert import MetaExpert
 # -----------------------------------------------------------------------------
 expert = MetaExpert(
     # --- Required Parameters ---
-    exchange="binance",  # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin',...
+    exchange="binance",             # Supported: 'binance', 'bybit', 'okx', 'bitget', 'kucoin',...
 
     # --- API Credentials (required for live mode) ---
-    api_key=None,  # User to provide API key
-    api_secret=None,  # User to provide secret key
-    api_passphrase=None,  # Required only for OKX/KuCoin
+    api_key=None,                   # User to provide API key
+    api_secret=None,                # User to provide secret key
+    api_passphrase=None,            # Required only for OKX/KuCoin
 
     # --- Connection Settings ---
-    subaccount=None,  # For Bybit multi-account (optional)
-    base_url=None,  # Custom API URL (optional)
-    testnet=False,  # True to use exchange testnet
-    proxy=None,  # Proxy settings: dict like {"http": "...", "https": "..."} (optional)
+    subaccount=None,                # For Bybit multi-account (optional)
+    base_url=None,                  # Custom API URL (optional)
+    testnet=False,                  # True to use exchange testnet
+    proxy=None,                     # Proxy settings: dict like {"http": "...", "https": "..."} (optional)
 
     # --- Market & Trading Mode ---
-    market_type="futures",  # 'spot', 'futures', 'options' (note: 'options' only on Binance, OKX)
-    contract_type="linear",  # Only for futures: 'linear' (USDT-M) or 'inverse' (COIN-M)
-    margin_mode="isolated",  # Only for futures: 'isolated' or 'cross' (ignored for spot)
-    position_mode="hedge",
-    # 'hedge' (two-way) or 'oneway' (one-way) — Binance futures (required for Binance; ignored on other exchanges)
+    market_type="futures",          # 'spot', 'futures', 'options' (note: 'options' only on Binance, OKX)
+    contract_type="linear",         # Only for futures: 'linear' (USDT-M) or 'inverse' (COIN-M)
+    margin_mode="isolated",         # Only for futures: 'isolated' or 'cross' (ignored for spot)
+    position_mode="hedge",          # 'hedge' (two-way) or 'oneway' (one-way) — Binance futures (required for Binance; ignored on other exchanges)
 
     # --- Logging Configuration ---
-    log_level="INFO",  # 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
-    log_file="expert.log",  # Main log file
-    trade_log_file="trades.log",  # Trade execution log
-    error_log_file="errors.log",  # Error-specific log
-    log_to_console=True,  # Print logs to console
-    structured_logging=False,  # Use structured JSON logging
-    async_logging=False,  # Use asynchronous logging
+    log_level="INFO",               # 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'
+    log_file="expert.log",          # Main log file
+    trade_log_file="trades.log",    # Trade execution log
+    error_log_file="errors.log",    # Error-specific log
+    log_to_console=True,            # Print logs to console
+    structured_logging=False,       # Use structured JSON logging
+    async_logging=False,            # Use asynchronous logging
 
     # --- Advanced System Settings ---
-    rate_limit=1200,  # Max requests per minute (RPM). Varies by exchange and API tier.
-    enable_metrics=True,  # Enable performance metrics
-    persist_state=True,  # Persist state between runs
-    state_file="state.json",  # State persistence file (relative to working directory)
+    rate_limit=1200,                # Max requests per minute (RPM). Varies by exchange and API tier.
+    enable_metrics=True,            # Enable performance metrics
+    persist_state=True,             # Persist state between runs
+    state_file="state.json",        # State persistence file (relative to working directory)
 )
-
 
 # -----------------------------------------------------------------------------
 # 2. STRATEGY INITIALIZATION (ON_INIT)
@@ -59,51 +57,48 @@ expert = MetaExpert(
 # -----------------------------------------------------------------------------
 @expert.on_init(
     # --- Core Trading Parameters ---
-    symbol="BTCUSDT",  # Trading symbol (e.g., 'BTCUSDT', 'ETHUSDT', 'AAPL')
-    timeframe="1h",  # Primary timeframe: '1m','5m','15m','1h','4h','1d',...
-    lookback_bars=100,  # Number of historical bars to fetch for analysis
+    symbol="BTCUSDT",               # Trading symbol (e.g., 'BTCUSDT', 'ETHUSDT', 'AAPL')
+    timeframe="1h",                 # Primary timeframe: '1m','5m','15m','1h','4h','1d',...
+    lookback_bars=100,              # Number of historical bars to fetch for analysis
     # lookback_time="7d",           # Alternative: time period ('1h','4h','1d','7d','30d')
-    warmup_bars=0,  # Skip initial bars to initialize indicators (optional, 0 = no warmup)
+    warmup_bars=0,                  # Skip initial bars to initialize indicators (optional, 0 = no warmup)
 
     # --- Strategy Metadata ---
-    strategy_id=1001,  # Unique ID for order tagging
-    strategy_name="My Strategy",  # Display name
-    comment="my_strategy",  # Order comment (max 32 chars Binance, 36 Bybit)
+    strategy_id=1001,               # Unique ID for order tagging
+    strategy_name="My Strategy",    # Display name
+    comment="my_strategy",          # Order comment (max 32 chars Binance, 36 Bybit)
 
     # --- Risk & Position Sizing ---
-    leverage=10,  # Leverage (verify per-symbol limits; ignored for spot, validated via API)
-    max_drawdown_pct=0.2,  # Max drawdown from peak equity (0.2 = 20%)
-    daily_loss_limit=1000.0,
-    # Daily loss limit in auto-detected settlement currency (e.g., USDT for linear, BTC for inverse, auto-determined)
-    size_type="risk_based",  # Position sizing: 'fixed_base', 'fixed_quote', 'percent_equity', 'risk_based'
-    size_value=1.5,
-    # Size value: fixed_base (e.g., 0.01 BTC), fixed_quote (e.g., 1000 USDT), percent_equity (e.g., 0.01 = 1%), risk_based (e.g., 1.5% risk per trade)
-    max_position_size_quote=50000.0,  # Max position size in quote currency
+    leverage=10,                    # Leverage (verify per-symbol limits; ignored for spot, validated via API)
+    max_drawdown_pct=0.2,           # Max drawdown from peak equity (0.2 = 20%)
+    daily_loss_limit=1000.0,        # Daily loss limit in auto-detected settlement currency (e.g., USDT for linear, BTC for inverse, auto-determined)
+    size_type="risk_based",         # Position sizing: 'fixed_base', 'fixed_quote', 'percent_equity', 'risk_based'
+    size_value=1.5,                 # Size value: fixed_base (e.g., 0.01 BTC), fixed_quote (e.g., 1000 USDT), percent_equity (e.g., 0.01 = 1%), risk_based (e.g., 1.5% risk per trade)
+    max_position_size_quote=50000.0,# Max position size in quote currency
 
     # --- Trade Parameters ---
-    stop_loss_pct=2.0,  # Stop-Loss % from entry
-    take_profit_pct=4.0,  # Take-Profit % from entry
-    trailing_stop_pct=1.0,  # Trailing stop distance %
-    trailing_activation_pct=2.0,  # Activate after X% profit
-    breakeven_pct=1.5,  # Move SL to breakeven after X% profit
-    slippage_pct=0.1,  # Expected slippage %
-    max_spread_pct=0.1,  # Max allowed spread %
+    stop_loss_pct=2.0,              # Stop-Loss % from entry
+    take_profit_pct=4.0,            # Take-Profit % from entry
+    trailing_stop_pct=1.0,          # Trailing stop distance %
+    trailing_activation_pct=2.0,    # Activate after X% profit
+    breakeven_pct=1.5,              # Move SL to breakeven after X% profit
+    slippage_pct=0.1,               # Expected slippage %
+    max_spread_pct=0.1,             # Max allowed spread %
 
     # --- Portfolio Management ---
-    max_open_positions=3,  # Max total open positions
-    max_positions_per_symbol=1,  # Max positions per symbol
+    max_open_positions=3,           # Max total open positions
+    max_positions_per_symbol=1,     # Max positions per symbol
 
     # --- Entry Filters ---
-    trade_hours={9, 10, 11, 15},  # Trade only during these UTC hours
-    allowed_days={1, 2, 3, 4, 5},  # Trade only these days (1=Mon, 7=Sun)
-    min_volume=1000000,  # Min volume in settlement_currency
-    volatility_filter=True,  # Enable volatility filter (implement inside)
-    trend_filter=True,  # Enable trend filter (implement inside)
+    trade_hours={9, 10, 11, 15},    # Trade only during these UTC hours
+    allowed_days={1, 2, 3, 4, 5},   # Trade only these days (1=Mon, 7=Sun)
+    min_volume=1000000,             # Min volume in settlement_currency
+    volatility_filter=True,         # Enable volatility filter (implement inside)
+    trend_filter=True,              # Enable trend filter (implement inside)
 )
 def init() -> None:
     """Called once at expert startup. Initialize indicators or load data here."""
     pass
-
 
 # -----------------------------------------------------------------------------
 # 3. EVENT HANDLERS
@@ -131,7 +126,7 @@ def tick(rates) -> None:
 
 
 @expert.on_bar(
-    timeframe="1h",  # Bar timeframe. Defaults to init timeframe if omitted. Use for multi-timeframe strategies.
+    timeframe="1h",                 # Bar timeframe. Defaults to init timeframe if omitted. Use for multi-timeframe strategies.
 )
 def bar(rates) -> None:
     """Called when a new bar closes. Implement core strategy logic here.
@@ -143,7 +138,7 @@ def bar(rates) -> None:
 
 
 @expert.on_timer(
-    interval=60  # Interval in seconds
+    interval=60                     # Interval in seconds
 )
 def timer() -> None:
     """Called periodically. Useful for monitoring, heartbeat, non-market logic."""
@@ -210,7 +205,6 @@ def account(acc) -> None:
     """
     pass
 
-
 # -----------------------------------------------------------------------------
 # 4. BACKTESTING EVENT HANDLERS
 # -----------------------------------------------------------------------------
@@ -241,7 +235,6 @@ def backtest_pass() -> None:
     """Called at the end of each pass in an optimization run."""
     pass
 
-
 # -----------------------------------------------------------------------------
 # 5. ENTRY POINT
 # -----------------------------------------------------------------------------
@@ -250,11 +243,10 @@ def backtest_pass() -> None:
 def main() -> None:
     """Main entry point. Starts the trading expert."""
     expert.run(
-        trade_mode="paper",  # 'paper', 'live' or 'backtest'
-        backtest_start="2024-01-01",  # 'YYYY-MM-DD'
+        trade_mode="paper",         # 'paper', 'live' or 'backtest'
+        backtest_start="2024-01-01",# 'YYYY-MM-DD'
         backtest_end="2025-08-31",  # 'YYYY-MM-DD'
-        initial_capital=10000,
-        # Starting capital in settlement_currency (used in 'paper' and 'backtest' modes; ignored in 'live')
+        initial_capital=10000,      # Starting capital in settlement_currency (used in 'paper' and 'backtest' modes; ignored in 'live')
     )
 
 
