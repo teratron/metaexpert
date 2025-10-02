@@ -1,22 +1,4 @@
-"""MetaExpert: A Python-based Expert Trading System.
-
-This module provides a framework for creating and managing expert trading systems
-using the MetaExpert library. It includes features for event handling, logging,
-and integration with various stock exchanges.
-
-The system supports multiple trading modes and configurations:
-- Market types: spot, futures, options
-- Contract types: linear (USD-M) or inverse (COIN-M) for futures
-- Margin modes: isolated or cross margin
-- Position modes: hedge (two-way) or oneway (one-way)
-- Position sizing: fixed base, fixed quote, percent equity, or risk-based
-
-Enums:
-- SizeType: Position sizing methods
-- ContractType: Contract types for futures trading
-- MarginMode: Margin modes for futures trading
-- PositionMode: Position modes for futures trading
-"""
+"""MetaExpert: A Python-based Expert Trading System."""
 
 from datetime import datetime
 from logging import Logger
