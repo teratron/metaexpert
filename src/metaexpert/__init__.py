@@ -25,8 +25,8 @@ from metaexpert.config import (
     PERSIST_STATE,
     RATE_LIMIT,
     STATE_FILE,
-    TRADE_MODE_PAPER,
     DEFAULT_LOG_LEVEL,
+    DEFAULT_TRADE_MODE,
 )
 from metaexpert.core import MetaProcess, EventType, Events, TradeMode
 from metaexpert.exchanges import MetaExchange
@@ -168,7 +168,7 @@ class MetaExpert(Events):
 
     def run(
             self,
-            trade_mode: str = TRADE_MODE_PAPER,
+            trade_mode: str = DEFAULT_TRADE_MODE,
             backtest_start: str | datetime = BACKTEST_START_DATE,
             backtest_end: str | datetime = BACKTEST_END_DATE,
             initial_capital: float = INITIAL_CAPITAL,

@@ -6,9 +6,13 @@ logging system, offering structured logging, asynchronous logging, and
 specialized handlers for trade and error logging.
 """
 
+import json
+import logging
+import os
+import sys
 from logging import Logger
 
-from metaexpert.logger.config import LOG_BACKUP_COUNT, LOG_DIRECTORY, LOG_MAX_FILE_SIZE
+from metaexpert.config import LOG_BACKUP_COUNT, LOG_DIRECTORY, LOG_MAX_FILE_SIZE
 
 
 class MetaLogger(Logger):
@@ -21,22 +25,21 @@ class MetaLogger(Logger):
     """
 
     def __init__(
-        self,
-        name: str,
-        *,
-        log_level: str,
-        log_file: str,
-        trade_log_file: str,
-        error_log_file: str,
-        log_to_console: bool,
-        structured_logging: bool,
-        async_logging: bool
+            self,
+            name: str,
+            *,
+            log_level: str,
+            log_file: str,
+            trade_log_file: str,
+            error_log_file: str,
+            log_to_console: bool,
+            structured_logging: bool,
+            async_logging: bool
     ) -> None:
-        """
-        Initialize the MetaLogger with enhanced configuration.
+        """Initialize the MetaLogger with enhanced configuration.
 
         Args:
-            name: Application name
+            name: Library name
             log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
             log_file: Main log file name
             trade_log_file: Trade-specific log file name
@@ -61,16 +64,13 @@ class MetaLogger(Logger):
         # Initialize the Logger with the application name
         super().__init__(self.name)
 
-import json
-import logging
-import os
-import sys
+
 from logging import Formatter, Logger, StreamHandler, getLogger
 from logging.config import dictConfig
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from metaexpert.logger.config import LOG_CONFIG_FILE, LOG_FILE, LOG_FORMAT, LOG_LEVEL
+from metaexpert.config import LOG_CONFIG_FILE, LOG_FILE, LOG_FORMAT, LOG_LEVEL
 
 
 def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
@@ -85,7 +85,7 @@ def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
     """
     # Set default logger name if not provided
     if name is None:
-        name = ""#LOG_NAME
+        name = ""  # LOG_NAME
 
     # Create logger instance
     logger = get_logger(name)
@@ -133,7 +133,7 @@ def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
         maxBytes=LOG_MAX_FILE_SIZE,
         backupCount=LOG_BACKUP_COUNT,
         encoding="utf-8",
-        )
+    )
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
