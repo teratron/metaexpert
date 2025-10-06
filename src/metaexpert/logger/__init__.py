@@ -19,8 +19,14 @@ from metaexpert.config import (
     LOG_CONFIG_FILE,
     LOG_DIRECTORY,
     LOG_FORMAT,
-    LOG_MAX_FILE_SIZE, LOG_DETAILED_FORMAT,
+    LOG_MAX_FILE_SIZE,
+    LOG_DETAILED_FORMAT, LOG_TRADE_LEVEL_NUM, LOG_REPORT_LEVEL_NUM, LOG_TRADE_LEVEL_NAME, LOG_REPORT_LEVEL_NAME,
 )
+from metaexpert.logger.formatter import MainFormatter
+
+# Define custom log levels
+logging.addLevelName(LOG_TRADE_LEVEL_NUM, LOG_TRADE_LEVEL_NAME)
+logging.addLevelName(LOG_REPORT_LEVEL_NUM, LOG_REPORT_LEVEL_NAME)
 
 
 class MetaLogger(Logger):
@@ -56,6 +62,9 @@ class MetaLogger(Logger):
             structured_logging: Whether to use JSON structured logging
             async_logging: Whether to use asynchronous logging
         """
+        # Initialize the Logger with the application name
+        super().__init__(self.name)
+
         # Configure the logging system using the LogManager
         self.name = name
         self.log_level = log_level
@@ -72,9 +81,6 @@ class MetaLogger(Logger):
         self.log_detailed_format = LOG_DETAILED_FORMAT
         self.log_config_file = LOG_CONFIG_FILE
 
-        # Initialize the Logger with the application name
-        super().__init__(self.name)
-
         # Check if log config file exists
         if os.path.isfile(self.log_config_file):
             try:
@@ -86,24 +92,29 @@ class MetaLogger(Logger):
                 self.error("Error loading logging configuration file: %s", e)
 
         # Configure logger
-        self.setLevel(self.log_level)
+        self.setLevel(self.log_level.upper())
+
+        # Prevent re-configuration if handlers are already present
+        if self.handlers:
+            return
 
         # Clear existing handlers to avoid duplicate logs
         if self.handlers:
             self.handlers.clear()
 
+        # Create logs directory if it doesn't exist
+        log_dir = Path(self.log_directory)
+        log_dir.mkdir(exist_ok=True)
+
         # Create formatter
         formatter = Formatter(self.log_format)
+        formatter = self._create_formatter()
 
         # Create console handler if enabled
         if self.log_to_console:
             console_handler = StreamHandler(stream=sys.stdout)
             console_handler.setFormatter(formatter)
             self.addHandler(console_handler)
-
-        # Create logs directory if it doesn't exist
-        log_dir = Path(self.log_directory)
-        log_dir.mkdir(exist_ok=True)
 
         # Create main file handler with rotation
         file_handler = RotatingFileHandler(
@@ -134,6 +145,17 @@ class MetaLogger(Logger):
         )
         error_handler.setFormatter(formatter)
         self.addHandler(error_handler)
+
+    def _create_formatter(self) -> Formatter:
+        """Create appropriate formatter based on configuration.
+
+        Returns:
+            Formatter instance
+        """
+        if self.structured_logging:
+            return MainFormatter()
+        else:
+            return Formatter(LogConfig.get_log_format())
 
 
 def get_logger(name: str | None = None) -> Logger:

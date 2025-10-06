@@ -16,8 +16,10 @@ LIB_NAME: str = "metaexpert"
 # LOGGING CONFIGURATION
 # -----------------------------------------------------------------------------
 
-# Log levels
+#  Logging metadata
 LOG_NAME: str = APP_NAME
+
+# Log levels
 LOG_LEVEL_DEBUG: str = "DEBUG"
 LOG_LEVEL_INFO: str = "INFO"
 LOG_LEVEL_WARNING: str = "WARNING"
@@ -30,12 +32,16 @@ LOG_LEVEL_MAP: dict[str, str] = {
     LOG_LEVEL_ERROR: "ERROR",
     LOG_LEVEL_CRITICAL: "CRITICAL",
 }
+LOG_TRADE_LEVEL_NUM: int = 25
+LOG_TRADE_LEVEL_NAME: str = "TRADE"
+LOG_REPORT_LEVEL_NUM: int = 26
+LOG_REPORT_LEVEL_NAME: str = "REPORT"
 
 # Default log level
 DEFAULT_LOG_LEVEL: str = LOG_LEVEL_DEBUG
 
 # Logging configuration
-LOG_LEVEL: str = "DEBUG"
+LOG_LEVEL: str = DEFAULT_LOG_LEVEL
 LOG_TRADE_LEVEL: str = LOG_LEVEL_INFO
 LOG_ERROR_LEVEL: str = LOG_LEVEL_ERROR
 
