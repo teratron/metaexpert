@@ -17,6 +17,7 @@ LIB_NAME: str = "metaexpert"
 # -----------------------------------------------------------------------------
 
 # Log levels
+LOG_NAME: str = APP_NAME
 LOG_LEVEL_DEBUG: str = "DEBUG"
 LOG_LEVEL_INFO: str = "INFO"
 LOG_LEVEL_WARNING: str = "WARNING"

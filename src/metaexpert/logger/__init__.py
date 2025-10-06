@@ -1,5 +1,4 @@
-"""
-MetaLogger: Enhanced logging system for MetaExpert trading framework.
+"""MetaLogger: Enhanced logging system for MetaExpert trading framework.
 
 This module provides a custom Logger class that integrates with the MetaExpert
 logging system, offering structured logging, asynchronous logging, and
@@ -10,9 +9,18 @@ import json
 import logging
 import os
 import sys
-from logging import Logger
+from logging import Formatter, Logger, StreamHandler, getLogger
+from logging.config import dictConfig
+from logging.handlers import RotatingFileHandler
+from pathlib import Path
 
-from metaexpert.config import LOG_BACKUP_COUNT, LOG_DIRECTORY, LOG_MAX_FILE_SIZE
+from metaexpert.config import (
+    LOG_BACKUP_COUNT,
+    LOG_CONFIG_FILE,
+    LOG_DIRECTORY,
+    LOG_FORMAT,
+    LOG_MAX_FILE_SIZE, LOG_DETAILED_FORMAT,
+)
 
 
 class MetaLogger(Logger):
@@ -60,84 +68,72 @@ class MetaLogger(Logger):
         self.log_directory = LOG_DIRECTORY
         self.max_file_size = LOG_MAX_FILE_SIZE
         self.backup_count = LOG_BACKUP_COUNT
+        self.log_format = LOG_FORMAT
+        self.log_detailed_format = LOG_DETAILED_FORMAT
+        self.log_config_file = LOG_CONFIG_FILE
 
         # Initialize the Logger with the application name
         super().__init__(self.name)
 
+        # Check if log config file exists
+        if os.path.isfile(self.log_config_file):
+            try:
+                # Load config from JSON file
+                with open(self.log_config_file, encoding="utf-8") as file:
+                    config = json.load(file)
+                dictConfig(config)
+            except FileNotFoundError as e:
+                self.error("Error loading logging configuration file: %s", e)
 
-from logging import Formatter, Logger, StreamHandler, getLogger
-from logging.config import dictConfig
-from logging.handlers import RotatingFileHandler
-from pathlib import Path
+        # Configure logger
+        self.setLevel(self.log_level)
 
-from metaexpert.config import LOG_CONFIG_FILE, LOG_FILE, LOG_FORMAT, LOG_LEVEL
+        # Clear existing handlers to avoid duplicate logs
+        if self.handlers:
+            self.handlers.clear()
 
+        # Create formatter
+        formatter = Formatter(self.log_format)
 
-def setup_logger(name: str | None = None, level: str | None = None) -> Logger:
-    """Set up and configure the logger.
+        # Create console handler if enabled
+        if self.log_to_console:
+            console_handler = StreamHandler(stream=sys.stdout)
+            console_handler.setFormatter(formatter)
+            self.addHandler(console_handler)
 
-    Args:
-        name (str, optional): Logger name. Defaults to None.
-        level (str, optional): Logging level. Defaults to None.
+        # Create logs directory if it doesn't exist
+        log_dir = Path(self.log_directory)
+        log_dir.mkdir(exist_ok=True)
 
-    Returns:
-        Logger: Configured logger instance.
-    """
-    # Set default logger name if not provided
-    if name is None:
-        name = ""  # LOG_NAME
+        # Create main file handler with rotation
+        file_handler = RotatingFileHandler(
+            log_dir / self.log_file,
+            maxBytes=self.max_file_size,
+            backupCount=self.backup_count,
+            encoding="utf-8",
+        )
+        file_handler.setFormatter(formatter)
+        self.addHandler(file_handler)
 
-    # Create logger instance
-    logger = get_logger(name)
+        # Create trade log file handler
+        trade_handler = RotatingFileHandler(
+            log_dir / self.trade_log_file,
+            maxBytes=self.max_file_size,
+            backupCount=self.backup_count,
+            encoding="utf-8",
+        )
+        trade_handler.setFormatter(formatter)
+        self.addHandler(trade_handler)
 
-    # Check if log config file exists
-    if os.path.isfile(LOG_CONFIG_FILE):
-        try:
-            # Load config from JSON file
-            with open(LOG_CONFIG_FILE, encoding="utf-8") as file:
-                config = json.load(file)
-
-            dictConfig(config)
-
-            return get_logger(name)
-        except FileNotFoundError as e:
-            logger.error("Error loading logging configuration file: %s", e)
-
-    # Get log level from environment or config
-    if level is None:
-        level = os.getenv("LOG_LEVEL", LOG_LEVEL)
-
-    # Configure logger
-    logger.setLevel(getattr(logging, level) if level else LOG_LEVEL)
-
-    # Clear existing handlers to avoid duplicate logs
-    if logger.handlers:
-        logger.handlers.clear()
-
-    # Create formatter
-    formatter = Formatter(LOG_FORMAT)
-
-    # Create console handler
-    console_handler = StreamHandler(stream=sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-
-    # Create logs directory if it doesn't exist
-    # log_dir = Path(str.join("..", "logs"))
-    log_dir = Path("logs")
-    log_dir.mkdir(exist_ok=True)
-
-    # Create file handler with rotation
-    file_handler = RotatingFileHandler(
-        log_dir / LOG_FILE,
-        maxBytes=LOG_MAX_FILE_SIZE,
-        backupCount=LOG_BACKUP_COUNT,
-        encoding="utf-8",
-    )
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-
-    return logger
+        # Create error log file handler
+        error_handler = RotatingFileHandler(
+            log_dir / self.error_log_file,
+            maxBytes=self.max_file_size,
+            backupCount=self.backup_count,
+            encoding="utf-8",
+        )
+        error_handler.setFormatter(formatter)
+        self.addHandler(error_handler)
 
 
 def get_logger(name: str | None = None) -> Logger:
