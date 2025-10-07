@@ -20,18 +20,10 @@ from metaexpert.config import (
     LOG_FORMAT,
     LOG_MAX_FILE_SIZE,
     LOG_NAME,
-    LOG_REPORT_LEVEL_NAME,
-    LOG_REPORT_LEVEL_NUM,
     LOG_TRADE_LEVEL,
-    LOG_TRADE_LEVEL_NAME,
-    LOG_TRADE_LEVEL_NUM,
 )
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.formatter import ErrorFormatter, MainFormatter, TradeFormatter
-
-# Define custom log levels
-logging.addLevelName(LOG_TRADE_LEVEL_NUM, LOG_TRADE_LEVEL_NAME)
-logging.addLevelName(LOG_REPORT_LEVEL_NUM, LOG_REPORT_LEVEL_NAME)
 
 
 class HandlerConfig(TypedDict):
@@ -53,14 +45,14 @@ class MetaLogger(logging.Logger):
     """
 
     def __init__(
-            self,
-            log_level: str,
-            log_file: str,
-            trade_log_file: str,
-            error_log_file: str,
-            log_to_console: bool,
-            structured_logging: bool,
-            async_logging: bool,
+        self,
+        log_level: str,
+        log_file: str,
+        trade_log_file: str,
+        error_log_file: str,
+        log_to_console: bool,
+        structured_logging: bool,
+        async_logging: bool,
     ) -> None:
         """Initialize the MetaLogger with enhanced configuration.
 
@@ -86,9 +78,19 @@ class MetaLogger(logging.Logger):
         self._configured = False
 
         # Formatters
-        self._main_formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
-        self._trade_formatter = TradeFormatter() if self.structured_logging else self._main_formatter
-        self._error_formatter = ErrorFormatter() if self.structured_logging else logging.Formatter(LOG_DETAILED_FORMAT)
+        self._main_formatter = (
+            MainFormatter()
+            if self.structured_logging
+            else logging.Formatter(LOG_FORMAT)
+        )
+        self._trade_formatter = (
+            TradeFormatter() if self.structured_logging else self._main_formatter
+        )
+        self._error_formatter = (
+            ErrorFormatter()
+            if self.structured_logging
+            else logging.Formatter(LOG_DETAILED_FORMAT)
+        )
 
         # Initialize the Logger with the application name
         super().__init__(LOG_NAME, self.log_level)
@@ -182,7 +184,7 @@ class MetaLogger(logging.Logger):
             trade_logger.info(message)
 
     def log_error(
-            self, message: str, exception: Exception | None = None, **kwargs
+        self, message: str, exception: Exception | None = None, **kwargs
     ) -> None:
         """Log an error message.
 

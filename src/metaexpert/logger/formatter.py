@@ -23,10 +23,28 @@ class MainFormatter(logging.Formatter):
 
         # Standard log record attributes to exclude from extra fields
         self.reserved_attrs = {
-            'name', 'msg', 'args', 'levelname', 'levelno', 'pathname', 'filename',
-            'module', 'exc_info', 'exc_text', 'stack_info', 'lineno', 'funcName',
-            'created', 'msecs', 'relativeCreated', 'thread', 'threadName',
-            'processName', 'process', 'getMessage', 'message'
+            "name",
+            "msg",
+            "args",
+            "levelname",
+            "levelno",
+            "pathname",
+            "filename",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "lineno",
+            "funcName",
+            "created",
+            "msecs",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "getMessage",
+            "message",
         }
 
     def format(self, record: logging.LogRecord) -> str:
@@ -62,17 +80,17 @@ class MainFormatter(logging.Formatter):
         }
 
         # Add thread information if available
-        if hasattr(record, 'thread') and record.thread:
+        if hasattr(record, "thread") and record.thread:
             log_entry["thread"] = {
                 "id": record.thread,
-                "name": getattr(record, 'threadName', 'Unknown')
+                "name": getattr(record, "threadName", "Unknown"),
             }
 
         # Add process information if available
-        if hasattr(record, 'process') and record.process:
+        if hasattr(record, "process") and record.process:
             log_entry["process"] = {
                 "id": record.process,
-                "name": getattr(record, 'processName', 'Unknown')
+                "name": getattr(record, "processName", "Unknown"),
             }
 
         # Add exception information if present
@@ -80,7 +98,7 @@ class MainFormatter(logging.Formatter):
             log_entry["exception"] = {
                 "type": record.exc_info[0].__name__ if record.exc_info[0] else None,
                 "message": str(record.exc_info[1]) if record.exc_info[1] else None,
-                "traceback": self._format_exception(record.exc_info)
+                "traceback": self._format_exception(record.exc_info),
             }
 
         # Add stack info if present
@@ -125,7 +143,9 @@ class MainFormatter(logging.Formatter):
         """
         try:
             if exc_info and len(exc_info) >= 3:
-                return "".join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2])).strip()
+                return "".join(
+                    traceback.format_exception(exc_info[0], exc_info[1], exc_info[2])
+                ).strip()
             else:
                 return "Invalid exception info"
         except (TypeError, ValueError):
@@ -158,7 +178,7 @@ class MainFormatter(logging.Formatter):
         """
         if isinstance(obj, datetime):
             return obj.isoformat()
-        elif hasattr(obj, '__dict__'):
+        elif hasattr(obj, "__dict__"):
             return str(obj)
         else:
             return repr(obj)
@@ -177,7 +197,7 @@ class TradeFormatter(MainFormatter):
 
         # Extract trade-specific fields if present
         trade_fields = {}
-        for field in ['symbol', 'side', 'quantity', 'price', 'order_id', 'strategy_id']:
+        for field in ["symbol", "side", "quantity", "price", "order_id", "strategy_id"]:
             if hasattr(record, field):
                 trade_fields[field] = getattr(record, field)
 
@@ -201,7 +221,7 @@ class ErrorFormatter(MainFormatter):
 
         # Add error context if available
         error_context = {}
-        for field in ['error_code', 'component', 'operation', 'user_id', 'session_id']:
+        for field in ["error_code", "component", "operation", "user_id", "session_id"]:
             if hasattr(record, field):
                 error_context[field] = getattr(record, field)
 

@@ -32,10 +32,6 @@ LOG_LEVEL_MAP: dict[str, str] = {
     LOG_LEVEL_ERROR: "ERROR",
     LOG_LEVEL_CRITICAL: "CRITICAL",
 }
-LOG_TRADE_LEVEL_NUM: int = 25
-LOG_TRADE_LEVEL_NAME: str = "TRADE"
-LOG_REPORT_LEVEL_NUM: int = 26
-LOG_REPORT_LEVEL_NAME: str = "REPORT"
 
 # Default log level
 DEFAULT_LOG_LEVEL: str = LOG_LEVEL_DEBUG
@@ -59,7 +55,9 @@ LOG_BACKUP_COUNT: int = 5
 
 # Format settings
 LOG_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
-LOG_DETAILED_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s"
+LOG_DETAILED_FORMAT: str = (
+    "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s"
+)
 LOG_FALLBACK_FORMAT: str = "[%(asctime)s] %(levelname)s: (LOGGING-FALLBACK) %(message)s"
 
 # Enhanced configuration flags
@@ -105,7 +103,9 @@ DEFAULT_POSITION_MODE: str = POSITION_MODE_HEDGE
 # -----------------------------------------------------------------------------
 
 # API request parameters
-RATE_LIMIT: int = 1200  # Max requests per minute (RPM). Varies by exchange and API tier.
+RATE_LIMIT: int = (
+    1200  # Max requests per minute (RPM). Varies by exchange and API tier.
+)
 REQUEST_TIMEOUT: int = 10  # Timeout for API requests in seconds
 
 # Advanced System Settings
@@ -159,7 +159,32 @@ MAX_OPEN_POSITIONS: int = 3
 MAX_POSITIONS_PER_SYMBOL: int = 1
 
 # Entry filters
-TRADE_HOURS: set[int] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23}
+TRADE_HOURS: set[int] = {
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+}
 ALLOWED_DAYS: set[int] = {1, 2, 3, 4, 5, 6, 7}
 MIN_VOLUME: int = 1000000
 VOLATILITY_FILTER: bool = True
@@ -178,7 +203,9 @@ TRADE_MODE_LIVE: str = "live"  # Live trading mode
 DEFAULT_TRADE_MODE: str = TRADE_MODE_PAPER
 
 # Backtesting parameters
-BACKTEST_START_DATE: str = datetime.now().replace(year=datetime.now().year - 1).strftime("%Y-%m-%d")
+BACKTEST_START_DATE: str = (
+    datetime.now().replace(year=datetime.now().year - 1).strftime("%Y-%m-%d")
+)
 BACKTEST_END_DATE: str = datetime.now().strftime("%Y-%m-%d")
 
 # Initial capital for backtesting or paper trading
