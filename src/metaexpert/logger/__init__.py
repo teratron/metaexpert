@@ -12,21 +12,22 @@ import logging.handlers
 import os
 import sys
 from pathlib import Path
-from typing import TypedDict
+from typing import TypedDict, Any
 
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
     LOG_CONFIG_FILE,
     LOG_DIRECTORY,
+    LOG_ERROR_LEVEL,
     LOG_FORMAT,
     LOG_MAX_FILE_SIZE,
-    LOG_TRADE_LEVEL_NUM,
-    LOG_REPORT_LEVEL_NUM,
-    LOG_TRADE_LEVEL_NAME,
-    LOG_REPORT_LEVEL_NAME,
     LOG_NAME,
+    LOG_REPORT_LEVEL_NAME,
+    LOG_REPORT_LEVEL_NUM,
     LOG_TRADE_LEVEL,
-    LOG_ERROR_LEVEL,
+    LOG_TRADE_LEVEL_NAME,
+    LOG_TRADE_LEVEL_NUM,
+    LOG_FALLBACK_FORMAT,
 )
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.formatter import MainFormatter
@@ -88,64 +89,80 @@ class MetaLogger(logging.Logger):
         self._root_logger = logging.getLogger()
         self._loggers: dict[str, logging.Logger] = {}
         self._handlers: dict[str, logging.Handler] = {}
+        self._formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
         self._configured = False
 
-        # Clear existing handlers
-        self._clear_existing_loggers()
+        # config: dict[str, Any] = self.configure()
 
-        # Check if log config file exists
-        if os.path.isfile(LOG_CONFIG_FILE):
-            try:
+    def configure(self) -> dict[str, Any]:
+        """Configure the logging system with enhanced options.
+
+        Returns:
+            Configuration result with status and message
+        """
+        try:
+            # Clear existing handlers
+            self.shutdown()
+
+            # Check if log config file exists
+            if os.path.isfile(LOG_CONFIG_FILE):
                 # Load config from JSON file
                 with open(LOG_CONFIG_FILE, encoding="utf-8") as file:
                     config = json.load(file)
                 logging.config.dictConfig(config)
-            except FileNotFoundError as e:
-                self.error("Error loading logging configuration file: %s", e)
-            finally:
-                return
 
-        # Create logs directory if it doesn't exist
-        log_dir = Path(LOG_DIRECTORY)
-        log_dir.mkdir(exist_ok=True)
+            # Configure root log levels
+            self._root_logger.setLevel(self.log_level)
 
-        # Configure root log levels
-        self._root_logger.setLevel(self.log_level)
+            # Create file handlers
+            for config in self._configure_handlers():
+                _file_handler = self._create_file_handler(config)
 
-        # Create and configure handlers
-        handlers_config: list[HandlerConfig] = [
-            HandlerConfig(
-                name="main",
-                file=log_dir / self.log_file,
+            # Add console handler if requested
+            if self.log_to_console:
+                _console_handler = self._create_console_handler()
+
+            self._configured = True
+            return {
+                "status": "success",
+                "message": "Enhanced logging system configured successfully",
+                "handlers": list(self._handlers.keys()),
+                "loggers": list(self._loggers.keys()),
+            }
+        except FileNotFoundError as e:
+            logging.error("Error loading logging configuration file: %s", e)
+            return {
+                "status": "error",
+                "message": f"Error loading logging configuration file: {e}",
+            }
+        except Exception as e:
+            # Fallback to basic logging
+            logging.basicConfig(
                 level=self.log_level,
-                logger_name=LOG_NAME,
-            ),
-            HandlerConfig(
-                name="trade",
-                file=log_dir / self.trade_log_file,
-                level=LOG_TRADE_LEVEL,
-                logger_name=f"{LOG_NAME}.trade",
-            ),
-            HandlerConfig(
-                name="error",
-                file=log_dir / self.error_log_file,
-                level=LOG_ERROR_LEVEL,
-                logger_name=f"{LOG_NAME}.error",
-            ),
-        ]
+                format=LOG_FALLBACK_FORMAT,
+            )
+            logging.error("Failed to configure enhanced logging: %s", e, exc_info=True)
+            return {
+                "status": "error",
+                "message": f"Failed to configure enhanced logging: {e}",
+            }
 
-        # Create formatter
-        self._formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
+    def shutdown(self) -> None:
+        """Clear existing loggers and handlers."""
+        # Clear root logger handlers
+        for handler in self._root_logger.handlers[:]:
+            self._root_logger.removeHandler(handler)
+            if hasattr(handler, "close"):
+                handler.close()
 
-        # Create file handlers
-        for config in handlers_config:
-            file_handler = self._create_file_handler(config)
+        # Clear our managed handlers
+        for handler in self._handlers.values():
+            if hasattr(handler, "close"):
+                handler.close()
 
-        # Add console handler if requested
-        if self.log_to_console:
-            console_handler = self._create_console_handler()
-
-        self._configured = True
+        self._handlers.clear()
+        self._loggers.clear()
+        self._configured = False
 
     def get_logger(self, name: str = "main") -> logging.Logger:
         """Get a specialized logger by name.
@@ -204,31 +221,31 @@ class MetaLogger(logging.Logger):
         if kwargs:
             error_logger.error(f"Error context: {kwargs}")
 
-    def shutdown(self) -> None:
-        """Shutdown the logging system and clean up resources."""
-        for handler in self._handlers.values():
-            if hasattr(handler, "close"):
-                handler.close()
-
-        self._handlers.clear()
-        self._loggers.clear()
-        self._configured = False
-
-    def _clear_existing_loggers(self) -> None:
-        """Clear existing loggers and handlers."""
-        # Clear root logger handlers
-        for handler in self._root_logger.handlers[:]:
-            self._root_logger.removeHandler(handler)
-            if hasattr(handler, "close"):
-                handler.close()
-
-        # Clear our managed handlers
-        for handler in self._handlers.values():
-            if hasattr(handler, "close"):
-                handler.close()
-
-        self._handlers.clear()
-        self._loggers.clear()
+    def _configure_handlers(self) -> list[HandlerConfig]:
+        """Create and configure handlers."""
+        # Create logs directory if it doesn't exist
+        log_dir = Path(LOG_DIRECTORY)
+        log_dir.mkdir(exist_ok=True)
+        return [
+            HandlerConfig(
+                name="main",
+                file=log_dir / self.log_file,
+                level=self.log_level,
+                logger_name=LOG_NAME,
+            ),
+            HandlerConfig(
+                name="trade",
+                file=log_dir / self.trade_log_file,
+                level=LOG_TRADE_LEVEL,
+                logger_name=f"{LOG_NAME}.trade",
+            ),
+            HandlerConfig(
+                name="error",
+                file=log_dir / self.error_log_file,
+                level=LOG_ERROR_LEVEL,
+                logger_name=f"{LOG_NAME}.error",
+            ),
+        ]
 
     def _create_file_handler(self, config: HandlerConfig) -> logging.Handler:
         """Create a rotating file handler.
