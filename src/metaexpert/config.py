@@ -62,9 +62,6 @@ LOG_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
 LOG_DETAILED_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s"
 LOG_FALLBACK_FORMAT: str = "[%(asctime)s] %(levelname)s: (LOGGING-FALLBACK) %(message)s"
 
-# Configuration file
-LOG_CONFIG_FILE: str = "config.json"
-
 # Enhanced configuration flags
 LOG_CONSOLE_LOGGING: bool = True
 LOG_STRUCTURED_LOGGING: bool = False

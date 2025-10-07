@@ -5,18 +5,14 @@ logging system, offering structured logging, asynchronous logging, and
 specialized handlers for trade and error logging.
 """
 
-import json
 import logging
-import logging.config
 import logging.handlers
-import os
 import sys
 from pathlib import Path
 from typing import TypedDict, Any
 
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
-    LOG_CONFIG_FILE,
     LOG_DIRECTORY,
     LOG_ERROR_LEVEL,
     LOG_FORMAT,
@@ -104,13 +100,6 @@ class MetaLogger(logging.Logger):
             # Clear existing handlers
             self.shutdown()
 
-            # Check if log config file exists
-            if os.path.isfile(LOG_CONFIG_FILE):
-                # Load config from JSON file
-                with open(LOG_CONFIG_FILE, encoding="utf-8") as file:
-                    config = json.load(file)
-                logging.config.dictConfig(config)
-
             # Configure root log levels
             self._root_logger.setLevel(self.log_level)
 
@@ -128,12 +117,6 @@ class MetaLogger(logging.Logger):
                 "message": "Enhanced logging system configured successfully",
                 "handlers": list(self._handlers.keys()),
                 "loggers": list(self._loggers.keys()),
-            }
-        except FileNotFoundError as e:
-            logging.error("Error loading logging configuration file: %s", e)
-            return {
-                "status": "error",
-                "message": f"Error loading logging configuration file: {e}",
             }
         except Exception as e:
             # Fallback to basic logging
