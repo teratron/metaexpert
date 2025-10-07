@@ -38,6 +38,18 @@ class MainFormatter(logging.Formatter):
         Returns:
             Formatted log record as JSON string
         """
+        log_entry = self._get_log_entry(record)
+        return json.dumps(log_entry, ensure_ascii=False, default=self._json_serializer)
+
+    def _get_log_entry(self, record: logging.LogRecord) -> dict[str, Any]:
+        """Create base log entry dictionary.
+
+        Args:
+            record: The log record to format
+
+        Returns:
+            Log entry dictionary
+        """
         # Create base log entry
         log_entry: dict[str, Any] = {
             "timestamp": self._format_timestamp(record.created),
@@ -81,8 +93,7 @@ class MainFormatter(logging.Formatter):
             if extra_fields:
                 log_entry["extra"] = extra_fields
 
-        # Convert to JSON string
-        return json.dumps(log_entry, ensure_ascii=False, default=self._json_serializer)
+        return log_entry
 
     def _format_timestamp(self, created: float) -> str:
         """Format timestamp according to configuration.
@@ -107,13 +118,16 @@ class MainFormatter(logging.Formatter):
         """Format exception information.
 
         Args:
-            exc_info: Exception info tuple
+            exc_info: Exception info tuple (exc_type, exc_value, exc_traceback)
 
         Returns:
             Formatted exception traceback
         """
         try:
-            return "".join(traceback.format_exception(*exc_info)).strip()
+            if exc_info and len(exc_info) >= 3:
+                return "".join(traceback.format_exception(exc_info[0], exc_info[1], exc_info[2])).strip()
+            else:
+                return "Invalid exception info"
         except (TypeError, ValueError):
             return "Failed to format exception"
 
@@ -155,8 +169,8 @@ class TradeFormatter(MainFormatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format trade log record with additional trade-specific fields."""
-        # Get base formatted record
-        base_entry = json.loads(super().format(record))
+        # Get base log entry
+        base_entry = super()._get_log_entry(record)
 
         # Add trade-specific metadata
         base_entry["log_type"] = "trade"
@@ -178,8 +192,8 @@ class ErrorFormatter(MainFormatter):
 
     def format(self, record: logging.LogRecord) -> str:
         """Format error log record with additional error-specific fields."""
-        # Get base formatted record
-        base_entry = json.loads(super().format(record))
+        # Get base log entry
+        base_entry = super()._get_log_entry(record)
 
         # Add error-specific metadata
         base_entry["log_type"] = "error"

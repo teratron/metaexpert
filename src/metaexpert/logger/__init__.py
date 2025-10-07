@@ -9,12 +9,14 @@ import logging
 import logging.handlers
 import sys
 from pathlib import Path
-from typing import TypedDict, Any
+from typing import Any, TypedDict
 
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
+    LOG_DETAILED_FORMAT,
     LOG_DIRECTORY,
     LOG_ERROR_LEVEL,
+    LOG_FALLBACK_FORMAT,
     LOG_FORMAT,
     LOG_MAX_FILE_SIZE,
     LOG_NAME,
@@ -23,11 +25,9 @@ from metaexpert.config import (
     LOG_TRADE_LEVEL,
     LOG_TRADE_LEVEL_NAME,
     LOG_TRADE_LEVEL_NUM,
-    LOG_FALLBACK_FORMAT,
-    LOG_DETAILED_FORMAT,
 )
 from metaexpert.logger.async_handler import AsyncHandler
-from metaexpert.logger.formatter import MainFormatter, ErrorFormatter, TradeFormatter
+from metaexpert.logger.formatter import ErrorFormatter, MainFormatter, TradeFormatter
 
 # Define custom log levels
 logging.addLevelName(LOG_TRADE_LEVEL_NUM, LOG_TRADE_LEVEL_NAME)
@@ -81,10 +81,8 @@ class MetaLogger(logging.Logger):
         self.log_to_console = log_to_console
         self.structured_logging = structured_logging
         self.async_logging = async_logging
-        self._root_logger = logging.getLogger()
         self._loggers: dict[str, logging.Logger] = {}
         self._handlers: dict[str, logging.Handler] = {}
-        # self._formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
         self._configured = False
 
         # Formatters
@@ -95,7 +93,7 @@ class MetaLogger(logging.Logger):
         # Initialize the Logger with the application name
         super().__init__(LOG_NAME, self.log_level)
 
-        # config: dict[str, Any] = self.configure()
+        _root_config: dict[str, Any] = self.configure()
 
     def configure(self) -> dict[str, Any]:
         """Configure the logging system with enhanced options.
@@ -106,9 +104,6 @@ class MetaLogger(logging.Logger):
         try:
             # Clear existing handlers
             self.shutdown()
-
-            # Configure root log levels
-            self._root_logger.setLevel(self.log_level)
 
             # Create file handlers
             for config in self._configure_handlers():
@@ -139,12 +134,6 @@ class MetaLogger(logging.Logger):
 
     def shutdown(self) -> None:
         """Clear existing loggers and handlers."""
-        # Clear root logger handlers
-        for handler in self._root_logger.handlers[:]:
-            self._root_logger.removeHandler(handler)
-            if hasattr(handler, "close"):
-                handler.close()
-
         # Clear our managed handlers
         for handler in self._handlers.values():
             if hasattr(handler, "close"):
@@ -216,7 +205,6 @@ class MetaLogger(logging.Logger):
         # Create logs directory if it doesn't exist
         log_dir = Path(LOG_DIRECTORY)
         log_dir.mkdir(exist_ok=True)
-
         return [
             HandlerConfig(
                 name="main",
@@ -289,7 +277,12 @@ class MetaLogger(logging.Logger):
 
         # self._handlers["console"] = handler
         self._handlers.__setitem__("console", handler)
-        self._root_logger.addHandler(handler)
+
+        # Create logger for this handler
+        logger = logging.getLogger()
+        logger.setLevel(self.log_level)
+        logger.addHandler(handler)
+        self._loggers.__setitem__("console", logger)
         return handler
 
 
