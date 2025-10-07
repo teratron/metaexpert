@@ -63,11 +63,8 @@ class MetaLogger(logging.Logger):
         log_dir.mkdir(exist_ok=True)
 
         # --- Formatters ---
-        main_formatter = (
-            MainFormatter()
-            if LOG_STRUCTURED_LOGGING
-            else logging.Formatter("[%(asctime)s] %(levelname)s: %(name)s: %(message)s")
-        )
+        main_formatter = MainFormatter() if LOG_STRUCTURED_LOGGING else logging.Formatter(
+            "[%(asctime)s] %(levelname)s: %(name)s: %(message)s")
         trade_formatter = TradeFormatter() if LOG_STRUCTURED_LOGGING else main_formatter
         error_formatter = (
             ErrorFormatter()

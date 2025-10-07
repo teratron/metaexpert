@@ -24,9 +24,10 @@ from metaexpert.config import (
     LOG_TRADE_LEVEL_NAME,
     LOG_TRADE_LEVEL_NUM,
     LOG_FALLBACK_FORMAT,
+    LOG_DETAILED_FORMAT,
 )
 from metaexpert.logger.async_handler import AsyncHandler
-from metaexpert.logger.formatter import MainFormatter
+from metaexpert.logger.formatter import MainFormatter, ErrorFormatter, TradeFormatter
 
 # Define custom log levels
 logging.addLevelName(LOG_TRADE_LEVEL_NUM, LOG_TRADE_LEVEL_NAME)
@@ -40,6 +41,7 @@ class HandlerConfig(TypedDict):
     file: Path
     level: str
     logger_name: str
+    formatter: logging.Formatter
 
 
 class MetaLogger(logging.Logger):
@@ -58,7 +60,7 @@ class MetaLogger(logging.Logger):
             error_log_file: str,
             log_to_console: bool,
             structured_logging: bool,
-            async_logging: bool
+            async_logging: bool,
     ) -> None:
         """Initialize the MetaLogger with enhanced configuration.
 
@@ -82,8 +84,13 @@ class MetaLogger(logging.Logger):
         self._root_logger = logging.getLogger()
         self._loggers: dict[str, logging.Logger] = {}
         self._handlers: dict[str, logging.Handler] = {}
-        self._formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
+        # self._formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
         self._configured = False
+
+        # Formatters
+        self._main_formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
+        self._trade_formatter = TradeFormatter() if self.structured_logging else self._main_formatter
+        self._error_formatter = ErrorFormatter() if self.structured_logging else logging.Formatter(LOG_DETAILED_FORMAT)
 
         # Initialize the Logger with the application name
         super().__init__(LOG_NAME, self.log_level)
@@ -209,24 +216,28 @@ class MetaLogger(logging.Logger):
         # Create logs directory if it doesn't exist
         log_dir = Path(LOG_DIRECTORY)
         log_dir.mkdir(exist_ok=True)
+
         return [
             HandlerConfig(
                 name="main",
                 file=log_dir / self.log_file,
                 level=self.log_level,
                 logger_name=LOG_NAME,
+                formatter=self._main_formatter,
             ),
             HandlerConfig(
                 name="trade",
                 file=log_dir / self.trade_log_file,
                 level=LOG_TRADE_LEVEL,
                 logger_name=f"{LOG_NAME}.trade",
+                formatter=self._trade_formatter,
             ),
             HandlerConfig(
                 name="error",
                 file=log_dir / self.error_log_file,
                 level=LOG_ERROR_LEVEL,
                 logger_name=f"{LOG_NAME}.error",
+                formatter=self._error_formatter,
             ),
         ]
 
@@ -246,19 +257,21 @@ class MetaLogger(logging.Logger):
             encoding="utf-8",
         )
         handler.setLevel(config["level"])
-        handler.setFormatter(self._formatter)
+        handler.setFormatter(config["formatter"])
 
         if self.async_logging:
-            handler = AsyncHandler(handler)
+            handler = AsyncHandler(handler, max_queue_size=10000)
 
-        self._handlers[f"{config['name']}_file"] = handler
+        # self._handlers[f"{config['name']}_file"] = handler
+        self._handlers.__setitem__(f"{config['name']}_file", handler)
 
         # Create logger for this handler
         logger = logging.getLogger(config["logger_name"])
         logger.setLevel(config["level"])
         logger.addHandler(handler)
         logger.propagate = False
-        self._loggers[config["name"]] = logger
+        # self._loggers[config["name"]] = logger
+        self._loggers.__setitem__(config["name"], logger)
         return handler
 
     def _create_console_handler(self) -> logging.Handler:
@@ -269,12 +282,13 @@ class MetaLogger(logging.Logger):
         """
         handler = logging.StreamHandler(stream=sys.stdout)
         handler.setLevel(self.log_level)
-        handler.setFormatter(self._formatter)
+        handler.setFormatter(self._main_formatter)
 
         if self.async_logging:
-            handler = AsyncHandler(handler)
+            handler = AsyncHandler(handler, max_queue_size=10000)
 
-        self._handlers["console"] = handler
+        # self._handlers["console"] = handler
+        self._handlers.__setitem__("console", handler)
         self._root_logger.addHandler(handler)
         return handler
 

@@ -113,8 +113,8 @@ class MainFormatter(logging.Formatter):
             Formatted exception traceback
         """
         try:
-            return ''.join(traceback.format_exception(*exc_info)).strip()
-        except Exception:
+            return "".join(traceback.format_exception(*exc_info)).strip()
+        except (TypeError, ValueError):
             return "Failed to format exception"
 
     def _extract_extra_fields(self, record: logging.LogRecord) -> dict[str, Any]:
