@@ -71,9 +71,6 @@ class MetaLogger(logging.Logger):
             structured_logging: Whether to use JSON structured logging
             async_logging: Whether to use asynchronous logging
         """
-        # Initialize the Logger with the application name
-        super().__init__(self.name)
-
         # Configure the logging system
         self.log_level = log_level.upper()
         self.log_file = log_file
@@ -87,6 +84,9 @@ class MetaLogger(logging.Logger):
         self._handlers: dict[str, logging.Handler] = {}
         self._formatter = MainFormatter() if self.structured_logging else logging.Formatter(LOG_FORMAT)
         self._configured = False
+
+        # Initialize the Logger with the application name
+        super().__init__(LOG_NAME, self.log_level)
 
         # config: dict[str, Any] = self.configure()
 
