@@ -31,7 +31,20 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Code and documentation language requirements: All code, comments, documentation, variable names, function names, class names, method names, attribute names, and technical terms must be in English
+- Communication style: Explanations and discussions in the chat interface should be in Russian for conversational responses and clarifications
+- Language compliance: Technical documentation, inline comments, docstrings, and README files must be written in English
+- Template management: Ensure any AI agent actions and outputs do not conflict with the structure, parameters, or functionality defined in template.py as required by the constitution
+- Cryptocurrency trading focus: Confirm that the implementation aligns with MetaExpert's purpose as a cryptocurrency trading library providing unified interfaces for multiple exchanges
+- Multi-exchange support: Verify implementation supports major exchanges (Binance, Bybit, OKX, etc.) as specified in the constitution
+- Trading types coverage: Ensure support for all major trading types (spot, futures, margin, options) as required
+- Event-driven architecture: Confirm implementation follows the required event-driven approach for trading strategies
+- Decorator-based strategy implementation: Verify strategies can be implemented using decorators as specified
+- Trading modes support: Check that both paper trading and live trading modes are supported
+- Risk management: Confirm comprehensive risk management features are implemented as required
+- Documentation management: Ensure documentation in the @/docs directory is updated with every functional change, preserving the existing structure (api, guides, tutorials) and keeping README.md current with functionality descriptions, usage examples, and configuration information
+- Version management: Confirm that significant functional changes update the project version according to SemVer conventions in all relevant files (@/pyproject.toml, @/README.md, @/src/metaexpert/__version__.py, @/docs/*, etc.) while considering dependencies, documentation updates, API changes, and backward compatibility
+- Project structure compliance: Ensure the implementation follows the required project structure with @/src/metaexpert containing the core library with a modular system where each module handles specific functions (avoid creating model and service modules) and @/examples containing three sample projects that serve as verification material for client developers
 
 ## Project Structure
 

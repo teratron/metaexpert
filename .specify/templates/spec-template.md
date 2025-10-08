@@ -89,6 +89,8 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-008**: All code, comments, documentation, variable names, function names, class names, method names, and attribute names MUST be in English to ensure readability and maintainability
+- **FR-009**: Technical documentation, inline comments, and docstrings MUST be written in English
 
 *Example of marking unclear requirements:*
 
