@@ -1,0 +1,633 @@
+# API Contracts: MetaExpert Crypto Trading Library
+
+## Overview
+
+OpenAPI 3.0 specification for the MetaExpert cryptocurrency trading library, providing a unified interface for multiple exchanges and trading types.
+
+## Servers
+
+```yaml
+servers:
+  - url: https://api.metaexpert.com/v1
+    description: Production server
+  - url: https://sandbox.api.metaexpert.com/v1
+    description: Sandbox server for testing
+```
+
+## Paths
+
+### Get Exchanges
+
+```yaml
+get:
+  summary: Get list of supported exchanges
+  description: Retrieve information about all supported cryptocurrency exchanges
+  operationId: getExchanges
+  tags:
+    - Exchange
+  responses:
+    '200':
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Exchange'
+    '401':
+      description: Unauthorized
+    '500':
+      description: Internal server error
+```
+
+### Get Instruments
+
+```yaml
+get:
+  summary: Get trading instruments
+  description: Retrieve information about tradeable instruments on a specific exchange
+  operationId: getInstruments
+  tags:
+    - Instrument
+  parameters:
+    - name: exchange_id
+      in: query
+      required: true
+      description: Exchange identifier
+      schema:
+        type: string
+    - name: trading_type
+      in: query
+      required: false
+      description: Filter by trading type (spot, futures, margin, options)
+      schema:
+        type: string
+        enum: [spot, futures, margin, options]
+  responses:
+    '200':
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/TradingInstrument'
+    '400':
+      description: Bad request
+    '401':
+      description: Unauthorized
+    '500':
+      description: Internal server error
+```
+
+### Place Order
+
+```yaml
+post:
+  summary: Place a new order
+  description: Create a new trading order with specified parameters
+  operationId: placeOrder
+  tags:
+    - Order
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/PlaceOrderRequest'
+  responses:
+    '201':
+      description: Order created successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Order'
+    '400':
+      description: Bad request
+    '401':
+      description: Unauthorized
+    '409':
+      description: Conflict (e.g., insufficient funds)
+    '500':
+      description: Internal server error
+```
+
+### Get Account Balances
+
+```yaml
+get:
+  summary: Get account balances
+  description: Retrieve account balance information for a specific trading account
+  operationId: getAccountBalances
+  tags:
+    - Account
+  parameters:
+    - name: account_id
+      in: query
+      required: true
+      description: Trading account identifier
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BalanceResponse'
+    '400':
+      description: Bad request
+    '401':
+      description: Unauthorized
+    '500':
+      description: Internal server error
+```
+
+### Get Open Positions
+
+```yaml
+get:
+  summary: Get open positions
+  description: Retrieve open positions for a specific trading account
+  operationId: getOpenPositions
+  tags:
+    - Position
+  parameters:
+    - name: account_id
+      in: query
+      required: true
+      description: Trading account identifier
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Position'
+    '400':
+      description: Bad request
+    '401':
+      description: Unauthorized
+    '500':
+      description: Internal server error
+```
+
+## Components
+
+### Schemas
+
+#### Exchange
+
+```yaml
+Exchange:
+  type: object
+  required:
+    - id
+    - name
+    - api_endpoint
+    - status
+  properties:
+    id:
+      type: string
+      description: Unique identifier for the exchange
+    name:
+      type: string
+      description: Display name of the exchange
+    api_endpoint:
+      type: string
+      description: Base URL for the exchange API
+    web_socket_endpoint:
+      type: string
+      description: WebSocket endpoint for real-time data
+    rate_limit:
+      type: integer
+      description: Maximum requests per time window
+    supported_trading_types:
+      type: array
+      items:
+        type: string
+        enum: [spot, futures, margin, options]
+      description: Trading types supported by this exchange
+    supported_futures_types:
+      type: array
+      items:
+        type: string
+        enum: [usd_m, coin_m]
+      description: Futures contract types
+    status:
+      type: string
+      enum: [online, maintenance, offline]
+      description: Exchange status
+```
+
+#### TradingInstrument
+
+```yaml
+TradingInstrument:
+  type: object
+  required:
+    - symbol
+    - base_currency
+    - quote_currency
+    - min_order_size
+    - price_precision
+    - quantity_precision
+  properties:
+    symbol:
+      type: string
+      description: Trading pair symbol (e.g., BTCUSDT)
+    base_currency:
+      type: string
+      description: Base currency of the pair (e.g., BTC)
+    quote_currency:
+      type: string
+      description: Quote currency of the pair (e.g., USDT)
+    min_order_size:
+      type: number
+      format: decimal
+      description: Minimum order size allowed
+    max_order_size:
+      type: number
+      format: decimal
+      description: Maximum order size allowed
+    price_precision:
+      type: integer
+      description: Number of decimal places for price
+    quantity_precision:
+      type: integer
+      description: Number of decimal places for quantity
+    tick_size:
+      type: number
+      format: decimal
+      description: Minimum price increment
+    exchange_id:
+      type: string
+      description: Reference to the exchange where this instrument is traded
+    trading_types:
+      type: array
+      items:
+        type: string
+        enum: [spot, futures, margin, options]
+      description: Supported trading types for this instrument
+```
+
+#### Order
+
+```yaml
+Order:
+  type: object
+  required:
+    - order_id
+    - instrument
+    - side
+    - order_type
+    - quantity
+    - status
+    - created_at
+  properties:
+    order_id:
+      type: string
+      description: Unique order identifier
+    exchange_order_id:
+      type: string
+      description: Exchange-specific order identifier
+    instrument:
+      $ref: '#/components/schemas/TradingInstrument'
+    side:
+      type: string
+      enum: [buy, sell]
+      description: Order side
+    order_type:
+      type: string
+      enum: [market, limit, stop, stop_limit, trailing_stop]
+      description: Type of order
+    quantity:
+      type: number
+      format: decimal
+      description: Quantity to buy/sell
+    price:
+      type: number
+      format: decimal
+      description: Price for limit orders
+    stop_price:
+      type: number
+      format: decimal
+      description: Price for stop orders
+    time_in_force:
+      type: string
+      enum: [GTC, IOC, FOK, GTD]
+      description: Time in force
+    status:
+      type: string
+      enum: [pending, filled, partial, cancelled, rejected]
+      description: Order status
+    created_at:
+      type: string
+      format: date-time
+      description: Order creation timestamp
+    updated_at:
+      type: string
+      format: date-time
+      description: Last update timestamp
+    stop_loss_price:
+      type: number
+      format: decimal
+      description: Stop loss price
+    take_profit_price:
+      type: number
+      format: decimal
+      description: Take profit price
+    trailing_stop_callback_rate:
+      type: number
+      format: decimal
+      description: Trailing stop callback rate
+    trailing_stop_activation_price:
+      type: number
+      format: decimal
+      description: Trailing stop activation price
+    trading_account_id:
+      type: string
+      description: Reference to the account placing the order
+```
+
+#### PlaceOrderRequest
+
+```yaml
+PlaceOrderRequest:
+  type: object
+  required:
+    - instrument_symbol
+    - side
+    - order_type
+    - quantity
+    - trading_account_id
+  properties:
+    instrument_symbol:
+      type: string
+      description: Trading pair symbol (e.g., BTCUSDT)
+    side:
+      type: string
+      enum: [buy, sell]
+      description: Order side
+    order_type:
+      type: string
+      enum: [market, limit, stop, stop_limit, trailing_stop]
+      description: Type of order
+    quantity:
+      type: number
+      format: decimal
+      description: Quantity to buy/sell
+    price:
+      type: number
+      format: decimal
+      description: Price for limit orders
+    stop_price:
+      type: number
+      format: decimal
+      description: Price for stop orders
+    time_in_force:
+      type: string
+      enum: [GTC, IOC, FOK, GTD]
+      description: Time in force
+    stop_loss_price:
+      type: number
+      format: decimal
+      description: Stop loss price
+    take_profit_price:
+      type: number
+      format: decimal
+      description: Take profit price
+    trailing_stop_callback_rate:
+      type: number
+      format: decimal
+      description: Trailing stop callback rate
+    trailing_stop_activation_price:
+      type: number
+      format: decimal
+      description: Trailing stop activation price
+    trading_account_id:
+      type: string
+      description: Reference to the account placing the order
+```
+
+#### Position
+
+```yaml
+Position:
+  type: object
+  required:
+    - position_id
+    - instrument
+    - side
+    - quantity
+    - entry_price
+    - current_price
+    - unrealized_pnl
+    - status
+    - created_at
+  properties:
+    position_id:
+      type: string
+      description: Unique position identifier
+    instrument:
+      $ref: '#/components/schemas/TradingInstrument'
+    side:
+      type: string
+      enum: [long, short]
+      description: Position side
+    quantity:
+      type: number
+      format: decimal
+      description: Quantity held
+    entry_price:
+      type: number
+      format: decimal
+      description: Average entry price
+    current_price:
+      type: number
+      format: decimal
+      description: Current market price
+    unrealized_pnl:
+      type: number
+      format: decimal
+      description: Unrealized profit/loss
+    realized_pnl:
+      type: number
+      format: decimal
+      description: Realized profit/loss
+    liquidation_price:
+      type: number
+      format: decimal
+      description: Liquidation price for leveraged positions
+    leverage:
+      type: integer
+      description: Leverage used for this position
+    margin_used:
+      type: number
+      format: decimal
+      description: Margin used for this position
+    status:
+      type: string
+      enum: [open, closed, liquidated]
+      description: Position status
+    created_at:
+      type: string
+      format: date-time
+      description: Position creation timestamp
+    updated_at:
+      type: string
+      format: date-time
+      description: Last update timestamp
+    trading_account_id:
+      type: string
+      description: Reference to the account holding this position
+```
+
+#### TradingAccount
+
+```yaml
+TradingAccount:
+  type: object
+  required:
+    - account_id
+    - user_id
+    - exchange_id
+    - account_name
+    - account_type
+    - permissions
+    - created_at
+  properties:
+    account_id:
+      type: string
+      description: Unique account identifier
+    user_id:
+      type: string
+      description: Reference to the user who owns this account
+    exchange_id:
+      type: string
+      description: Reference to the exchange
+    account_name:
+      type: string
+      description: Display name for the account
+    account_type:
+      type: string
+      enum: [spot, futures, margin, options]
+      description: Account type
+    permissions:
+      type: array
+      items:
+        type: string
+        enum: [read, trade, withdraw]
+      description: Account permissions
+    balance:
+      type: object
+      additionalProperties:
+        type: number
+        format: decimal
+      description: Balance information keyed by currency
+    available_balance:
+      type: object
+      additionalProperties:
+        type: number
+        format: decimal
+      description: Available balance for trading
+    used_balance:
+      type: object
+      additionalProperties:
+        type: number
+        format: decimal
+      description: Balance currently in use (in orders/positions)
+    total_pnl:
+      type: number
+      format: decimal
+      description: Total profit/loss
+    created_at:
+      type: string
+      format: date-time
+      description: Account creation timestamp
+    updated_at:
+      type: string
+      format: date-time
+      description: Last update timestamp
+```
+
+#### BalanceResponse
+
+```yaml
+BalanceResponse:
+  type: object
+  required:
+    - account_id
+    - balances
+    - timestamp
+  properties:
+    account_id:
+      type: string
+      description: Trading account identifier
+    balances:
+      type: array
+      items:
+        $ref: '#/components/schemas/Balance'
+    timestamp:
+      type: string
+      format: date-time
+      description: Timestamp of balance information
+```
+
+#### Balance
+
+```yaml
+Balance:
+  type: object
+  required:
+    - currency
+    - total
+    - available
+    - used
+  properties:
+    currency:
+      type: string
+      description: Currency code (e.g., BTC, USDT)
+    total:
+      type: number
+      format: decimal
+      description: Total balance
+    available:
+      type: number
+      format: decimal
+      description: Available balance for trading
+    used:
+      type: number
+      format: decimal
+      description: Balance currently in use (in orders/positions)
+```
+
+## Security
+
+```yaml
+securitySchemes:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+```
+
+## Tags
+
+```yaml
+tags:
+  - name: Exchange
+    description: Exchange operations
+  - name: Instrument
+    description: Trading instrument operations
+  - name: Order
+    description: Order placement and management
+  - name: Account
+    description: Account and balance operations
+  - name: Position
+    description: Position management
+```
