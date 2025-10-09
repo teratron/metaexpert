@@ -1,11 +1,11 @@
 <!-- 
-Version Change: 2.0.7 → 2.0.8
-Modified Principles: None
-Added Sections: Project Structure description in Additional Constraints
+Version Change: 2.0.8 → 2.0.9
+Modified Principles: Added IX. Object-Oriented Programming and X. SOLID Design Principles, XI. DRY Principle, XII. KISS Principle, XIII. YAGNI Principle, XIV. Feature-Sliced Design
+Added Sections: New principles IX-XIV for core development principles
 Removed Sections: None
 Templates Requiring Updates: 
-✅ .specify/templates/plan-template.md (updated constitution version reference from v2.0.7 to v2.0.8)
-✅ .specify/templates/spec-template.md (updated constitution version reference)
+✅ .specify/templates/plan-template.md (updated constitution version reference)
+✅ .specify/templates/spec-template.md (updated constitution version reference) 
 ✅ .specify/templates/tasks-template.md (updated constitution version reference)
 Follow-up TODOs: None
 -->
@@ -18,7 +18,7 @@ Follow-up TODOs: None
 All Python code must adhere to established quality standards: consistent formatting using ruff and black, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After generating Python code, developers must check and fix errors and warnings using ruff and pyright, and organize imports. Code reviews must verify these standards before approval.
 
 ### II. Testing Standards & Coverage
-Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging.
+Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging. For all test types, use pytest framework wherever possible as the primary testing tool.
 
 ### III. User Experience Consistency
 User interfaces and interactions must maintain consistent behavior across all features: Follow established design patterns and UI components, Maintain consistent error messaging and handling, Ensure responsive behavior across different environments, Provide clear feedback for all user actions.
@@ -38,6 +38,30 @@ Upon every task execution that involves functional changes, the documentation in
 ### VIII. Version Management
 Each significant functional change must update the project version according to the Semantic Versioning (SemVer) convention. Changes must be applied to all files where the version is mentioned: @/pyproject.toml, @/README.md, @/src/metaexpert/__version__.py, @/docs/* (where applicable) and any other relevant files. When updating versions, dependencies from external libraries, documentation updates, API changes, and backward compatibility must be taken into account. Versioning must strictly follow the major.minor.patch rules with corresponding updates in changelog and release tags. Major version updates indicate backward incompatible changes, minor version updates indicate new functionality in a backward compatible manner, and patch version updates indicate backward compatible bug fixes.
 
+### IX. Object-Oriented Programming
+All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
+
+### X. SOLID Design Principles
+Classes and modules must follow the SOLID principles: 
+- Single Responsibility Principle: Each class should have only one reason to change
+- Open/Closed Principle: Entities should be open for extension but closed for modification
+- Liskov Substitution Principle: Objects of a superclass should be replaceable with objects of its subclasses
+- Interface Segregation Principle: Clients should not be forced to depend on interfaces they don't use
+- Dependency Inversion Principle: Depend on abstractions, not concretions
+These principles ensure maintainable and flexible software architecture.
+
+### XI. DRY Principle
+"Do not Repeat Yourself" - Code duplication must be eliminated and each piece of knowledge must have a single authoritative representation in the system. All shared functionality must be extracted into reusable components, functions, or modules to ensure a single source of truth and reduce maintenance overhead.
+
+### XII. KISS Principle
+"Keep It Simple, Stupid" - Code and architectural solutions must maintain simplicity and avoid unnecessary complexity. Before implementing complex solutions, evaluate if a simpler approach would be equally effective. Simple code is easier to understand, maintain, test, and debug.
+
+### XIII. YAGNI Principle
+"You Ain't Gonna Need It" - Only implement functionality that is currently needed, not anticipated future needs. Avoid adding features or infrastructure for potential future use cases that are not immediately required. This prevents code bloat and reduces maintenance burden.
+
+### XIV. Feature-Sliced Design
+Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development.
+
 ## Additional Constraints
 
 MetaExpert is a library designed for cryptocurrency trading that provides a unified interface for multiple exchanges (initially Binance, Bybit, OKX and etc.) and supports various trading options through their respective APIs. The library aims to simplify algorithmic trading by providing a consistent interface while maintaining access to exchange-specific features. The system must: create a unified interface for multiple cryptocurrency exchanges; support all major trading types (spot, futures, margin, options and etc.) through exchange APIs; provide an event-driven architecture for trading strategies; enable easy strategy implementation through decorators; support paper trading and live trading modes; and implement comprehensive risk management features. The technology stack requires Python 3.12 or higher. All dependencies must be explicitly declared in the pyproject.toml file. Compliance with MIT licensing standards is mandatory. For all tasks related to the MetaExpert project, use only the UV package manager (no pip, requirements.txt, setup.py, or similar). Always activate the virtual environment using .venv/Scripts/activate before executing any UV commands.
@@ -46,12 +70,14 @@ The project consists of two main directories: @/src/metaexpert contains the core
 
 ### Language Requirements
 Code and documentation language:
+
 - All code, comments, documentation, variable names, function names, class names, method names, attribute names, and technical terms must be in English
 - Maintain English as the primary language for all technical elements including error messages, log entries, configuration keys, and API responses to ensure readability and maintainability
 - Technical documentation, inline comments, docstrings, and README files must be written in English
 - All commit messages, pull request descriptions, and issue titles related to code changes should be in English
 
 Communication style:
+
 - Explanations and discussions in the chat interface should be in Russian
 - Use Russian for conversational responses, clarifications, project planning, and non-technical interactions
 - Project management communications, feature discussions, and strategic decisions should be conducted in Russian
@@ -59,9 +85,9 @@ Communication style:
 
 ## Development Workflow
 
-All code changes must go through pull request review. Testing gates include unit tests with minimum 85% coverage and integration tests for API changes. Deployment requires approval from project maintainers. Automated quality checks must pass before merging.
+Testing gates include unit tests with minimum 85% coverage and integration tests for API changes. Deployment requires approval from project maintainers. Automated quality checks must pass before merging.
 
 ## Governance
 This constitution supersedes all other development practices. Amendments require documentation, stakeholder approval, and a migration plan. All pull requests and reviews must verify compliance with these principles. Complexity must be justified with clear rationale. Refer to project documentation for runtime development guidance.
 
-**Version**: 2.0.8 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-10-08
+**Version**: 2.0.9 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-10-09

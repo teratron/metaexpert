@@ -45,6 +45,12 @@
 - Documentation management: Ensure documentation in the @/docs directory is updated with every functional change, preserving the existing structure (api, guides, tutorials) and keeping README.md current with functionality descriptions, usage examples, and configuration information
 - Version management: Confirm that significant functional changes update the project version according to SemVer conventions in all relevant files (@/pyproject.toml, @/README.md, @/src/metaexpert/__version__.py, @/docs/*, etc.) while considering dependencies, documentation updates, API changes, and backward compatibility
 - Project structure compliance: Ensure the implementation follows the required project structure with @/src/metaexpert containing the core library with a modular system where each module handles specific functions (avoid creating model and service modules) and @/examples containing three sample projects that serve as verification material for client developers
+- Object-Oriented Programming: Ensure code follows OOP principles including Encapsulation, Inheritance, Polymorphism, and Abstraction as required by the constitution
+- SOLID Design Principles: Verify implementation follows Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion Principles
+- DRY Principle: Confirm code elimination of duplication and single source of truth as required by the constitution
+- KISS Principle: Verify code maintains simplicity and avoids unnecessary complexity as required by the constitution
+- YAGNI Principle: Ensure only currently needed functionality is implemented, not anticipated future needs as required by the constitution
+- Feature-Sliced Design: Confirm architectural methodology uses layer-based organization where each feature is implemented as a cohesive slice spanning all necessary layers
 
 ## Project Structure
 
@@ -70,12 +76,6 @@ specs/[###-feature]/
 
 ```
 # [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
-
 tests/
 ├── contract/
 ├── integration/
