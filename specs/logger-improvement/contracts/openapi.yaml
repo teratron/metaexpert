@@ -1,0 +1,841 @@
+# OpenAPI Specification: Logger Module
+
+## Overview
+This document defines the OpenAPI specification for the enhanced MetaExpert logging module. This specification describes the RESTful API endpoints, data models, and operations available for logging management and retrieval.
+
+```yaml
+openapi: 3.0.3
+info:
+  title: MetaExpert Logger API
+  description: Enhanced logging system for MetaExpert trading framework
+  version: 1.0.0
+  contact:
+    name: MetaExpert Development Team
+    email: support@metaexpert.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://api.metaexpert.com/v1
+    description: Production server
+  - url: https://staging-api.metaexpert.com/v1
+    description: Staging server
+  - url: http://localhost:8080/v1
+    description: Development server
+
+paths:
+  /logger:
+    post:
+      summary: Create a new logger instance
+      description: Creates a new logger instance with the specified configuration
+      operationId: createLogger
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoggerConfiguration'
+      responses:
+        '201':
+          description: Logger created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggerResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}:
+    get:
+      summary: Get logger configuration
+      description: Retrieves the configuration of a specific logger instance
+      operationId: getLogger
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      responses:
+        '200':
+          description: Logger configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggerConfigurationResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update logger configuration
+      description: Updates the configuration of an existing logger instance
+      operationId: updateLogger
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoggerConfiguration'
+      responses:
+        '200':
+          description: Logger updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggerResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete logger instance
+      description: Deletes a logger instance and cleans up associated resources
+      operationId: deleteLogger
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      responses:
+        '200':
+          description: Logger deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoggerResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}/log:
+    post:
+      summary: Log a message
+      description: Logs a message with optional structured data
+      operationId: logMessage
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogMessage'
+      responses:
+        '201':
+          description: Message logged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}/trade:
+    post:
+      summary: Log a trade event
+      description: Logs a specialized trade event with structured trade data
+      operationId: logTrade
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TradeEvent'
+      responses:
+        '201':
+          description: Trade event logged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}/error:
+    post:
+      summary: Log an error
+      description: Logs an error with detailed exception information and context
+      operationId: logError
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorEvent'
+      responses:
+        '201':
+          description: Error logged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}/metric:
+    post:
+      summary: Log a performance metric
+      description: Logs a performance metric with timestamp and value
+      operationId: logMetric
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PerformanceMetric'
+      responses:
+        '201':
+          description: Metric logged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}/entries:
+    get:
+      summary: Query log entries
+      description: Query log entries with filtering and pagination
+      operationId: queryLogEntries
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+          description: Filter by log level
+        - name: startTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter entries after this timestamp
+        - name: endTime
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Filter entries before this timestamp
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+          description: Maximum number of entries to return
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          description: Offset for pagination
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search term to filter message content
+      responses:
+        '200':
+          description: Log entries retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogEntriesResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /logger/{loggerId}/stats:
+    get:
+      summary: Get log statistics
+      description: Retrieve statistics about log entries
+      operationId: getLogStats
+      parameters:
+        - name: loggerId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier of the logger instance
+      responses:
+        '200':
+          description: Log statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogStatistics'
+        '404':
+          description: Logger not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    LoggerConfiguration:
+      type: object
+      required:
+        - name
+        - logLevel
+      properties:
+        name:
+          type: string
+          description: Human-readable name for this logger
+        logLevel:
+          type: string
+          enum: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+          description: Minimum severity level to log
+        structuredLogging:
+          type: boolean
+          default: false
+          description: Whether to use structured JSON logging
+        asyncLogging:
+          type: boolean
+          default: false
+          description: Whether to use asynchronous logging
+        destinations:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogDestination'
+          description: List of log destinations
+
+    LogDestination:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: [file, console, syslog, http, tcp, udp]
+          description: Type of destination
+        path:
+          type: string
+          description: File path or network address
+        port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+          description: Network port if applicable
+        format:
+          type: string
+          enum: [json, text, xml]
+          default: text
+          description: Format for log output
+        enabled:
+          type: boolean
+          default: true
+          description: Whether this destination is active
+
+    LoggerResponse:
+      type: object
+      required:
+        - loggerId
+        - status
+      properties:
+        loggerId:
+          type: string
+          description: Unique identifier of the logger
+        status:
+          type: string
+          description: Status of the operation
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the response
+
+    LoggerConfigurationResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/LoggerConfiguration'
+        - type: object
+          properties:
+            loggerId:
+              type: string
+              description: Unique identifier of the logger
+            createdAt:
+              type: string
+              format: date-time
+              description: Timestamp when logger was created
+            updatedAt:
+              type: string
+              format: date-time
+              description: Timestamp when logger was last updated
+
+    LogMessage:
+      type: object
+      required:
+        - level
+        - message
+      properties:
+        level:
+          type: string
+          enum: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+          description: Severity level of the log message
+        message:
+          type: string
+          description: Main log message content
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the log entry
+        extra:
+          type: object
+          description: Additional context data as key-value pairs
+
+    TradeEvent:
+      type: object
+      required:
+        - eventType
+        - tradeData
+      properties:
+        eventType:
+          type: string
+          description: Type of trade event
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the trade event
+        tradeData:
+          type: object
+          description: Trade-specific data
+          properties:
+            symbol:
+              type: string
+              description: Trading symbol
+            side:
+              type: string
+              enum: [BUY, SELL]
+              description: Side of the trade
+            quantity:
+              type: number
+              format: float
+              description: Quantity traded
+            price:
+              type: number
+              format: float
+              description: Price of the trade
+            orderId:
+              type: string
+              description: Order identifier
+            executionType:
+              type: string
+              description: Type of execution
+            commission:
+              type: number
+              format: float
+              description: Commission charged
+            commissionAsset:
+              type: string
+              description: Asset in which commission was charged
+            strategyId:
+              type: string
+              description: Identifier of the strategy that executed the trade
+
+    ErrorEvent:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Error message
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the error
+        exception:
+          type: object
+          description: Exception details
+          properties:
+            type:
+              type: string
+              description: Type of exception
+            message:
+              type: string
+              description: Exception message
+            stackTrace:
+              type: string
+              description: Stack trace of the exception
+        context:
+          type: object
+          description: Additional context for the error
+
+    PerformanceMetric:
+      type: object
+      required:
+        - metricName
+        - value
+      properties:
+        metricName:
+          type: string
+          description: Name of the metric
+        value:
+          type: number
+          format: float
+          description: Value of the metric
+        unit:
+          type: string
+          description: Unit of measurement
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the metric
+        tags:
+          type: object
+          description: Tags associated with the metric
+
+    LogResponse:
+      type: object
+      required:
+        - status
+        - entryId
+      properties:
+        status:
+          type: string
+          description: Status of the operation
+        entryId:
+          type: string
+          description: Unique identifier of the log entry
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp of the response
+
+    LogEntriesResponse:
+      type: object
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEntry'
+        total:
+          type: integer
+          description: Total number of entries matching the query
+        limit:
+          type: integer
+          description: Number of entries returned
+        offset:
+          type: integer
+          description: Offset used for pagination
+
+    LogEntry:
+      type: object
+      properties:
+        entryId:
+          type: string
+          description: Unique identifier of the log entry
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when log entry was created
+        level:
+          type: string
+          enum: [DEBUG, INFO, WARNING, ERROR, CRITICAL]
+          description: Severity level of the log entry
+        logger:
+          type: string
+          description: Name of the logger that created this entry
+        message:
+          type: string
+          description: Main log message content
+        module:
+          type: string
+          description: Module where log entry was created
+        function:
+          type: string
+          description: Function where log entry was created
+        lineNumber:
+          type: integer
+          description: Line number where log entry was created
+        thread:
+          type: object
+          description: Thread information
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        process:
+          type: object
+          description: Process information
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        exception:
+          type: object
+          description: Exception information if applicable
+          properties:
+            type:
+              type: string
+            message:
+              type: string
+            traceback:
+              type: string
+        extra:
+          type: object
+          description: Additional context data
+        logType:
+          type: string
+          enum: [general, trade, error, performance]
+          description: Type of log entry
+
+    LogStatistics:
+      type: object
+      properties:
+        loggerId:
+          type: string
+          description: Unique identifier of the logger
+        totalEntries:
+          type: integer
+          description: Total number of log entries
+        entriesByLevel:
+          type: object
+          description: Count of entries by log level
+          properties:
+            DEBUG:
+              type: integer
+            INFO:
+              type: integer
+            WARNING:
+              type: integer
+            ERROR:
+              type: integer
+            CRITICAL:
+              type: integer
+        entriesByType:
+          type: object
+          description: Count of entries by log type
+          properties:
+            general:
+              type: integer
+            trade:
+              type: integer
+            error:
+              type: integer
+            performance:
+              type: integer
+        firstEntry:
+          type: string
+          format: date-time
+          description: Timestamp of first log entry
+        lastEntry:
+          type: string
+          format: date-time
+          description: Timestamp of last log entry
+        storageUsed:
+          type: string
+          description: Storage used by log files
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Error code
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: string
+              description: Additional error details
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when error occurred
+
+tags:
+  - name: Logger Management
+    description: Operations for creating, updating, and deleting logger instances
+  - name: Logging Operations
+    description: Operations for logging messages, trades, errors, and metrics
+  - name: Log Retrieval
+    description: Operations for querying and retrieving log entries and statistics
+
+externalDocs:
+  description: Find out more about MetaExpert
+  url: https://metaexpert.com/docs
+```

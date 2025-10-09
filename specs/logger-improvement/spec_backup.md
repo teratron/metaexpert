@@ -5,16 +5,6 @@
 **Status**: Draft  
 **Input**: User description: "Explore and analyze the @/src/metaexpert/logger module developed earlier. The concept of the module remains relevant, but it needs to be brought into line with current requirements and improved to a functional state, eliminating possible errors and shortcomings in accordance with the updated implementation plan."
 
-## Clarifications
-
-### Session 2025-10-09
-
-- Q: For log data transmission security, what level of encryption and authentication is required for remote logging destinations? → A: Custom security approach (decided in future)
-- Q: What specific regulatory or compliance requirements must the logging system satisfy? → A: No specific regulatory requirements - general best practices suffice
-- Q: How should the system handle rate limiting when the logging volume exceeds system capacity? → A: Send critical logs only, drop debug/info level logs
-- Q: What protocols and versioning approaches should be supported for external log destination integrations? → A: HTTP/HTTPS REST API with JSON payloads and semantic versioning
-- Q: How should the system handle conflicts when multiple processes attempt to write to the same log file simultaneously? → A: Each process writes to separate log files with process identifiers
-
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Enhanced Logging Configuration (Priority: P1)
