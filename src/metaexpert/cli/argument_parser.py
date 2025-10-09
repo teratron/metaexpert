@@ -10,7 +10,7 @@ class ArgumentParserError(Exception):
     pass
 
 
-class MetaExpertArgumentParser(argparse.ArgumentParser):
+class MetaArgumentParser(argparse.ArgumentParser):
     """Custom argument parser for MetaExpert with enhanced validation."""
 
     def __init__(self, *args, **kwargs):
@@ -40,7 +40,7 @@ class MetaExpertArgumentParser(argparse.ArgumentParser):
 
         return super().add_argument(*args, **kwargs)
 
-    def parse_args(self, args=None, namespace=None):
+    def parse_args(self, args=None, namespace=None):  # type: ignore
         """Parse arguments and run validations."""
         parsed_args = super().parse_args(args, namespace)
 
@@ -280,9 +280,9 @@ class MetaExpertArgumentValidator:
         return errors
 
 
-def create_argument_parser() -> MetaExpertArgumentParser:
+def create_argument_parser() -> MetaArgumentParser:
     """Create a configured argument parser for MetaExpert CLI."""
-    parser = MetaExpertArgumentParser(
+    parser = MetaArgumentParser(
         prog="metaexpert",
         description="MetaExpert Trading Library - Command Line Interface",
         formatter_class=argparse.RawDescriptionHelpFormatter,

@@ -10,12 +10,13 @@ from metaexpert.config import (
     BACKTEST_END_DATE,
     BACKTEST_START_DATE,
     DEFAULT_CONTRACT_TYPE,
+    DEFAULT_LOG_LEVEL,
     DEFAULT_MARGIN_MODE,
     DEFAULT_MARKET_TYPE,
     DEFAULT_POSITION_MODE,
+    DEFAULT_TRADE_MODE,
     ENABLE_METRICS,
     INITIAL_CAPITAL,
-    LIB_NAME,
     LOG_ASYNC_LOGGING,
     LOG_CONSOLE_LOGGING,
     LOG_ERROR_FILE,
@@ -25,10 +26,8 @@ from metaexpert.config import (
     PERSIST_STATE,
     RATE_LIMIT,
     STATE_FILE,
-    DEFAULT_LOG_LEVEL,
-    DEFAULT_TRADE_MODE,
 )
-from metaexpert.core import MetaProcess, EventType, Events, TradeMode
+from metaexpert.core import Events, EventType, MetaProcess, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import MetaLogger
 

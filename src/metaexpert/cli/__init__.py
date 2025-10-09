@@ -1,6 +1,7 @@
 """Command-line interface module for MetaExpert."""
 
 import sys
+from importlib import import_module
 
 from metaexpert.cli.argument_parser import parse_arguments as parse_cli_arguments
 from metaexpert.cli.commands import (
@@ -40,8 +41,9 @@ def main() -> None:
             handle_validate(args)
         else:
             # No command specified, show help
-            from metaexpert.cli.argument_parser import create_argument_parser
+            # from metaexpert.cli.argument_parser import create_argument_parser
 
+            create_argument_parser = import_module("metaexpert.cli.argument_parser").create_argument_parser
             create_argument_parser().print_help()
 
     except KeyboardInterrupt:
