@@ -63,22 +63,45 @@ tests/
 
 src/metaexpert/
 ├── __init__.py
+├── __main__.py
 ├── __version__.py
 ├── config.py
+├── cli/
+│   ├── __init__.py
+│   ├── argument_parser.py
+│   ├── commands.py
+│   ├── help.py
+│   └── README.md
 ├── core/
 │   ├── __init__.py
 │   ├── expert.py
 │   ├── events.py
-│   └── system.py
+│   ├── exceptions.py
+│   └── [other core modules]
 ├── exchanges/
 │   ├── __init__.py
-│   └── [exchange modules]
+│   ├── binance/
+│   │   ├── __init__.py
+│   │   └── config.py
+│   ├── bybit/
+│   │   ├── __init__.py
+│   │   └── config.py
+│   └── okx/
+│       ├── __init__.py
+│       └── config.py
 ├── logger/
 │   ├── __init__.py
 │   ├── async_handler.py
-│   ├── formatter.py
-│   └── [new logger modules]
-└── [other modules]
+│   └── formatter.py
+├── template/
+│   ├── __init__.py
+│   └── template.py
+├── utils/
+│   ├── __init__.py
+│   └── package.py
+├── websocket/
+│   └── __init__.py
+└── py.typed
 ```
 
 **Structure Decision**: Single project structure with enhanced logger module that extends the existing logging functionality while maintaining backward compatibility.

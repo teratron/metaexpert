@@ -2,7 +2,7 @@ import json
 import traceback
 from abc import ABC, abstractmethod
 
-from websocket import WebSocket, WebSocketApp
+from websocket import WebSocketApp
 
 from metaexpert.logger import get_logger
 
@@ -23,20 +23,20 @@ class WebSocketClient(WebSocketApp, ABC):
         self.run_forever(ping_interval=15, ping_timeout=10, reconnect=5)
 
     @abstractmethod
-    def on_open(self, ws: WebSocket) -> None:
+    def on_open(self, ws: WebSocketApp) -> None:
         logger.debug(f"{ws} Websocket connection opened")
 
     @abstractmethod
-    def on_close(self, ws: WebSocket, status: int, message: str) -> None:
+    def on_close(self, ws: WebSocketApp, status: int, message: str) -> None:
         logger.debug(f"{ws} Websocket connection closed: {status} {message}")
 
     @abstractmethod
-    def on_error(self, ws: WebSocket, error: Exception) -> None:
+    def on_error(self, ws: WebSocketApp, error: Exception) -> None:
         logger.error(f"{ws} Websocket connection error: {error}")
         logger.error(traceback.format_exc())
 
     @abstractmethod
-    def on_message(self, ws: WebSocket, message: str) -> None:
+    def on_message(self, ws: WebSocketApp, message: str) -> None:
         logger.debug(f"{ws} Received message: {message}")
         data = json.loads(message)
         logger.debug(f"Parsed message: {data}")

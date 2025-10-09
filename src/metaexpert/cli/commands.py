@@ -4,7 +4,7 @@ import sys
 from argparse import Namespace
 from pathlib import Path
 
-from metaexpert.template.template_creator import create_expert_from_template
+from metaexpert.template import create_expert_from_template
 
 
 def validate_strategy_file(file_path: str) -> bool:

@@ -64,8 +64,15 @@ tests/
 
 src/metaexpert/
 ├── __init__.py
+├── __main__.py
 ├── __version__.py
 ├── config.py
+├── cli/
+│   ├── __init__.py
+│   ├── argument_parser.py
+│   ├── commands.py
+│   ├── help.py
+│   └── README.md
 ├── core/
 │   ├── __init__.py
 │   ├── expert.py
@@ -75,22 +82,42 @@ src/metaexpert/
 ├── exchanges/
 │   ├── __init__.py
 │   ├── binance/
+│   │   ├── __init__.py
+│   │   └── config.py
 │   ├── bybit/
+│   │   ├── __init__.py
+│   │   └── config.py
 │   └── okx/
+│       ├── __init__.py
+│       └── config.py
 ├── logger/
 │   ├── __init__.py
 │   ├── async_handler.py
 │   └── formatter.py
 ├── template/
+│   ├── __init__.py
 │   └── template.py
 ├── utils/
+│   ├── __init__.py
+│   └── package.py
 ├── websocket/
+│   └── __init__.py
 └── py.typed
 
 examples/
-├── example1_simple_strategy.py
-├── example2_advanced_strategy.py
-└── example3_multi_exchange.py
+├── expert_binance_ema/
+│   ├── __main__.py
+│   ├── pyproject.toml
+│   └── README.md
+├── expert_bybit_rsi/
+│   ├── __main__.py
+│   ├── pyproject.toml
+│   └── README.md
+├── expert_okx_macd/
+│   ├── __main__.py
+│   ├── pyproject.toml
+│   └── README.md
+└── README.md
 ```
 
 **Structure Decision**: Single project structure chosen to implement the cryptocurrency trading library with modular organization. The structure follows the required project layout with @/src/metaexpert containing the core library with a modular system where each module handles specific functions, and @/examples containing sample projects that serve as verification material for client developers.
