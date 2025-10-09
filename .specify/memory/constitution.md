@@ -88,6 +88,6 @@ Communication style:
 Testing gates include unit tests with minimum 85% coverage and integration tests for API changes. Deployment requires approval from project maintainers. Automated quality checks must pass before merging.
 
 ## Governance
-This constitution supersedes all other development practices. Amendments require documentation, stakeholder approval, and a migration plan. All pull requests and reviews must verify compliance with these principles. Complexity must be justified with clear rationale. Refer to project documentation for runtime development guidance.
+This constitution supersedes all other development practices. Amendments require documentation, stakeholder approval, and a migration plan. Complexity must be justified with clear rationale. Refer to project documentation for runtime development guidance.
 
 **Version**: 2.0.9 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-10-09
