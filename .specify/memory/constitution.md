@@ -1,7 +1,7 @@
 <!-- 
-Version Change: 2.0.8 → 2.0.9
-Modified Principles: Added IX. Object-Oriented Programming and X. SOLID Design Principles, XI. DRY Principle, XII. KISS Principle, XIII. YAGNI Principle, XIV. Feature-Sliced Design
-Added Sections: New principles IX-XIV for core development principles
+Version Change: 2.0.9 → 2.0.10
+Modified Principles: Updated I. Code Quality Standards to emphasize automatic checks after each Python modification
+Added Sections: None
 Removed Sections: None
 Templates Requiring Updates: 
 ✅ .specify/templates/plan-template.md (updated constitution version reference)
@@ -15,7 +15,7 @@ Follow-up TODOs: None
 ## Core Principles
 
 ### I. Code Quality Standards
-All Python code must adhere to established quality standards: consistent formatting using ruff and black, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After generating Python code, developers must check and fix errors and warnings using ruff and pyright, and organize imports. Code reviews must verify these standards before approval.
+All Python code must adhere to established quality standards: consistent formatting using ruff and black, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After each creation or modification of Python files, developers MUST automatically run checks using ruff and pyright, analyze all warnings and errors, and then make the necessary corrections to the code to fix problems, ensuring compliance with style and typing standards. Code reviews must verify these standards before approval.
 
 ### II. Testing Standards & Coverage
 Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging. For all test types, use pytest framework wherever possible as the primary testing tool.
@@ -90,4 +90,4 @@ Testing gates include unit tests with minimum 85% coverage and integration tests
 ## Governance
 This constitution supersedes all other development practices. Amendments require documentation, stakeholder approval, and a migration plan. Complexity must be justified with clear rationale. Refer to project documentation for runtime development guidance.
 
-**Version**: 2.0.9 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-10-09
+**Version**: 2.0.10 | **Ratified**: 2025-09-20 | **Last Amended**: 2025-10-09

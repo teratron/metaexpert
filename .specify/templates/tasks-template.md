@@ -65,13 +65,13 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
-- [ ] T010 [P] Ensure all code follows Object-Oriented Programming principles: Encapsulation, Inheritance, Polymorphism, and Abstraction as required by the MetaExpert Constitution v2.0.9
-- [ ] T011 [P] Ensure all code follows SOLID Design Principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion as required by the MetaExpert Constitution v2.0.9
+- [ ] T010 [P] Ensure all code follows Object-Oriented Programming principles: Encapsulation, Inheritance, Polymorphism, and Abstraction as required by the MetaExpert Constitution v2.0.10
+- [ ] T011 [P] Ensure all code follows SOLID Design Principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion as required by the MetaExpert Constitution v2.0.10
 - [ ] T012 [P] Ensure all code, comments, documentation, variable names, and technical terms are in English for readability and maintainability
-- [ ] T013 [P] Ensure code follows DRY Principle (Don't Repeat Yourself) by eliminating duplication and maintaining single source of truth as required by the MetaExpert Constitution v2.0.9
-- [ ] T014 [P] Ensure code follows KISS Principle (Keep It Simple, Stupid) by maintaining simplicity and avoiding unnecessary complexity as required by the MetaExpert Constitution v2.0.9
-- [ ] T015 [P] Ensure code follows YAGNI Principle (You Ain't Gonna Need It) by implementing only currently needed functionality as required by the MetaExpert Constitution v2.0.9
-- [ ] T016 [P] Ensure architecture follows Feature-Sliced Design methodology with layer-based organization as required by the MetaExpert Constitution v2.0.9
+- [ ] T013 [P] Ensure code follows DRY Principle (Don't Repeat Yourself) by eliminating duplication and maintaining single source of truth as required by the MetaExpert Constitution v2.0.10
+- [ ] T014 [P] Ensure code follows KISS Principle (Keep It Simple, Stupid) by maintaining simplicity and avoiding unnecessary complexity as required by the MetaExpert Constitution v2.0.10
+- [ ] T015 [P] Ensure code follows YAGNI Principle (You Ain't Gonna Need It) by implementing only currently needed functionality as required by the MetaExpert Constitution v2.0.10
+- [ ] T016 [P] Ensure architecture follows Feature-Sliced Design methodology with layer-based organization as required by the MetaExpert Constitution v2.0.10
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 

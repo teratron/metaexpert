@@ -89,14 +89,14 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
-- **FR-006**: Code MUST follow Object-Oriented Programming principles: Encapsulation, Inheritance, Polymorphism, and Abstraction as specified in the MetaExpert Constitution v2.0.9
-- **FR-007**: Code MUST follow SOLID Design Principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion as specified in the MetaExpert Constitution v2.0.9
+- **FR-006**: Code MUST follow Object-Oriented Programming principles: Encapsulation, Inheritance, Polymorphism, and Abstraction as specified in the MetaExpert Constitution v2.0.10
+- **FR-007**: Code MUST follow SOLID Design Principles: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion as specified in the MetaExpert Constitution v2.0.10
 - **FR-008**: All code, comments, documentation, variable names, function names, class names, method names, and attribute names MUST be in English to ensure readability and maintainability
 - **FR-009**: Technical documentation, inline comments, and docstrings MUST be written in English
-- **FR-010**: Code MUST follow DRY Principle (Don't Repeat Yourself) and eliminate code duplication with a single source of truth as specified in the MetaExpert Constitution v2.0.9
-- **FR-011**: Code MUST follow KISS Principle (Keep It Simple, Stupid) and maintain simplicity while avoiding unnecessary complexity as specified in the MetaExpert Constitution v2.0.9
-- **FR-012**: Code MUST follow YAGNI Principle (You Ain't Gonna Need It) and implement only currently needed functionality as specified in the MetaExpert Constitution v2.0.9
-- **FR-013**: Architecture MUST follow Feature-Sliced Design methodology with layer-based organization as specified in the MetaExpert Constitution v2.0.9
+- **FR-010**: Code MUST follow DRY Principle (Don't Repeat Yourself) and eliminate code duplication with a single source of truth as specified in the MetaExpert Constitution v2.0.10
+- **FR-011**: Code MUST follow KISS Principle (Keep It Simple, Stupid) and maintain simplicity while avoiding unnecessary complexity as specified in the MetaExpert Constitution v2.0.10
+- **FR-012**: Code MUST follow YAGNI Principle (You Ain't Gonna Need It) and implement only currently needed functionality as specified in the MetaExpert Constitution v2.0.10
+- **FR-013**: Architecture MUST follow Feature-Sliced Design methodology with layer-based organization as specified in the MetaExpert Constitution v2.0.10
 
 *Example of marking unclear requirements:*
 
