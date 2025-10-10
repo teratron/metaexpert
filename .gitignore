@@ -178,6 +178,7 @@ env.bak/
 
 ### Spec Kit
 .github/prompts/
+.codex/prompts/
 .claude/commands/
 .gemini/commands/
 .cursor/commands/
