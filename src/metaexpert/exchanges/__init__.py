@@ -30,35 +30,6 @@ class MetaExchange(Trade, Market, ABC):
     margin_mode: MarginMode
     position_mode: PositionMode
 
-    # def __init__(
-    #         self,
-    #         exchange: str,
-    #         api_key: str | None,
-    #         api_secret: str | None,
-    #         api_passphrase: str | None,
-    #         subaccount: str | None,
-    #         base_url: str | None,
-    #         testnet: bool,
-    #         proxy: dict[str, str] | None,
-    #         market_type: str,
-    #         contract_type: str,
-    #         margin_mode: str,
-    #         position_mode: str
-    #     ) -> None:
-    #     """Initialize the exchange."""
-    #     self.exchange = exchange.lower().strip()
-    #     self.api_key = api_key
-    #     self.api_secret = api_secret
-    #     self.api_passphrase = api_passphrase
-    #     self.subaccount = subaccount
-    #     self.base_url = base_url
-    #     self.testnet = testnet
-    #     self.proxy = proxy
-    #     self.market_type = market_type.lower().strip()
-    #     self.contract_type = contract_type.lower().strip()
-    #     self.margin_mode = margin_mode.lower().strip()
-    #     self.position_mode = position_mode.lower().strip()
-
     @classmethod
     def create(
         cls,

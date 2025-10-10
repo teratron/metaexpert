@@ -286,15 +286,3 @@ class MetaLogger(logging.Logger):
         logger.addHandler(handler)
         self._loggers.__setitem__("console", logger)
         return handler
-
-
-def get_logger(name: str | None = None) -> logging.Logger:
-    """Get the logger instance.
-
-    Args:
-        name (str, optional): Logger name. Defaults to None.
-
-    Returns:
-        logging.Logger: Logger instance.
-    """
-    return logging.getLogger(name)
