@@ -1,7 +1,7 @@
 <!-- 
 Sync Impact Report:
-- Version change: 2.2.0 → 2.3.0 (added Template File Requirements section)
-- Added sections: Template File Requirements section
+- Version change: 2.3.0 → 2.4.0 (added Rule Validation section)
+- Added sections: Rule Validation section
 - Templates requiring updates: ✅ .specify/templates/plan-template.md / ✅ .specify/templates/spec-template.md / ✅ .specify/templates/tasks-template.md 
 - Follow-up TODOs: RATIFICATION_DATE needs to be determined
 -->
@@ -92,6 +92,10 @@ Each significant functional change must update the project version according to 
 
 The @/src/metaexpert/template/file.py is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
 
+## Rule Validation
+
+All rules and principles in this constitution must be systematically checked and validated during development. The AI agent and development team must ensure compliance with every rule before implementation proceeds. Regular validation of rule adherence must occur to maintain consistency and quality across all project components.
+
 ## Development Workflow
 
 Code review requirements: All PRs must be reviewed by at least one other team member, Testing gates: Unit tests must pass, Integration tests for features touching contracts, Deployment approval process follows semantic versioning
@@ -100,4 +104,4 @@ Code review requirements: All PRs must be reviewed by at least one other team me
 
 All PRs/reviews must verify compliance with these principles; Complexity must be justified with clear rationale; Use development guidelines for runtime development guidance. Amendment process requires team consensus and documented justification.
 
-**Version**: 2.3.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10
+**Version**: 2.4.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10

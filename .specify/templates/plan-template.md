@@ -49,6 +49,7 @@ Gates determined based on constitution file:
 - Documentation Requirements: Update documentation in @/docs directory and README.md for all functional changes (API, methods, parameters, data formats, system behavior)
 - Versioning Requirements: Update project version according to SemVer for significant functional changes (pyproject.toml, README.md, __version__.py, docs/*); follow major.minor.patch rules with corresponding changelog and release tags
 - Template File Requirements: Verify changes do not contradict structure and content of reference template (@/src/metaexpert/template/file.py); check template before implementing new tasks
+- Rule Validation: Systematically check and validate all rules and principles during development; ensure compliance with every rule before implementation proceeds
 
 ## Project Structure
 
@@ -116,11 +117,6 @@ src/metaexpert/
 │   └── __init__.py
 └── py.typed
 
-tests/
-├── contract/
-├── integration/
-└── unit/
-
 examples/
 ├── expert_binance_ema/
 │   ├── __main__.py
@@ -141,6 +137,11 @@ examples/
 │   ├── .env.example
 │   └── README.md
 └── README.md
+
+tests/
+├── contract/
+├── integration/
+└── unit/
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real

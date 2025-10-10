@@ -153,11 +153,15 @@
 - **FR-067**: AI agent MUST check the reference template before implementing new tasks
 - **FR-068**: Changes MUST NOT contradict the structure and content of the reference template
 - **FR-069**: Template-based projects MUST be created using `metaexpert new` or `metaexpert --new` commands
+- **FR-070**: All rules and principles in the constitution MUST be systematically checked during development
+- **FR-071**: AI agent and development team MUST ensure compliance with every rule before implementation proceeds
+- **FR-072**: Regular validation of rule adherence MUST occur to maintain consistency and quality
+- **FR-073**: All project components MUST maintain compliance with constitutional rules and principles
 
 *Example of marking unclear requirements:*
 
-- **FR-070**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-071**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-074**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-075**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 

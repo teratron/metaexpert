@@ -214,6 +214,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Template check: Verify changes do not contradict structure and content of reference template (@/src/metaexpert/template/file.py)
 - [ ] TXXX Template check: Ensure AI agent checks reference template before implementing new tasks
 - [ ] TXXX Template check: Verify template-based projects can be created using `metaexpert new` or `metaexpert --new` commands
+- [ ] TXXX Rule Validation check: Systematically check and validate all rules and principles during development
+- [ ] TXXX Rule Validation check: Ensure AI agent and development team verify compliance with every rule before implementation proceeds
+- [ ] TXXX Rule Validation check: Perform regular validation of rule adherence to maintain consistency and quality
 - [ ] TXXX Run quickstart.md validation
 
 ---
