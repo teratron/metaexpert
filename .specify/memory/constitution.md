@@ -1,7 +1,7 @@
 <!-- 
 Sync Impact Report:
-- Version change: 1.9.0 → 1.9.1 (clarified pytest framework requirements in Test-First principle)
-- Modified principles: Test-First (NON-NEGOTIABLE) - enhanced pytest framework requirements
+- Version change: 2.1.0 → 2.2.0 (added OOP Principle section)
+- Added sections: OOP Principle section
 - Templates requiring updates: ✅ .specify/templates/plan-template.md / ✅ .specify/templates/spec-template.md / ✅ .specify/templates/tasks-template.md 
 - Follow-up TODOs: RATIFICATION_DATE needs to be determined
 -->
@@ -53,13 +53,17 @@ Classes, methods, functions and modules must follow the SOLID principles: Single
 
 "Feature-Sliced Design" - Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development, particularly for frontend applications.
 
+## OOP Principle
+
+"Object-Oriented Programming" - All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
+
 ## Python Code Quality Standards
 
-All Python code must adhere to established quality standards: consistent formatting using ruff and black, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After each creation or modification of Python files, developers MUST automatically run checks using ruff and pyright, analyze all warnings and errors, and then make the necessary corrections to the code to fix problems, ensuring compliance with style and typing standards. Code reviews must verify these standards before approval.
+All Python code must adhere to established quality standards: consistent formatting using ruff, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After each creation or modification of Python files, developers MUST automatically run checks using ruff and pyright, analyze all warnings and errors, and then make the necessary corrections to the code to fix problems, ensuring compliance with style and typing standards. Code reviews must verify these standards before approval.
 
 ## Additional Constraints
 
-Technology stack requirements: Python 3.12+, modular architecture, dependency management with uv, testing with pytest
+Technology stack requirements: Python 3.12+, modular architecture, dependency management with uv, testing with pytest, formatting and linting with ruff, type annotations validated with pyright.
 
 ### Language Requirements
 Code and documentation language:
@@ -76,6 +80,14 @@ Communication style:
 - Project management communications, feature discussions, and strategic decisions should be conducted in Russian
 - Code review comments and technical discussions during development can be in Russian unless collaborating with English-speaking developers
 
+## Documentation Requirements
+
+Upon every task execution that involves functional changes, the documentation in the @/docs directory must be updated, preserving the existing documentation structure: api, guides, tutorials. Additionally, the README.md file in the project root must be updated to ensure the functionality description, usage examples, and configuration information remain current. The documentation must reflect all changes made to the API, new methods, parameters, data formats, and system behavior characteristics.
+
+## Versioning Requirements
+
+Each significant functional change must update the project version according to the Semantic Versioning (SemVer) convention. Changes must be applied to all files where the version is mentioned: @/pyproject.toml, @/README.md, @/src/metaexpert/__version__.py, @/docs/* (where applicable) and any other relevant files. When updating versions, dependencies from external libraries, documentation updates, API changes, and backward compatibility must be taken into account. Versioning must strictly follow the major.minor.patch rules with corresponding updates in changelog and release tags. Major version updates indicate backward incompatible changes, minor version updates indicate new functionality in a backward compatible manner, and patch version updates indicate backward compatible bug fixes.
+
 ## Development Workflow
 
 Code review requirements: All PRs must be reviewed by at least one other team member, Testing gates: Unit tests must pass, Integration tests for features touching contracts, Deployment approval process follows semantic versioning
@@ -84,4 +96,4 @@ Code review requirements: All PRs must be reviewed by at least one other team me
 
 All PRs/reviews must verify compliance with these principles; Complexity must be justified with clear rationale; Use development guidelines for runtime development guidance. Amendment process requires team consensus and documented justification.
 
-**Version**: 1.9.1 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10
+**Version**: 2.2.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10

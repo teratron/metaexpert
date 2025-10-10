@@ -196,6 +196,21 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Python Quality check: Add proper documentation for all public interfaces
 - [ ] TXXX Python Quality check: Organize imports properly using isort
 - [ ] TXXX Python Quality check: Run ruff and pyright checks after each modification and fix all issues
+- [ ] TXXX Documentation check: Update documentation in @/docs directory for functional changes
+- [ ] TXXX Documentation check: Preserve documentation structure (api, guides, tutorials) when updating @/docs
+- [ ] TXXX Documentation check: Update README.md file to ensure functionality description remains current
+- [ ] TXXX Documentation check: Update README.md with usage examples and configuration information
+- [ ] TXXX Documentation check: Ensure documentation reflects all changes to API, methods, parameters, data formats, and system behavior
+- [ ] TXXX Versioning check: Update project version according to Semantic Versioning for significant functional changes
+- [ ] TXXX Versioning check: Apply version updates to all relevant files (pyproject.toml, README.md, __version__.py, docs/*)
+- [ ] TXXX Versioning check: Follow major.minor.patch rules (major=backward incompatible, minor=new functionality, patch=bug fixes)
+- [ ] TXXX Versioning check: Update changelog and release tags corresponding to version changes
+- [ ] TXXX Versioning check: Consider external library dependencies, API changes, and backward compatibility when updating versions
+- [ ] TXXX OOP check: Ensure all code follows OOP principles - Encapsulation to hide internal state and implementation details
+- [ ] TXXX OOP check: Ensure all code follows OOP principles - Inheritance to promote code reuse and create hierarchical relationships
+- [ ] TXXX OOP check: Ensure all code follows OOP principles - Polymorphism to allow objects of different types to be treated uniformly
+- [ ] TXXX OOP check: Ensure all code follows OOP principles - Abstraction to focus on behavior rather than implementation details
+- [ ] TXXX OOP check: Verify code maintains scalable and maintainable design through OOP principles
 - [ ] TXXX Run quickstart.md validation
 
 ---

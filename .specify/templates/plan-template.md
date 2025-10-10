@@ -44,7 +44,10 @@ Gates determined based on constitution file:
 - KISS Principle: Maintain simplicity and avoid unnecessary complexity ("Keep It Simple, Stupid")
 - YAGNI Principle: Only implement functionality that is currently needed, not anticipated future needs ("You Ain't Gonna Need It")
 - FSD Principle: Implement features as cohesive slices spanning all necessary layers (UI, business logic, data access) using Feature-Sliced Design methodology
+- OOP Principle: All code must follow OOP principles (Encapsulation, Inheritance, Polymorphism, Abstraction for maintainable and scalable design)
 - Python Code Quality: All Python code must adhere to established standards (ruff/black formatting, pyright type annotations, proper documentation, isort imports; run checks after each modification)
+- Documentation Requirements: Update documentation in @/docs directory and README.md for all functional changes (API, methods, parameters, data formats, system behavior)
+- Versioning Requirements: Update project version according to SemVer for significant functional changes (pyproject.toml, README.md, __version__.py, docs/*); follow major.minor.patch rules with corresponding changelog and release tags
 
 ## Project Structure
 

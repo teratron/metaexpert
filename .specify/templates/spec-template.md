@@ -134,11 +134,26 @@
 - **FR-048**: Python code MUST include comprehensive type annotations validated with pyright
 - **FR-049**: All public interfaces in Python code MUST include proper documentation
 - **FR-050**: Python imports MUST be properly organized using isort
+- **FR-051**: Documentation in @/docs directory MUST be updated upon every task execution that involves functional changes
+- **FR-052**: Documentation structure (api, guides, tutorials) MUST be preserved when updating @/docs
+- **FR-053**: README.md file in project root MUST be updated to ensure functionality description remains current
+- **FR-054**: README.md file MUST include updated usage examples and configuration information
+- **FR-055**: Documentation MUST reflect all changes made to API, new methods, parameters, data formats, and system behavior characteristics
+- **FR-056**: Project version MUST be updated according to Semantic Versioning convention for each significant functional change
+- **FR-057**: Version updates MUST be applied to all relevant files (pyproject.toml, README.md, __version__.py, docs/*)
+- **FR-058**: Versioning MUST follow major.minor.patch rules (major=backward incompatible, minor=new functionality, patch=bug fixes)
+- **FR-059**: Changelog and release tags MUST be updated corresponding to version changes
+- **FR-060**: External library dependencies, API changes, and backward compatibility MUST be considered when updating versions
+- **FR-061**: All code MUST follow OOP principles: Encapsulation to hide internal state and implementation details
+- **FR-062**: All code MUST follow OOP principles: Inheritance to promote code reuse and create hierarchical relationships
+- **FR-063**: All code MUST follow OOP principles: Polymorphism to allow objects of different types to be treated uniformly
+- **FR-064**: All code MUST follow OOP principles: Abstraction to focus on behavior rather than implementation details
+- **FR-065**: All code MUST ensure maintainable and scalable code design through OOP principles
 
 *Example of marking unclear requirements:*
 
-- **FR-051**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-052**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-066**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-067**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 
