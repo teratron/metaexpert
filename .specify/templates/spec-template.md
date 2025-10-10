@@ -89,11 +89,56 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-006**: UI components MUST follow established design patterns and maintain consistent behavior across all features
+- **FR-007**: Error messages and handling MUST be consistent across all user interfaces
+- **FR-008**: User interfaces MUST provide responsive behavior across different environments
+- **FR-009**: System MUST provide clear feedback for all user actions
+- **FR-010**: All components MUST meet defined performance benchmarks (sub-200ms for simple operations)
+- **FR-011**: System MUST demonstrate efficient resource utilization (memory, CPU, network)
+- **FR-012**: System MUST show scalability under expected load conditions
+- **FR-013**: Performance-critical paths MUST use optimized algorithms and data structures
+- **FR-014**: Automated quality checks MUST be implemented on all commits
+- **FR-015**: Codebase MUST undergo regular refactoring to maintain code health
+- **FR-016**: System MUST include continuous monitoring of performance metrics
+- **FR-017**: Regular security assessments and updates MUST be conducted
+- **FR-018**: All classes MUST adhere to the Single Responsibility Principle (one reason to change)
+- **FR-019**: Software entities MUST follow the Open/Closed Principle (open for extension, closed for modification)
+- **FR-020**: Objects MUST be replaceable with instances of their subtypes (Liskov Substitution Principle)
+- **FR-021**: Clients MUST not be forced to depend on interfaces they don't use (Interface Segregation Principle)
+- **FR-022**: High-level modules MUST depend on abstractions, not low-level modules (Dependency Inversion Principle)
+- **FR-023**: Code duplication MUST be eliminated following the DRY principle
+- **FR-024**: Each piece of knowledge MUST have a single authoritative representation in the system
+- **FR-025**: All shared functionality MUST be extracted into reusable components, functions, or modules
+- **FR-026**: Systems MUST ensure a single source of truth to reduce maintenance overhead
+- **FR-027**: Code and architectural solutions MUST maintain simplicity and avoid unnecessary complexity
+- **FR-028**: Complex solutions MUST be evaluated against simpler alternatives before implementation
+- **FR-029**: Simple code MUST be prioritized for better understandability, maintainability, testability, and debuggability
+- **FR-030**: Implementation approach MUST follow the "Keep It Simple, Stupid" principle
+- **FR-031**: Only functionality that is currently needed MUST be implemented
+- **FR-032**: Features for anticipated future needs MUST NOT be added prematurely
+- **FR-033**: Infrastructure for potential future use cases MUST NOT be added if not immediately required
+- **FR-034**: Implementation approach MUST follow the "You Ain't Gonna Need It" principle to prevent code bloat
+- **FR-035**: Features MUST be implemented as cohesive slices that span all necessary layers (UI, business logic, data access)
+- **FR-036**: Feature-Sliced Design methodology MUST be followed for architectural organization
+- **FR-037**: Feature implementation MUST promote better maintainability and clearer separation of concerns
+- **FR-038**: Feature development approach MUST improve scalability and simplify feature development
+- **FR-039**: Unit tests MUST be written for all functions/methods with minimum 85% coverage
+- **FR-040**: Integration tests MUST be created for inter-component interactions
+- **FR-041**: End-to-end tests MUST be implemented for critical user flows
+- **FR-042**: Performance tests MUST be conducted for performance-sensitive components
+- **FR-043**: All tests MUST use pytest framework as the required testing tool
+- **FR-044**: Tests MUST ensure proper test discovery through pytest built-in functionality
+- **FR-045**: Tests MUST ensure proper test execution through pytest framework
+- **FR-046**: Tests MUST ensure proper reporting through pytest built-in functionality and compatible plugins
+- **FR-047**: Python code MUST adhere to consistent formatting using ruff and black
+- **FR-048**: Python code MUST include comprehensive type annotations validated with pyright
+- **FR-049**: All public interfaces in Python code MUST include proper documentation
+- **FR-050**: Python imports MUST be properly organized using isort
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-051**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-052**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 

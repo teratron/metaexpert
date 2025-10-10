@@ -152,6 +152,50 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
+- [ ] TXXX UI consistency check: Ensure all UI elements follow established design patterns
+- [ ] TXXX UI consistency check: Verify consistent error messaging and handling across all interfaces
+- [ ] TXXX UI consistency check: Validate responsive behavior across different environments
+- [ ] TXXX UI consistency check: Confirm clear feedback for all user actions
+- [ ] TXXX Performance benchmark check: Verify sub-200ms response times for simple operations
+- [ ] TXXX Performance benchmark check: Validate efficient resource utilization (memory, CPU, network)
+- [ ] TXXX Performance benchmark check: Test scalability under expected load conditions
+- [ ] TXXX Performance benchmark check: Ensure optimized algorithms and data structures for performance-critical paths
+- [ ] TXXX Quality check: Implement automated quality checks on all commits
+- [ ] TXXX Quality check: Perform regular refactoring to maintain code health
+- [ ] TXXX Quality check: Set up continuous monitoring of performance metrics
+- [ ] TXXX Quality check: Conduct regular security assessments and updates
+- [ ] TXXX SOLID check: Verify all classes adhere to Single Responsibility Principle
+- [ ] TXXX SOLID check: Ensure entities follow Open/Closed Principle (open for extension, closed for modification)
+- [ ] TXXX SOLID check: Validate Liskov Substitution Principle compliance for inheritance hierarchies
+- [ ] TXXX SOLID check: Apply Interface Segregation Principle (no forced dependencies on unused interfaces)
+- [ ] TXXX SOLID check: Implement Dependency Inversion Principle (depend on abstractions)
+- [ ] TXXX DRY check: Identify and eliminate code duplication
+- [ ] TXXX DRY check: Ensure each piece of knowledge has a single authoritative representation
+- [ ] TXXX DRY check: Extract shared functionality into reusable components, functions, or modules
+- [ ] TXXX DRY check: Establish single source of truth to reduce maintenance overhead
+- [ ] TXXX KISS check: Evaluate code and architectural solutions for unnecessary complexity
+- [ ] TXXX KISS check: Assess complex solutions against simpler alternatives before implementation
+- [ ] TXXX KISS check: Prioritize simple code for better understandability, maintainability, testability, and debuggability
+- [ ] TXXX KISS check: Ensure implementation follows the "Keep It Simple, Stupid" principle
+- [ ] TXXX YAGNI check: Verify only currently needed functionality is implemented
+- [ ] TXXX YAGNI check: Ensure features for anticipated future needs are not added prematurely
+- [ ] TXXX YAGNI check: Validate that infrastructure for potential future use cases is not added if not immediately required
+- [ ] TXXX YAGNI check: Confirm implementation follows "You Ain't Gonna Need It" principle to prevent code bloat
+- [ ] TXXX FSD check: Implement features as cohesive slices spanning all necessary layers (UI, business logic, data access)
+- [ ] TXXX FSD check: Apply Feature-Sliced Design methodology for architectural organization
+- [ ] TXXX FSD check: Ensure feature implementation promotes better maintainability and clearer separation of concerns
+- [ ] TXXX FSD check: Verify feature development approach improves scalability and simplifies feature development
+- [ ] TXXX Testing check: Write unit tests for all functions/methods with minimum 85% coverage
+- [ ] TXXX Testing check: Create integration tests for inter-component interactions
+- [ ] TXXX Testing check: Implement end-to-end tests for critical user flows
+- [ ] TXXX Testing check: Conduct performance tests for performance-sensitive components
+- [ ] TXXX Testing check: Ensure all tests pass before merging using pytest framework
+- [ ] TXXX Testing check: Ensure proper test discovery, execution, and reporting through pytest built-in functionality and compatible plugins
+- [ ] TXXX Python Quality check: Ensure all Python code follows ruff and black formatting standards
+- [ ] TXXX Python Quality check: Validate comprehensive type annotations with pyright
+- [ ] TXXX Python Quality check: Add proper documentation for all public interfaces
+- [ ] TXXX Python Quality check: Organize imports properly using isort
+- [ ] TXXX Python Quality check: Run ruff and pyright checks after each modification and fix all issues
 - [ ] TXXX Run quickstart.md validation
 
 ---

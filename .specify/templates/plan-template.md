@@ -31,7 +31,20 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Gates determined based on constitution file:
+- Library-first architecture: Ensure new features start as standalone libraries with self-contained, independently testable code
+- CLI Interface: Every library must expose functionality via CLI with proper text I/O protocols
+- Test-first approach: Comprehensive testing mandatory (unit tests with 85% coverage, integration tests, end-to-end tests for critical flows, performance tests for sensitive components; all tests must pass before merging using pytest framework with proper test discovery, execution, and reporting)
+- Integration testing: Focus on contract tests and inter-service communication
+- UI Consistency: User interfaces and interactions must maintain consistent behavior across all features (follow design patterns, consistent error handling, responsive behavior, clear feedback)
+- Performance Benchmarks: All components must meet defined performance benchmarks (sub-200ms for simple operations, efficient resource utilization, scalability under load, optimized algorithms)
+- Quality Maintenance: Quality must be maintained throughout development lifecycle (automated quality checks, regular refactoring, performance monitoring, security assessments)
+- SOLID Principles: Classes, methods, functions and modules must follow SOLID principles (SRP, OCP, LSP, ISP, DIP)
+- DRY Principle: Eliminate code duplication and ensure each piece of knowledge has a single authoritative representation (reusable components, single source of truth)
+- KISS Principle: Maintain simplicity and avoid unnecessary complexity ("Keep It Simple, Stupid")
+- YAGNI Principle: Only implement functionality that is currently needed, not anticipated future needs ("You Ain't Gonna Need It")
+- FSD Principle: Implement features as cohesive slices spanning all necessary layers (UI, business logic, data access) using Feature-Sliced Design methodology
+- Python Code Quality: All Python code must adhere to established standards (ruff/black formatting, pyright type annotations, proper documentation, isort imports; run checks after each modification)
 
 ## Project Structure
 
@@ -56,39 +69,74 @@ specs/[###-feature]/
 -->
 
 ```
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
+src/metaexpert/
+├── __init__.py
+├── __main__.py
+├── __version__.py
+├── config.py
+├── core/
+│   ├── __init__.py
+│   ├── expert.py
+│   ├── events.py
+│   └── [other core modules]
+├── exchanges/
+│   ├── __init__.py
+│   ├── binance/
+│   │   ├── __init__.py
+│   │   └── config.py
+│   ├── bybit/
+│   │   ├── __init__.py
+│   │   └── config.py
+│   └── okx/
+│       ├── __init__.py
+│       └── config.py
+├── backtest/
+│   ├── __init__.py
+│   ├── README.md
+│   └── [other backtest modules]
+├── logger/
+│   ├── __init__.py
+│   ├── async_handler.py
+│   └── formatter.py
 ├── cli/
-└── lib/
+│   ├── __init__.py
+│   ├── README.md
+│   └── [other cli modules]
+├── template/
+│   ├── __init__.py
+│   └── template.py
+├── utils/
+│   ├── __init__.py
+│   └── package.py
+├── websocket/
+│   └── __init__.py
+└── py.typed
 
 tests/
 ├── contract/
 ├── integration/
 └── unit/
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+examples/
+├── expert_binance_ema/
+│   ├── __main__.py
+│   ├── pyproject.toml
+│   ├── .env
+│   ├── .env.example
+│   └── README.md
+├── expert_bybit_rsi/
+│   ├── __main__.py
+│   ├── pyproject.toml
+│   ├── .env
+│   ├── .env.example
+│   └── README.md
+├── expert_okx_macd/
+│   ├── __main__.py
+│   ├── pyproject.toml
+│   ├── .env
+│   ├── .env.example
+│   └── README.md
+└── README.md
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real
