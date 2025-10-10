@@ -48,6 +48,7 @@ Gates determined based on constitution file:
 - Python Code Quality: All Python code must adhere to established standards (ruff/black formatting, pyright type annotations, proper documentation, isort imports; run checks after each modification)
 - Documentation Requirements: Update documentation in @/docs directory and README.md for all functional changes (API, methods, parameters, data formats, system behavior)
 - Versioning Requirements: Update project version according to SemVer for significant functional changes (pyproject.toml, README.md, __version__.py, docs/*); follow major.minor.patch rules with corresponding changelog and release tags
+- Template File Requirements: Verify changes do not contradict structure and content of reference template (@/src/metaexpert/template/file.py); check template before implementing new tasks
 
 ## Project Structure
 

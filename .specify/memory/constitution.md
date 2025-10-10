@@ -1,7 +1,7 @@
 <!-- 
 Sync Impact Report:
-- Version change: 2.1.0 → 2.2.0 (added OOP Principle section)
-- Added sections: OOP Principle section
+- Version change: 2.2.0 → 2.3.0 (added Template File Requirements section)
+- Added sections: Template File Requirements section
 - Templates requiring updates: ✅ .specify/templates/plan-template.md / ✅ .specify/templates/spec-template.md / ✅ .specify/templates/tasks-template.md 
 - Follow-up TODOs: RATIFICATION_DATE needs to be determined
 -->
@@ -63,7 +63,7 @@ All Python code must adhere to established quality standards: consistent formatt
 
 ## Additional Constraints
 
-Technology stack requirements: Python 3.12+, modular architecture, dependency management with uv, testing with pytest, formatting and linting with ruff, type annotations validated with pyright.
+Technology stack requirements: Python 3.12+, modular architecture, dependency management with uv (no pip, requirements.txt, setup.py, or similar), testing with pytest, formatting and linting with ruff, type annotations validated with pyright. Always activate the virtual environment using .venv/Scripts/activate before executing any uv commands.
 
 ### Language Requirements
 Code and documentation language:
@@ -88,6 +88,10 @@ Upon every task execution that involves functional changes, the documentation in
 
 Each significant functional change must update the project version according to the Semantic Versioning (SemVer) convention. Changes must be applied to all files where the version is mentioned: @/pyproject.toml, @/README.md, @/src/metaexpert/__version__.py, @/docs/* (where applicable) and any other relevant files. When updating versions, dependencies from external libraries, documentation updates, API changes, and backward compatibility must be taken into account. Versioning must strictly follow the major.minor.patch rules with corresponding updates in changelog and release tags. Major version updates indicate backward incompatible changes, minor version updates indicate new functionality in a backward compatible manner, and patch version updates indicate backward compatible bug fixes.
 
+## Template File Requirements
+
+The @/src/metaexpert/template/file.py is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
+
 ## Development Workflow
 
 Code review requirements: All PRs must be reviewed by at least one other team member, Testing gates: Unit tests must pass, Integration tests for features touching contracts, Deployment approval process follows semantic versioning
@@ -96,4 +100,4 @@ Code review requirements: All PRs must be reviewed by at least one other team me
 
 All PRs/reviews must verify compliance with these principles; Complexity must be justified with clear rationale; Use development guidelines for runtime development guidance. Amendment process requires team consensus and documented justification.
 
-**Version**: 2.2.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10
+**Version**: 2.3.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10

@@ -149,11 +149,15 @@
 - **FR-063**: All code MUST follow OOP principles: Polymorphism to allow objects of different types to be treated uniformly
 - **FR-064**: All code MUST follow OOP principles: Abstraction to focus on behavior rather than implementation details
 - **FR-065**: All code MUST ensure maintainable and scalable code design through OOP principles
+- **FR-066**: Reference template (@/src/metaexpert/template/file.py) MUST remain unchanged without explicit approval
+- **FR-067**: AI agent MUST check the reference template before implementing new tasks
+- **FR-068**: Changes MUST NOT contradict the structure and content of the reference template
+- **FR-069**: Template-based projects MUST be created using `metaexpert new` or `metaexpert --new` commands
 
 *Example of marking unclear requirements:*
 
-- **FR-066**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-067**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-070**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
+- **FR-071**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
 ### Key Entities *(include if feature involves data)*
 

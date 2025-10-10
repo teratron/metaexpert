@@ -211,6 +211,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX OOP check: Ensure all code follows OOP principles - Polymorphism to allow objects of different types to be treated uniformly
 - [ ] TXXX OOP check: Ensure all code follows OOP principles - Abstraction to focus on behavior rather than implementation details
 - [ ] TXXX OOP check: Verify code maintains scalable and maintainable design through OOP principles
+- [ ] TXXX Template check: Verify changes do not contradict structure and content of reference template (@/src/metaexpert/template/file.py)
+- [ ] TXXX Template check: Ensure AI agent checks reference template before implementing new tasks
+- [ ] TXXX Template check: Verify template-based projects can be created using `metaexpert new` or `metaexpert --new` commands
 - [ ] TXXX Run quickstart.md validation
 
 ---
