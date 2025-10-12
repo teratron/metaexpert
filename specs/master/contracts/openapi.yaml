@@ -1,0 +1,379 @@
+openapi: 3.0.0
+info:
+  title: MetaExpert API
+  description: API for managing trading experts and related operations
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+
+paths:
+  /experts:
+    get:
+      summary: List all trading experts
+      responses:
+        '200':
+          description: List of experts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Expert'
+    post:
+      summary: Create a new trading expert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExpertRequest'
+      responses:
+        '201':
+          description: Expert created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expert'
+
+  /experts/{expertId}:
+    get:
+      summary: Get a specific expert
+      parameters:
+        - name: expertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expert details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expert'
+        '404':
+          description: Expert not found
+    put:
+      summary: Update a specific expert
+      parameters:
+        - name: expertId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateExpertRequest'
+      responses:
+        '200':
+          description: Expert updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Expert'
+        '404':
+          description: Expert not found
+    delete:
+      summary: Delete a specific expert
+      parameters:
+        - name: expertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Expert deleted successfully
+        '404':
+          description: Expert not found
+
+  /experts/{expertId}/start:
+    post:
+      summary: Start a trading expert
+      parameters:
+        - name: expertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expert started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpertStatus'
+  
+  /experts/{expertId}/stop:
+    post:
+      summary: Stop a trading expert
+      parameters:
+        - name: expertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Expert stopped successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpertStatus'
+
+  /experts/{expertId}/trades:
+    get:
+      summary: Get trades for a specific expert
+      parameters:
+        - name: expertId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of trades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trade'
+
+  /exchanges:
+    get:
+      summary: List all supported exchanges
+      responses:
+        '200':
+          description: List of exchanges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Exchange'
+
+  /markets:
+    get:
+      summary: List all available markets
+      responses:
+        '200':
+          description: List of markets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Market'
+
+components:
+  schemas:
+    Expert:
+      type: object
+      required:
+        - id
+        - name
+        - exchange
+        - symbol
+        - state
+        - created_at
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the expert
+        name:
+          type: string
+          description: Name of the trading strategy
+        description:
+          type: string
+          description: Description of the trading strategy
+        exchange:
+          type: string
+          description: Exchange the expert operates on
+          enum: [binance, bybit, okx]
+        symbol:
+          type: string
+          description: Trading pair symbol (e.g., BTCUSDT)
+        strategy_config:
+          type: object
+          description: Configuration parameters for the trading strategy
+          additionalProperties: true
+        state:
+          type: string
+          description: Current state of the expert
+          enum: [active, paused, stopped]
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp of expert creation
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp of last update
+    
+    CreateExpertRequest:
+      type: object
+      required:
+        - name
+        - exchange
+        - symbol
+        - strategy_config
+      properties:
+        name:
+          type: string
+          description: Name of the trading strategy
+        description:
+          type: string
+          description: Description of the trading strategy
+        exchange:
+          type: string
+          description: Exchange the expert operates on
+          enum: [binance, bybit, okx]
+        symbol:
+          type: string
+          description: Trading pair symbol (e.g., BTCUSDT)
+        strategy_config:
+          type: object
+          description: Configuration parameters for the trading strategy
+          additionalProperties: true
+    
+    UpdateExpertRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the trading strategy
+        description:
+          type: string
+          description: Description of the trading strategy
+        strategy_config:
+          type: object
+          description: Configuration parameters for the trading strategy
+          additionalProperties: true
+
+    ExpertStatus:
+      type: object
+      required:
+        - expert_id
+        - state
+      properties:
+        expert_id:
+          type: string
+          description: Unique identifier for the expert
+        state:
+          type: string
+          description: Current state of the expert
+          enum: [active, paused, stopped]
+    
+    Trade:
+      type: object
+      required:
+        - id
+        - expert_id
+        - order_id
+        - symbol
+        - side
+        - quantity
+        - price
+        - timestamp
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the trade
+        expert_id:
+          type: string
+          description: Expert ID associated with the trade
+        order_id:
+          type: string
+          description: Order ID from the exchange
+        symbol:
+          type: string
+          description: Trading pair symbol
+        side:
+          type: string
+          description: Trade side
+          enum: [buy, sell]
+        quantity:
+          type: number
+          description: Quantity traded
+        price:
+          type: number
+          description: Price at which trade executed
+        timestamp:
+          type: string
+          format: date-time
+          description: Time of execution
+        fee:
+          type: number
+          description: Fee amount paid
+        fee_currency:
+          type: string
+          description: Currency of the fee
+    
+    Exchange:
+      type: object
+      required:
+        - id
+        - name
+        - status
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the exchange
+        name:
+          type: string
+          description: Exchange name
+          enum: [binance, bybit, okx]
+        api_config:
+          type: object
+          description: API connection configuration
+          additionalProperties: true
+        supported_pairs:
+          type: array
+          items:
+            type: string
+          description: List of supported trading pairs
+        status:
+          type: string
+          description: Connection status
+          enum: [connected, disconnected]
+    
+    Market:
+      type: object
+      required:
+        - id
+        - exchange_id
+        - symbol
+        - base_currency
+        - quote_currency
+        - status
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the market
+        exchange_id:
+          type: string
+          description: Exchange ID
+        symbol:
+          type: string
+          description: Trading pair symbol (e.g., BTCUSDT)
+        base_currency:
+          type: string
+          description: Base currency (e.g., BTC)
+        quote_currency:
+          type: string
+          description: Quote currency (e.g., USDT)
+        min_order_size:
+          type: number
+          description: Minimum order size allowed
+        price_precision:
+          type: integer
+          description: Number of decimal places for prices
+        status:
+          type: string
+          description: Market status
+          enum: [active, suspended]

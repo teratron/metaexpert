@@ -11,21 +11,15 @@
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: Python 3.12+ (based on constitution.md)  
+**Primary Dependencies**: uv for dependency management, pytest for testing, ruff for formatting, pyright for type checking (based on constitution.md)  
+**Storage**: File-based storage for trading expert configurations and historical data  
+**Testing**: pytest with 85% coverage minimum (based on constitution.md)  
+**Target Platform**: Cross-platform Python application (Windows, macOS, Linux)  
+**Project Type**: Trading expert framework for cryptocurrency exchanges (Binance, Bybit, OKX) - library-first architecture  
+**Performance Goals**: Sub-200ms response for simple trading operations, efficient resource utilization for backtesting operations  
+**Constraints**: Library-first architecture, CLI interface for all functionality, OOP principles, SOLID principles, DRY, KISS, YAGNI (based on constitution.md)  
+**Scale/Scope**: Support for multiple cryptocurrency exchanges, extensible expert implementations for various trading strategies
 
 ## Constitution Check
 
