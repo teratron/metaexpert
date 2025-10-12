@@ -151,7 +151,7 @@ tests/                             # Application tests
 ├── integration/                   # Integration tests (module interaction)
 └── unit/                          # Unit tests (individual component testing)
 
-docs/
+docs/                              # Doc
 ├── README.md                      # General documentation for the project
 ├── architecture.md                # System architecture overview
 ├── setup.md                       # Installation and setup instructions
