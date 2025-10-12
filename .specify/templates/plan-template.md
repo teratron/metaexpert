@@ -88,13 +88,16 @@ src/metaexpert/
 │   ├── __init__.py
 │   ├── binance/
 │   │   ├── __init__.py
-│   │   └── config.py
+│   │   ├── config.py
+│   │   └── [other binance modules]
 │   ├── bybit/
 │   │   ├── __init__.py
-│   │   └── config.py
+│   │   ├── config.py
+│   │   └── [other bybit modules]
 │   └── okx/
 │       ├── __init__.py
-│       └── config.py
+│       ├── config.py
+│       └── [other okx modules]
 ├── backtest/
 │   ├── __init__.py
 │   ├── README.md
@@ -102,19 +105,24 @@ src/metaexpert/
 ├── logger/
 │   ├── __init__.py
 │   ├── async_handler.py
-│   └── formatter.py
+│   ├── formatter.py
+│   └── README.md
 ├── cli/
 │   ├── __init__.py
 │   ├── README.md
 │   └── [other cli modules]
 ├── template/
 │   ├── __init__.py
-│   └── template.py
+│   ├── template.py
+│   └── README.md
 ├── utils/
 │   ├── __init__.py
-│   └── package.py
+│   ├── package.py
+│   ├── README.md
+│   └── [other utils modules]
 ├── websocket/
-│   └── __init__.py
+│   ├── __init__.py
+│   └── [other websocket modules]
 └── py.typed
 
 examples/
