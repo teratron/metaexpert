@@ -74,82 +74,91 @@ specs/[###-feature]/
 -->
 
 ```
-src/metaexpert/
-├── __init__.py
-├── __main__.py
-├── __version__.py
-├── config.py
-├── core/
-│   ├── __init__.py
-│   ├── expert.py
-│   ├── events.py
-│   └── [other core modules]
-├── exchanges/
-│   ├── __init__.py
-│   ├── binance/
-│   │   ├── __init__.py
-│   │   ├── config.py
-│   │   └── [other binance modules]
-│   ├── bybit/
-│   │   ├── __init__.py
-│   │   ├── config.py
-│   │   └── [other bybit modules]
-│   └── okx/
-│       ├── __init__.py
-│       ├── config.py
-│       └── [other okx modules]
-├── backtest/
-│   ├── __init__.py
-│   ├── README.md
-│   └── [other backtest modules]
-├── logger/
-│   ├── __init__.py
-│   ├── async_handler.py
-│   ├── formatter.py
-│   └── README.md
-├── cli/
-│   ├── __init__.py
-│   ├── README.md
-│   └── [other cli modules]
-├── template/
-│   ├── __init__.py
-│   ├── template.py
-│   └── README.md
-├── utils/
-│   ├── __init__.py
-│   ├── package.py
-│   ├── README.md
-│   └── [other utils modules]
-├── websocket/
-│   ├── __init__.py
-│   └── [other websocket modules]
-└── py.typed
+src/metaexpert/                    # Main application package for MetaExpert
+├── __init__.py                    # Package initialization
+├── __main__.py                    # Entry point for running the application as a module
+├── __version__.py                 # Application version definition
+├── config.py                      # Global settings and configurations
+├── core/                          # Core system - main components
+│   ├── __init__.py                # Core module initialization
+│   ├── expert.py                  # Base class for experts (trading strategies)
+│   ├── events.py                  # Event handling system
+│   └── [other core modules]       # Additional core modules (markets, trades, timeframes, etc.)
+├── exchanges/                     # Support for various exchanges
+│   ├── __init__.py                # Exchanges module initialization
+│   ├── binance/                   # Implementation for Binance exchange
+│   │   ├── __init__.py            # Binance module initialization
+│   │   ├── config.py              # Binance configuration
+│   │   └── [other binance modules] # Additional Binance modules
+│   ├── bybit/                     # Implementation for Bybit exchange
+│   │   ├── __init__.py            # Bybit module initialization
+│   │   ├── config.py              # Bybit configuration
+│   │   └── [other bybit modules]  # Additional Bybit modules
+│   └── okx/                       # Implementation for OKX exchange
+│       ├── __init__.py            # OKX module initialization
+│       ├── config.py              # OKX configuration
+│       └── [other okx modules]    # Additional OKX modules
+├── backtest/                      # Backtesting module for strategy testing on historical data
+│   ├── __init__.py                # Backtest module initialization
+│   ├── README.md                  # Documentation for backtesting usage
+│   └── [other backtest modules]   # Backtest components
+├── logger/                        # Logging system
+│   ├── __init__.py                # Logging module initialization
+│   ├── async_handler.py           # Asynchronous log handler
+│   ├── formatter.py               # Log message formatting
+│   └── README.md                  # Logging documentation
+├── cli/                           # Command line interface
+│   ├── __init__.py                # CLI module initialization
+│   ├── README.md                  # Documentation for CLI usage
+│   └── [other cli modules]        # Command line interface components
+├── template/                      # Templates for generating new experts
+│   ├── __init__.py                # Templates module initialization
+│   ├── template.py                # Template implementation
+│   └── README.md                  # Templates documentation
+├── utils/                         # Utility functions
+│   ├── __init__.py                # Utilities module initialization
+│   ├── package.py                 # Utilities for package management
+│   ├── README.md                  # Utilities documentation
+│   └── [other utils modules]      # Additional helper functions
+├── websocket/                     # WebSocket connection handling
+│   ├── __init__.py                # WebSocket module initialization
+│   └── [other websocket modules]  # WebSocket connection components
+└── py.typed                       # Type checking marker
 
-examples/
-├── expert_binance_ema/
-│   ├── __main__.py
-│   ├── pyproject.toml
-│   ├── .env
-│   ├── .env.example
-│   └── README.md
-├── expert_bybit_rsi/
-│   ├── __main__.py
-│   ├── pyproject.toml
-│   ├── .env
-│   ├── .env.example
-│   └── README.md
-├── expert_okx_macd/
-│   ├── __main__.py
-│   ├── pyproject.toml
-│   ├── .env
-│   ├── .env.example
-│   └── README.md
-└── README.md
+examples/                          # Examples of trading expert implementations
+├── expert_binance_ema/            # EMA expert example for Binance
+│   ├── __main__.py                # Entry point for EMA example on Binance
+│   ├── pyproject.toml             # Dependencies and settings for the example
+│   ├── .env                       # Environment variables file (not in repo)
+│   ├── .env.example               # Example .env file
+│   └── README.md                  # Documentation for the example
+├── expert_bybit_rsi/              # RSI expert example for Bybit
+│   ├── __main__.py                # Entry point for RSI example on Bybit
+│   ├── pyproject.toml             # Dependencies and settings for the example
+│   ├── .env                       # Environment variables file (not in repo)
+│   ├── .env.example               # Example .env file
+│   └── README.md                  # Documentation for the example
+├── expert_okx_macd/               # MACD expert example for OKX
+│   ├── __main__.py                # Entry point for MACD example on OKX
+│   ├── pyproject.toml             # Dependencies and settings for the example
+│   ├── .env                       # Environment variables file (not in repo)
+│   ├── .env.example               # Example .env file
+│   └── README.md                  # Documentation for the example
+└── README.md                      # General documentation for examples
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+tests/                             # Application tests
+├── contract/                      # Contract tests (API verification)
+├── integration/                   # Integration tests (module interaction)
+└── unit/                          # Unit tests (individual component testing)
+
+docs/
+├── README.md                      # General documentation for the project
+├── architecture.md                # System architecture overview
+├── setup.md                       # Installation and setup instructions
+├── usage.md                       # Usage guidelines and examples
+├── api/                           # API documentation
+├── guides/                        # Usage guides
+└── tutorials/                     # Tutorials for using the system
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real
