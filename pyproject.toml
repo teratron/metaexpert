@@ -39,6 +39,7 @@ dev = [
     "pyleak>=0.1.11",
     "pyright>=1.1.406",
     "specify-cli",
+    "pydantic>=2.12.0",
 ]
 test = [
     "pytest>=8.3.4",
