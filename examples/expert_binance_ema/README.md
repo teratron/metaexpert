@@ -27,7 +27,7 @@ When the fast EMA crosses below the slow EMA, a sell signal is generated.
 ## Running the Expert
 
 ```bash
-python __main__.py
+python main.py
 ```
 
 ## Strategy Parameters

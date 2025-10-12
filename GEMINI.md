@@ -67,19 +67,19 @@ src/metaexpert/                    # Main application package for MetaExpert
 
 examples/                          # Examples of trading expert implementations
 ├── expert_binance_ema/            # EMA expert example for Binance
-│   ├── __main__.py                # Entry point for EMA example on Binance
+│   ├── main.py                    # Entry point for EMA example on Binance
 │   ├── pyproject.toml             # Dependencies and settings for the example
 │   ├── .env                       # Environment variables file (not in repo)
 │   ├── .env.example               # Example .env file
 │   └── README.md                  # Documentation for the example
 ├── expert_bybit_rsi/              # RSI expert example for Bybit
-│   ├── __main__.py                # Entry point for RSI example on Bybit
+│   ├── main.py                    # Entry point for RSI example on Bybit
 │   ├── pyproject.toml             # Dependencies and settings for the example
 │   ├── .env                       # Environment variables file (not in repo)
 │   ├── .env.example               # Example .env file
 │   └── README.md                  # Documentation for the example
 ├── expert_okx_macd/               # MACD expert example for OKX
-│   ├── __main__.py                # Entry point for MACD example on OKX
+│   ├── main.py                    # Entry point for MACD example on OKX
 │   ├── pyproject.toml             # Dependencies and settings for the example
 │   ├── .env                       # Environment variables file (not in repo)
 │   ├── .env.example               # Example .env file

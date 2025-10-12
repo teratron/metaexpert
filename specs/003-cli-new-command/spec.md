@@ -17,9 +17,9 @@ As a user, I want to create a new trading expert by running a simple CLI command
 
 **Acceptance Scenarios**:
 
-1. **Given** user has installed the MetaExpert package, **When** user runs `metaexpert new my_strategy`, **Then** a new Python file named `my_strategy.py` is created in the current directory with the template structure populated
-2. **Given** user runs `metaexpert new MyStrategy`, **When** command executes, **Then** a new file named `MyStrategy.py` is created with proper class/function naming conventions adapted to the input name
-3. **Given** user runs `metaexpert new my_strategy` in a directory where the file doesn't exist, **When** command executes, **Then** the file is created without overwriting any existing files
+1. **Given** user has installed the MetaExpert package, **When** user runs `metaexpert new my_strategy`, **Then** a new directory named `my_strategy` is created, containing a `main.py` file with the template structure populated
+2. **Given** user runs `metaexpert new MyStrategy`, **When** command executes, **Then** a new directory named `my_strategy` is created, and the `main.py` inside has its internal identifiers adapted based on the `MyStrategy` name
+3. **Given** user runs `metaexpert new my_strategy` in a directory where the file doesn't exist, **When** command executes, **Then** the directory is created without overwriting any existing directory
 
 ---
 
@@ -57,9 +57,19 @@ As a user, when I provide invalid arguments or commands, I want to receive clear
 
 ### Edge Cases
 
-- What happens when a user tries to create a new expert with a name that conflicts with existing Python keywords or reserved names?
-- How does the system handle special characters, spaces, or invalid characters in the expert name?
-- What happens when a file with the same name already exists in the current directory?
+- If the user-provided name is a reserved Python keyword (as determined by the `keyword` module), the command will be rejected with an error.
+- User-provided names with spaces or special characters will be sanitized: converted to `snake_case` for the filename and `PascalCase` for internal class names.
+- If a file with the same name already exists, the command will fail with a clear error message and will not overwrite the file.
+
+## Clarifications
+
+### Session 2025-10-12
+
+- Q: What action should the `metaexpert new <name>` command take if the file `<name>.py` already exists in the target directory? → A: Fail with a clear error message, preventing any overwrite.
+- Q: How should the `new` command sanitize an expert name like "My New Expert" to create a valid Python filename and class name? → A: Convert to `snake_case` for the filename (`my_new_expert.py`) and `PascalCase` for the class name (`MyNewExpert`).
+- Q: What should be the output of the `metaexpert new <name>` command? → A: A new directory (`<name>/`) containing only the expert file (`main.py`).
+- Q: How should the CLI obtain the list of Python reserved keywords for validation? → A: Dynamically from Python's standard `keyword` module (i.e., `keyword.kwlist`).
+- Q: What level of logging should the CLI tool produce during its operation? → A: Standard: Log informational messages for key steps (e.g., "Creating directory...", "Writing file...") and detailed error messages with stack traces on failure.
 
 ## Requirements *(mandatory)*
 
@@ -67,24 +77,27 @@ As a user, when I provide invalid arguments or commands, I want to receive clear
 
 - **FR-001**: The system MUST provide a `new` command to generate a new expert template from the reference template
 - **FR-002**: The system MUST allow users to run `metaexpert new <expert_name>` to create a new expert file
-- **FR-003**: The system MUST generate a Python file named `<expert_name>.py` with all the necessary template structure
-- **FR-004**: The system MUST ensure the generated expert file follows proper Python naming conventions (e.g., replacing spaces, special characters with underscores)
+- **FR-003**: The system MUST generate a new directory named after the sanitized `<expert_name>`, which will contain a `main.py` file based on the template.
+- **FR-004**: The system MUST sanitize the user-provided expert name into `snake_case` to form the filename (e.g., "My Expert" becomes `my_expert.py`).
 - **FR-005**: The system MUST preserve all template functionality in the generated expert file
 - **FR-006**: The system MUST provide a `help` command to display available commands and their usage
 - **FR-007**: The system MUST accept both `--help` and `-h` as aliases for the help command
 - **FR-008**: The system MUST accept both `help <command>` and `<command> --help` for command-specific help
-- **FR-009**: The system MUST validate the expert name argument to ensure it follows Python naming conventions and reject names that are not valid Python identifiers (e.g., starting with numbers, containing special characters other than underscores, matching Python reserved keywords)
-- **FR-010**: The system MUST check if a file with the same name already exists and provide an appropriate message
+- **FR-009**: The system MUST validate the expert name argument to ensure it is a valid Python identifier. This includes checking against reserved keywords, which MUST be sourced dynamically from Python's standard `keyword` module.
+- **FR-010**: The system MUST check if a directory with the sanitized expert name already exists and, if it does, MUST fail with a clear error message, preventing any overwrite.
 - **FR-011**: The system MUST properly handle the entry point configuration as specified in the template
-- **FR-012**: The system MUST update all relevant identifiers in the template to match the new expert name
+- **FR-012**: The system MUST update all relevant identifiers in the template, converting the expert name to `PascalCase` for class names (e.g., "My Expert" becomes `MyExpert`).
 - **FR-013**: The system MUST preserve all comments and documentation in the generated template
 - **FR-014**: The system MUST provide clear error messages for invalid commands or arguments
-- **FR-015**: The system MUST handle special characters and spaces in the expert name appropriately
 - **FR-016**: The system MUST follow the existing project structure and conventions
 - **FR-017**: The system MUST ensure the generated expert file imports the necessary modules correctly
 - **FR-018**: The system MUST maintain all event handlers and their proper structure in the generated expert
 - **FR-019**: The system MUST create a command-line interface module at `@/src/metaexpert/cli` as specified
 - **FR-020**: The system MUST have an entry point at `@/src/metaexpert/__main__.py` that delegates to the CLI
+
+### Non-Functional Requirements
+
+- **NFR-001 (Observability)**: The CLI tool MUST log informational messages for key operational steps (e.g., directory creation, file writing) and provide detailed error messages, including stack traces, upon failure.
 
 ### Key Entities *(include if feature involves data)*
 

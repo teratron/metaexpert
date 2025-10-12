@@ -1,6 +1,6 @@
 # Feature Specification: MetaExpert Unified Trading Interface
 
-**Feature Branch**: `001-unified-trading-interface`  
+**Feature Branch**: `feature/unified-trading-interface`  
 **Created**: 2025-10-10  
 **Status**: Draft  
 **Input**: User description: "MetaExpert is a library designed for cryptocurrency trading that provides a unified interface for multiple exchanges (initially Binance, Bybit, OKX and etc.) and supports various trading options through their respective APIs. The library aims to simplify algorithmic trading by providing a consistent interface while maintaining access to exchange-specific features. The system must: create a unified interface for multiple cryptocurrency exchanges; support all major trading types (spot, futures, margin, options and etc.) through exchange APIs; provide an event-driven architecture for trading strategies; enable easy strategy implementation through decorators; support paper trading and live trading modes; and implement comprehensive risk management features."

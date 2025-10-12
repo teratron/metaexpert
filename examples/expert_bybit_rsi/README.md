@@ -24,7 +24,7 @@ The RSI strategy uses the Relative Strength Index indicator to identify overboug
 ## Running the Expert
 
 ```bash
-python __main__.py
+python main.py
 ```
 
 ## Strategy Parameters
@@ -39,4 +39,4 @@ python __main__.py
 
 ## Implementation Notes
 
-The actual RSI calculation and trading logic need to be implemented in the `bar()` function. The necessary imports (numpy, talib) are commented out and should be uncommented when implementing the strategy.
+The actual RSI calculation and trading logic need to be implemented in the `bar()` function. The necessary imports (numpy, etc.) are commented out and should be uncommented when implementing the strategy.

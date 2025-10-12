@@ -13,7 +13,7 @@ This directory contains example trading experts that demonstrate how to use the 
 1. Navigate to the directory of the example you want to try
 2. Copy `.env.example` to `.env` and fill in your API credentials
 3. Install dependencies: `pip install -e .` (or use uv: `uv sync`)
-4. Run the expert: `python __main__.py`
+4. Run the expert: `python main.py`
 
 ## Customization
 
@@ -27,7 +27,7 @@ Each example can be customized by modifying:
 
 The examples include placeholders for the actual trading logic. You'll need to:
 
-1. Uncomment the necessary imports (numpy, talib)
+1. Uncomment the necessary imports (numpy, etc.)
 2. Implement the indicator calculations in the `bar()` function
 3. Add your trading logic to generate buy/sell signals
 4. Use the expert's methods to place trades
