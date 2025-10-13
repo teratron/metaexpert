@@ -15,8 +15,8 @@ This plan outlines the refactoring and enhancement of the MetaExpert logger modu
 **Testing**: pytest
 **Target Platform**: Python Library
 **Project Type**: Library core module
-**Performance Goals**: No more than 5% performance deviation from the current implementation, which addresses the functional requirement FR-003 to avoid performance regressions.
-**Constraints**: Must preserve the existing public API and the core asynchronous `QueueHandler` concept.
+**Performance Goals**: No more than 5% performance deviation from the current implementation, which addresses the functional requirement FR-003 to avoid performance regressions. Special attention must be paid to the potential processing overhead from structlog's processing pipeline.
+**Constraints**: Must preserve the existing public API and the core asynchronous `QueueHandler` concept. The refactoring should maintain or improve the existing performance characteristics despite adding the structlog processing layer.
 
 ## Constitution Check
 
