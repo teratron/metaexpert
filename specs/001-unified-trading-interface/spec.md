@@ -58,7 +58,24 @@ As a trading algorithm developer, I want to implement trading strategies using s
 - How does the system handle insufficient balance for executing an order?
 - What occurs when market conditions change rapidly during order execution across different exchanges?
 
+## Clarifications
+
+### Session 2025-10-13
+
+- Q: What specific risk management features are essential for the initial MVP? → A: Full suite: stop-loss, take-profit, trailing stops, loss limits.
+- Q: What specific mechanism should be used for storing and accessing API keys? → A: Environment variables for dev, cloud secret manager for prod.
+- Q: Where and for how long should trading history data be stored? → A: Local SQLite DB, indefinitely.
+- Q: What features are explicitly out of scope for this version? → A: UI and mobile support.
+- Q: What is the required system behavior when an exchange API fails? → A: Pause for failed exchange, retry connection.
+
 ## Requirements *(mandatory)*
+
+### Out of Scope
+
+The following features are explicitly out of scope for the current version:
+
+- A graphical user interface (UI).
+- Support for mobile platforms.
 
 ### Functional Requirements
 
@@ -68,16 +85,16 @@ As a trading algorithm developer, I want to implement trading strategies using s
 - **FR-004**: System MUST implement an event-driven architecture for trading strategies
 - **FR-005**: System MUST enable simple strategy implementation using patterns that reduce complexity
 - **FR-006**: System MUST support both paper trading and live trading modes
-- **FR-007**: System MUST implement comprehensive risk management features including position sizing and stop-losses
+- **FR-007**: System MUST implement a comprehensive suite of risk management features, including stop-loss, take-profit, trailing stops, and position/daily loss limits.
 - **FR-008**: System MUST provide consistent data formats across all supported exchanges
 - **FR-009**: System MUST handle exchange-specific API rate limits and connection management
 - **FR-010**: System MUST support real-time market data streaming from multiple exchanges
 - **FR-011**: System MUST provide order management capabilities (place, cancel, modify orders)
 - **FR-012**: System MUST include portfolio tracking and performance metrics across all exchanges
 - **FR-013**: System MUST support different account types (spot, futures, margin) on each exchange
-- **FR-014**: System MUST provide authentication and secure API key management
-- **FR-015**: System MUST implement proper error handling and graceful degradation when exchanges are unavailable
-- **FR-016**: System MUST maintain trading history and transaction records
+- **FR-014**: System MUST provide secure API key management, using environment variables for local development and a cloud secret manager for production environments.
+- **FR-015**: System MUST automatically attempt to reconnect to an exchange if the API becomes unavailable, pausing trading for that exchange until the connection is restored.
+- **FR-016**: System MUST maintain trading history and transaction records indefinitely in a local SQLite database.
 - **FR-017**: System MUST support position management across multiple exchanges
 - **FR-018**: System MUST provide market data normalization across different exchange formats
 - **FR-019**: System MUST support strategy backtesting using historical data
@@ -86,7 +103,7 @@ As a trading algorithm developer, I want to implement trading strategies using s
 *Example of marking unclear requirements:*
 
 - **FR-021**: System MUST support additional exchanges via a plugin architecture that allows for easy integration of new exchanges beyond Binance, Bybit, and OKX
-- **FR-022**: System MUST implement basic risk management controls including stop-loss orders and position sizing
+- **FR-022**: [REMOVED - Merged into FR-007]
 - **FR-023**: System MUST provide basic historical data testing for trading strategy validation
 
 ### Key Entities *(include if feature involves data)*
