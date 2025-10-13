@@ -44,7 +44,7 @@ As a contributor to the `metaexpert` project, I want the logger module's interna
 
 ### Edge Cases
 
-- How does the logger behave under extremely high frequency logging (e.g., thousands of messages per second)?
+- How does the logger behave under extremely high frequency logging (e.g., thousands of messages per second)? The logger MUST handle at least 10,000 messages per second without blocking or dropping messages.
 - If a logging destination fails (e.g., due to a disk full error), the logger MUST attempt to write the error message to a fallback destination (stderr).
 
 ## Requirements *(mandatory)*
@@ -52,7 +52,7 @@ As a contributor to the `metaexpert` project, I want the logger module's interna
 ### Functional Requirements
 
 - **FR-001**: The existing public interface of the logger module MUST be preserved to ensure backward compatibility.
-- **FR-002**: The internal implementation of the logger module MUST be reviewed and refactored to improve code quality, readability, and maintainability according to modern Python standards.
+- **FR-002**: The internal implementation of the logger module MUST be reviewed and refactored to improve code quality, readability, and maintainability according to modern Python standards (SOLID principles, DRY, KISS) and constitution requirements (ruff formatting, pyright type validation, proper documentation).
 - **FR-003**: The refactored logger MUST NOT introduce any performance regressions compared to the current implementation.
 - **FR-004**: Code coverage for the logger module MUST be increased to a minimum of 95%.
 - **FR-005**: The logger's core design concept (e.g., asynchronous handling, formatting approach) MUST be maintained.

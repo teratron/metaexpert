@@ -15,7 +15,7 @@ This plan outlines the refactoring and enhancement of the MetaExpert logger modu
 **Testing**: pytest
 **Target Platform**: Python Library
 **Project Type**: Library core module
-**Performance Goals**: No more than 5% performance deviation from the current implementation.
+**Performance Goals**: No more than 5% performance deviation from the current implementation, which addresses the functional requirement FR-003 to avoid performance regressions.
 **Constraints**: Must preserve the existing public API and the core asynchronous `QueueHandler` concept.
 
 ## Constitution Check
