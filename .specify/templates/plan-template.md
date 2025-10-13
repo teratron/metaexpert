@@ -50,6 +50,7 @@ Gates determined based on constitution file:
 - Versioning Requirements: Update project version according to SemVer for significant functional changes (pyproject.toml, README.md, __version__.py, docs/*); follow major.minor.patch rules with corresponding changelog and release tags
 - Template File Requirements: Verify changes do not contradict structure and content of reference template (@/src/metaexpert/template/file.py); check template before implementing new tasks
 - Rule Validation: Systematically check and validate all rules and principles during development; ensure compliance with every rule before implementation proceeds
+- Pydantic Data Validation: All data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models must use Pydantic for data validation, model typing, and serialization where logically appropriate; ensure type safety, runtime validation, and clear error reporting for all data entities
 
 ## Project Structure
 

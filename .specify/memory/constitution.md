@@ -1,7 +1,7 @@
 <!-- 
 Sync Impact Report:
-- Version change: 2.3.0 → 2.4.0 (added Rule Validation section)
-- Added sections: Rule Validation section
+- Version change: 2.4.0 → 2.5.0 (added Pydantic Data Validation principle)
+- Added sections: Pydantic Data Validation principle
 - Templates requiring updates: ✅ .specify/templates/plan-template.md / ✅ .specify/templates/spec-template.md / ✅ .specify/templates/tasks-template.md 
 - Follow-up TODOs: RATIFICATION_DATE needs to be determined
 -->
@@ -57,6 +57,9 @@ Classes, methods, functions and modules must follow the SOLID principles: Single
 
 "Object-Oriented Programming" - All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
 
+## Pydantic Data Validation
+All data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models must use Pydantic for data validation, model typing, and serialization where logically appropriate. This includes any places where strict typing and validation of input data with automatic serialization/deserialization is required. Pydantic ensures type safety, runtime validation, and clear error reporting for all data entities in the system, particularly for data coming from external sources like exchange APIs. This standardization provides consistent data contracts across all components and prevents bugs caused by unexpected or malformed data.
+
 ## Python Code Quality Standards
 
 All Python code must adhere to established quality standards: consistent formatting using ruff, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After each creation or modification of Python files, developers MUST automatically run checks using ruff and pyright, analyze all warnings and errors, and then make the necessary corrections to the code to fix problems, ensuring compliance with style and typing standards. Code reviews must verify these standards before approval.
@@ -104,4 +107,4 @@ Code review requirements: All PRs must be reviewed by at least one other team me
 
 All PRs/reviews must verify compliance with these principles; Complexity must be justified with clear rationale; Use development guidelines for runtime development guidance. Amendment process requires team consensus and documented justification.
 
-**Version**: 2.4.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-10
+**Version**: 2.5.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-13

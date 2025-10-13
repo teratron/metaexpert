@@ -217,6 +217,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Rule Validation check: Systematically check and validate all rules and principles during development
 - [ ] TXXX Rule Validation check: Ensure AI agent and development team verify compliance with every rule before implementation proceeds
 - [ ] TXXX Rule Validation check: Perform regular validation of rule adherence to maintain consistency and quality
+- [ ] TXXX Pydantic validation check: Ensure all data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models use Pydantic for data validation, model typing, and serialization where logically appropriate
+- [ ] TXXX Pydantic validation check: Validate that data validation using Pydantic ensures type safety, runtime validation, and clear error reporting for all data entities
 - [ ] TXXX Run quickstart.md validation
 
 ---

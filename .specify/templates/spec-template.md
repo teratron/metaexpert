@@ -157,6 +157,8 @@
 - **FR-071**: AI agent and development team MUST ensure compliance with every rule before implementation proceeds
 - **FR-072**: Regular validation of rule adherence MUST occur to maintain consistency and quality
 - **FR-073**: All project components MUST maintain compliance with constitutional rules and principles
+- **FR-074**: All data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models MUST use Pydantic for data validation, model typing, and serialization where logically appropriate
+- **FR-075**: Data validation using Pydantic MUST ensure type safety, runtime validation, and clear error reporting for all data entities in the system
 
 *Example of marking unclear requirements:*
 
