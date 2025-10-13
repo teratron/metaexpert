@@ -62,3 +62,34 @@ strategy_log.error("Failed to execute trade.")
 ```
 
 All messages from `strategy_log` will automatically contain the `strategy_name` and `version` fields.
+
+## Legacy Compatibility
+
+The logger maintains full backward compatibility with the legacy `extra` parameter approach:
+
+```python
+# This legacy style continues to work
+log.info("User logged in", extra={"user_id": 123, "ip_address": "192.168.1.1"})
+```
+
+## Configuration
+
+The logger uses the same configuration approach as before, but now includes additional options for structured logging:
+
+```python
+from metaexpert.logger import get_logger
+
+# Standard logger configuration
+log = get_logger(__name__)
+
+# The logger automatically formats output as structured JSON
+# while maintaining all existing configuration options
+```
+
+## Error Handling and Fallback
+
+The logger includes enhanced error handling:
+
+- If the primary logging destination fails, logs will be written to stderr
+- The logger handles non-serializable objects gracefully
+- High-frequency logging is optimized to avoid blocking operations

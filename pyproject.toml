@@ -23,6 +23,7 @@ keywords = [
 ]
 dependencies = [
     "websocket-client>=1.9.0",
+    "structlog>=25.4.0",
 ]
 
 [project.urls]

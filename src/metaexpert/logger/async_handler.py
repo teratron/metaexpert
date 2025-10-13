@@ -1,4 +1,4 @@
-"""Asynchronous log handler that wraps another handler."""
+"""Asynchronous log handler that wraps another handler with fallback capability."""
 
 import logging
 import queue
@@ -9,10 +9,11 @@ import threading
 class AsyncHandler(logging.Handler):
     """
     Asynchronous log handler that wraps a synchronous handler to prevent
-    blocking the main thread.
+    blocking the main thread. Implements fallback to stderr when primary
+    logging target is unavailable or encounters I/O errors.
     """
 
-    def __init__(self, handler: logging.Handler, max_queue_size: int = 10000):
+    def __init__(self, handler: logging.Handler, max_queue_size: int = 10000, fallback_to_stderr: bool = True):
         """
         Initialize the async log handler.
 
@@ -20,12 +21,14 @@ class AsyncHandler(logging.Handler):
             handler: The synchronous handler to wrap (e.g., FileHandler).
             max_queue_size: The maximum size of the log queue. If the queue
                             is full, new log records will be dropped.
+            fallback_to_stderr: Whether to fallback to stderr when primary handler fails
         """
         super().__init__()
         self.queue: queue.Queue[logging.LogRecord | None] = queue.Queue(
             maxsize=max_queue_size
         )
         self.handler = handler
+        self.fallback_to_stderr = fallback_to_stderr
         self.shutdown_event = threading.Event()
         self.worker_thread = threading.Thread(
             target=self._worker, daemon=True, name=f"AsyncLogWorker-{handler.name}"
@@ -39,7 +42,7 @@ class AsyncHandler(logging.Handler):
                 record = self.queue.get(timeout=0.1)
                 if record is None:  # Sentinel value received
                     break
-                self.handler.emit(record)
+                self._emit_with_fallback(record)
             except queue.Empty:
                 continue
             except Exception:
@@ -48,6 +51,25 @@ class AsyncHandler(logging.Handler):
                 import traceback
 
                 traceback.print_exc(file=sys.stderr)
+
+    def _emit_with_fallback(self, record: logging.LogRecord) -> None:
+        """Emit record with fallback to stderr if primary handler fails."""
+        try:
+            self.handler.emit(record)
+        except Exception:
+            if self.fallback_to_stderr:
+                # Fallback to stderr when primary handler fails
+                try:
+                    # Format the record using the same formatter as the primary handler
+                    formatted_msg = record.getMessage() if not hasattr(self.handler, 'formatter') or self.handler.formatter is None else self.handler.formatter.format(record)
+                    sys.stderr.write(f"{formatted_msg}\n")
+                    sys.stderr.flush()
+                except Exception:
+                    # If stderr also fails, at least try to print
+                    print(f"Logger Error (fallback): {record.getMessage()}", file=sys.stderr)
+            else:
+                # Re-raise the exception if fallback is disabled
+                raise
 
     def emit(self, record: logging.LogRecord) -> None:
         """
@@ -62,7 +84,11 @@ class AsyncHandler(logging.Handler):
                 # This is a design choice to prevent the application from blocking.
                 pass
             except Exception:
-                self.handleError(record)
+                # If we can't put the record in the queue, try fallback mechanism
+                try:
+                    self._emit_with_fallback(record)
+                except Exception:
+                    self.handleError(record)
 
     def close(self) -> None:
         """Close the handler and clean up resources."""
@@ -76,7 +102,11 @@ class AsyncHandler(logging.Handler):
         # Wait for the worker thread to finish processing the queue
         self.worker_thread.join(timeout=2.0)
         # Close the wrapped handler
-        self.handler.close()
+        try:
+            self.handler.close()
+        except Exception:
+            if self.fallback_to_stderr:
+                sys.stderr.write("Warning: Error closing primary handler\n")
         super().close()
 
     def set_formatter(self, fmt: logging.Formatter | None) -> None:
