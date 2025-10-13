@@ -1,7 +1,7 @@
 <!-- 
 Sync Impact Report:
-- Version change: 2.4.0 → 2.5.0 (added Pydantic Data Validation principle)
-- Added sections: Pydantic Data Validation principle
+- Version change: 2.5.0 → 2.6.0 (added Exchange API Versioning principle)
+- Added sections: Exchange API Versioning principle
 - Templates requiring updates: ✅ .specify/templates/plan-template.md / ✅ .specify/templates/spec-template.md / ✅ .specify/templates/tasks-template.md 
 - Follow-up TODOs: RATIFICATION_DATE needs to be determined
 -->
@@ -64,6 +64,9 @@ All data models, DTOs, configuration classes, API handlers, forms, application s
 
 All Python code must adhere to established quality standards: consistent formatting using ruff, comprehensive type annotations validated with pyright, documentation for all public interfaces, proper import organization using isort, and compliance with project linting rules. After each creation or modification of Python files, developers MUST automatically run checks using ruff and pyright, analyze all warnings and errors, and then make the necessary corrections to the code to fix problems, ensuring compliance with style and typing standards. Code reviews must verify these standards before approval.
 
+## Exchange API Versioning
+When making changes to the documentation and/or file README.md be sure to specify the minimum API version of the crypto exchanges that MetaExpert is compatible with. Important: dependencies on the API of crypto exchanges are loaded dynamically, so the @/pyproject.toml file should not contain any direct dependencies on these exchanges.
+
 ## Additional Constraints
 
 Technology stack requirements: Python 3.12+, modular architecture, dependency management with uv (no pip, requirements.txt, setup.py, or similar), testing with pytest, formatting and linting with ruff, type annotations validated with pyright. Always activate the virtual environment using .venv/Scripts/activate before executing any uv commands.
@@ -107,4 +110,4 @@ Code review requirements: All PRs must be reviewed by at least one other team me
 
 All PRs/reviews must verify compliance with these principles; Complexity must be justified with clear rationale; Use development guidelines for runtime development guidance. Amendment process requires team consensus and documented justification.
 
-**Version**: 2.5.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-13
+**Version**: 2.6.0 | **Ratified**: TODO(RATIFICATION_DATE): Need to determine original adoption date | **Last Amended**: 2025-10-13

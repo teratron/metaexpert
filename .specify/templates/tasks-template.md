@@ -219,6 +219,7 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Rule Validation check: Perform regular validation of rule adherence to maintain consistency and quality
 - [ ] TXXX Pydantic validation check: Ensure all data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models use Pydantic for data validation, model typing, and serialization where logically appropriate
 - [ ] TXXX Pydantic validation check: Validate that data validation using Pydantic ensures type safety, runtime validation, and clear error reporting for all data entities
+- [ ] TXXX Exchange API Versioning check: Verify that minimum compatible API versions for crypto exchanges are documented
 - [ ] TXXX Run quickstart.md validation
 
 ---

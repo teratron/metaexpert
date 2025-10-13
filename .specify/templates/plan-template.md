@@ -51,6 +51,7 @@ Gates determined based on constitution file:
 - Template File Requirements: Verify changes do not contradict structure and content of reference template (@/src/metaexpert/template/file.py); check template before implementing new tasks
 - Rule Validation: Systematically check and validate all rules and principles during development; ensure compliance with every rule before implementation proceeds
 - Pydantic Data Validation: All data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models must use Pydantic for data validation, model typing, and serialization where logically appropriate; ensure type safety, runtime validation, and clear error reporting for all data entities
+- Exchange API Versioning: Specify minimum compatible API versions for crypto exchanges in documentation; ensure no direct dependencies in pyproject.toml
 
 ## Project Structure
 

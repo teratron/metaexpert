@@ -159,6 +159,7 @@
 - **FR-073**: All project components MUST maintain compliance with constitutional rules and principles
 - **FR-074**: All data models, DTOs, configuration classes, API handlers, forms, application settings, query and response models MUST use Pydantic for data validation, model typing, and serialization where logically appropriate
 - **FR-075**: Data validation using Pydantic MUST ensure type safety, runtime validation, and clear error reporting for all data entities in the system
+- **FR-076**: Minimum compatible API versions for crypto exchanges MUST be specified in documentation
 
 *Example of marking unclear requirements:*
 
