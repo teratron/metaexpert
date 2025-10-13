@@ -15,7 +15,6 @@ from metaexpert.config import (
     DEFAULT_MARKET_TYPE,
     DEFAULT_POSITION_MODE,
     DEFAULT_TRADE_MODE,
-    ENABLE_METRICS,
     INITIAL_CAPITAL,
     LOG_ASYNC_LOGGING,
     LOG_CONSOLE_LOGGING,
@@ -23,11 +22,8 @@ from metaexpert.config import (
     LOG_FILE,
     LOG_STRUCTURED_LOGGING,
     LOG_TRADE_FILE,
-    PERSIST_STATE,
-    RATE_LIMIT,
-    STATE_FILE,
 )
-from metaexpert.core import Events, EventType, MetaProcess, TradeMode
+from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import MetaLogger
 
@@ -66,12 +62,6 @@ class MetaExpert(Events):
             log_to_console: bool = LOG_CONSOLE_LOGGING,
             structured_logging: bool = LOG_STRUCTURED_LOGGING,
             async_logging: bool = LOG_ASYNC_LOGGING,
-            #
-            # --- Advanced System Settings ---
-            rate_limit: int = RATE_LIMIT,
-            enable_metrics: bool = ENABLE_METRICS,
-            persist_state: bool = PERSIST_STATE,
-            state_file: str = STATE_FILE,
     ) -> None:
         """Initialize the expert trading system.
 
@@ -95,10 +85,6 @@ class MetaExpert(Events):
             log_to_console (bool): Whether to print logs to console.
             structured_logging (bool): Whether to use structured JSON logging.
             async_logging (bool): Whether to use asynchronous logging.
-            rate_limit (int): Max requests per minute.
-            enable_metrics (bool): Enable performance metrics.
-            persist_state (bool): Persist state between runs.
-            state_file (str): State persistence file.
         """
 
         # Configure logging using the enhanced expert integration
@@ -129,15 +115,6 @@ class MetaExpert(Events):
             contract_type=contract_type,
             margin_mode=margin_mode,
             position_mode=position_mode,
-        )
-
-        #  Initialize process
-        self.system: MetaProcess = MetaProcess(
-            client=self.client,
-            rate_limit=rate_limit,
-            enable_metrics=enable_metrics,
-            persist_state=persist_state,
-            state_file=state_file,
         )
 
         self.trade_mode: TradeMode | None = None

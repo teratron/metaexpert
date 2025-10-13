@@ -92,21 +92,6 @@ POSITION_MODE_ONEWAY: str = "oneway"
 DEFAULT_POSITION_MODE: str = POSITION_MODE_HEDGE
 
 # -----------------------------------------------------------------------------
-# API CONFIGURATION
-# -----------------------------------------------------------------------------
-
-# API request parameters
-RATE_LIMIT: int = (
-    1200  # Max requests per minute (RPM). Varies by exchange and API tier.
-)
-REQUEST_TIMEOUT: int = 10  # Timeout for API requests in seconds
-
-# Advanced System Settings
-ENABLE_METRICS: bool = True  # Enable performance metrics
-PERSIST_STATE: bool = True  # Persist state between runs
-STATE_FILE: str = "state.json"  # State persistence file (relative to working directory)
-
-# -----------------------------------------------------------------------------
 # TRADING STRATEGY CONFIGURATION
 # -----------------------------------------------------------------------------
 

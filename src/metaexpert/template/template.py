@@ -42,12 +42,6 @@ expert = MetaExpert(
     log_to_console=True,            # Print logs to console
     structured_logging=False,       # Use structured JSON logging
     async_logging=False,            # Use asynchronous logging
-
-    # --- Advanced System Settings ---
-    rate_limit=1200,                # Max requests per minute (RPM). Varies by exchange and API tier.
-    enable_metrics=True,            # Enable performance metrics
-    persist_state=True,             # Persist state between runs
-    state_file="state.json",        # State persistence file (relative to working directory)
 )
 
 # -----------------------------------------------------------------------------
@@ -60,7 +54,6 @@ expert = MetaExpert(
     symbol="BTCUSDT",               # Trading symbol (e.g., 'BTCUSDT', 'ETHUSDT', 'AAPL')
     timeframe="1h",                 # Primary timeframe: '1m','5m','15m','1h','4h','1d',...
     lookback_bars=100,              # Number of historical bars to fetch for analysis
-    # lookback_time="7d",           # Alternative: time period ('1h','4h','1d','7d','30d')
     warmup_bars=0,                  # Skip initial bars to initialize indicators (optional, 0 = no warmup)
 
     # --- Strategy Metadata ---

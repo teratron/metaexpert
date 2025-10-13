@@ -8,8 +8,6 @@
 
 ## Description
 
-MetaExpert is a Python library for cryptocurrency trading that provides a unified interface for multiple exchanges and trading types. The system is designed to be modular, extensible, and easy to use while maintaining high performance and reliability.
-
 ## Visuals
 
 ## Installation

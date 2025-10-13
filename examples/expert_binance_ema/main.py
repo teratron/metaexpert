@@ -33,11 +33,6 @@ expert = MetaExpert(
     trade_log_file="trades.log",  # Trade execution log
     error_log_file="errors.log",  # Error-specific log
     log_to_console=True,  # Print logs to console
-    # --- Advanced System Settings ---
-    rate_limit=1200,  # Max requests per minute (RPM). Varies by exchange and API tier.
-    enable_metrics=True,  # Enable performance metrics
-    persist_state=True,  # Persist state between runs
-    state_file="state.json",  # State persistence file (relative to working directory)
 )
 
 
@@ -72,8 +67,8 @@ expert = MetaExpert(
     max_open_positions=3,  # Max total open positions
     max_positions_per_symbol=1,  # Max positions per symbol
     # --- Entry Filters ---
-    trade_hours=[9, 10, 11, 15],  # Trade only during these UTC hours
-    allowed_days=[1, 2, 3, 4, 5],  # Trade only these days (1=Mon, 7=Sun)
+    trade_hours={9, 10, 11, 15},  # Trade only during these UTC hours
+    allowed_days={1, 2, 3, 4, 5},  # Trade only these days (1=Mon, 7=Sun)
     min_volume=1000000,  # Min volume in settlement_currency
     volatility_filter=True,  # Enable volatility filter (implement inside)
     trend_filter=True,  # Enable trend filter (implement inside)
