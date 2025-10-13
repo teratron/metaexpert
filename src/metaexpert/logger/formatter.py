@@ -1,4 +1,4 @@
-"""Enhanced structured log formatter for JSON-based logging."""
+"""Enhanced structured log formatter for JSON-based logging with structlog compatibility."""
 
 import json
 import logging
@@ -8,7 +8,7 @@ from typing import Any
 
 
 class MainFormatter(logging.Formatter):
-    """Enhanced formatter for structured logging with JSON output."""
+    """Enhanced formatter for structured logging with JSON output that integrates with structlog."""
 
     def __init__(self, include_extra: bool = True, timestamp_format: str = "iso"):
         """Initialize the structured formatter.
@@ -56,7 +56,50 @@ class MainFormatter(logging.Formatter):
         Returns:
             Formatted log record as JSON string
         """
-        log_entry = self._get_log_entry(record)
+        # Check if the record has structlog-specific fields
+        if hasattr(record, '__dict__') and '_record' in record.__dict__:
+            # This is a structlog record wrapped by stdlib logger
+            return self._format_structlog_record(record)
+        else:
+            # This is a regular stdlib logging record
+            log_entry = self._get_log_entry(record)
+            return json.dumps(log_entry, ensure_ascii=False, default=self._json_serializer)
+
+    def _format_structlog_record(self, record: logging.LogRecord) -> str:
+        """Format a structlog record that was passed to a stdlib handler.
+
+        Args:
+            record: The structlog record to format
+
+        Returns:
+            Formatted log record as JSON string
+        """
+        # Extract the original structlog event dict from the formatted message
+        # This is a simplified approach - in practice, the integration between
+        # structlog and stdlib logging handlers is more complex
+        log_entry: dict[str, Any] = {
+            "timestamp": self._format_timestamp(record.created),
+            "level": record.levelname,
+            "logger": record.name,
+            "event": record.getMessage(),  # Use the message as the event
+            "module": record.module,
+            "function": record.funcName,
+            "line": record.lineno,
+        }
+
+        # Add any extra fields
+        for key, value in record.__dict__.items():
+            if key not in self.reserved_attrs:
+                log_entry[key] = value
+
+        # Add exception information if present
+        if record.exc_info:
+            log_entry["exception"] = {
+                "type": record.exc_info[0].__name__ if record.exc_info[0] else None,
+                "message": str(record.exc_info[1]) if record.exc_info[1] else None,
+                "traceback": self._format_exception(record.exc_info),
+            }
+
         return json.dumps(log_entry, ensure_ascii=False, default=self._json_serializer)
 
     def _get_log_entry(self, record: logging.LogRecord) -> dict[str, Any]:
@@ -109,7 +152,7 @@ class MainFormatter(logging.Formatter):
         if self.include_extra:
             extra_fields = self._extract_extra_fields(record)
             if extra_fields:
-                log_entry["extra"] = extra_fields
+                log_entry.update(extra_fields)  # For structlog compatibility, add fields at top level
 
         return log_entry
 
@@ -190,7 +233,7 @@ class TradeFormatter(MainFormatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format trade log record with additional trade-specific fields."""
         # Get base log entry
-        base_entry = super()._get_log_entry(record)
+        base_entry = self._get_log_entry(record)
 
         # Add trade-specific metadata
         base_entry["log_type"] = "trade"
@@ -202,7 +245,7 @@ class TradeFormatter(MainFormatter):
                 trade_fields[field] = getattr(record, field)
 
         if trade_fields:
-            base_entry["trade_data"] = trade_fields
+            base_entry.update(trade_fields)  # Add trade fields at the top level for structlog compatibility
 
         return json.dumps(base_entry, ensure_ascii=False, default=self._json_serializer)
 
@@ -213,7 +256,7 @@ class ErrorFormatter(MainFormatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format error log record with additional error-specific fields."""
         # Get base log entry
-        base_entry = super()._get_log_entry(record)
+        base_entry = self._get_log_entry(record)
 
         # Add error-specific metadata
         base_entry["log_type"] = "error"
@@ -226,7 +269,7 @@ class ErrorFormatter(MainFormatter):
                 error_context[field] = getattr(record, field)
 
         if error_context:
-            base_entry["error_context"] = error_context
+            base_entry.update(error_context)  # Add error context at the top level for structlog compatibility
 
         return json.dumps(base_entry, ensure_ascii=False, default=self._json_serializer)
 

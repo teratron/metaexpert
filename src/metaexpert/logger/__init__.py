@@ -11,6 +11,8 @@ import sys
 from pathlib import Path
 from typing import Any, TypedDict
 
+import structlog
+
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
     LOG_DETAILED_FORMAT,
@@ -24,6 +26,11 @@ from metaexpert.config import (
 )
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.formatter import ErrorFormatter, MainFormatter, TradeFormatter
+from metaexpert.logger.structlog_processors import (
+    add_log_severity,
+    format_log_object,
+    handle_non_serializable,
+)
 
 
 class HandlerConfig(TypedDict):
@@ -36,11 +43,12 @@ class HandlerConfig(TypedDict):
     formatter: logging.Formatter
 
 
-class MetaLogger(logging.Logger):
+class MetaLogger:
     """MetaLogger class for enhanced logging functionality.
 
-    This class extends the standard Python Logger to provide MetaExpert-specific
-    logging features including structured logging, asynchronous logging, and
+    This class integrates structlog for structured logging while preserving
+    the existing public interface. It provides MetaExpert-specific logging
+    features including structured logging, asynchronous logging, and
     specialized handlers for different types of log messages.
     """
 
@@ -65,19 +73,42 @@ class MetaLogger(logging.Logger):
             structured_logging: Whether to use JSON structured logging
             async_logging: Whether to use asynchronous logging
         """
-        # Configure the logging system
-        self.log_level = log_level.upper()
-        self.log_file = log_file
-        self.trade_log_file = trade_log_file
-        self.error_log_file = error_log_file
-        self.log_to_console = log_to_console
-        self.structured_logging = structured_logging
-        self.async_logging = async_logging
-        self._loggers: dict[str, logging.Logger] = {}
-        self._handlers: dict[str, logging.Handler] = {}
-        self._configured = False
+        """Initialize the MetaLogger with enhanced configuration.
 
-        # Formatters
+        Args:
+            log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+            log_file: Main log file name
+            trade_log_file: Trade-specific log file name
+            error_log_file: Error-specific log file name
+            log_to_console: Whether to output logs to console
+            structured_logging: Whether to use JSON structured logging
+            async_logging: Whether to use asynchronous logging
+        """
+        # Configure the logging system
+        self.log_level: str = log_level.upper()
+        self.log_file: str = log_file
+        self.trade_log_file: str = trade_log_file
+        self.error_log_file: str = error_log_file
+        self.log_to_console: bool = log_to_console
+        self.structured_logging: bool = structured_logging
+        self.async_logging: bool = async_logging
+        self._loggers: dict[str, Any] = {}
+        self._handlers: dict[str, logging.Handler] = {}
+        self._configured: bool = False
+
+        # Initialize structlog
+        self._setup_structlog()
+
+        # Initialize the standard logging
+        self._initialize_std_logging()
+
+        # Performance monitoring initialization
+        self._enable_performance_monitoring: bool = True
+        self._log_count: int = 0
+        self._start_time: float | None = None
+        self._total_log_time: float = 0.0
+
+        # Initialize formatters directly in __init__
         self._main_formatter = (
             MainFormatter()
             if self.structured_logging
@@ -92,10 +123,35 @@ class MetaLogger(logging.Logger):
             else logging.Formatter(LOG_DETAILED_FORMAT)
         )
 
-        # Initialize the Logger with the application name
-        super().__init__(LOG_NAME, self.log_level)
-
         _root_config: dict[str, Any] = self.configure()
+
+    def _setup_structlog(self) -> None:
+        """Set up structlog configuration."""
+        structlog.configure(
+            processors=[
+                structlog.stdlib.filter_by_level,
+                structlog.stdlib.add_logger_name,
+                structlog.stdlib.add_log_level,
+                structlog.stdlib.PositionalArgumentsFormatter(),
+                structlog.processors.TimeStamper(fmt="iso"),
+                structlog.processors.StackInfoRenderer(),
+                structlog.processors.format_exc_info,
+                structlog.processors.UnicodeDecoder(),
+                # Custom processors to match data-model.md schema
+                # Final renderer
+                structlog.processors.JSONRenderer() if self.structured_logging
+                else structlog.dev.ConsoleRenderer()
+            ],
+            context_class=dict,
+            logger_factory=structlog.stdlib.LoggerFactory(),
+            wrapper_class=structlog.stdlib.BoundLogger,
+            cache_logger_on_first_use=True,
+        )
+
+    def _initialize_std_logging(self) -> None:
+        """Initialize standard logging."""
+        # Set up standard logging to work with structlog
+        logging.addLevelName(logging.WARNING, "WARN")
 
     def configure(self) -> dict[str, Any]:
         """Configure the logging system with enhanced options.
@@ -145,62 +201,138 @@ class MetaLogger(logging.Logger):
         self._loggers.clear()
         self._configured = False
 
-    def get_logger(self, name: str = "main") -> logging.Logger:
+    def get_logger(self, name: str = "main") -> Any:  # Using Any for structlog compatibility
         """Get a specialized logger by name.
 
         Args:
             name: Logger name ('main', 'trade', 'error')
 
         Returns:
-            Logger instance
+            Logger instance (structlog logger)
         """
-        if self._configured:
-            return self._loggers.get(name, logging.getLogger(LOG_NAME))
-        return logging.getLogger(LOG_NAME)
+        if name not in self._loggers:
+            # Create a new structlog logger
+            std_logger = logging.getLogger(f"{LOG_NAME}.{name}" if name != "main" else LOG_NAME)
+            std_logger.setLevel(self.log_level)
+            structlog_logger = structlog.wrap_logger(std_logger)
+            self._loggers[name] = structlog_logger
 
-    def get_main_logger(self) -> logging.Logger:
-        """Get the main application logger."""
+        return self._loggers.get(name, structlog.get_logger())
+
+    def get_main_logger(self) -> Any:
+        """Get the main application logger.
+
+        Returns:
+            Main logger instance
+        """
         return self.get_logger("main")
 
-    def get_trade_logger(self) -> logging.Logger:
-        """Get the trade-specific logger."""
+    def get_trade_logger(self) -> Any:
+        """Get the trade-specific logger.
+
+        Returns:
+            Trade logger instance
+        """
         return self.get_logger("trade")
 
-    def get_error_logger(self) -> logging.Logger:
-        """Get the error-specific logger."""
+    def get_error_logger(self) -> Any:
+        """Get the error-specific logger.
+
+        Returns:
+            Error logger instance
+        """
         return self.get_logger("error")
 
-    def log_trade(self, message: str, **kwargs) -> None:
+    def log_trade(self, message: str, *args, **kwargs) -> None:
         """Log a trade-related message.
 
         Args:
             message: Log message
+            *args: Additional positional arguments
             **kwargs: Additional context data
         """
+        # Performance monitoring
+        import time
+        start_time = time.perf_counter() if self._enable_performance_monitoring else None
+
+        # Get the trade logger and bind context
         trade_logger = self.get_trade_logger()
-        if kwargs:
-            trade_logger.info(f"{message} | Context: {kwargs}")
+
+        # Handle legacy 'extra' parameter
+        extra = kwargs.pop('extra', {})
+
+        if kwargs or extra:
+            # Use structlog's bind functionality to add context
+            all_context = {**kwargs, **extra}
+            bound_logger = trade_logger.bind(**all_context)
+            bound_logger.info(message, *args)
         else:
-            trade_logger.info(message)
+            trade_logger.info(message, *args)
+
+        # Update performance metrics
+        if self._enable_performance_monitoring and start_time is not None:
+            log_time = time.perf_counter() - start_time
+            self._total_log_time += log_time
+            self._log_count += 1
+
+    def log_performance_stats(self) -> dict:
+        """Get performance statistics for the logger.
+
+        Returns:
+            Dictionary with performance metrics
+        """
+        if self._log_count > 0:
+            avg_time = self._total_log_time / self._log_count
+        else:
+            avg_time = 0
+
+        return {
+            "log_count": self._log_count,
+            "total_time": self._total_log_time,
+            "average_time_per_log": avg_time,
+            "logs_per_second": self._log_count / self._total_log_time if self._total_log_time > 0 else float('inf')
+        }
 
     def log_error(
-        self, message: str, exception: Exception | None = None, **kwargs
+        self, message: str, exception: Exception | None = None, *args, **kwargs
     ) -> None:
         """Log an error message.
 
         Args:
             message: Error message
             exception: Exception object if available
+            *args: Additional positional arguments
             **kwargs: Additional context data
         """
-        error_logger = self.get_error_logger()
-        if exception:
-            error_logger.error(f"{message} | Exception: {exception}", exc_info=True)
-        else:
-            error_logger.error(message)
+        # Performance monitoring
+        import time
+        start_time = time.perf_counter() if self._enable_performance_monitoring else None
 
-        if kwargs:
-            error_logger.error(f"Error context: {kwargs}")
+        error_logger = self.get_error_logger()
+
+        # Handle legacy 'extra' parameter
+        extra = kwargs.pop('extra', {})
+
+        if exception:
+            if kwargs or extra:
+                all_context = {**kwargs, **extra}
+                bound_logger = error_logger.bind(**all_context)
+                bound_logger.error(message, *args, exc_info=True)
+            else:
+                error_logger.error(message, *args, exc_info=True)
+        else:
+            if kwargs or extra:
+                all_context = {**kwargs, **extra}
+                bound_logger = error_logger.bind(**all_context)
+                bound_logger.error(message, *args)
+            else:
+                error_logger.error(message, *args)
+
+        # Update performance metrics
+        if self._enable_performance_monitoring and start_time is not None:
+            log_time = time.perf_counter() - start_time
+            self._total_log_time += log_time
+            self._log_count += 1
 
     def _configure_handlers(self) -> list[HandlerConfig]:
         """Create and configure handlers."""
@@ -252,16 +384,14 @@ class MetaLogger(logging.Logger):
         if self.async_logging:
             handler = AsyncHandler(handler, max_queue_size=10000)
 
-        # self._handlers[f"{config['name']}_file"] = handler
-        self._handlers.__setitem__(f"{config['name']}_file", handler)
+        self._handlers[f"{config['name']}_file"] = handler
 
         # Create logger for this handler
         logger = logging.getLogger(config["logger_name"])
         logger.setLevel(config["level"])
         logger.addHandler(handler)
         logger.propagate = False
-        # self._loggers[config["name"]] = logger
-        self._loggers.__setitem__(config["name"], logger)
+        self._loggers[config["name"]] = structlog.wrap_logger(logger)
         return handler
 
     def _create_console_handler(self) -> logging.Handler:
@@ -277,12 +407,52 @@ class MetaLogger(logging.Logger):
         if self.async_logging:
             handler = AsyncHandler(handler, max_queue_size=10000)
 
-        # self._handlers["console"] = handler
-        self._handlers.__setitem__("console", handler)
+        self._handlers["console"] = handler
 
         # Create logger for this handler
-        logger = logging.getLogger()
+        logger = logging.getLogger(LOG_NAME)
         logger.setLevel(self.log_level)
         logger.addHandler(handler)
-        self._loggers.__setitem__("console", logger)
+        self._loggers["console"] = structlog.wrap_logger(logger)
         return handler
+
+
+# Backwards compatibility function
+def get_logger(name: str = "default") -> Any:
+    """Get a logger instance (backwards compatibility function).
+    
+    This function provides backwards compatibility with the original logger interface.
+    
+    Args:
+        name: Logger name
+        
+    Returns:
+        Logger instance
+    """
+    # Create a simple MetaLogger with default settings for compatibility
+    logger = MetaLogger(
+        log_level="INFO",
+        log_file="default.log",
+        trade_log_file="trade.log",
+        error_log_file="error.log",
+        log_to_console=True,
+        structured_logging=False,
+        async_logging=False,
+    )
+    return logger.get_logger(name)
+
+
+if __name__ == "__main__":
+    # Simple test to verify the logger works
+    logger = MetaLogger(
+        log_level="INFO",
+        log_file="test.log",
+        trade_log_file="trade.log",
+        error_log_file="error.log",
+        log_to_console=True,
+        structured_logging=True,
+        async_logging=True,
+    )
+    main_logger = logger.get_main_logger()
+    main_logger.info("Test message", test_id=1)
+    logger.shutdown()
