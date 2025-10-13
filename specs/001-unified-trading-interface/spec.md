@@ -67,6 +67,9 @@ As a trading algorithm developer, I want to implement trading strategies using s
 - Q: Where and for how long should trading history data be stored? → A: Local SQLite DB, indefinitely.
 - Q: What features are explicitly out of scope for this version? → A: UI and mobile support.
 - Q: What is the required system behavior when an exchange API fails? → A: Pause for failed exchange, retry connection.
+- Q: For the unified interface, should the library normalize all exchange-specific data models to use standard fields and types? → A: Normalize all exchange data to standard fields and types.
+- Q: What are the specific requirements for handling rate limits across different exchanges? → A: per-exchange rate limiting with different strategies.
+- Q: For the event-driven architecture, what specific events should trigger strategy execution? → A: Custom events based on strategy requirements.
 
 ## Requirements *(mandatory)*
 
@@ -82,12 +85,12 @@ The following features are explicitly out of scope for the current version:
 - **FR-001**: System MUST provide a unified interface for connecting to multiple cryptocurrency exchanges (Binance, Bybit, OKX initially)
 - **FR-002**: System MUST support all major trading types (spot, futures, margin, options) through exchange APIs
 - **FR-003**: Users MUST be able to execute trades across multiple exchanges simultaneously
-- **FR-004**: System MUST implement an event-driven architecture for trading strategies
+- **FR-004**: System MUST implement an event-driven architecture for trading strategies with custom events based on strategy requirements
 - **FR-005**: System MUST enable simple strategy implementation using patterns that reduce complexity
 - **FR-006**: System MUST support both paper trading and live trading modes
 - **FR-007**: System MUST implement a comprehensive suite of risk management features, including stop-loss, take-profit, trailing stops, and position/daily loss limits.
 - **FR-008**: System MUST provide consistent data formats across all supported exchanges
-- **FR-009**: System MUST handle exchange-specific API rate limits and connection management
+- **FR-009**: System MUST handle exchange-specific API rate limits and connection management with per-exchange rate limiting strategies
 - **FR-010**: System MUST support real-time market data streaming from multiple exchanges
 - **FR-011**: System MUST provide order management capabilities (place, cancel, modify orders)
 - **FR-012**: System MUST include portfolio tracking and performance metrics across all exchanges
@@ -96,7 +99,7 @@ The following features are explicitly out of scope for the current version:
 - **FR-015**: System MUST automatically attempt to reconnect to an exchange if the API becomes unavailable, pausing trading for that exchange until the connection is restored.
 - **FR-016**: System MUST maintain trading history and transaction records indefinitely in a local SQLite database.
 - **FR-017**: System MUST support position management across multiple exchanges
-- **FR-018**: System MUST provide market data normalization across different exchange formats
+- **FR-018**: System MUST provide market data normalization across different exchange formats, with all exchange-specific data models normalized to standard fields and types
 - **FR-019**: System MUST support strategy backtesting using historical data
 - **FR-020**: System MUST provide real-time portfolio value calculation across all exchanges
 
