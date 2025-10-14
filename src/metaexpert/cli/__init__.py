@@ -1,1 +1,1 @@
-"""Command-line interface module for MetaExpert."""
+"""Command line interface for MetaExpert"""

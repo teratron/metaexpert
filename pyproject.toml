@@ -22,8 +22,10 @@ keywords = [
     "investment",
 ]
 dependencies = [
-    "websocket-client>=1.9.0",
     "structlog>=25.4.0",
+    "pydantic>=2.12.1",
+    "typer>=0.19.2",
+    "websockets>=15.0.1",
 ]
 
 [project.urls]
@@ -32,13 +34,15 @@ documentation = "https://teratron.github.io/metaexpert/docs"
 repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
-metaexpert = "metaexpert.__main__:main"
+metaexpert = "metaexpert:main"
+example-binance = "examples/example_binance_ema"
+example-bybit = "examples/example_bybit_rsi"
+example-okx = "examples/example_okx_macd"
 
 [dependency-groups]
 dev = [
     "python-dotenv>=1.1.1",
     "pyright>=1.1.406",
-    "pydantic>=2.12.0",
     "specify-cli",
 ]
 test = [
@@ -49,7 +53,9 @@ test = [
 lint = [
     "ruff>=0.14.0",
 ]
-docs = []
+docs = [
+    "mkdocs-material>=9.6.21",
+]
 
 [tool.uv]
 package = true

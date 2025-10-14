@@ -1,5 +1,23 @@
 ﻿# MetaExpert Project Context
 
+## Development Conventions
+
+### Language Requirements
+
+Code and documentation language:
+
+- All code, comments, documentation, variable names, function names, class names, method names, attribute names, and technical terms must be in English
+- Maintain English as the primary language for all technical elements including error messages, log entries, configuration keys, and API responses to ensure readability and maintainability
+- Technical documentation, inline comments, docstrings, and README files must be written in English
+- All commit messages, pull request descriptions, and issue titles related to code changes should be in English
+
+Communication style:
+
+- Explanations and discussions in the chat interface should be in Russian
+- Use Russian for conversational responses, clarifications, project planning, and non-technical interactions
+- Project management communications, feature discussions, and strategic decisions should be conducted in Russian
+- Code review comments and technical discussions during development can be in Russian unless collaborating with English-speaking developers
+
 ## Project Overview
 
 ## Architecture & Core Components
@@ -48,6 +66,8 @@ src/metaexpert/                    # Main application package for MetaExpert
 ├── utils/                         # Utility functions
 │   ├── __init__.py                # Utilities module initialization
 │   ├── package.py                 # Utilities for package management
+│   ├── file.py                    # Utilities for files management
+│   ├── time.py                    # Utilities for time management
 │   ├── README.md                  # Utilities documentation
 │   └── [other utils modules]      # Additional helper functions
 ├── websocket/                     # WebSocket connection handling
