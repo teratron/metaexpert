@@ -6,7 +6,29 @@
 
 The project is built for Python 3.12+ and uses a unified interface for different trading types (spot, futures, options) and market modes (linear, inverse contracts). It supports paper trading, live trading, and backtesting modes.
 
-The project follows a strict set of development principles outlined in the `constitution.md` file, which emphasizes a library-first architecture, mandatory Test-Driven Development (TDD), and adherence to SOLID, DRY, and KISS principles.
+The project follows a strict set of development principles outlined in the `.specify/memory/constitution.md` file, which emphasizes a library-first architecture, mandatory Test-Driven Development (TDD).
+
+## Core Principles
+
+### Library-First Architecture
+
+Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries
+
+### CLI Interface
+
+Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats
+
+### Test-First (NON-NEGOTIABLE)
+
+Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging. For all test types, use `pytest` framework as the required testing tool, ensuring proper test discovery, execution, and reporting through `pytest` built-in functionality and compatible plugins. TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced
+
+### Integration Testing
+
+Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas
+
+### UI Consistency
+
+User interfaces and interactions must maintain consistent behavior across all features: Follow established design patterns and UI components, Maintain consistent error messaging and handling, Ensure responsive behavior across different environments, Provide clear feedback for all user actions
 
 ## Development Conventions
 
@@ -34,6 +56,10 @@ All components must meet defined performance benchmarks: Maximum response times 
 
 Quality must be maintained throughout the development lifecycle: Automated quality checks on all commits, Regular refactoring to maintain code health, Continuous monitoring of performance metrics, Regular security assessments and updates.
 
+### OOP Principle
+
+"Object-Oriented Programming" - All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
+
 ### SOLID Principles
 
 Classes, methods, functions and modules must follow the SOLID principles: Single Responsibility Principle (each class/module has one reason to change), Open/Closed Principle (software entities should be open for extension but closed for modification), Liskov Substitution Principle (objects should be replaceable with instances of their subtypes), Interface Segregation Principle (clients should not be forced to depend on interfaces they don't use), Dependency Inversion Principle (high-level modules should not depend on low-level modules, both should depend on abstractions).
@@ -53,10 +79,6 @@ Classes, methods, functions and modules must follow the SOLID principles: Single
 ### FSD Principle
 
 "Feature-Sliced Design" - Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development, particularly for frontend applications.
-
-### OOP Principle
-
-"Object-Oriented Programming" - All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
 
 ## Architecture & Core Components
 
@@ -149,3 +171,19 @@ docs/                              # Application documentation
 ├── usage.md                       # Usage guidelines and examples
 └── [other docs]                   # Additional documentation files
 ```
+
+## Documentation Requirements
+
+Upon every task execution that involves functional changes, the documentation in the `docs/` directory must be updated, preserving the existing documentation structure: api, guides, tutorials. Additionally, the `README.md` file in the project root must be updated to ensure the functionality description, usage examples, and configuration information remain current. The documentation must reflect all changes made to the API, new methods, parameters, data formats, and system behavior characteristics.
+
+## Versioning Requirements
+
+Each significant functional change must update the project version according to the Semantic Versioning (SemVer) convention. Changes must be applied to all files where the version is mentioned: `pyproject.toml`, `README.md`, `src/metaexpert/__version__.py`, `docs/` (where applicable) and any other relevant files. When updating versions, dependencies from external libraries, documentation updates, API changes, and backward compatibility must be taken into account. Versioning must strictly follow the major.minor.patch rules with corresponding updates in changelog and release tags. Major version updates indicate backward incompatible changes, minor version updates indicate new functionality in a backward compatible manner, and patch version updates indicate backward compatible bug fixes.
+
+## Template File Requirements
+
+The `src/metaexpert/template/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
+
+## Rule Validation
+
+All rules and principles in this constitution must be systematically checked and validated during development. The AI agent and development team must ensure compliance with every rule before implementation proceeds. Regular validation of rule adherence must occur to maintain consistency and quality across all project components.
