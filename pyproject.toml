@@ -15,6 +15,7 @@ classifiers = [
 ]
 keywords = [
     "trading",
+    "forex",
     "crypto",
     "binance",
     "technical analysis",
@@ -23,7 +24,7 @@ keywords = [
 ]
 dependencies = [
     "structlog>=25.4.0",
-    "pydantic>=2.12.1",
+    "pydantic>=2.12.2",
     "typer>=0.19.2",
     "websockets>=15.0.1",
 ]
@@ -35,9 +36,9 @@ repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
 metaexpert = "metaexpert:main"
-example-binance = "examples/example_binance_ema"
-example-bybit = "examples/example_bybit_rsi"
-example-okx = "examples/example_okx_macd"
+# example-binance = "examples/example_binance_ema:main"
+# example-bybit = "examples/example_bybit_rsi:main"
+# example-okx = "examples/example_okx_macd:main"
 
 [dependency-groups]
 dev = [

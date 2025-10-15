@@ -1,5 +1,13 @@
 ﻿# MetaExpert Project Context
 
+## Project Overview
+
+**MetaExpert** is a Python library for cryptocurrency trading that provides a unified interface for multiple exchanges and trading types. The system is designed to be modular, extensible, and easy to use while maintaining high performance and reliability. It currently supports major cryptocurrency exchanges including Binance, Bybit, OKX, Bitget, KuCoin, etc.
+
+The project is built for Python 3.12+ and uses a unified interface for different trading types (spot, futures, options) and market modes (linear, inverse contracts). It supports paper trading, live trading, and backtesting modes.
+
+The project follows a strict set of development principles outlined in the `constitution.md` file, which emphasizes a library-first architecture, mandatory Test-Driven Development (TDD), and adherence to SOLID, DRY, and KISS principles.
+
 ## Development Conventions
 
 ### Language Requirements
@@ -18,7 +26,37 @@ Communication style:
 - Project management communications, feature discussions, and strategic decisions should be conducted in Russian
 - Code review comments and technical discussions during development can be in Russian unless collaborating with English-speaking developers
 
-## Project Overview
+### Performance Benchmarks
+
+All components must meet defined performance benchmarks: Maximum response times for user interactions (sub-200ms for simple operations), Efficient resource utilization (memory, CPU, network), Scalability under expected load conditions, Optimized algorithms and data structures for performance-critical paths.
+
+### Quality Maintenance
+
+Quality must be maintained throughout the development lifecycle: Automated quality checks on all commits, Regular refactoring to maintain code health, Continuous monitoring of performance metrics, Regular security assessments and updates.
+
+### SOLID Principles
+
+Classes, methods, functions and modules must follow the SOLID principles: Single Responsibility Principle (each class/module has one reason to change), Open/Closed Principle (software entities should be open for extension but closed for modification), Liskov Substitution Principle (objects should be replaceable with instances of their subtypes), Interface Segregation Principle (clients should not be forced to depend on interfaces they don't use), Dependency Inversion Principle (high-level modules should not depend on low-level modules, both should depend on abstractions).
+
+### DRY Principle
+
+"Do not Repeat Yourself" - Code duplication must be eliminated and each piece of knowledge must have a single authoritative representation in the system. All shared functionality must be extracted into reusable components, functions, or modules to ensure a single source of truth and reduce maintenance overhead.
+
+### KISS Principle
+
+"Keep It Simple, Stupid" - Code and architectural solutions must maintain simplicity and avoid unnecessary complexity. Before implementing complex solutions, evaluate if a simpler approach would be equally effective. Simple code is easier to understand, maintain, test, and debug.
+
+### YAGNI Principle
+
+"You Ain't Gonna Need It" - Only implement functionality that is currently needed, not anticipated future needs. Avoid adding features or infrastructure for potential future use cases that are not immediately required. This prevents code bloat and reduces maintenance burden.
+
+### FSD Principle
+
+"Feature-Sliced Design" - Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development, particularly for frontend applications.
+
+### OOP Principle
+
+"Object-Oriented Programming" - All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
 
 ## Architecture & Core Components
 
@@ -102,11 +140,12 @@ tests/                             # Application tests
 └── unit/                          # Unit tests (individual component testing)
 
 docs/                              # Application documentation
+├── api/                           # API documentation
+├── guides/                        # Usage guides
+├── tutorials/                     # Tutorials for using the system
 ├── README.md                      # General documentation for the project
 ├── architecture.md                # System architecture overview
 ├── setup.md                       # Installation and setup instructions
 ├── usage.md                       # Usage guidelines and examples
-├── api/                           # API documentation
-├── guides/                        # Usage guides
-└── tutorials/                     # Tutorials for using the system
+└── [other docs]                   # Additional documentation files
 ```
