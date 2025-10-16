@@ -54,3 +54,16 @@ The project uses `uv` for dependency management.
 - **Coding Principles:** The project strictly adheres to OOP, SOLID, DRY, KISS, and YAGNI principles.
 - **Versioning:** The project follows Semantic Versioning (SemVer). Version numbers are maintained in `pyproject.toml`, `src/metaexpert/__version__.py`, and `README.md`.
 - **`template.py` Immutability:** The `src/metaexpert/template/template.py` file is the authoritative source template. It must be copied as-is when running `metaexpert new` and must not be modified without explicit approval. Any new features or changes must be validated against this template to ensure compatibility.
+
+---
+*This section is auto-updated by the planning workflow.*
+**Last updated**: 2025-10-16
+
+## Active Technologies
+
+- Python 3.12+
+- Typer (from feature `001-project-cli`)
+
+## Recent Changes
+
+- **`001-project-cli`**: Added `Typer` for the new command-line interface.
