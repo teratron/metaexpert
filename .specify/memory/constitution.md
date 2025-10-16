@@ -1,50 +1,32 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# MetaExpert Constitution
+<!-- Constitution for the MetaExpert project, defining core development principles and governance. -->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Modular & Layered Architecture
+The project is divided into distinct layers (`core`, `exchanges`, `utils`, `cli`). Each layer has a specific responsibility, promoting separation of concerns and maintainability. Business logic is isolated from external integrations and infrastructure code.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Event-Driven & Extensible Core
+The system is built on an event-driven model. Core logic is triggered by market events (`tick`, `bar`). Users extend the system by implementing event handlers using decorators (`@expert.on_tick`, `@expert.on_bar`), following the Inversion of Control (IoC) principle.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-Driven Development (TDD) - NON-NEGOTIABLE
+Test-Driven Development is mandatory. All new features or bug fixes must be accompanied by tests. The Red-Green-Refactor cycle is strictly enforced. A minimum of 85% test coverage is required for all new code.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Strict Code Quality & Typing
+All code must adhere to strict quality standards enforced by `Ruff` (linting, formatting) and `Pyright` (static typing). The entire codebase must be fully typed and pass all linter checks before being merged.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Comprehensive Documentation
+Every feature, module, and public function must be clearly documented. This includes in-code docstrings for developers and user-facing guides and examples in the `docs/` and `examples/` directories. The `template.py` file serves as a key piece of documentation for new users.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Development Workflow
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+The project follows a standard Git workflow. All changes must be introduced through Pull Requests. All CI checks (linting, testing, type checking) must pass before a branch can be merged into `main`.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Versioning
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+The project adheres to Semantic Versioning (SemVer). Version numbers must be consistently updated in `pyproject.toml`, `src/metaexpert/__version__.py`, and `README.md` for every release.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This constitution is the single source of truth for development practices. All code reviews must validate compliance with these principles. Any deviation must be explicitly justified and approved by the project maintainers.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-10-16 | **Last Amended**: 2025-10-16

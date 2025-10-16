@@ -8,6 +8,18 @@
 
 ## Description
 
+MetaExpert is a Python library for creating cryptocurrency trading bots (experts). It provides a unified, event-driven interface for multiple exchanges and trading types.
+
+## Core Principles
+
+This project is built on a foundation of five core principles:
+
+1.  **Modular & Layered Architecture**: Promoting separation of concerns and maintainability.
+2.  **Event-Driven & Extensible Core**: Providing a flexible and extensible system via an event-driven model.
+3.  **Test-Driven Development (TDD)**: Ensuring reliability and robustness with mandatory testing.
+4.  **Strict Code Quality & Typing**: Maintaining high standards with static analysis and full typing.
+5.  **Comprehensive Documentation**: Guaranteeing clarity through in-code comments, user guides, and examples.
+
 ## Visuals
 
 ## Installation

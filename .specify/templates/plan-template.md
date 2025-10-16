@@ -31,7 +31,11 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+*   [ ] **I. Modular & Layered Architecture**: Does the plan maintain separation of concerns between `core`, `exchanges`, and `utils`?
+*   [ ] **II. Event-Driven & Extensible Core**: Does the feature correctly use or extend the event-driven model without breaking core logic?
+*   [ ] **III. Test-Driven Development (TDD)**: Is there a clear plan to write tests *before* implementation?
+*   [ ] **IV. Strict Code Quality & Typing**: Does the plan account for full type coverage and adherence to linting rules?
+*   [ ] **V. Comprehensive Documentation**: Is there a task for updating user guides, examples, or in-code docstrings?
 
 ## Project Structure
 
