@@ -31,7 +31,13 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Gates determined based on MetaExpert Constitution at `.specify/memory/constitution.md`:
+- Library-First Architecture: Verify feature starts as a standalone library
+- CLI Interface: Verify functionality exposed via CLI
+- Test-First (NON-NEGOTIABLE): Verify comprehensive test coverage with pytest
+- Integration Testing: Verify integration test coverage for key interactions
+- UI Consistency: Verify consistent interface behavior
+- Development Conventions: Verify adherence to OOP, SOLID, DRY, KISS, YAGNI, and FSD principles
 
 ## Project Structure
 
