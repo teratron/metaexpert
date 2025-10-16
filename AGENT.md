@@ -112,17 +112,29 @@ src/metaexpert/                    # Main application package for MetaExpert
 │   ├── README.md                  # Documentation for backtesting usage
 │   └── [other backtest modules]   # Backtest components
 ├── logger/                        # Logging system
-│   ├── __init__.py                # Logging module initialization
-│   ├── README.md                  # Logging documentation
-│   └── [other logger modules]     # Logging components
+│   ├── __init__.py                # MetaLogger factory
+│   ├── config.py                  # Pydantic-based configuration
+│   ├── processors.py              # Structlog processors chain
+│   ├── formatters.py              # Console / JSON formatters
+│   ├── handlers/                  # Specific handlers (file, stderr, etc.)
+│   │   ├── __init__.py
+│   │   ├── file.py
+│   │   ├── telegram.py
+│   │   └── stderr.py
+│   └── context.py                 # Context management utilities
 ├── cli/                           # Command line interface
 │   ├── __init__.py                # CLI module initialization
-│   ├── README.md                  # Documentation for CLI usage
-│   └── [other cli modules]        # Command line interface components
-├── template/                      # Templates for generating new experts
-│   ├── __init__.py                # Templates module initialization
-│   ├── template.py                # Template implementation
-│   └── README.md                  # Templates documentation
+│   ├── main.py                    # Main Typer application
+│   ├── commands/                  # Sub-commands for the CLI
+│   │   ├── __init__.py
+│   │   ├── new.py
+│   │   └── run.py
+│   ├── utils/                     # CLI-specific utilities
+│   │   ├── __init__.py
+│   │   └── validators.py
+│   └── templates/                 # Templates for `new` command
+│       ├── __init__.py
+│       └── template.py
 ├── utils/                         # Utility functions
 │   ├── __init__.py                # Utilities module initialization
 │   ├── package.py                 # Utilities for package management
@@ -182,7 +194,7 @@ Each significant functional change must update the project version according to 
 
 ## Template File Requirements
 
-The `src/metaexpert/template/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
+The `src/metaexpert/cli/templates/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
 
 ## Rule Validation
 

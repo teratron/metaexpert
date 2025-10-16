@@ -1,10 +1,10 @@
 <!-- 
 Sync Impact Report:
-Version change: N/A (template) → 1.0.0 (actual constitution)
-Added principles: Library-First Architecture, CLI Interface, Test-First (NON-NEGOTIABLE), Integration Testing, UI Consistency
-Added sections: Development Conventions, Documentation Requirements, Versioning Requirements, Template File Requirements
+Version change: 1.0.0 → 1.1.0
+Modified principles: Template File Requirements (corrected file path)
+Added sections: N/A
 Removed sections: N/A
-Templates requiring updates: ✅ plan-template.md (constitution check reference updated), spec-template.md (no changes needed), tasks-template.md (no changes needed)
+Templates requiring updates: ✅ plan-template.md, spec-template.md, tasks-template.md
 Follow-up TODOs: None
 -->
 # MetaExpert Constitution
@@ -12,18 +12,23 @@ Follow-up TODOs: None
 ## Core Principles
 
 ### Library-First Architecture
+
 Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries
 
 ### CLI Interface
+
 Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats
 
 ### Test-First (NON-NEGOTIABLE)
+
 Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging. For all test types, use `pytest` framework as the required testing tool, ensuring proper test discovery, execution, and reporting through `pytest` built-in functionality and compatible plugins. TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced
 
 ### Integration Testing
+
 Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas
 
 ### UI Consistency
+
 User interfaces and interactions must maintain consistent behavior across all features: Follow established design patterns and UI components, Maintain consistent error messaging and handling, Ensure responsive behavior across different environments, Provide clear feedback for all user actions
 
 ## Development Conventions
@@ -86,10 +91,10 @@ Each significant functional change must update the project version according to 
 
 ## Template File Requirements
 
-The `src/metaexpert/template/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
+The `src/metaexpert/cli/templates/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
 
 ## Governance
 
 All rules and principles in this constitution must be systematically checked and validated during development. The AI agent and development team must ensure compliance with every rule before implementation proceeds. Regular validation of rule adherence must occur to maintain consistency and quality across all project components.
 
-**Version**: 1.0.0 | **Ratified**: 2025-10-16 | **Last Amended**: 2025-10-16
+**Version**: 1.1.0 | **Ratified**: 2024-10-16 | **Last Amended**: 2025-10-16
