@@ -113,7 +113,7 @@ src/metaexpert/                    # Main application package for MetaExpert
 │   └── [other backtest modules]   # Backtest components
 ├── logger/                        # Logging system
 │   ├── __init__.py                # Logging module initialization
-│   └── README.md                  # Logging documentation
+│   ├── README.md                  # Logging documentation
 │   └── [other logger modules]     # Logging components
 ├── cli/                           # Command line interface
 │   ├── __init__.py                # CLI module initialization
