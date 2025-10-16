@@ -11,37 +11,42 @@ The project is built for Python 3.12+ and uses an event-driven architecture. Use
 The project follows a "Feature-Sliced Design" and is structured as follows:
 
 - `src/metaexpert/`: Main application package.
-    - `core/`: Contains the core logic, including the main `Expert` class and data models for trades, markets, and timeframes.
-    - `exchanges/`: Provides specific implementations for each supported cryptocurrency exchange.
-    - `cli/`: Command-line interface for managing the application.
-    - `template/`: Contains `template.py`, a crucial reference file used by the `metaexpert new` command to scaffold a new trading expert.
-    - `utils/`: Helper functions for file management, packaging, and time.
-    - `__main__.py`: The main entry point for the package.
+  - `core/`: Contains the core logic, including the main `Expert` class and data models for trades, markets, and timeframes.
+  - `exchanges/`: Provides specific implementations for each supported cryptocurrency exchange.
+  - `cli/`: Command-line interface for managing the application.
+  - `template/`: Contains `template.py`, a crucial reference file used by the `metaexpert new` command to scaffold a new trading expert.
+  - `utils/`: Helper functions for file management, packaging, and time.
+  - `__main__.py`: The main entry point for the package.
 
 ## Building and Running
 
 The project uses `uv` for dependency management.
 
 - **Installation:**
+
   ```shell
   uv sync
   ```
 
 - **Running the CLI:**
   The main entry point is exposed as a script via `pyproject.toml`.
+
   ```shell
   metaexpert [COMMAND]
   ```
+
   A key command is `metaexpert new`, which creates a new trading expert from `src/metaexpert/template/template.py`.
 
 - **Running Tests:**
   The project uses `pytest` for testing.
+
   ```shell
   pytest
   ```
 
 - **Linting:**
   The project uses `ruff` for linting and formatting.
+
   ```shell
   ruff check .
   ruff format .

@@ -113,7 +113,7 @@ src/metaexpert/
 
 ### 4.1. `metaexpert new`
 
-**Назначение:** Создание нового проекта торгового эксперта из шаблона `src/metaexpert/cli/templates/template.py`.
+**Назначение:** Создание нового проекта торгового эксперта из шаблона `template.py`.
 
 **Синтаксис:**
 
@@ -129,10 +129,10 @@ metaexpert --new [OPTIONS] PROJECT_NAME  # Альтернативная форм
 **Опции:**
 
 - `--force`, `-f` (флаг) - Перезаписать существующую директорию
-- `--exchange`, `-e` (`str`, по умолчанию: "binance") - Целевая биржа
+- `--exchange`, `-e` (`str`, по умолчанию: `config.DEFAULT_EXCHANGE`) - Целевая биржа
 - `--strategy`, `-s` (`str`, по умолчанию: "template") - Тип стратегии (ema, rsi, macd)
 - `--output-dir`, `-o` (`str`, по умолчанию: текущая директория) - Директория для создания проекта
-- `--market-type` (`str`, по умолчанию: "futures") - Тип рынка (spot, futures, options)
+- `--market-type` (`str`, по умолчанию: `config.DEFAULT_MARKET_TYPE`) - Тип рынка (spot, futures, options)
 
 **Поведение:**
 
@@ -149,7 +149,7 @@ metaexpert --new [OPTIONS] PROJECT_NAME  # Альтернативная форм
 
    ```
    <PROJECT_NAME>/
-   ├── main.py              # Копия src/metaexpert/template/template.py
+   ├── main.py              # Копия src/metaexpert/cli/templates/template.py
    ├── .env.example         # Шаблон переменных окружения
    ├── .gitignore           # Стандартный .gitignore для Python проектов
    ├── README.md            # Описание проекта
@@ -332,7 +332,7 @@ my-first-bot/
 - Live режим: metaexpert run --trade-mode live
 - Справка: metaexpert --help
 
-Документация: https://github.com/teratron/metaexpert
+Документация: https://github.com/teratron/metaexpert/docs/
 ```
 
 **Обработка ошибок:**
@@ -354,7 +354,7 @@ my-first-bot/
 3. **Шаблон не найден:**
 
    ```
-   [ERROR] Шаблон template.py не найден по пути: src/metaexpert/template/template.py
+   [ERROR] Шаблон template.py не найден по пути: src/metaexpert/cli/templates/template.py
    Пожалуйста, переустановите библиотеку MetaExpert.
    ```
 
@@ -365,122 +365,6 @@ my-first-bot/
    Проверьте права доступа или выберите другую директорию с --output-dir.
    ```
 
-**Технические детали реализации:**
-
-- Команда использует `shutil.copytree()` для копирования шаблона
-- Подстановка параметров выполняется через Jinja2 templates или простое string replacement
-- Валидация имени проекта через regex: `^[a-zA-Z][a-zA-Z0-9_-]*# Спецификация CLI для MetaExpert
-
-**ID:** `SPEC-CLI`  
-**Статус:** Утверждено  
-**Версия:** 2.0  
-**Дата:** 2025-10-16
-
----
-
-## 1. Обзор
-
-Этот документ определяет полную спецификацию для интерфейса командной строки (CLI) проекта MetaExpert. CLI построен на библиотеке Typer и служит основной точкой взаимодействия пользователя с библиотекой для создания, управления и запуска торговых экспертов.
-
-### 1.1. Цели CLI
-
-- Предоставить интуитивный интерфейс для работы с торговыми экспертами
-- Обеспечить быстрый старт для новых пользователей
-- Поддержать все основные сценарии использования библиотеки
-- Следовать принципу "библиотека-первичной архитектуры"
-
----
-
-## 2. Основные принципы проектирования
-
-- **Интуитивность:** Команды и параметры должны быть самодокументируемыми с автоматической генерацией справки
-- **Расширяемость:** Модульная архитектура для легкого добавления новых команд
-- **Надежность:** Строгая валидация входных данных и информативная обработка ошибок
-- **Соответствие стандартам:** Использование современных практик CLI в Python
-- **Библиотека-первичность:** Каждая функция CLI доступна через программный API
-
----
-
-## 3. Архитектура CLI
-
-### 3.1. Точка входа
-
-```
-metaexpert [GLOBAL_OPTIONS] COMMAND [ARGS]...
-```
-
-### 3.2. Глобальные опции
-
-- `--version`, `-v`: Показать версию библиотеки и выйти
-- `--log-level [DEBUG|INFO|WARNING|ERROR|CRITICAL]`: Переопределить уровень логирования
-- `--help`, `-h`: Показать справку
-
-### 3.3. Файловая структура модуля
-
-```
-src/metaexpert/
-├── __main__.py                 # Точка входа: python -m metaexpert
-├── __version__.py              # Версия библиотеки
-└── cli/
-    ├── __init__.py
-    ├── main.py                 # Основное приложение Typer
-    ├── commands/
-    │   ├── __init__.py
-    │   ├── run.py              # Команда run
-    │   ├── new.py              # Команда new
-    │   ├── backtest.py         # Команда backtest
-    │   ├── list.py             # Команда list
-    │   ├── status.py           # Команда status
-    │   ├── stop.py             # Команда stop
-    │   ├── logs.py             # Команда logs
-    │   ├── portfolio.py        # Команда portfolio
-    │   ├── market.py           # Команда market
-    │   ├── optimize.py         # Команда optimize
-    │   ├── compare.py          # Команда compare
-    │   ├── export.py           # Команда export
-    │   ├── import.py           # Команда import
-    │   ├── schedule.py         # Команда schedule
-    │   ├── risk.py             # Команда risk
-    │   ├── sync.py             # Команда sync
-    │   ├── replay.py           # Команда replay
-    │   ├── config/
-    │   │   ├── __init__.py
-    │   │   ├── base.py         # Базовая команда config
-    │   │   ├── show.py         # Подкоманда show
-    │   │   ├── set.py          # Подкоманда set
-    │   │   ├── get.py          # Подкоманда get
-    │   │   └── reset.py        # Подкоманда reset
-    │   ├── notify/
-    │   │   ├── __init__.py
-    │   │   ├── base.py
-    │   │   ├── setup.py
-    │   │   ├── add.py
-    │   │   ├── remove.py
-    │   │   ├── test.py
-    │   │   └── list.py
-    │   └── model/
-    │       ├── __init__.py
-    │       ├── base.py
-    │       ├── train.py
-    │       ├── predict.py
-    │       ├── evaluate.py
-    │       ├── list.py
-    │       └── delete.py
-    ├── utils/
-    │   ├── __init__.py
-    │   ├── validators.py       # Валидаторы параметров
-    │   ├── formatters.py       # Форматтеры вывода
-    │   └── helpers.py          # Вспомогательные функции
-    └── templates/
-        ├── __init__.py
-        └── generator.py        # Генератор шаблонов
-```
-
----
-
-## 4. Основные команды
-
-- Все файлы создаются с правильными правами доступа (0o644 для файлов, 0o755 для директорий)
 
 ---
 
@@ -500,16 +384,16 @@ metaexpert run [OPTIONS] [EXPERT_PATH]
 
 **Опции:**
 
-- `--trade-mode`, `-t` (`TradeMode`, по умолчанию: "paper") - Режим торговли (paper, live, backtest)
-- `--symbol` (`str`) - Торговый символ (например, BTCUSDT)
-- `--timeframe` (`str`) - Таймфрейм (1m, 5m, 1h, 4h, 1d)
+- `--trade-mode`, `-t` (`TradeMode`, по умолчанию: `config.DEFAULT_TRADE_MODE`) - Режим торговли (paper, live, backtest)
+- `--symbol` (`str`, по умолчанию: `config.DEFAULT_SYMBOL`) - Торговый символ (например, BTCUSDT)
+- `--timeframe` (`str`, по умолчанию: `config.DEFAULT_TIMEFRAME`) - Таймфрейм (1m, 5m, 1h, 4h, 1d)
 - `--exchange` (`str`) - Биржа для торговли
 - `--api-key` (`str`) - API ключ (если не указан, берется из .env)
 - `--api-secret` (`str`) - API секрет (если не указан, берется из .env)
 - `--testnet` (флаг, по умолчанию: true) - Использовать тестовую сеть
 - `--config` (`pathlib.Path`) - Путь к файлу конфигурации .env
-- `--log-level` (`LogLevel`, по умолчанию: "INFO") - Уровень логирования
-- `--initial-capital` (`float`, по умолчанию: 10000.0) - Начальный капитал
+- `--log-level` (`LogLevel`, по умолчанию: `config.DEFAULT_LOG_LEVEL`) - Уровень логирования
+- `--initial-capital` (`float`, по умолчанию: `config.INITIAL_CAPITAL`) - Начальный капитал
 
 **Поведение:**
 
