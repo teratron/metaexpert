@@ -1,7 +1,7 @@
 # Implementation Plan: Comprehensive Logging System
 
-**Branch**: `qwen/001-logging-system-spec` | **Date**: 2025-10-17 | **Spec**: [link to spec.md](./spec.md)
-**Input**: Feature specification from `/specs/001-logging-system-spec/spec.md`
+**Branch**: `qwen/001-logging-system` | **Date**: 2025-10-17 | **Spec**: [link to spec.md](./spec.md)
+**Input**: Feature specification from `/specs/001-logging-system/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
@@ -39,7 +39,7 @@ Gates determined based on MetaExpert Constitution at `.specify/memory/constituti
 ### Documentation (this feature)
 
 ```
-specs/001-logging-system-spec/
+specs/001-logging-system/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)

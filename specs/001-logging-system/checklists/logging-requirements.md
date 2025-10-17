@@ -2,7 +2,7 @@
 
 **Purpose**: Unit tests for logging system requirements - validating completeness, clarity, and coverage
 **Created**: 2025-10-17
-**Feature**: 001-logging-system-spec
+**Feature**: 001-logging-system
 
 ## Requirement Completeness
 
