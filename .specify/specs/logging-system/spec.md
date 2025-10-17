@@ -1,6 +1,6 @@
 # Feature Specification: Comprehensive Logging System
 
-**Feature Branch**: `gemini/logging-system`  
+**Feature Branch**: `gemini-feature/logging-system`  
 **Created**: 2025-10-17  
 **Status**: Draft  
 **Input**: User description: "logging: Create a comprehensive logging system specification based on the exact description in @/.rules/spec-logging.md, incorporating additional context from @/src/metaexpert/cli/templates/template.py, @/src/metaexpert/__init__.py, and @/src/metaexpert/config.py to ensure full alignment with the existing architecture and configuration patterns."

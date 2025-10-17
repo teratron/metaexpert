@@ -1,7 +1,7 @@
 # Tasks: Comprehensive Logging System
 
 **Feature**: Comprehensive Logging System
-**Branch**: `gemini/logging-system`
+**Branch**: `gemini-feature/logging-system`
 
 ## Phase 1: Setup
 
