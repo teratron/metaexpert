@@ -59,7 +59,7 @@ As an operator, I need to monitor my running trading bots, view their logs to di
 
 **Acceptance Scenarios**:
 
-1. **Given** an expert is running, **When** a user runs `metaexpert list`, **Then** a table is displayed showing the expert's name, status (e.g., "running"), PID, and other key metrics.
+1. **Given** an expert is running, **When** a user runs `metaexpert list`, **Then** a table is displayed showing the expert's name, status (e.g., "running"), and Process ID (PID).
 2. **Given** a running expert is producing logs, **When** a user runs `metaexpert logs`, **Then** the last 50 log lines are displayed.
 3. **Given** a running expert named `my-bot`, **When** a user runs `metaexpert stop my-bot`, **Then** the expert process is terminated gracefully and `metaexpert status` no longer shows it as running.
 
@@ -75,7 +75,7 @@ As a developer with multiple projects, I want to quickly see all the expert proj
 
 **Acceptance Scenarios**:
 
-1. **Given** a directory contains three expert projects (`bot-a`, `bot-b`, `bot-c`), and `bot-a` is running, **When** a user runs `metaexpert list`, **Then** a table is displayed showing `bot-a` with status "running" and `bot-b` and `bot-c` with status "stopped".
+1. **Given** a directory contains three expert projects (`bot-a`, `bot-b`, `bot-c`), and `bot-a` is running, **When** a user runs `metaexpert list`, **Then** a table is displayed showing all three experts: `bot-a` with status "running" and its PID, and `bot-b` and `bot-c` with status "stopped".
 
 ---
 
@@ -96,7 +96,7 @@ As a developer with multiple projects, I want to quickly see all the expert proj
 - **FR-001**: System MUST provide a `new` command to create a new expert project from a template, as defined in `spec-cli.md`.
 - **FR-002**: System MUST provide a `run` command to execute a trading expert as a detached background process.
 - **FR-003**: System MUST provide a `backtest` command to run a strategy on historical data with configurable date ranges and capital.
-- **FR-004**: System MUST provide a `list` command to discover and show available experts in a given directory, along with their detailed running status (by checking for a PID file).
+- **FR-004**: System MUST provide a `list` command to discover and show available experts in a given directory. The output MUST be a table showing each expert's name, running status ("running" or "stopped"), and Process ID (PID) if running.
 - **FR-005**: System MUST provide a `config` command group (`show`, `set`, `get`, `reset`) to manage global, **non-sensitive** configuration (e.g., default author name, preferred exchange).
 - **FR-007**: System MUST provide a `stop` command to gracefully terminate a running expert by sending a standard `SIGTERM` signal to the process ID found in its PID file.
 - **FR-008**: System MUST provide a `logs` command to view and follow log output from the designated log directory, with filtering by level.
@@ -105,6 +105,7 @@ As a developer with multiple projects, I want to quickly see all the expert proj
 - **FR-011**: The CLI application MUST be installable and runnable as a standalone command `metaexpert`.
 - **FR-012**: The `run` command MUST generate a PID file (e.g., in a central directory like `~/.metaexpert/pids/`) to track the process ID of the running expert.
 - **FR-013**: The system MUST store all expert log files in a central directory (e.g., `~/.metaexpert/logs/`).
+- **FR-014**: The system MUST use a file-locking mechanism on the PID file to prevent race conditions between `run`, `stop`, and `list`/`status` commands.
 
 ### Security Requirements
 

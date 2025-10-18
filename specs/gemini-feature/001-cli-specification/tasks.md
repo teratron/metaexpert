@@ -40,15 +40,16 @@ This document breaks down the implementation of the CLI feature into actionable 
 
 - [ ] T012 [US3] Implement the `list` command in `src/metaexpert/cli/list_cmd.py` to find expert projects and check PID files for status.
 - [ ] T013 [P] [US3] Implement the `stop` command in `src/metaexpert/cli/stop_cmd.py` to read a PID file and send a `SIGTERM` signal.
-- [ ] T014 [P] [US3] Implement the `logs` command in `src/metaexpert/cli/logs_cmd.py` to tail log files from the `~/.metaexpert/logs/` directory.
-- [ ] T015 [US3] Write integration tests for the full `run -> list -> stop` lifecycle in `tests/cli/test_lifecycle.py`.
+- [ ] T014 [P] [US3] Implement the `logs` command in `src/metaexpert/cli/logs_cmd.py` to tail log files from the `~/.metaexpert/logs/` directory, including support for filtering by log level (e.g., `--level INFO`).
+- [ ] T015 [US3] Implement a file-locking mechanism on PID files to prevent race conditions, integrating it into the `run`, `stop`, and `list` commands.
+- [ ] T016 [US3] Write integration tests for the full `run -> list -> stop` lifecycle in `tests/cli/test_lifecycle.py`, including tests for race conditions.
 
 ## Phase 6: Polish & Documentation
 
-- [ ] T016 Create `docs/guides/cli.md` with detailed usage for all commands.
-- [ ] T017 Review and update all docstrings and auto-generated help messages for clarity.
-- [ ] T018 Run a final `uv sync`, `ruff check .`, and `pytest` to ensure all checks pass.
-- [ ] T019 Verify the output of `metaexpert --version` and `metaexpert --help` for accuracy and clarity.
+- [ ] T017 Create `docs/guides/cli.md` with detailed usage for all commands.
+- [ ] T018 Review and update all docstrings and auto-generated help messages for clarity.
+- [ ] T019 Run a final `uv sync`, `ruff check .`, and `pytest` to ensure all checks pass.
+- [ ] T020 Verify the output of `metaexpert --version` and `metaexpert --help` for accuracy and clarity.
 
 ## Dependencies
 
