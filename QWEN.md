@@ -20,6 +20,8 @@ Every library exposes functionality via CLI; Text in/out protocol: stdin/args �
 
 Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging. For all test types, use `pytest` framework as the required testing tool, ensuring proper test discovery, execution, and reporting through `pytest` built-in functionality and compatible plugins. TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced
 
+Testing requirements also include: Mocking external dependencies for isolated testing, Mutation testing to ensure test quality, Regular test performance monitoring to prevent slow test suites, Cross-platform testing where applicable
+
 ### Integration Testing
 
 Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas
@@ -27,6 +29,10 @@ Focus areas requiring integration tests: New library contract tests, Contract ch
 ### UI Consistency
 
 User interfaces and interactions must maintain consistent behavior across all features: Follow established design patterns and UI components, Maintain consistent error messaging and handling, Ensure responsive behavior across different environments, Provide clear feedback for all user actions
+
+### Security and Data Protection
+
+Security must be a primary consideration in all components: Implement proper authentication and authorization mechanisms, Protect sensitive data including API keys and account information with encryption, Follow secure coding practices to prevent common vulnerabilities (OWASP Top 10), Regular security audits and updates, Use secure communication protocols (HTTPS, WSS) for all external connections, Implement rate limiting and DDoS protection measures
 
 ## Development Conventions
 
@@ -49,6 +55,8 @@ Communication style:
 ### Performance Benchmarks
 
 All components must meet defined performance benchmarks: Maximum response times for user interactions (sub-200ms for simple operations), Efficient resource utilization (memory, CPU, network), Scalability under expected load conditions, Optimized algorithms and data structures for performance-critical paths.
+
+Performance requirements also include: Regular performance profiling to identify bottlenecks, Establishing baseline metrics for key operations, Monitoring resource usage under various load conditions, Implementation of caching strategies where appropriate, Continuous performance testing in CI/CD pipeline
 
 ### Quality Maintenance
 
@@ -77,6 +85,10 @@ Classes, methods, functions and modules must follow the SOLID principles: Single
 ### FSD Principle
 
 "Feature-Sliced Design" - Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development, particularly for frontend applications.
+
+### Code Style Guidelines
+
+Consistent code style across the project: Follow PEP 8 standards for Python code, Use consistent naming conventions throughout the codebase, Maintain uniform formatting using tools like Black or autopep8, Write meaningful variable and function names that clearly express intent, Include type hints for better code documentation and error detection, Regular code reviews to maintain style consistency
 
 ## Architecture & Core Components
 
@@ -197,6 +209,8 @@ The project follows a library-first architecture where every feature starts as a
 ## Documentation Requirements
 
 Upon every task execution that involves functional changes, the documentation in the `docs/` directory must be updated, preserving the existing documentation structure: api, guides, tutorials. Additionally, the `README.md` file in the project root must be updated to ensure the functionality description, usage examples, and configuration information remain current. The documentation must reflect all changes made to the API, new methods, parameters, data formats, and system behavior characteristics.
+
+API Documentation Requirements: All public interfaces must have comprehensive documentation with examples, Use standard documentation format for all functions and classes, Automatically generate API reference documentation, Include usage examples for complex features, Keep documentation synchronized with code changes
 
 ## Versioning Requirements
 

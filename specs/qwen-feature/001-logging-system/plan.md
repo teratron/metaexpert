@@ -17,7 +17,7 @@ Implementation of a comprehensive logging system for MetaExpert that satisfies t
 **Testing**: pytest (as per MetaExpert Constitution)  
 **Target Platform**: Cross-platform Python environment (Windows, Linux, macOS)  
 **Project Type**: Library-first architecture with CLI exposure  
-**Performance Goals**: Individual log operations complete within 10ms; system supports 10,000 entries per second with asynchronous logging enabled without blocking the main trading thread  
+**Performance Goals**: Individual log operations complete within 10ms under normal system load conditions (CPU <80%, memory <80%) on standard cloud infrastructure (e.g., AWS t3.medium or equivalent); system supports 10,000 entries per second with asynchronous logging enabled without blocking the main trading thread on standard cloud infrastructure under normal load conditions  
 **Constraints**: <10ms p95 for individual log operations, must maintain trading performance in live environments, must continue operation even when logging system fails  
 **Scale/Scope**: Designed to support multiple concurrent trading experts, each potentially generating thousands of log entries per second
 
@@ -39,7 +39,7 @@ Gates determined based on MetaExpert Constitution at `.specify/memory/constituti
 ### Documentation (this feature)
 
 ```
-specs/001-logging-system/
+specs/qwen-feature/001-logging-system/
 ├── plan.md              # This file (/speckit.plan command output)
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
