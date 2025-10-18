@@ -1,6 +1,6 @@
 # Implementation Plan: Comprehensive Logging System
 
-**Feature Branch**: `gemini-feature/logging-system`  
+**Feature Branch**: `gemini-feature/002-logging-system`  
 **Specification**: [spec.md](./spec.md)
 
 ## Technical Context
