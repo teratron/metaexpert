@@ -6,14 +6,14 @@ This document breaks down the implementation of the CLI feature into actionable 
 
 ## Phase 1: Setup
 
-- [ ] T001 Add `typer` and its dependencies to `pyproject.toml`.
-- [ ] T002 Create the main CLI application object in `src/metaexpert/cli/main.py`.
+- [X] T001 Add `typer` and its dependencies to `pyproject.toml`.
+- [X] T002 Create the main CLI application object in `src/metaexpert/cli/main.py`.
 
 ## Phase 2: Foundational Commands
 
-- [ ] T003 Implement the `config` command group with `show`, `set`, `get`, `reset` subcommands in `src/metaexpert/cli/config_cmd.py`.
-- [ ] T004 [P] Implement logic to read/write the global `~/.metaexpert/config.json` file in a new `src/metaexpert/cli/config_manager.py`.
-- [ ] T005 Write unit tests for all `config` subcommands in `tests/cli/test_config_cmd.py`.
+- [X] T003 Implement the `config` command group with `show`, `set`, `get`, `reset` subcommands in `src/metaexpert/cli/config_cmd.py`.
+- [X] T004 [P] Implement logic to read/write the global `~/.metaexpert/config.json` file in a new `src/metaexpert/cli/config_manager.py`.
+- [X] T005 Write unit tests for all `config` subcommands in `tests/cli/test_config_cmd.py`.
 
 ## Phase 3: User Story 1 - Create a New Expert Project (P1)
 

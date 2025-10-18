@@ -1,109 +1,104 @@
-# Implementation Plan: [FEATURE]
+# Implementation Plan: Command-Line Interface (CLI)
 
-**Branch**: `gemini-feature/[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/gemini-feature/[###-feature-name]/spec.md`
+**Feature Branch**: `gemini-feature/001-cli-specification`  
+**Feature Spec**: [spec.md](./spec.md)  
+**Research**: [research.md](./research.md)  
+**Data Model**: [data-model.md](./data-model.md)  
+**Public API**: [contracts/](./contracts/)  
+**Quickstart**: [quickstart.md](./quickstart.md)  
 
-**Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
+## 1. Technical Context & Dependencies
 
-## Summary
+| Category | Decision | Justification |
+|---|---|---|
+| **Primary Language** | Python 3.12+ | Project standard. |
+| **CLI Framework** | Typer | Modern, easy-to-use, based on Python type hints, excellent for building robust CLIs with automatic help generation. |
+| **Configuration** | `.env` files (project-specific), JSON file (global) | Per spec clarification: separates sensitive project config from non-sensitive global config. |
+| **Process Mgmt** | Detached processes with PID files | Per spec clarification: simple, OS-level approach for managing running experts. |
+| **Packaging** | `pyproject.toml` with `uv` | Project standard for dependency management and packaging. |
+| **Testing** | `pytest` | Project standard for testing. |
+| **Linting/Formatting** | `ruff` | Project standard for code quality. |
 
-[Extract from feature spec: primary requirement + technical approach from research]
+## 2. Constitution Check & Quality Gates
 
-## Technical Context
+*This section is auto-filled and validated by the workflow.*
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
+| Principle | Status | Justification |
+|---|---|---|
+| **I. Modular & Layered Architecture** | ✅ **PASS** | The CLI will be a new layer (`src/metaexpert/cli`) that orchestrates actions on the `core` and `expert` layers. It will not contain business logic. |
+| **II. Event-Driven & Extensible Core** | ✅ **PASS** | The CLI will trigger the existing event-driven core but will not modify its architecture. |
+| **III. Test-Driven Development (TDD)** | ✅ **PASS** | All CLI commands and logic will be developed with TDD, using `pytest` and `Typer`'s testing utilities. |
+| **IV. Strict Code Quality & Typing** | ✅ **PASS** | `ruff` and `pyright` will be used to enforce standards on all new CLI code. |
+| **V. Comprehensive Documentation** | ✅ **PASS** | `Typer` provides auto-generated `--help` for all commands. A new `quickstart.md` and `cli.md` guide will be added to `docs/guides/`. |
+| **VI. Foundational Template** | ✅ **PASS** | The `new` command will directly use `src/metaexpert/cli/templates/template.py` as its source, ensuring all generated projects are compliant. |
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+## 3. Phase 0: Research & Prototyping
 
-## Constitution Check
+*No research tasks are required for this feature, as the clarifications have resolved all major ambiguities and the technology choices are standard for the project.*
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+## 4. Phase 1: Core Implementation & Design Artifacts
 
-*   [ ] **I. Modular & Layered Architecture**: Does the plan maintain separation of concerns between `core`, `exchanges`, and `utils`?
-*   [ ] **II. Event-Driven & Extensible Core**: Does the feature correctly use or extend the event-driven model without breaking core logic?
-*   [ ] **III. Test-Driven Development (TDD)**: Is there a clear plan to write tests *before* implementation?
-*   [ ] **IV. Strict Code Quality & Typing**: Does the plan account for full type coverage and adherence to linting rules?
-*   [ ] **V. Comprehensive Documentation**: Is there a task for updating user guides, examples, or in-code docstrings?
+### 4.1. `data-model.md`
 
-## Project Structure
+*This file will formalize the data structures identified in the feature spec.*
 
-### Documentation (this feature)
+- **ExpertProject**: Defines the file structure and key metadata for a user-created trading bot.
+- **GlobalConfig**: Defines the schema for the `~/.metaexpert/config.json` file.
+- **PIDFile**: Defines the structure for the process ID file used to track running experts.
 
-```
-specs/gemini-feature/[###-feature]/
-├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (/speckit.plan command)
-├── data-model.md        # Phase 1 output (/speckit.plan command)
-├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
-```
+### 4.2. `contracts/`
 
-### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
--->
+*No public-facing API contracts (e.g., REST, GraphQL) are required for this feature, as it is a command-line interface.*
 
-```
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+### 4.3. `quickstart.md`
 
-tests/
-├── contract/
-├── integration/
-└── unit/
+*This guide will provide a step-by-step tutorial for new users.*
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
+1.  **Installation**: How to install `metaexpert` from PyPI.
+2.  **Create a Project**: Using `metaexpert new my-first-bot`.
+3.  **Configure API Keys**: Editing the `.env` file.
+4.  **Run the Bot**: Using `metaexpert run`.
+5.  **Check Status**: Using `metaexpert status` and `metaexpert list`.
+6.  **Stop the Bot**: Using `metaexpert stop`.
 
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
+### 4.4. Agent Context Update
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
+*The following technologies will be added to the agent's context to improve future interactions.*
 
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
-```
+- `Typer`
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+## 5. Phase 2: Task-Driven Implementation
 
-## Complexity Tracking
+*This phase will be managed via the `tasks.md` file, which will be generated from this plan.*
 
-*Fill ONLY if Constitution Check has violations that must be justified*
+### Task Breakdown
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+1.  **Setup**:
+    - `T-01`: Add `typer` and its dependencies to `pyproject.toml`.
+    - `T-02`: Create the main CLI application object in `src/metaexpert/cli/main.py`.
 
+2.  **`new` command**:
+    - `T-03`: Implement the `new` command logic to copy the template from `src/metaexpert/cli/templates/template.py`.
+    - `T-04`: Add support for `--exchange` and `--force` options.
+    - `T-05`: Write unit tests for the `new` command, covering success and failure cases.
+
+3.  **`config` command**:
+    - `T-06`: Implement the `config` command group with `show`, `set`, `get`, `reset` subcommands.
+    - `T-07`: Implement logic to read/write the global `~/.metaexpert/config.json` file.
+    - `T-08`: Write unit tests for all `config` subcommands.
+
+4.  **`run`, `status`, `stop`, `list` commands**:
+    - `T-09`: Implement the `run` command to start an expert as a detached process and create a PID file.
+    - `T-10`: Implement the `list` command to find expert projects and check PID files for status.
+    - `T-12`: Implement the `stop` command to read a PID file and send a `SIGTERM` signal.
+    - `T-13`: Write integration tests for the full `run -> list -> status -> stop` lifecycle.
+
+5.  **`backtest` and `logs` commands**:
+    - `T-14`: Implement the `backtest` command, passing arguments to the backtesting engine.
+    - `T-15`: Implement the `logs` command to tail log files from a designated log directory.
+    - `T-16`: Write unit tests for `backtest` and `logs` commands.
+
+6.  **Documentation & Finalization**:
+    - `T-17`: Create `docs/guides/cli.md` with detailed usage for all commands.
+    - `T-18`: Review and update all docstrings and auto-generated help messages.
+    - `T-19`: Run a final `uv sync`, `ruff check .`, and `pytest` to ensure all checks pass.

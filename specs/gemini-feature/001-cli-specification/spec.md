@@ -85,6 +85,9 @@ As a developer with multiple projects, I want to quickly see all the expert proj
 - **Non-existent Expert File**: How does the system handle `metaexpert run non_existent_file.py`? It should report that the file was not found.
 - **Conflicting Options**: How does the system handle mutually exclusive options, such as running a backtest with `--trade-mode live`? The CLI should raise a parameter validation error.
 - **Stale PID File**: How does the system handle a PID file for a process that no longer exists? `status` should report it as "stopped" or "stale", and `stop` should report that the process is not running.
+- **Malformed Global Config**: How should commands behave if the global `~/.metaexpert/config.json` is corrupted? They should fail gracefully with a clear error message about the corruption.
+- **Permission Errors**: What happens if the `new` command is run in a directory where the user lacks write permissions? It should fail with a clear OS-level permission error.
+- **Stop/Start Race Condition**: How is the system protected against a user running `stop` on an expert that is still starting, or `run` on an expert that is still stopping? Commands should use a locking mechanism on the PID file to prevent simultaneous operations on the same expert instance.
 
 ## Requirements *(mandatory)*
 
