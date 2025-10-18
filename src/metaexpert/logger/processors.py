@@ -7,13 +7,13 @@ to log entries before they are formatted and output.
 
 import datetime
 import re
-from typing import Any, MutableMapping, Dict
-import structlog
+from collections.abc import MutableMapping
+from typing import Any
 
 
 def add_timestamp(
-    logger: Any, 
-    method_name: str, 
+    logger: Any,
+    method_name: str,
     event_dict: MutableMapping[str, Any]
 ) -> MutableMapping[str, Any]:
     """Add an ISO 8601 timestamp to the event dict."""
@@ -22,8 +22,8 @@ def add_timestamp(
 
 
 def add_context(
-    logger: Any, 
-    method_name: str, 
+    logger: Any,
+    method_name: str,
     event_dict: MutableMapping[str, Any]
 ) -> MutableMapping[str, Any]:
     """Add contextual information to the event dict if available."""
@@ -43,13 +43,13 @@ def ensure_domain_context(logger, method_name, event_dict):
     """Ensure domain-specific context fields are properly included."""
     # Ensure the required domain context fields are present if they exist in the bound context
     required_fields = ['expert_name', 'symbol', 'trade_id', 'order_id', 'strategy_id', 'account_id']
-    
+
     for field in required_fields:
         if field in event_dict:
             # Ensure the field is properly formatted
             # This is a no-op if the field is already there, but ensures consistency
             event_dict[field] = event_dict[field]
-    
+
     return event_dict
 
 
@@ -68,11 +68,11 @@ def mask_sensitive_data(
         r'account[_-]?id',
         r'access[_-]?token',
     ]
-    
+
     # Process the message field if it exists
     if 'event' in event_dict and isinstance(event_dict['event'], str):
         event_dict['event'] = mask_text(event_dict['event'])
-    
+
     # Process other fields in the event dict
     for key, value in event_dict.items():
         if isinstance(value, str):
@@ -87,14 +87,10 @@ def mask_sensitive_data(
         elif isinstance(value, (dict, list)):
             # For complex structures, apply masking recursively
             event_dict[key] = mask_sensitive_recursive(value)
-    
+
     return event_dict
 
 
-def add_log_level(logger, method_name, event_dict):
-    """Add the log level to the event dict."""
-    event_dict['level'] = method_name
-    return event_dict
 
 
 def mask_text(text: str) -> str:
@@ -102,17 +98,17 @@ def mask_text(text: str) -> str:
     # Mask common API key patterns
     # This is a basic example, could be enhanced based on known formats
     import re
-    
+
     # Mask API keys (sequences of 20+ alphanumeric chars)
     text = re.sub(r'\b([A-Za-z0-9]{20,})\b', '***MASKED***', text)
-    
+
     # Mask potential account numbers (sequences of digits)
     # This is simplified and should be more specific in real implementation
     text = re.sub(r'\b\d{10,}\b', '***MASKED***', text)
-    
+
     # Mask email addresses
     text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', '***MASKED***', text)
-    
+
     return text
 
 
@@ -133,7 +129,7 @@ def mask_sensitive_recursive(obj):
                     r'account[_-]?id',
                     r'access[_-]?token',
                 ]
-                
+
                 for pattern in sensitive_patterns:
                     if re.search(pattern, key, re.IGNORECASE):
                         masked_dict[key] = '***MASKED***'
