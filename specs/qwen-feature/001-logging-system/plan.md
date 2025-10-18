@@ -1,7 +1,7 @@
 # Implementation Plan: Comprehensive Logging System
 
 **Branch**: `qwen-feature/001-logging-system` | **Date**: 2025-10-17 | **Spec**: [link to spec.md](./spec.md)
-**Input**: Feature specification from `/specs/001-logging-system/spec.md`
+**Input**: Feature specification from `/specs/qwen-feature/001-logging-system/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
