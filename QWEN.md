@@ -1,225 +1,29 @@
 ﻿# MetaExpert Project Context
 
-## Project Overview
+## Main Rules
 
-**MetaExpert** is a Python library for cryptocurrency trading that provides a unified interface for multiple exchanges and trading types. The system is designed to be modular, extensible, and easy to use while maintaining high performance and reliability. It currently supports major cryptocurrency exchanges including Binance, Bybit, OKX, Bitget, KuCoin, etc.
+To familiarize yourself with the main rules and development principles of the MetaExpert project, please refer to the [AGENT.md](AGENT.md) file, which contains the complete list of global project rules.
 
-The project is built for Python 3.12+ and uses a unified interface for different trading types (spot, futures, options) and market modes (linear, inverse contracts). It supports paper trading, live trading, and backtesting modes.
+## Unique Aspects for Qwen
 
-## Core Principles
+### Additional Testing Requirements
 
-### Library-First Architecture
+In addition to the basic requirements outlined in [AGENT.md](AGENT.md), Qwen also requires:
 
-Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries
+- Mocking external dependencies for isolated testing
+- Mutation testing to ensure test quality
+- Regular test performance monitoring to prevent slow test suites
+- Cross-platform testing where applicable
 
-### CLI Interface
+### Code Style Features
 
-Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats
+In addition to the general requirements outlined in [AGENT.md](AGENT.md), Qwen also emphasizes:
 
-### Test-First (NON-NEGOTIABLE)
+- Regular code reviews to maintain stylistic consistency
+- Using code formatting tools (Black or autopep8)
 
-Comprehensive testing is mandatory: Unit tests for all functions/methods with minimum 85% coverage, Integration tests for inter-component interactions, End-to-end tests for critical user flows, and Performance tests for performance-sensitive components. All tests must pass before merging. For all test types, use `pytest` framework as the required testing tool, ensuring proper test discovery, execution, and reporting through `pytest` built-in functionality and compatible plugins. TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced
+### Development Features
 
-Testing requirements also include: Mocking external dependencies for isolated testing, Mutation testing to ensure test quality, Regular test performance monitoring to prevent slow test suites, Cross-platform testing where applicable
-
-### Integration Testing
-
-Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas
-
-### UI Consistency
-
-User interfaces and interactions must maintain consistent behavior across all features: Follow established design patterns and UI components, Maintain consistent error messaging and handling, Ensure responsive behavior across different environments, Provide clear feedback for all user actions
-
-### Security and Data Protection
-
-Security must be a primary consideration in all components: Implement proper authentication and authorization mechanisms, Protect sensitive data including API keys and account information with encryption, Follow secure coding practices to prevent common vulnerabilities (OWASP Top 10), Regular security audits and updates, Use secure communication protocols (HTTPS, WSS) for all external connections, Implement rate limiting and DDoS protection measures
-
-## Development Conventions
-
-### Language Requirements
-
-Code and documentation language:
-
-- All code, comments, documentation, variable names, function names, class names, method names, attribute names, and technical terms must be in English
-- Maintain English as the primary language for all technical elements including error messages, log entries, configuration keys, and API responses to ensure readability and maintainability
-- Technical documentation, inline comments, docstrings, and README files must be written in English
-- All commit messages, pull request descriptions, and issue titles related to code changes should be in English
-
-Communication style:
-
-- Explanations and discussions in the chat interface should be in Russian
-- Use Russian for conversational responses, clarifications, project planning, and non-technical interactions
-- Project management communications, feature discussions, and strategic decisions should be conducted in Russian
-- Code review comments and technical discussions during development can be in Russian unless collaborating with English-speaking developers
-
-### Performance Benchmarks
-
-All components must meet defined performance benchmarks: Maximum response times for user interactions (sub-200ms for simple operations), Efficient resource utilization (memory, CPU, network), Scalability under expected load conditions, Optimized algorithms and data structures for performance-critical paths.
-
-Performance requirements also include: Regular performance profiling to identify bottlenecks, Establishing baseline metrics for key operations, Monitoring resource usage under various load conditions, Implementation of caching strategies where appropriate, Continuous performance testing in CI/CD pipeline
-
-### Quality Maintenance
-
-Quality must be maintained throughout the development lifecycle: Automated quality checks on all commits, Regular refactoring to maintain code health, Continuous monitoring of performance metrics, Regular security assessments and updates.
-
-### OOP Principle
-
-"Object-Oriented Programming" - All code must follow OOP principles: Encapsulation to hide internal state and implementation details, Inheritance to promote code reuse and create hierarchical relationships, Polymorphism to allow objects of different types to be treated uniformly, and Abstraction to focus on behavior rather than implementation details. This ensures maintainable and scalable code design.
-
-### SOLID Principles
-
-Classes, methods, functions and modules must follow the SOLID principles: Single Responsibility Principle (each class/module has one reason to change), Open/Closed Principle (software entities should be open for extension but closed for modification), Liskov Substitution Principle (objects should be replaceable with instances of their subtypes), Interface Segregation Principle (clients should not be forced to depend on interfaces they don't use), Dependency Inversion Principle (high-level modules should not depend on low-level modules, both should depend on abstractions).
-
-### DRY Principle
-
-"Do not Repeat Yourself" - Code duplication must be eliminated and each piece of knowledge must have a single authoritative representation in the system. All shared functionality must be extracted into reusable components, functions, or modules to ensure a single source of truth and reduce maintenance overhead.
-
-### KISS Principle
-
-"Keep It Simple, Stupid" - Code and architectural solutions must maintain simplicity and avoid unnecessary complexity. Before implementing complex solutions, evaluate if a simpler approach would be equally effective. Simple code is easier to understand, maintain, test, and debug.
-
-### YAGNI Principle
-
-"You Ain't Gonna Need It" - Only implement functionality that is currently needed, not anticipated future needs. Avoid adding features or infrastructure for potential future use cases that are not immediately required. This prevents code bloat and reduces maintenance burden.
-
-### FSD Principle
-
-"Feature-Sliced Design" - Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development, particularly for frontend applications.
-
-### Code Style Guidelines
-
-Consistent code style across the project: Follow PEP 8 standards for Python code, Use consistent naming conventions throughout the codebase, Maintain uniform formatting using tools like Black or autopep8, Write meaningful variable and function names that clearly express intent, Include type hints for better code documentation and error detection, Regular code reviews to maintain style consistency
-
-## Architecture & Core Components
-
-### Main Structure
-
-```text
-src/metaexpert/                    # Main application package for MetaExpert
-├── __init__.py                    # Package initialization
-├── __main__.py                    # Entry point for running the application as a module
-├── __version__.py                 # Application version definition
-├── config.py                      # Global settings and configurations
-├── core/                          # Core system - main components
-│   ├── __init__.py                # Core module initialization
-│   └── [other core modules]       # Additional core modules (markets, trades, timeframes, etc.)
-├── exchanges/                     # Support for various exchanges
-│   ├── __init__.py                # Exchanges module initialization
-│   ├── binance/                   # Implementation for Binance exchange
-│   │   ├── __init__.py            # Binance module initialization
-│   │   ├── config.py              # Binance configuration
-│   │   └── [other binance modules] # Additional Binance modules
-│   ├── bybit/                     # Implementation for Bybit exchange
-│   │   ├── __init__.py            # Bybit module initialization
-│   │   ├── config.py              # Bybit configuration
-│   │   └── [other bybit modules]  # Additional Bybit modules
-│   └── okx/                       # Implementation for OKX exchange
-│       ├── __init__.py            # OKX module initialization
-│       ├── config.py              # OKX configuration
-│       └── [other okx modules]    # Additional OKX modules
-├── backtest/                      # Backtesting module for strategy testing on historical data
-│   ├── __init__.py                # Backtest module initialization
-│   ├── README.md                  # Documentation for backtesting usage
-│   └── [other backtest modules]   # Backtest components
-├── logger/                        # Logging system
-│   ├── __init__.py                # MetaLogger factory
-│   ├── config.py                  # Pydantic-based configuration
-│   ├── processors.py              # Structlog processors chain
-│   ├── formatters.py              # Console / JSON formatters
-│   ├── handlers/                  # Specific handlers (file, stderr, etc.)
-│   │   ├── __init__.py
-│   │   ├── file.py
-│   │   ├── telegram.py
-│   │   └── stderr.py
-│   └── context.py                 # Context management utilities
-├── cli/                           # Command line interface
-│   ├── __init__.py                # CLI module initialization
-│   ├── main.py                    # Main Typer application
-│   ├── commands/                  # Sub-commands for the CLI
-│   │   ├── __init__.py
-│   │   ├── new.py
-│   │   └── run.py
-│   ├── utils/                     # CLI-specific utilities
-│   │   ├── __init__.py
-│   │   └── validators.py
-│   └── templates/                 # Templates for `new` command
-│       ├── __init__.py
-│       └── template.py
-├── utils/                         # Utility functions
-│   ├── __init__.py                # Utilities module initialization
-│   ├── package.py                 # Utilities for package management
-│   ├── file.py                    # Utilities for files management
-│   ├── time.py                    # Utilities for time management
-│   ├── README.md                  # Utilities documentation
-│   └── [other utils modules]      # Additional helper functions
-├── websocket/                     # WebSocket connection handling
-│   ├── __init__.py                # WebSocket module initialization
-│   └── [other websocket modules]  # WebSocket connection components
-└── py.typed                       # Type checking marker
-
-examples/                          # Examples of trading expert implementations
-├── expert_binance_ema/            # EMA expert example for Binance
-│   ├── main.py                    # Entry point for EMA example on Binance
-│   ├── pyproject.toml             # Dependencies and settings for the example
-│   ├── .env                       # Environment variables file (not in repo)
-│   ├── .env.example               # Example .env file
-│   └── README.md                  # Documentation for the example
-├── expert_bybit_rsi/              # RSI expert example for Bybit
-│   ├── main.py                    # Entry point for RSI example on Bybit
-│   ├── pyproject.toml             # Dependencies and settings for the example
-│   ├── .env                       # Environment variables file (not in repo)
-│   ├── .env.example               # Example .env file
-│   └── README.md                  # Documentation for the example
-├── expert_okx_macd/               # MACD expert example for OKX
-│   ├── main.py                    # Entry point for MACD example on OKX
-│   ├── pyproject.toml             # Dependencies and settings for the example
-│   ├── .env                       # Environment variables file (not in repo)
-│   ├── .env.example               # Example .env file
-│   └── README.md                  # Documentation for the example
-└── README.md                      # General documentation for examples
-
-tests/                             # Application tests
-├── contract/                      # Contract tests (API verification)
-├── integration/                   # Integration tests (module interaction)
-└── unit/                          # Unit tests (individual component testing)
-
-docs/                              # Application documentation
-├── api/                           # API documentation
-├── guides/                        # Usage guides
-├── tutorials/                     # Tutorials for using the system
-├── README.md                      # General documentation for the project
-├── architecture.md                # System architecture overview
-├── setup.md                       # Installation and setup instructions
-├── usage.md                       # Usage guidelines and examples
-└── [other docs]                   # Additional documentation files
-```
-
-## Building and Running
-
-The project uses modern Python tooling with `pyproject.toml` for dependency management. Key commands can be inferred from the configuration:
-
-- Install dependencies: `uv sync` (or `poetry install` if using Poetry)
-- Run tests: `pytest`
-- Run linter: `ruff check .`
-- Type checking: `pyright`
-- Build package: `uv build`
-
-The project follows a library-first architecture where every feature starts as a standalone library and exposes functionality via CLI.
-
-## Documentation Requirements
-
-Upon every task execution that involves functional changes, the documentation in the `docs/` directory must be updated, preserving the existing documentation structure: api, guides, tutorials. Additionally, the `README.md` file in the project root must be updated to ensure the functionality description, usage examples, and configuration information remain current. The documentation must reflect all changes made to the API, new methods, parameters, data formats, and system behavior characteristics.
-
-API Documentation Requirements: All public interfaces must have comprehensive documentation with examples, Use standard documentation format for all functions and classes, Automatically generate API reference documentation, Include usage examples for complex features, Keep documentation synchronized with code changes
-
-## Versioning Requirements
-
-Each significant functional change must update the project version according to the Semantic Versioning (SemVer) convention. Changes must be applied to all files where the version is mentioned: `pyproject.toml`, `README.md`, `src/metaexpert/__version__.py`, `docs/` (where applicable) and any other relevant files. When updating versions, dependencies from external libraries, documentation updates, API changes, and backward compatibility must be taken into account. Versioning must strictly follow the major.minor.patch rules with corresponding updates in changelog and release tags. Major version updates indicate backward incompatible changes, minor version updates indicate new functionality in a backward compatible manner, and patch version updates indicate backward compatible bug fixes.
-
-## Template File Requirements
-
-The `src/metaexpert/cli/templates/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
-
-## Rule Validation
-
-All rules and principles in this constitution must be systematically checked and validated during development. The AI agent and development team must ensure compliance with every rule before implementation proceeds. Regular validation of rule adherence must occur to maintain consistency and quality across all project components.
+- Qwen works with additional code automation and analysis tools
+- Qwen follows continuous integration and delivery (CI/CD) principles
+- Qwen takes performance characteristics into account when implementing new features
