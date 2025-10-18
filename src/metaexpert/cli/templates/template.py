@@ -12,6 +12,14 @@ from metaexpert import MetaExpert
 # -----------------------------------------------------------------------------
 # These parameters define the global behavior and connection of your expert.
 # They are usually configured once.
+#
+# Note: The logging system now supports advanced features including:
+# - Structured logging with RFC 5424 compliant JSON format
+# - Asynchronous logging to prevent blocking the main trading thread
+# - Contextual information (expert_name, symbol, trade_id, order_id, etc.)
+# - Sensitive data masking for API keys and account information
+# - Log rotation with configurable file sizes and backup counts
+# - Multiple output methods (expert.log, trades.log, errors.log, console)
 # -----------------------------------------------------------------------------
 expert = MetaExpert(
     # --- Required Parameters ---
