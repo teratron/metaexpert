@@ -1,9 +1,12 @@
 """Main entry point for the MetaExpert package."""
 
 
+from metaexpert.cli.main import app
+
+
 def main() -> None:
     """Main entry point for the MetaExpert package."""
-    # Delegate to the CLI module's main function
+    app()
 
 
 if __name__ == "__main__":

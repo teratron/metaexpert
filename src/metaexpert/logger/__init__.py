@@ -55,3 +55,7 @@ class MetaLogger(logging.Logger):
         self.log_to_console: bool = log_to_console
         self.structured_logging: bool = structured_logging
         self.async_logging: bool = async_logging
+
+def get_logger(name: str) -> logging.Logger:
+    """Temporary get_logger function."""
+    return logging.getLogger(name)
