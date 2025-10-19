@@ -98,9 +98,6 @@ class MetaExpert(Events):
             async_logging=async_logging,
         )
 
-        # Parse command line arguments
-        # self.args: Namespace = parse_arguments()
-
         # Initialize stock exchange
         self.client: MetaExchange = MetaExchange.create(
             exchange=exchange,

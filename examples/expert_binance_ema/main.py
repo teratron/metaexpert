@@ -147,13 +147,13 @@ def bar_15m(rates) -> None:
     print("*** Bar Processing 15 minutes ***", rates)
 
 
-@expert.on_timer(1.0)
+@expert.on_timer(60)
 def timer() -> None:
     """Called periodically. Useful for monitoring, heartbeat, non-market logic."""
     print("*** Timer Tick 1 Minute ***")
 
 
-@expert.on_timer(3.0)
+@expert.on_timer(120)
 def timer_3min() -> None:
     """Called periodically. Useful for monitoring, heartbeat, non-market logic."""
     print("*** Timer Tick 3 Minutes ***")
