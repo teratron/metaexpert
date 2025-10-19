@@ -78,6 +78,22 @@ members = [
     "examples/expert_okx_macd",
 ]
 
+[tool.ruff]
+fix = true
+line-length = 88
+target-version = "py312"
+src = [
+    "src",
+    "examples",
+    "tests",
+]
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "template.py",
+]
+
 [tool.ruff.lint]
 select = [
     "E",      # pycodestyle errors
@@ -97,13 +113,13 @@ ignore = [
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 
+[tool.ruff.lint.isort]
+known-first-party = ["metaexpert"]
+
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
-
-[tool.ruff.lint.isort]
-known-first-party = ["metaexpert"]
 
 [tool.pyright]
 pythonVersion = "3.12"
