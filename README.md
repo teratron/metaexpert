@@ -46,9 +46,9 @@ uv sync --upgrade-package metaexpert
 
 You can find examples in the [example's directory](examples):
 
--
--
--
+- [Expert Binance EMA Strategy](examples/expert_binance_ema)
+- [Expert Bybit RSI Strategy](examples/expert_bybit_rsi)
+- [Expert OKX MACD Strategy](examples/expert_okx_macd)
 
 ## Support
 

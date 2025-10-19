@@ -30,6 +30,10 @@ Focus areas requiring integration tests: New library contract tests, Contract ch
 
 User interfaces and interactions must maintain consistent behavior across all features: Follow established design patterns and UI components, Maintain consistent error messaging and handling, Ensure responsive behavior across different environments, Provide clear feedback for all user actions
 
+### Security and Data Protection
+
+Security must be a primary consideration in all components: Implement proper authentication and authorization mechanisms, Protect sensitive data including API keys and account information with encryption, Follow secure coding practices to prevent common vulnerabilities (OWASP Top 10), Regular security audits and updates, Use secure communication protocols (HTTPS, WSS) for all external connections, Implement rate limiting and DDoS protection measures
+
 ## Development Conventions
 
 ### Language Requirements
@@ -51,6 +55,8 @@ Communication style:
 ### Performance Benchmarks
 
 All components must meet defined performance benchmarks: Maximum response times for user interactions (sub-200ms for simple operations), Efficient resource utilization (memory, CPU, network), Scalability under expected load conditions, Optimized algorithms and data structures for performance-critical paths.
+
+Performance requirements also include: Regular performance profiling to identify bottlenecks, Establishing baseline metrics for key operations, Monitoring resource usage under various load conditions, Implementation of caching strategies where appropriate, Continuous performance testing in CI/CD pipeline
 
 ### Quality Maintenance
 
@@ -79,6 +85,10 @@ Classes, methods, functions and modules must follow the SOLID principles: Single
 ### FSD Principle
 
 "Feature-Sliced Design" - Architectural methodology for creating scalable applications with layer-based organization. Each feature should be implemented as a cohesive slice that spans all necessary layers (UI, business logic, data access), promoting better maintainability and clearer separation of concerns. This approach improves scalability and simplifies feature development, particularly for frontend applications.
+
+### Code Style Guidelines
+
+Consistent code style across the project: Follow PEP 8 standards for Python code, Use consistent naming conventions throughout the codebase, Maintain uniform formatting using tools like Black or autopep8, Write meaningful variable and function names that clearly express intent, Include type hints for better code documentation and error detection, Regular code reviews to maintain style consistency
 
 ## Architecture & Core Components
 
@@ -112,17 +122,29 @@ src/metaexpert/                    # Main application package for MetaExpert
 │   ├── README.md                  # Documentation for backtesting usage
 │   └── [other backtest modules]   # Backtest components
 ├── logger/                        # Logging system
-│   ├── __init__.py                # Logging module initialization
-│   └── README.md                  # Logging documentation
-│   └── [other logger modules]     # Logging components
+│   ├── __init__.py                # MetaLogger factory
+│   ├── config.py                  # Pydantic-based configuration
+│   ├── processors.py              # Structlog processors chain
+│   ├── formatters.py              # Console / JSON formatters
+│   ├── handlers/                  # Specific handlers (file, stderr, etc.)
+│   │   ├── __init__.py
+│   │   ├── file.py
+│   │   ├── telegram.py
+│   │   └── stderr.py
+│   └── context.py                 # Context management utilities
 ├── cli/                           # Command line interface
 │   ├── __init__.py                # CLI module initialization
-│   ├── README.md                  # Documentation for CLI usage
-│   └── [other cli modules]        # Command line interface components
-├── template/                      # Templates for generating new experts
-│   ├── __init__.py                # Templates module initialization
-│   ├── template.py                # Template implementation
-│   └── README.md                  # Templates documentation
+│   ├── main.py                    # Main Typer application
+│   ├── commands/                  # Sub-commands for the CLI
+│   │   ├── __init__.py
+│   │   ├── new.py
+│   │   └── run.py
+│   ├── utils/                     # CLI-specific utilities
+│   │   ├── __init__.py
+│   │   └── validators.py
+│   └── templates/                 # Templates for `new` command
+│       ├── __init__.py
+│       └── template.py
 ├── utils/                         # Utility functions
 │   ├── __init__.py                # Utilities module initialization
 │   ├── package.py                 # Utilities for package management
@@ -172,9 +194,23 @@ docs/                              # Application documentation
 └── [other docs]                   # Additional documentation files
 ```
 
+## Building and Running
+
+The project uses modern Python tooling with `pyproject.toml` for dependency management. Key commands can be inferred from the configuration:
+
+- Install dependencies: `uv sync` (or `poetry install` if using Poetry)
+- Run tests: `pytest`
+- Run linter: `ruff check .`
+- Type checking: `pyright`
+- Build package: `uv build`
+
+The project follows a library-first architecture where every feature starts as a standalone library and exposes functionality via CLI.
+
 ## Documentation Requirements
 
 Upon every task execution that involves functional changes, the documentation in the `docs/` directory must be updated, preserving the existing documentation structure: api, guides, tutorials. Additionally, the `README.md` file in the project root must be updated to ensure the functionality description, usage examples, and configuration information remain current. The documentation must reflect all changes made to the API, new methods, parameters, data formats, and system behavior characteristics.
+
+API Documentation Requirements: All public interfaces must have comprehensive documentation with examples, Use standard documentation format for all functions and classes, Automatically generate API reference documentation, Include usage examples for complex features, Keep documentation synchronized with code changes
 
 ## Versioning Requirements
 
@@ -182,7 +218,7 @@ Each significant functional change must update the project version according to 
 
 ## Template File Requirements
 
-The `src/metaexpert/template/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
+The `src/metaexpert/cli/templates/template.py` is a reference template that serves as the basis for the library and is used as a starting point when creating new projects using the `metaexpert new` or `metaexpert --new` command. This file remains unchanged without explicit approval. With each new task, the AI agent must check this template to make sure that the changes performed do not contradict its structure and content.
 
 ## Rule Validation
 

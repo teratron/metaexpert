@@ -1,19 +1,10 @@
-""""""
+"""
+"""
 
 import logging
 
-import structlog
-
 from metaexpert.config import (
-    LOG_BACKUP_COUNT,
-    LOG_DETAILED_FORMAT,
-    LOG_DIRECTORY,
-    LOG_ERROR_LEVEL,
-    LOG_FALLBACK_FORMAT,
-    LOG_FORMAT,
-    LOG_MAX_FILE_SIZE,
     LOG_NAME,
-    LOG_TRADE_LEVEL,
 )
 
 
@@ -27,14 +18,14 @@ class MetaLogger(logging.Logger):
     """
 
     def __init__(
-        self,
-        log_level: str,
-        log_file: str,
-        trade_log_file: str,
-        error_log_file: str,
-        log_to_console: bool,
-        structured_logging: bool,
-        async_logging: bool,
+            self,
+            log_level: str,
+            log_file: str,
+            trade_log_file: str,
+            error_log_file: str,
+            log_to_console: bool,
+            structured_logging: bool,
+            async_logging: bool,
     ) -> None:
         """Initialize the MetaLogger with enhanced configuration.
 
@@ -55,3 +46,5 @@ class MetaLogger(logging.Logger):
         self.log_to_console: bool = log_to_console
         self.structured_logging: bool = structured_logging
         self.async_logging: bool = async_logging
+
+        super().__init__(LOG_NAME)
