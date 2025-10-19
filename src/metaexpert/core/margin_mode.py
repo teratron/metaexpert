@@ -12,14 +12,9 @@ class MarginMode(Enum):
     - CROSS: Cross margin mode
     """
 
-    ISOLATED = {
-        "name": "isolated",
-        "description": "Isolated margin mode"
-    }
-    CROSS = {
-        "name": "cross",
-        "description": "Cross margin mode"
-    }
+    ISOLATED = {"name": "isolated", "description": "Isolated margin mode"}
+    CROSS = {"name": "cross", "description": "Cross margin mode"}
+
     def get_name(self) -> str:
         """Return the name of the margin mode."""
         name = self.value["name"]
@@ -32,7 +27,9 @@ class MarginMode(Enum):
         description = self.value["description"]
         if isinstance(description, str):
             return description
-        raise TypeError(f"Margin mode description must be a string, got {type(description).__name__}")
+        raise TypeError(
+            f"Margin mode description must be a string, got {type(description).__name__}"
+        )
 
     @classmethod
     def get_margin_mode_from(cls, name: str) -> Self:

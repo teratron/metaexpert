@@ -33,99 +33,96 @@ class EventType(Enum):
         "name": "on_deinit",
         "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": False,
     }
-    ON_TICK = {
-        "name": "on_tick",
-        "max_callbacks": 1,
-        "callback": [],
-        "is_async": True
-    }
+    ON_TICK = {"name": "on_tick", "max_callbacks": 1, "callback": [], "is_async": True}
     ON_BAR = {
         "name": "on_bar",
         "max_callbacks": 5,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_TIMER = {
         "name": "on_timer",
         "max_callbacks": 5,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_TRANSACTION = {
         "name": "on_transaction",
         "max_callbacks": 1,
         "callback": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_BOOK = {
         "name": "on_book",
         "max_callbacks": 1,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_ORDER = {
         "name": "on_order",
         "max_callbacks": 1,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_POSITION = {
         "name": "on_position",
         "max_callbacks": 1,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_ERROR = {
         "name": "on_error",
         "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": False,
     }
     ON_ACCOUNT = {
         "name": "on_account",
         "max_callbacks": 1,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_BACKTEST_INIT = {
         "name": "on_backtest_init",
         "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": False,
     }
     ON_BACKTEST_DEINIT = {
         "name": "on_backtest_deinit",
         "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": False,
     }
     ON_BACKTEST = {
         "name": "on_backtest",
         "max_callbacks": 1,
         "callback": [],
         "instance": [],
-        "is_async": True
+        "is_async": True,
     }
     ON_BACKTEST_PASS = {
         "name": "on_backtest_pass",
         "max_callbacks": 1,
         "callback": [],
-        "is_async": False
+        "is_async": False,
     }
 
     def __new__(cls, value: dict):
         """Create a new enum member with a copy of the provided value."""
         obj = object.__new__(cls)
         # Create a copy of the dictionary and ensure mutable lists are independent
-        obj._value_ = {k: v if not isinstance(v, list) else [] for k, v in value.items()}
+        obj._value_ = {
+            k: v if not isinstance(v, list) else [] for k, v in value.items()
+        }
         return obj
 
     @classmethod
@@ -200,14 +197,10 @@ class EventType(Enum):
         if len(callback) < max_callbacks:
             callback.append(getattr(*args))
             logger.debug(
-                "Registering callback for '%s:%s()'",
-                event.value.get("name"), args[1]
+                "Registering callback for '%s:%s()'", event.value.get("name"), args[1]
             )
         else:
-            logger.warning(
-                "Too many callbacks for '%s': %d",
-                name, max_callbacks + 1
-            )
+            logger.warning("Too many callbacks for '%s': %d", name, max_callbacks + 1)
 
     def push_instance(self, instance: EventHandler) -> None:
         """Push an instance to the process.
@@ -234,7 +227,9 @@ class EventType(Enum):
 
         if self.value["instance"]:
             instance = self.value["instance"].pop()
-            logger.debug("Instance removed for '%s': %s", self.value.get("name"), instance)
+            logger.debug(
+                "Instance removed for '%s': %s", self.value.get("name"), instance
+            )
             return instance
 
         return None
@@ -250,7 +245,9 @@ class EventType(Enum):
             return False
 
         has_instances = bool(self.value["instance"])
-        logger.debug("Process '%s' has instances: %s", self.value.get("name"), has_instances)
+        logger.debug(
+            "Process '%s' has instances: %s", self.value.get("name"), has_instances
+        )
         return has_instances
 
     def run(self) -> None:
@@ -324,11 +321,7 @@ class EventType(Enum):
         """
         # if not cls.ON_INIT.value.get("is_done"):
         #     return False
-        Thread(
-            target=WebSocketClient,
-            args=(ws_url,),
-            daemon=True
-        ).start()
+        Thread(target=WebSocketClient, args=(ws_url,), daemon=True).start()
         Thread(target=cls._run_tasks, daemon=True).start()
 
         return True
@@ -357,7 +350,9 @@ class EventType(Enum):
                 if isinstance(task, list):
                     tasks.extend(task)
                 else:
-                    logger.error("Failed to gather tasks for '%s'", item.value.get("name"))
+                    logger.error(
+                        "Failed to gather tasks for '%s'", item.value.get("name")
+                    )
                     return
 
         await asyncio.gather(*tuple(tasks))

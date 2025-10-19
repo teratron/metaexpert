@@ -1,12 +1,19 @@
 """CLI command to create a new expert project."""
+
 import shutil
-import typer
 from pathlib import Path
+
+import typer
+
 
 def new_cmd(
     project_name: str = typer.Argument(..., help="The name of the new expert project."),
-    exchange: str = typer.Option("binance", "--exchange", "-e", help="The target exchange."),
-    force: bool = typer.Option(False, "--force", "-f", help="Overwrite existing directory."),
+    exchange: str = typer.Option(
+        "binance", "--exchange", "-e", help="The target exchange."
+    ),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Overwrite existing directory."
+    ),
 ) -> None:
     """Creates a new trading expert project from a template."""
     project_path = Path(project_name)
@@ -30,7 +37,7 @@ def new_cmd(
 
         # --- Create main.py from template ---
         template_path = Path(__file__).parent / "templates" / "template.py"
-        with open(template_path, "r") as f:
+        with open(template_path) as f:
             template_content = f.read()
 
         # Modify exchange if specified

@@ -25,6 +25,7 @@ class MetaExpertError(Exception):
         """Return the string representation of the exception."""
         return self.message
 
+
 # -----------------------------------------------------------------------------
 # CONFIGURATION EXCEPTIONS
 # -----------------------------------------------------------------------------
@@ -72,6 +73,7 @@ class MissingConfigurationError(ConfigurationError):
             message = f"Missing required configuration key '{config_key}'"
         super().__init__(message)
         self.config_key = config_key
+
 
 # -----------------------------------------------------------------------------
 # API EXCEPTIONS
@@ -148,6 +150,7 @@ class NetworkError(APIError):
         self.url = url
         self.reason = reason
 
+
 # -----------------------------------------------------------------------------
 # TRADING EXCEPTIONS
 # -----------------------------------------------------------------------------
@@ -216,6 +219,7 @@ class OrderNotFoundError(TradingError):
         super().__init__(message)
         self.order_id = order_id
 
+
 # -----------------------------------------------------------------------------
 # DATA VALIDATION EXCEPTIONS
 # -----------------------------------------------------------------------------
@@ -265,6 +269,7 @@ class MissingDataError(ValidationError):
         super().__init__(message)
         self.field_name = field_name
 
+
 # -----------------------------------------------------------------------------
 # MARKET DATA EXCEPTIONS
 # -----------------------------------------------------------------------------
@@ -306,6 +311,7 @@ class InvalidTimeframeError(MarketDataError):
             message = f"Invalid timeframe: '{timeframe}'"
         super().__init__(message)
         self.timeframe = timeframe
+
 
 # -----------------------------------------------------------------------------
 # PROCESS EXCEPTIONS

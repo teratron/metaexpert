@@ -17,17 +17,17 @@ class MarketType(Enum):
     SPOT = {
         "name": "spot",
         "description": "Spot trading",
-        "contract": []  # Spot trading has no contracts
+        "contract": [],  # Spot trading has no contracts
     }
     FUTURES = {
         "name": "futures",
         "description": "Futures trading",
-        "contract": [ContractType.LINEAR, ContractType.INVERSE]
+        "contract": [ContractType.LINEAR, ContractType.INVERSE],
     }
     OPTIONS = {
         "name": "options",
         "description": "Options trading",
-        "contract": [ContractType.LINEAR, ContractType.INVERSE]
+        "contract": [ContractType.LINEAR, ContractType.INVERSE],
     }
 
     def get_name(self) -> str:
@@ -42,13 +42,15 @@ class MarketType(Enum):
         description = self.value["description"]
         if isinstance(description, str):
             return description
-        raise TypeError(f"Market type description must be a string, got {type(description).__name__}")
+        raise TypeError(
+            f"Market type description must be a string, got {type(description).__name__}"
+        )
 
     def has_contracts(self) -> bool:
         """Check if this market type has contracts."""
         return len(self.value.get("contract", [])) > 0
 
-    def get_contract_types(self) -> list[ContractType] |  None:
+    def get_contract_types(self) -> list[ContractType] | None:
         """Get the contract types for this market type."""
         if not self.has_contracts():
             raise ValueError("This market type does not have contracts.")

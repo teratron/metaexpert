@@ -15,12 +15,12 @@ class ContractType(Enum):
     LINEAR = {
         "name": "linear",
         "alias": "usd_m",
-        "description": "Linear contracts (USD-M)"
+        "description": "Linear contracts (USD-M)",
     }
     INVERSE = {
         "name": "inverse",
         "alias": "coin_m",
-        "description": "Inverse contracts (COIN-M)"
+        "description": "Inverse contracts (COIN-M)",
     }
 
     def get_name(self) -> str:
@@ -28,21 +28,27 @@ class ContractType(Enum):
         name = self.value["name"]
         if isinstance(name, str):
             return name
-        raise TypeError(f"Contract type name must be a string, got {type(name).__name__}")
+        raise TypeError(
+            f"Contract type name must be a string, got {type(name).__name__}"
+        )
 
     def get_alias(self) -> str:
         """Return the alias of the contract type."""
         alias = self.value["alias"]
         if isinstance(alias, str):
             return alias
-        raise TypeError(f"Contract type alias must be a string, got {type(alias).__name__}")
+        raise TypeError(
+            f"Contract type alias must be a string, got {type(alias).__name__}"
+        )
 
     def get_description(self) -> str:
         """Return the description of the contract type."""
         description = self.value["description"]
         if isinstance(description, str):
             return description
-        raise TypeError(f"Contract type description must be a string, got {type(description).__name__}")
+        raise TypeError(
+            f"Contract type description must be a string, got {type(description).__name__}"
+        )
 
     @classmethod
     def get_contract_type_from(cls, name: str) -> Self:

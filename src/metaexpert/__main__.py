@@ -1,6 +1,5 @@
 """Main entry point for the MetaExpert package."""
 
-
 from metaexpert.cli.main import app
 
 

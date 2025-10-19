@@ -1,10 +1,11 @@
-import shutil
 from pathlib import Path
+
 from typer.testing import CliRunner
 
 from metaexpert.cli.main import app
 
 runner = CliRunner()
+
 
 def test_new_command_success(tmp_path):
     """Test the `new` command successfully creates a project."""
@@ -45,7 +46,9 @@ def test_new_command_force_overwrite(tmp_path):
         result = runner.invoke(app, ["new", project_name, "--force"])
 
         assert result.exit_code == 0, result.stdout
-        assert f"Warning: Overwriting existing directory '{project_name}'" in result.stdout
+        assert (
+            f"Warning: Overwriting existing directory '{project_name}'" in result.stdout
+        )
         assert not (project_path / "old_file.txt").exists()
         assert (project_path / "main.py").is_file()
 
