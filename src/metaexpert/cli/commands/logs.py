@@ -35,7 +35,7 @@ def cmd_logs(
 
     # Regex to match log level (e.g., INFO, WARNING, ERROR)
     # Assumes log format like: [TIMESTAMP] [LEVEL] MESSAGE
-    level_pattern = re.compile(r"\[(INFO|WARNING|ERROR|DEBUG)\]")
+    level_pattern = re.compile(r"\[(INFO|WARNING|ERROR|DEBUG)]")
 
     try:
         with open(log_file_path) as f:

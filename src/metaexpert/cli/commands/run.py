@@ -7,8 +7,7 @@ from pathlib import Path
 
 import typer
 
-from metaexpert.cli.commands.list import _is_process_running  # Import for stale PID check
-from metaexpert.cli.pid_lock import PidFileLock  # Import the new utility
+from metaexpert.cli.pid_lock import PidFileLock, is_process_running
 
 
 def cmd_run(
@@ -33,7 +32,7 @@ def cmd_run(
         try:
             with open(pid_file_path) as f:
                 pid_from_file = int(f.read().strip())
-            is_running = _is_process_running(pid_from_file)
+            is_running = is_process_running(pid_from_file)
             if not is_running:
                 typer.secho(
                     f"Warning: Stale PID file found for PID {pid_from_file}. Removing.",
@@ -62,9 +61,6 @@ def cmd_run(
 
             # Detach process
             if sys.platform == "win32":
-                creationflags = (
-                        subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
-                )
                 process = subprocess.Popen(
                     command,
                     cwd=path,
@@ -72,8 +68,7 @@ def cmd_run(
                     stderr=subprocess.DEVNULL,
                     stdin=subprocess.DEVNULL,
                     close_fds=True,
-                    creationflags=creationflags,
-                    shell=True,
+                    creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
                 )
             else:  # Unix-like systems
                 process = subprocess.Popen(

@@ -1,42 +1,10 @@
 """CLI command to list running trading experts."""
 
-import os
-import sys
 from pathlib import Path
 
 import typer
 
-
-def _is_process_running(pid: int) -> bool:
-    """Checks if a process with the given PID is currently running."""
-    if sys.platform == "win32":
-        try:
-            import ctypes
-
-            kernel32 = ctypes.WinDLL("kernel32")
-            SYNCHRONIZE = 0x00100000
-            PROCESS_QUERY_INFORMATION = 0x0400
-            STILL_ACTIVE = 259
-
-            process_handle = kernel32.OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, 0, pid)
-            if process_handle:
-                exit_code = ctypes.c_ulong()
-                kernel32.GetExitCodeProcess(process_handle, ctypes.byref(exit_code))
-                kernel32.CloseHandle(process_handle)
-                return exit_code.value == STILL_ACTIVE
-            else:
-                # Check if access was denied (e.g., for system processes)
-                if kernel32.GetLastError() == 5:  # ERROR_ACCESS_DENIED
-                    return True  # Assume it's running if access is denied
-                return False
-        except Exception:
-            return False
-    else:  # Unix-like systems
-        try:
-            os.kill(pid, 0)
-            return True
-        except OSError:
-            return False
+from metaexpert.cli.pid_lock import is_process_running
 
 
 def cmd_list(
@@ -58,7 +26,7 @@ def cmd_list(
                     with open(pid_file_path) as f:
                         pid_str = f.read().strip()
                         pid = int(pid_str)
-                        if _is_process_running(pid):
+                        if is_process_running(pid):
                             status = "Running"
                         else:
                             status = "Stale PID (Not Running)"
