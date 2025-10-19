@@ -57,7 +57,7 @@
 ## Phase 7: [US5] High-Performance Asynchronous Logging (Priority: P3)
 - [ ] T043 [US5] Create asynchronous file handler in src/metaexpert/logger/handlers/file.py
 - [ ] T044 [US5] Implement asyncio.Queue for buffering log entries
-- [ ] T045 [US5] Add performance checks to ensure 10ms latency requirement
+- [ ] T045 [US5] Add performance checks using pytest-benchmark to ensure 10ms latency requirement is met under various load conditions, with performance metrics captured and logged for monitoring
 - [ ] T046 [US5] [P] Write unit tests for async logging
 - [ ] T047 [US5] [P] Write performance tests for async logging
 - [ ] T048 [US5] Verify main trading thread is not blocked by logging (acceptance scenario 1)

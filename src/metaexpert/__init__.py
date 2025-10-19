@@ -87,16 +87,21 @@ class MetaExpert(Events):
             async_logging (bool): Whether to use asynchronous logging.
         """
 
-        # Configure logging using the enhanced expert integration
-        self.logger: Logger = MetaLogger(
+        # Import the new logging system with LogConfiguration
+        from metaexpert.logger.config import LogConfiguration
+        
+        # Configure logging using the LogConfiguration-based expert integration
+        logger_config = LogConfiguration(
             log_level=log_level,
-            log_file=log_file,
-            trade_log_file=trade_log_file,
-            error_log_file=error_log_file,
+            expert_log_file=log_file,  # Map old log_file to expert_log_file
+            trades_log_file=trade_log_file,  # Map old trade_log_file to trades_log_file
+            errors_log_file=error_log_file,  # Map old error_log_file to errors_log_file
             log_to_console=log_to_console,
-            structured_logging=structured_logging,
-            async_logging=async_logging,
+            enable_structured_logging=structured_logging,
+            enable_async=async_logging,
         )
+        
+        self.logger: Logger = MetaLogger(config=logger_config)
 
         # Parse command line arguments
         # self.args: Namespace = parse_arguments()

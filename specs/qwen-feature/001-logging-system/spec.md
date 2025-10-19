@@ -94,7 +94,7 @@ As a trader running live trading systems, I want the logging system to operate a
 
 ### Edge Cases
 
-- What happens when the disk is full and the logging system cannot write to files? → System should switch to console-only logging mode
+- What happens when the disk is full and the logging system cannot write to files? → System should detect low disk space (when < 100MB free) and automatically switch to console-only logging mode with a warning message. When disk space is restored, system should return to normal file logging.
 - How does the system handle very high logging volume that exceeds buffer capacity?
 - What occurs when a log file is locked by another process?
 - How does the system handle logging during critical system failures where even the logging system might be affected?
@@ -114,7 +114,7 @@ As a trader running live trading systems, I want the logging system to operate a
 - **FR-009**: System MUST be resilient to logging system failures and continue operating the trading expert even if logging fails
 - **FR-012**: System MUST mask sensitive information including API keys and account details in all log outputs
 - **FR-010**: System MUST provide API access to logging capabilities for use in trading strategy code through the MetaExpert logger property
-- **FR-011**: Individual log operations MUST complete within 10ms to ensure no impact on trading performance
+- **FR-011**: Individual log operations MUST complete within 10ms under normal system load conditions (CPU <80%, memory <80%) on standard cloud infrastructure (e.g., AWS t3.medium or equivalent) to ensure no impact on trading performance
 
 ### Key Entities
 
@@ -129,7 +129,7 @@ As a trader running live trading systems, I want the logging system to operate a
 ### Measurable Outcomes
 
 - **SC-001**: Users can initialize logging with default settings that create all required log files (expert.log, trades.log, errors.log) in less than 1 second
-- **SC-002**: System supports logging 10,000 entries per second with asynchronous logging enabled without blocking the main trading thread
+- **SC-002**: System supports logging 10,000 entries per second with asynchronous logging enabled without blocking the main trading thread on standard cloud infrastructure (e.g., AWS t3.medium or equivalent) under normal load conditions (CPU <80%, memory <80%)
 - **SC-003**: Log files are properly rotated when they reach the configured maximum size (default 10MB) with no data loss
 - **SC-004**: 99.5% of log entries contain complete contextual information (expert name, symbol, timestamp) when contextual logging is enabled
 - **SC-005**: All error-level messages appear in both expert.log and errors.log files as expected
@@ -137,3 +137,7 @@ As a trader running live trading systems, I want the logging system to operate a
 - **SC-007**: The system continues trading operation even when logging system fails (disk full, file locked, etc.)
 - **SC-008**: Structured JSON logging format meets predefined schema requirements for external log analysis tools
 - **SC-009**: Documentation includes clear examples of how to implement contextual logging in trading strategies
+
+### RFC 5424 Schema Definition
+
+The structured JSON format will include the following required fields: timestamp, severity, message, expert_name, symbol, trade_id, order_id, strategy_id, account_id. Optional fields include: function, file, line, and exception_details.
