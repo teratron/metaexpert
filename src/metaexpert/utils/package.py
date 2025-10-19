@@ -20,7 +20,9 @@ def get_python_path() -> str | None:
 def get_venv_path() -> Path | None:
     """Returns the way to the virtual environment of the project."""
     try:
-        if hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix):
+        if hasattr(sys, "real_prefix") or (
+            hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix
+        ):
             return Path(sys.prefix)
         return None
     except Exception as e:
@@ -132,10 +134,7 @@ def is_package_installed(name: str) -> bool:
             logger.warning("Package path not found.")
 
         result = subprocess.run(
-            ["pip", "show", name],
-            check=False,
-            capture_output=True,
-            text=True
+            ["pip", "show", name], check=False, capture_output=True, text=True
         )
         return result.returncode == 0
     except Exception as e:
@@ -148,10 +147,7 @@ def get_package_version(name: str) -> str | None:
     """Returns the version of the established package or None if the package is not installed."""
     try:
         result = subprocess.run(
-            ["pip", "show", name],
-            check=False,
-            capture_output=True,
-            text=True
+            ["pip", "show", name], check=False, capture_output=True, text=True
         )
         if result.returncode == 0:
             for line in result.stdout.split("\n"):
@@ -181,11 +177,17 @@ def compare_package_versions(name: str, required_version: str) -> bool:
             logger.warning("Package '%s' not installed.", name)
             return False
 
-        if packaging.version.parse(installed_version) >= packaging.version.parse(required_version):
+        if packaging.version.parse(installed_version) >= packaging.version.parse(
+            required_version
+        ):
             logger.info("Version %s >= %s", installed_version, required_version)
             return True
         else:
-            logger.warning("A version of %s is installed, %s requires.", installed_version, required_version)
+            logger.warning(
+                "A version of %s is installed, %s requires.",
+                installed_version,
+                required_version,
+            )
             return False
 
     except Exception as e:
@@ -207,13 +209,15 @@ def install_package(name: str, version: str | None = None) -> None:
         result = subprocess.run(
             # [sys.executable, "-m", "pip", "install", name],
             [
-                "pip", "install",
+                "pip",
+                "install",
                 name if not version else f"{name}=={version}",
-                "--target", pkg_path
+                "--target",
+                pkg_path,
             ],
             check=True,  # Will raise CalledProcessError if pip exits with an error
             capture_output=True,  # Captures stdout and stderr
-            text=True  # Decodes stdout and stderr as text
+            text=True,  # Decodes stdout and stderr as text
         )
         logger.info("Package '%s' installed successfully.", name)
         logger.debug("%s", result.stdout)
@@ -223,7 +227,9 @@ def install_package(name: str, version: str | None = None) -> None:
     except subprocess.SubprocessError as e:
         logger.error("Subprocess error occurred: %s", e)
     except FileNotFoundError:
-        logger.error("Error: 'pip' not found. Make sure Python and 'pip' are installed and available in PATH.")
+        logger.error(
+            "Error: 'pip' not found. Make sure Python and 'pip' are installed and available in PATH."
+        )
     except Exception as e:
         logger.error("An unexpected error occurred: %s", e)
 
@@ -242,7 +248,9 @@ def _example_usage() -> None:
     package_name = "requests"  # Replace with the name of the required package
 
     if is_package_installed(package_name):
-        print(f"Package '{package_name}' installed, version: {get_package_version(package_name)}")
+        print(
+            f"Package '{package_name}' installed, version: {get_package_version(package_name)}"
+        )
     else:
         install_package(package_name)
 
@@ -254,13 +262,17 @@ def _example_usage() -> None:
 
         print(f"Package '{package_name}' successfully imported after installation.")
     except ImportError:
-        print(f"Failed to import package '{package_name}' immediately after installation.")
+        print(
+            f"Failed to import package '{package_name}' immediately after installation."
+        )
 
     required_version = "1.0.0"
     is_compatible = compare_package_versions(package_name, required_version)
 
     if not is_compatible:
-        print(f"Installation of the package '{package_name}' version {required_version}")
+        print(
+            f"Installation of the package '{package_name}' version {required_version}"
+        )
         # install_package(package_name, required_version)
 
 

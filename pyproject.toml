@@ -105,6 +105,10 @@ line-ending = "lf"
 [tool.ruff.lint.isort]
 known-first-party = ["metaexpert"]
 
+[tool.ruff.lint.per-file-ignores]
+"src/metaexpert/cli/logs_cmd.py" = ["B904"]
+"src/metaexpert/cli/stop_cmd.py" = ["B904"]
+
 [tool.pyright]
 pythonVersion = "3.12"
 venvPath = "."

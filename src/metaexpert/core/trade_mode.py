@@ -7,18 +7,9 @@ from metaexpert.config import DEFAULT_TRADE_MODE
 class TradeMode(Enum):
     """Enum for different trading modes."""
 
-    LIVE = {
-        "name": "live",
-        "description": "Live trading mode"
-    }
-    PAPER = {
-        "name": "paper",
-        "description": "Paper trading mode"
-    }
-    BACKTEST = {
-        "name": "backtest",
-        "description": "Backtesting mode"
-    }
+    LIVE = {"name": "live", "description": "Live trading mode"}
+    PAPER = {"name": "paper", "description": "Paper trading mode"}
+    BACKTEST = {"name": "backtest", "description": "Backtesting mode"}
 
     def get_name(self) -> str:
         """Return the name of the trading mode."""
@@ -32,7 +23,9 @@ class TradeMode(Enum):
         description = self.value["description"]
         if isinstance(description, str):
             return description
-        raise TypeError(f"Trade mode description must be a string, got {type(description).__name__}")
+        raise TypeError(
+            f"Trade mode description must be a string, got {type(description).__name__}"
+        )
 
     @classmethod
     def get_trade_mode_from(cls, name: str) -> Self:

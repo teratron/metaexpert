@@ -1,5 +1,5 @@
-"""Market
-"""
+"""Market"""
+
 from abc import ABC, abstractmethod
 
 
@@ -15,6 +15,7 @@ class Market(ABC):
     def get_account(self) -> dict:
         """Get account details."""
         pass
+
 
 # protected:
 #    bool              CheckParameters(void);

@@ -1,4 +1,4 @@
-# Inheriting Base Rules
+﻿# Inheriting Base Rules
 
 This agent fully inherits and adheres to all universal principles and rules defined in 'AGENT.md'. The following instructions are additions, clarifications, or overrides specific to the Gemini model.
 
@@ -44,12 +44,11 @@ The project uses `uv` for dependency management.
 
 ---
 *This section is auto-updated by the planning workflow.*
-**Last updated**: 2025-10-16
+**Last updated**: 2025-10-18
 
 ## Active Technologies
-
 - Python 3.12+
-- Typer (from feature `001-project-cli`)
+- Typer (from feature `gemini-feature/001-cli-specification`)
 
 ## Recent Changes
 

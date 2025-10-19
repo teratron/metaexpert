@@ -14,22 +14,16 @@ class SizeType(Enum):
     - RISK_BASED: Risk-based position sizing (default)
     """
 
-    FIXED_BASE = {
-        "name": "fixed_base",
-        "description": "Fixed amount in base currency"
-    }
+    FIXED_BASE = {"name": "fixed_base", "description": "Fixed amount in base currency"}
     FIXED_QUOTE = {
         "name": "fixed_quote",
-        "description": "Fixed amount in quote currency"
+        "description": "Fixed amount in quote currency",
     }
     PERCENT_EQUITY = {
         "name": "percent_equity",
-        "description": "Percentage of account equity"
+        "description": "Percentage of account equity",
     }
-    RISK_BASED = {
-        "name": "risk_based",
-        "description": "Risk-based position sizing"
-    }
+    RISK_BASED = {"name": "risk_based", "description": "Risk-based position sizing"}
 
     def get_name(self) -> str:
         """Return the name of the size type."""
@@ -43,7 +37,9 @@ class SizeType(Enum):
         description = self.value["description"]
         if isinstance(description, str):
             return description
-        raise TypeError(f"Size type description must be a string, got {type(description).__name__}")
+        raise TypeError(
+            f"Size type description must be a string, got {type(description).__name__}"
+        )
 
     @classmethod
     def get_size_type_from(cls, name: str) -> Self:

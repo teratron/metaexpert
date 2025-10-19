@@ -1,7 +1,6 @@
 import asyncio
 import time
 from collections.abc import Callable
-
 from logging import Logger
 
 from metaexpert.config import APP_NAME

@@ -34,7 +34,9 @@ class Adapter(MetaExchange):
             case MarketType.FUTURES:
                 return self._futures_client()
             case _:
-                raise ValueError(f"Unsupported market type for Binance: {self.market_type}")
+                raise ValueError(
+                    f"Unsupported market type for Binance: {self.market_type}"
+                )
 
     def _spot_client(self) -> Self:
         """Returns the Binance Spot client."""
@@ -45,7 +47,9 @@ class Adapter(MetaExchange):
                 api_key=self.api_key, api_secret=self.api_secret, base_url=self.base_url
             )
         except ImportError as e:
-            raise ImportError(f"Please install {SPOT_PACKAGE}: pip install {SPOT_PACKAGE}") from e
+            raise ImportError(
+                f"Please install {SPOT_PACKAGE}: pip install {SPOT_PACKAGE}"
+            ) from e
 
     def _futures_client(self) -> Self:
         """Returns the Binance Futures client."""
@@ -63,14 +67,16 @@ class Adapter(MetaExchange):
                         key=self.api_key, secret=self.api_secret, base_url=self.base_url
                     )
         except ImportError as e:
-            raise ImportError(f"Please install {FUTURES_PACKAGE}: pip install {FUTURES_PACKAGE}") from e
+            raise ImportError(
+                f"Please install {FUTURES_PACKAGE}: pip install {FUTURES_PACKAGE}"
+            ) from e
 
     def get_account(self) -> dict:
         """Retrieves account information from Binance."""
         if not self.client:
             raise ConnectionError("Client is not initialized.")
         try:
-            return {}  #self.client.account()
+            return {}  # self.client.account()
         except Exception as e:
             raise RuntimeError(f"Failed to get Binance account info: {e}") from e
 
@@ -78,9 +84,9 @@ class Adapter(MetaExchange):
         """Retrieves the account balance from Binance."""
         account_info = self.get_account()
         balance = {
-            item['asset']: item['free']
-            for item in account_info.get('balances', [])
-            if float(item['free']) > 0
+            item["asset"]: item["free"]
+            for item in account_info.get("balances", [])
+            if float(item["free"]) > 0
         }
         return balance
 
@@ -93,7 +99,9 @@ class Adapter(MetaExchange):
             case MarketType.FUTURES:
                 base_url = FUTURES_WS_BASE_URL
             case _:
-                raise ValueError(f"Unsupported market type for WebSocket: {self.market_type}")
+                raise ValueError(
+                    f"Unsupported market type for WebSocket: {self.market_type}"
+                )
 
         return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
 

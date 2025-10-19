@@ -8,7 +8,12 @@ from metaexpert.logger import get_logger
 
 
 class Bar:
-    def __init__(self, timeframe: str = "1h", callback: Callable | None = None, args: tuple[dict, ...] = ()) -> None:
+    def __init__(
+        self,
+        timeframe: str = "1h",
+        callback: Callable | None = None,
+        args: tuple[dict, ...] = (),
+    ) -> None:
         self._timeframe: str = timeframe
         self._func: Callable = callback if callback is not None else lambda: None
         self._args: tuple[dict, ...] = args
@@ -43,6 +48,8 @@ class Bar:
     @timeframe.setter
     def timeframe(self, value: str) -> None:
         if not isinstance(value, str):
-            self.logger.error("Timeframe must be a string, got %s", type(value).__name__)
+            self.logger.error(
+                "Timeframe must be a string, got %s", type(value).__name__
+            )
             raise TypeError("Timeframe must be a string")
         self._timeframe = value

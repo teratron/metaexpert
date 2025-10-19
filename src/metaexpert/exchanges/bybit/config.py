@@ -1,6 +1,5 @@
 """Config for Bybit exchange APIs."""
 
-
 # Spot trading
 SPOT_PACKAGE: str = "binance-connector"
 SPOT_PACKAGE_VERSION: str = "3.12.0"
@@ -67,7 +66,11 @@ PRIVATE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/private"
 # -----------------------------------------------------------------------------
 
 # Mainnet:
-TRADE_WS_BASE_URL: str = "wss://stream.bybit.com/v5/trade"  # Spread trading is not supported
+TRADE_WS_BASE_URL: str = (
+    "wss://stream.bybit.com/v5/trade"  # Spread trading is not supported
+)
 
 # Testnet:
-TRADE_WS_TESTNET_URL: str = "wss://stream-testnet.bybit.com/v5/trade"  # Spread trading is not supported
+TRADE_WS_TESTNET_URL: str = (
+    "wss://stream-testnet.bybit.com/v5/trade"  # Spread trading is not supported
+)
