@@ -182,9 +182,11 @@ class MetaExpert(Events):
                 raise ValueError("Cannot get websocket URL without a symbol.")
             if self.timeframe is None:
                 raise ValueError("Cannot get websocket URL without a timeframe.")
+
             ws_url = self.client.get_websocket_url(
                 self.symbol, self.timeframe.get_name()
             )
+            print(f"Websocket URL: {ws_url}")
             EventType.processing(ws_url)
 
         except KeyboardInterrupt:
