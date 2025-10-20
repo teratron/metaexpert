@@ -6,7 +6,7 @@ import typer
 
 
 def cmd_backtest(
-        path: Path = typer.Argument(..., help="The path to the expert project directory."),
+    path: Path = typer.Argument(..., help="The path to the expert project directory."),
 ) -> None:
     """Backtests a trading expert."""
     if not path.is_dir():

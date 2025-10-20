@@ -8,10 +8,10 @@ import typer
 
 
 def cmd_logs(
-        path: Path = typer.Argument(..., help="The path to the expert project directory."),
-        level: str = typer.Option(
-            None, "--level", "-l", help="Filter logs by level (e.g., INFO, WARNING, ERROR)."
-        ),
+    path: Path = typer.Argument(..., help="The path to the expert project directory."),
+    level: str = typer.Option(
+        None, "--level", "-l", help="Filter logs by level (e.g., INFO, WARNING, ERROR)."
+    ),
 ) -> None:
     """Views logs for a trading expert."""
     if not path.is_dir():

@@ -1,10 +1,8 @@
 import asyncio
 import time
 from collections.abc import Callable
-
 from logging import Logger
 
-from metaexpert.config import APP_NAME
 from metaexpert.logger import get_logger
 
 
@@ -15,7 +13,7 @@ class Timer:
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0
         self._is_running: bool = False
-        self.logger: Logger = get_logger(APP_NAME)
+        self.logger: Logger = get_logger(None)
 
     async def start(self) -> None:
         self._is_running = True

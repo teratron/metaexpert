@@ -36,7 +36,6 @@ from .market import Market
 from .market_type import MarketType
 from .position_mode import PositionMode
 from .size_type import SizeType
-from .system import MetaProcess
 from .timeframe import Timeframe
 from .trade import Trade
 from .trade_mode import TradeMode
@@ -63,7 +62,6 @@ __all__ = [
     "MarketDataError",
     "MarketType",
     "MetaExpertError",
-    "MetaProcess",
     "MissingConfigurationError",
     "MissingDataError",
     "NetworkError",

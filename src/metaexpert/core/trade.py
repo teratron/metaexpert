@@ -1,17 +1,16 @@
-"""Trade
-"""
+"""Trade"""
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from metaexpert.logger import get_logger
 
-logger = get_logger(__name__)
+logger = get_logger()
 
 
 @dataclass
 class Trade(ABC):
-    """Trade
-    """
+    """Trade"""
 
     # def __init__(self, symbol: str | None, **props: dict[str, Any]) -> None:
     #     # self.symbol: str = symbol if symbol else ""
@@ -23,15 +22,16 @@ class Trade(ABC):
     #     # self._slippage: int = props.get("slippage", 0)
     #     pass
 
+    @abstractmethod
     def trade(
-            self,
-            *,
-            lots: float = 0,
-            stop_loss: float = 0,
-            take_profit: float = 0,
-            trailing_stop: float = 0,
-            positions: int = 0,
-            slippage: int = 0
+        self,
+        *,
+        lots: float = 0,
+        stop_loss: float = 0,
+        take_profit: float = 0,
+        trailing_stop: float = 0,
+        positions: int = 0,
+        slippage: int = 0,
     ) -> None:
         # self._lots = lots
         # self._stop_loss = stop_loss
@@ -74,6 +74,7 @@ class Trade(ABC):
     @abstractmethod
     def close_all_orders(self, side: str) -> bool:
         return False
+
 
 #    datetime          m_long_timer;
 #    datetime          m_short_timer;

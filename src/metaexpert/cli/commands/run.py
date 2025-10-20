@@ -7,11 +7,16 @@ from pathlib import Path
 
 import typer
 
-from metaexpert.cli.pid_lock import PidFileLock, is_process_running
+from metaexpert.cli.pid_lock import (
+    PidFileLock,
+    cleanup_pid_file,
+    get_pid_from_file,
+    is_process_running,
+)
 
 
 def cmd_run(
-        path: Path = typer.Argument(..., help="The path to the expert project directory."),
+    path: Path = typer.Argument(..., help="The path to the expert project directory."),
 ) -> None:
     """Runs a trading expert in a detached process."""
     if not path.is_dir():
@@ -27,33 +32,23 @@ def cmd_run(
 
     pid_file_path = path / ".metaexpert.pid"
 
-    # Check for stale PID file before attempting to acquire lock
-    if pid_file_path.is_file():
-        try:
-            with open(pid_file_path) as f:
-                pid_from_file = int(f.read().strip())
-            is_running = is_process_running(pid_from_file)
-            if not is_running:
-                typer.secho(
-                    f"Warning: Stale PID file found for PID {pid_from_file}. Removing.",
-                    fg=typer.colors.YELLOW,
-                )
-                pid_file_path.unlink()
-            else:
-                typer.secho(
-                    f"Error: Expert at '{path}' is already running with PID {pid_from_file}.",
-                    fg=typer.colors.RED,
-                )
-                raise typer.Exit(code=1)
-        except (OSError, ValueError):
+    pid_from_file = get_pid_from_file(pid_file_path)
+    if pid_from_file:
+        if is_process_running(pid_from_file):
             typer.secho(
-                f"Warning: Malformed PID file found at '{pid_file_path}'. Removing.",
+                f"Error: Expert at '{path}' is already running with PID {pid_from_file}.",
+                fg=typer.colors.RED,
+            )
+            raise typer.Exit(code=1)
+        else:
+            typer.secho(
+                f"Warning: Stale PID file found for PID {pid_from_file}. Removing.",
                 fg=typer.colors.YELLOW,
             )
-            pid_file_path.unlink()
+            cleanup_pid_file(pid_file_path)
 
     try:
-        with PidFileLock(pid_file_path) as pid_lock:  # Use the PidFileLock context manager
+        with PidFileLock(pid_file_path) as pid_lock:
             typer.secho(f"Starting expert at '{path}'...", fg=typer.colors.BLUE)
 
             # Use sys.executable to ensure the correct Python interpreter is used
@@ -99,9 +94,9 @@ def cmd_run(
 
     except RuntimeError as e:  # PidFileLock raises RuntimeError if already locked
         typer.secho(f"Error: {e}", fg=typer.colors.RED)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e
     except Exception as e:
         typer.secho(f"Error starting expert: {e}", fg=typer.colors.RED)
         if pid_file_path.exists():
             pid_file_path.unlink()  # Clean up PID file if creation failed
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e

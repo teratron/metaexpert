@@ -111,6 +111,7 @@ ignore = [
     "E501",   # Line too long (handled by formatter)
     "B008",   # Do not perform function calls in argument defaults
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+    "N805",   # First argument of a method should be named `self` (ignored for Pydantic validators)
 ]
 
 [tool.ruff.lint.isort]

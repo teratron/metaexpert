@@ -4,11 +4,13 @@ from pathlib import Path
 
 import typer
 
-from metaexpert.cli.pid_lock import is_process_running
+from metaexpert.cli.pid_lock import get_pid_from_file, is_process_running
 
 
 def cmd_list(
-        path: Path = typer.Argument(Path("."), help="The directory to search for expert projects."),
+    path: Path = typer.Argument(
+        Path("."), help="The directory to search for expert projects."
+    ),
 ) -> None:
     """Lists all running trading experts."""
     typer.secho("Searching for trading experts...", fg=typer.colors.BLUE)
@@ -22,17 +24,14 @@ def cmd_list(
             pid = "N/A"
 
             if pid_file_path.is_file():
-                try:
-                    with open(pid_file_path) as f:
-                        pid_str = f.read().strip()
-                        pid = int(pid_str)
-                        if is_process_running(pid):
-                            status = "Running"
-                        else:
-                            status = "Stale PID (Not Running)"
-                            # Optionally, remove stale PID file here
-                            # pid_file_path.unlink()
-                except (OSError, ValueError):
+                pid_val = get_pid_from_file(pid_file_path)
+                if pid_val:
+                    pid = str(pid_val)  # Ensure pid is a string for the table
+                    if is_process_running(pid_val):
+                        status = "Running"
+                    else:
+                        status = "Stale PID (Not Running)"
+                else:
                     status = "Malformed PID File"
 
             found_experts.append(

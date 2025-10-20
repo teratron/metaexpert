@@ -14,11 +14,11 @@ class PositionMode(Enum):
 
     HEDGE = {
         "name": "hedge",
-        "description": "Hedge mode (two-way positions)"
+        "description": "Hedge mode (two-way positions)",
     }
     ONEWAY = {
         "name": "oneway",
-        "description": "One-way mode (single position)"
+        "description": "One-way mode (single position)",
     }
 
     def get_name(self) -> str:
@@ -26,14 +26,18 @@ class PositionMode(Enum):
         name = self.value["name"]
         if isinstance(name, str):
             return name
-        raise TypeError(f"Position mode name must be a string, got {type(name).__name__}")
+        raise TypeError(
+            f"Position mode name must be a string, got {type(name).__name__}"
+        )
 
     def get_description(self) -> str:
         """Return the description of the position mode."""
         description = self.value["description"]
         if isinstance(description, str):
             return description
-        raise TypeError(f"Position mode description must be a string, got {type(description).__name__}")
+        raise TypeError(
+            f"Position mode description must be a string, got {type(description).__name__}"
+        )
 
     @classmethod
     def get_position_mode_from(cls, name: str) -> Self:

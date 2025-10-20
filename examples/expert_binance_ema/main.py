@@ -88,63 +88,63 @@ def deinit(reason) -> None:
     print(f"*** Strategy Deinitialized: {reason} ***")
 
 
-@expert.on_tick
-def tick(rates) -> None:
-    """Called on every price tick. Use for HFT, real-time adjustments.
+# @expert.on_tick
+# def tick(rates) -> None:
+#     """Called on every price tick. Use for HFT, real-time adjustments.
 
-    Args:
-        rates: Real-time market data (ask, bid, last, etc.)
-    """
-    print("*** Tick Processing ***", rates)
-
-
-@expert.on_bar(
-    timeframe="1h",  # Bar timeframe. Defaults to init timeframe if omitted. Use for multi-timeframe strategies.
-)
-def bar(rates) -> None:
-    """Called when a new bar closes. Implement core strategy logic here.
-
-    EMA trading logic:
-    1. Extract closing prices from historical data
-    2. Calculate slow EMA (e.g., 7 periods) and fast EMA (e.g., 3 periods)
-    3. Detect crossovers between fast and slow EMAs
-    4. Generate buy signals when fast EMA crosses above slow EMA
-    5. Generate sell signals when fast EMA crosses below slow EMA
-    6. Execute trades based on the signals
-
-    Args:
-        rates: OHLCV data for the completed bar
-    """
-    print("*** EMA Bar Processing ***", rates)
-
-    # EMA trading logic placeholder
-    # ---------------------------------
-    # Here the expert calculates EMA signals and makes trading decisions
-    # based on the crossover of fast and slow EMA indicators
-
-    # Implementation steps:
-    # 1. Extract closing prices from historical data
-    # 2. Calculate slow EMA (e.g., 7 periods) and fast EMA (e.g., 3 periods)
-    # 3. Detect crossovers between fast and slow EMAs
-    # 4. Generate buy signals when fast EMA crosses above slow EMA
-    # 5. Generate sell signals when fast EMA crosses below slow EMA
-    # 6. Execute trades based on the signals
-
-    # Example implementation (commented out):
-    # close = numpy.random.randn(20)  # Replace with actual closing prices
-    # ema_slow = talib.MA(close, timeperiod=7, matype=talib.MA_Type.EMA)
-    # ema_fast = talib.EMA(close, timeperiod=3)
-    # print(ema_slow)
-    # print(ema_fast)
-    # ema_slow.dtype(numpy.float64)
-    # ema_fast.dtype(numpy.float64)
-    # ema_cross = numpy.cross(ema_slow, ema_fast)
-    # print(ema_cross)
+#     Args:
+#         rates: Real-time market data (ask, bid, last, etc.)
+#     """
+#     print("*** Tick Processing ***", rates)
 
 
-@expert.on_bar("15m")
-def bar_15m(rates) -> None:
-    print("*** Bar Processing 15 minutes ***", rates)
+# @expert.on_bar(
+#     timeframe="1h",  # Bar timeframe. Defaults to init timeframe if omitted. Use for multi-timeframe strategies.
+# )
+# def bar(rates) -> None:
+#     """Called when a new bar closes. Implement core strategy logic here.
+
+#     EMA trading logic:
+#     1. Extract closing prices from historical data
+#     2. Calculate slow EMA (e.g., 7 periods) and fast EMA (e.g., 3 periods)
+#     3. Detect crossovers between fast and slow EMAs
+#     4. Generate buy signals when fast EMA crosses above slow EMA
+#     5. Generate sell signals when fast EMA crosses below slow EMA
+#     6. Execute trades based on the signals
+
+#     Args:
+#         rates: OHLCV data for the completed bar
+#     """
+#     print("*** EMA Bar Processing ***", rates)
+
+#     # EMA trading logic placeholder
+#     # ---------------------------------
+#     # Here the expert calculates EMA signals and makes trading decisions
+#     # based on the crossover of fast and slow EMA indicators
+
+#     # Implementation steps:
+#     # 1. Extract closing prices from historical data
+#     # 2. Calculate slow EMA (e.g., 7 periods) and fast EMA (e.g., 3 periods)
+#     # 3. Detect crossovers between fast and slow EMAs
+#     # 4. Generate buy signals when fast EMA crosses above slow EMA
+#     # 5. Generate sell signals when fast EMA crosses below slow EMA
+#     # 6. Execute trades based on the signals
+
+#     # Example implementation (commented out):
+#     # close = numpy.random.randn(20)  # Replace with actual closing prices
+#     # ema_slow = talib.MA(close, timeperiod=7, matype=talib.MA_Type.EMA)
+#     # ema_fast = talib.EMA(close, timeperiod=3)
+#     # print(ema_slow)
+#     # print(ema_fast)
+#     # ema_slow.dtype(numpy.float64)
+#     # ema_fast.dtype(numpy.float64)
+#     # ema_cross = numpy.cross(ema_slow, ema_fast)
+#     # print(ema_cross)
+
+
+# @expert.on_bar("15m")
+# def bar_15m(rates) -> None:
+#     print("*** Bar Processing 15 minutes ***", rates)
 
 
 @expert.on_timer(60)

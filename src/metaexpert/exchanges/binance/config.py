@@ -1,6 +1,5 @@
 """Config for Binance exchange APIs."""
 
-
 # Spot trading
 SPOT_PACKAGE: str = "binance-connector"
 SPOT_PACKAGE_VERSION: str = "3.12.0"

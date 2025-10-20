@@ -2,8 +2,11 @@
 
 import asyncio
 import json
+import logging
 
 import websockets
+
+logger = logging.getLogger(__name__)
 
 
 class WebSocketClient:
@@ -17,7 +20,9 @@ class WebSocketClient:
     async def connect(self):
         while True:
             try:
-                async with websockets.connect(self.url, ping_interval=20, ping_timeout=10) as ws:
+                async with websockets.connect(
+                    self.url, ping_interval=20, ping_timeout=10
+                ) as ws:
                     self.ws = ws
                     logger.info(f"[{self.name}] Connected to {self.url}")
                     await self.on_open()
@@ -36,7 +41,7 @@ class WebSocketClient:
         """Override in subclass."""
         pass
 
-    async def on_message(self, message: str):
+    async def on_message(self, message: str | bytes):
         """Override in subclass."""
         pass
 

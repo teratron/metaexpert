@@ -20,15 +20,6 @@ class Adapter(MetaExchange):
     def _create_client(self) -> Any:
         """Initializes and returns the Bybit client."""
         # TODO: Implement pybit client initialization
-        # from pybit.unified_trading import HTTP
-        # install_package("pybit")
-        # if not self.api_key or not self.api_secret:
-        #     raise ValueError("API key and secret are required for Bybit operations.")
-        # return HTTP(
-        #     api_key=self.api_key,
-        #     api_secret=self.api_secret,
-        #     base_url=self.base_url
-        # )
         raise NotImplementedError
 
     def get_balance(self) -> dict | float:
@@ -53,11 +44,15 @@ class Adapter(MetaExchange):
             elif self.contract_type == "inverse":
                 base_url = INVERSE_WS_BASE_URL
             else:
-                raise ValueError(f"Unsupported contract type for Bybit futures: {self.contract_type}")
+                raise ValueError(
+                    f"Unsupported contract type for Bybit futures: {self.contract_type}"
+                )
         elif self.market_type == "option":
             base_url = OPTION_WS_BASE_URL
         else:
-            raise ValueError(f"Unsupported market type for Bybit WebSocket: {self.market_type}")
+            raise ValueError(
+                f"Unsupported market type for Bybit WebSocket: {self.market_type}"
+            )
 
         # Bybit kline interval mapping might be different from internal representation
         # e.g. '1h' -> '60'. Assuming direct mapping for now.

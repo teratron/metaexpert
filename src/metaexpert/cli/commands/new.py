@@ -7,13 +7,13 @@ import typer
 
 
 def cmd_new(
-        project_name: str = typer.Argument(..., help="The name of the new expert project."),
-        exchange: str = typer.Option(
-            "binance", "--exchange", "-e", help="The target exchange."
-        ),
-        force: bool = typer.Option(
-            False, "--force", "-f", help="Overwrite existing directory."
-        ),
+    project_name: str = typer.Argument(..., help="The name of the new expert project."),
+    exchange: str = typer.Option(
+        "binance", "--exchange", "-e", help="The target exchange."
+    ),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Overwrite existing directory."
+    ),
 ) -> None:
     """Creates a new trading expert project from a template."""
     project_path = Path(project_name)
@@ -101,4 +101,4 @@ __pycache__/
 
     except Exception as e:
         typer.secho(f"Error creating project: {e}", fg=typer.colors.RED)
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e

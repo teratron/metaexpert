@@ -3,10 +3,10 @@ from enum import Enum
 from logging import Logger
 from typing import Self
 
-from metaexpert.config import APP_NAME, DEFAULT_TIMEFRAME
+from metaexpert.config import DEFAULT_TIMEFRAME
 from metaexpert.logger import get_logger
 
-logger: Logger = get_logger(APP_NAME)
+logger: Logger = get_logger()
 
 
 class Timeframe(Enum):
@@ -123,14 +123,18 @@ class Timeframe(Enum):
         sec = self.value["sec"]
         if isinstance(sec, int):
             return sec
-        raise TypeError(f"Timeframe seconds must be an integer, got {type(sec).__name__}")
+        raise TypeError(
+            f"Timeframe seconds must be an integer, got {type(sec).__name__}"
+        )
 
     def get_minutes(self) -> int:
         """Get the number of minutes in the timeframe."""
         minute = self.value["min"]
         if isinstance(minute, int):
             return minute
-        raise TypeError(f"Timeframe minutes must be an integer, got {type(minute).__name__}")
+        raise TypeError(
+            f"Timeframe minutes must be an integer, got {type(minute).__name__}"
+        )
 
     def get_hours(self) -> int | None:
         """Get the number of hours in the timeframe."""
@@ -139,14 +143,18 @@ class Timeframe(Enum):
             return None
         if isinstance(hour, int):
             return hour
-        raise TypeError(f"Timeframe hours must be an integer, got {type(hour).__name__}")
+        raise TypeError(
+            f"Timeframe hours must be an integer, got {type(hour).__name__}"
+        )
 
     def get_delta(self) -> timedelta:
         """Get the timedelta object representing the timeframe."""
         delta = self.value["delta"]
         if isinstance(delta, timedelta):
             return delta
-        raise TypeError(f"Timeframe delta must be a timedelta, got {type(delta).__name__}")
+        raise TypeError(
+            f"Timeframe delta must be a timedelta, got {type(delta).__name__}"
+        )
 
     @classmethod
     def get_timeframe_from(cls, name: str) -> Self:
@@ -171,7 +179,9 @@ class Timeframe(Enum):
         timeframe_delta = self.get_delta()
         if not isinstance(timeframe_delta, timedelta):
             logger.error("Invalid timedelta value for timeframe: %s", self.get_name())
-            raise ValueError(f"Invalid timedelta value for timeframe: {self.get_name()}")
+            raise ValueError(
+                f"Invalid timedelta value for timeframe: {self.get_name()}"
+            )
 
         timeframe_seconds = timeframe_delta.total_seconds()
         if timeframe_seconds <= 0:
@@ -180,7 +190,9 @@ class Timeframe(Enum):
 
         now_timestamp = now.timestamp()
         # Floor division to find the start of the current candle interval
-        current_candle_start_ts = (now_timestamp // timeframe_seconds) * timeframe_seconds
+        current_candle_start_ts = (
+            now_timestamp // timeframe_seconds
+        ) * timeframe_seconds
         # Add one interval to get the start of the next candle
         next_candle_start_ts = current_candle_start_ts + timeframe_seconds
         return datetime.fromtimestamp(next_candle_start_ts)

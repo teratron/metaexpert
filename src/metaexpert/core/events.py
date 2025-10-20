@@ -3,7 +3,6 @@ from logging import Logger
 from typing import Any
 
 from metaexpert.config import (
-    APP_NAME,
     BREAKEVEN_PCT,
     COMMENT,
     DAILY_LOSS_LIMIT,
@@ -45,50 +44,50 @@ class Events(Expert):
     trading, transactions, ticks, bars, timers, and book events.
     """
 
-    logger: Logger = get_logger(APP_NAME)
+    logger: Logger = get_logger()
 
     def on_init(
-            self,
-            #
-            # --- Core Trading Parameters ---
-            symbol: str,
-            timeframe: str,
-            *,
-            lookback_bars: int = LOOKBACK_BARS,
-            warmup_bars: int = WARMUP_BARS,
-            #
-            # --- Strategy Metadata ---
-            strategy_id: int = STRATEGY_ID,
-            strategy_name: str = STRATEGY_NAME,
-            comment: str = COMMENT,
-            #
-            # --- Risk & Position Sizing ---
-            leverage: int = LEVERAGE,
-            max_drawdown_pct: float = MAX_DRAWDOWN_PCT,
-            daily_loss_limit: float = DAILY_LOSS_LIMIT,
-            size_type: str = DEFAULT_SIZE_TYPE,
-            size_value: float = SIZE_VALUE,
-            max_position_size_quote: float = MAX_POSITION_SIZE_QUOTE,
-            #
-            # --- Trade Parameters ---
-            stop_loss_pct: float = STOP_LOSS_PCT,
-            take_profit_pct: float = TAKE_PROFIT_PCT,
-            trailing_stop_pct: float = TRAILING_STOP_PCT,
-            trailing_activation_pct: float = TRAILING_ACTIVATION_PCT,
-            breakeven_pct: float = BREAKEVEN_PCT,
-            slippage_pct: float = SLIPPAGE_PCT,
-            max_spread_pct: float = MAX_SPREAD_PCT,
-            #
-            # --- Portfolio Management
-            max_open_positions: int = MAX_OPEN_POSITIONS,
-            max_positions_per_symbol: int = MAX_POSITIONS_PER_SYMBOL,
-            #
-            # --- Entry Filters ---
-            trade_hours: set[int] | None = None,
-            allowed_days: set[int] | None = None,
-            min_volume: int = MIN_VOLUME,
-            volatility_filter: bool = VOLATILITY_FILTER,
-            trend_filter: bool = TREND_FILTER
+        self,
+        #
+        # --- Core Trading Parameters ---
+        symbol: str,
+        timeframe: str,
+        *,
+        lookback_bars: int = LOOKBACK_BARS,
+        warmup_bars: int = WARMUP_BARS,
+        #
+        # --- Strategy Metadata ---
+        strategy_id: int = STRATEGY_ID,
+        strategy_name: str = STRATEGY_NAME,
+        comment: str = COMMENT,
+        #
+        # --- Risk & Position Sizing ---
+        leverage: int = LEVERAGE,
+        max_drawdown_pct: float = MAX_DRAWDOWN_PCT,
+        daily_loss_limit: float = DAILY_LOSS_LIMIT,
+        size_type: str = DEFAULT_SIZE_TYPE,
+        size_value: float = SIZE_VALUE,
+        max_position_size_quote: float = MAX_POSITION_SIZE_QUOTE,
+        #
+        # --- Trade Parameters ---
+        stop_loss_pct: float = STOP_LOSS_PCT,
+        take_profit_pct: float = TAKE_PROFIT_PCT,
+        trailing_stop_pct: float = TRAILING_STOP_PCT,
+        trailing_activation_pct: float = TRAILING_ACTIVATION_PCT,
+        breakeven_pct: float = BREAKEVEN_PCT,
+        slippage_pct: float = SLIPPAGE_PCT,
+        max_spread_pct: float = MAX_SPREAD_PCT,
+        #
+        # --- Portfolio Management
+        max_open_positions: int = MAX_OPEN_POSITIONS,
+        max_positions_per_symbol: int = MAX_POSITIONS_PER_SYMBOL,
+        #
+        # --- Entry Filters ---
+        trade_hours: set[int] | None = None,
+        allowed_days: set[int] | None = None,
+        min_volume: int = MIN_VOLUME,
+        volatility_filter: bool = VOLATILITY_FILTER,
+        trend_filter: bool = TREND_FILTER,
     ) -> Callable[[Callable[[], None]], Callable[[], None]]:
         """Decorator for initialization event handling.
 
@@ -202,8 +201,11 @@ class Events(Expert):
         return inner
 
     @staticmethod
-    def on_bar(timeframe: str = "1h") -> Callable[
-        [Callable[[dict], None]], Callable[[dict], Coroutine[Any, Any, None]]]:
+    def on_bar(
+        timeframe: str = "1h",
+    ) -> Callable[
+        [Callable[[dict], None]], Callable[[dict], Coroutine[Any, Any, None]]
+    ]:
         """Decorator for bar event handling.
 
         Args:
@@ -212,8 +214,9 @@ class Events(Expert):
         Returns:
             Callable: Decorated function that handles bar events.
         """
-
-        def outer(func: Callable[[dict], None]) -> Callable[[dict], Coroutine[Any, Any, None]]:
+        def outer(
+            func: Callable[[dict], None],
+        ) -> Callable[[dict], Coroutine[Any, Any, None]]:
             async def inner(rates: dict) -> None:
                 bar = Bar(timeframe=timeframe, callback=func, args=(rates,))
                 EventType.ON_BAR.push_instance(bar)
@@ -223,7 +226,9 @@ class Events(Expert):
 
         return outer
 
-    def on_timer(self, interval: int = 60) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
+    def on_timer(
+        self, interval: int = 60
+    ) -> Callable[[Callable[[], None]], Callable[[], Coroutine[Any, Any, None]]]:
         """Decorator for timer-based event handling.
 
         Args:
@@ -256,7 +261,6 @@ class Events(Expert):
         Returns:
             Callable: Decorated function that handles order events.
         """
-
         def inner(order: dict) -> None:
             func(order)
 
@@ -279,7 +283,9 @@ class Events(Expert):
         return inner
 
     @staticmethod
-    def on_transaction(func: Callable[[dict, dict], None]) -> Callable[[dict, dict], None]:
+    def on_transaction(
+        func: Callable[[dict, dict], None],
+    ) -> Callable[[dict, dict], None]:
         """Decorator for transaction event handling.
 
         Args:
