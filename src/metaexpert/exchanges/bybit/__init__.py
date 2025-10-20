@@ -1,6 +1,12 @@
 from typing import Any
 
-from metaexpert.exchanges import MetaExchange
+from metaexpert.exchanges import (
+    ContractType,
+    MarginMode,
+    MarketType,
+    MetaExchange,
+    PositionMode,
+)
 from metaexpert.exchanges.bybit.config import (
     INVERSE_WS_BASE_URL,
     LINEAR_WS_BASE_URL,
@@ -12,10 +18,23 @@ from metaexpert.exchanges.bybit.config import (
 class Adapter(MetaExchange):
     """Implementation for the Bybit exchange."""
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self) -> None:
         """Initializes the Bybit Stock class."""
-        super().__init__(**kwargs)
-        # self.client = self._create_client() # TODO: Implement client creation
+        super().__init__(
+            exchange="bybit",
+            api_key=None,
+            api_secret=None,
+            api_passphrase=None,
+            subaccount=None,
+            base_url=None,
+            testnet=False,
+            proxy=None,
+            market_type=MarketType.SPOT,
+            contract_type=ContractType.LINEAR,
+            margin_mode=MarginMode.ISOLATED,
+            position_mode=PositionMode.ONEWAY,
+        )
+        self.client = self._create_client()
 
     def _create_client(self) -> Any:
         """Initializes and returns the Bybit client."""
@@ -57,3 +76,59 @@ class Adapter(MetaExchange):
         # Bybit kline interval mapping might be different from internal representation
         # e.g. '1h' -> '60'. Assuming direct mapping for now.
         return f"{base_url}/{timeframe}/{symbol}"
+
+    def trade(
+        self,
+        *,
+        lots: float = 0,
+        stop_loss: float = 0,
+        take_profit: float = 0,
+        trailing_stop: float = 0,
+        positions: int = 0,
+        slippage: int = 0,
+    ) -> None:
+        """Execute a trade with specified parameters."""
+        # TODO: Implement actual trading logic using the client
+        pass
+
+    # POSITION
+    def open_position(self, side: str) -> bool:
+        """Open a position."""
+        # TODO: Implement position opening logic
+        return False
+
+    def close_position(self, side: str) -> bool:
+        """Close a position."""
+        # TODO: Implement position closing logic
+        return False
+
+    def close_all_positions(self, side: str) -> bool:
+        """Close all positions."""
+        # TODO: Implement closing all positions logic
+        return False
+
+    def modify_position(self) -> bool:
+        """Modify a position."""
+        # TODO: Implement position modification logic
+        return False
+
+    def modify_all_positions(self) -> bool:
+        """Modify all positions."""
+        # TODO: Implement modification of all positions logic
+        return False
+
+    # ORDER
+    def open_order(self, side: str) -> bool:
+        """Open an order."""
+        # TODO: Implement order opening logic
+        return False
+
+    def close_order(self, side: str) -> bool:
+        """Close an order."""
+        # TODO: Implement order closing logic
+        return False
+
+    def close_all_orders(self, side: str) -> bool:
+        """Close all orders."""
+        # TODO: Implement closing all orders logic
+        return False

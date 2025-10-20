@@ -214,6 +214,7 @@ class Events(Expert):
         Returns:
             Callable: Decorated function that handles bar events.
         """
+
         def outer(
             func: Callable[[dict], None],
         ) -> Callable[[dict], Coroutine[Any, Any, None]]:
@@ -261,6 +262,7 @@ class Events(Expert):
         Returns:
             Callable: Decorated function that handles order events.
         """
+
         def inner(order: dict) -> None:
             func(order)
 

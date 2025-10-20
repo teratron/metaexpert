@@ -1,9 +1,13 @@
 from importlib import import_module
 from typing import Self
 
-from metaexpert.core.contract_type import ContractType
-from metaexpert.core.market_type import MarketType
-from metaexpert.exchanges import MetaExchange
+from metaexpert.exchanges import (
+    ContractType,
+    MarginMode,
+    MarketType,
+    MetaExchange,
+    PositionMode,
+)
 from metaexpert.exchanges.binance.config import (
     FUTURES_MODULE_INVERSE,
     FUTURES_MODULE_LINEAR,
@@ -21,11 +25,29 @@ class Adapter(MetaExchange):
 
     def __init__(self):
         """Initializes the Binance class."""
-        self.client: Self = self._create_client()
+        # Initialize with default values, actual values will be set by MetaExchange.create
+        super(MetaExchange).__init__(
+            # exchange="binance",
+            # api_key=None,
+            # api_secret=None,
+            # api_passphrase=None,
+            # subaccount=None,
+            # base_url=None,
+            # testnet=False,
+            # proxy=None,
+            # market_type=MarketType.SPOT,
+            # contract_type=ContractType.LINEAR,
+            # margin_mode=MarginMode.ISOLATED,
+            # position_mode=PositionMode.HEDGE,
+        )
+        # Only create the client if we have the necessary credentials or if we're in testnet mode
+        # Actual client creation will be deferred until credentials are set
+        self.client = self._create_client()
 
     def _create_client(self) -> Self:
         """Initializes and returns the Binance client based on market type."""
-        if not self.api_key or not self.api_secret:
+        # For paper trading mode, we don't need API keys
+        if not self.testnet and (not self.api_key or not self.api_secret):
             raise ValueError("API key and secret are required for Binance operations.")
 
         match self.market_type:
@@ -37,7 +59,6 @@ class Adapter(MetaExchange):
                 raise ValueError(
                     f"Unsupported market type for Binance: {self.market_type}"
                 )
-
     def _spot_client(self) -> Self:
         """Returns the Binance Spot client."""
         install_package(SPOT_PACKAGE)
@@ -104,6 +125,20 @@ class Adapter(MetaExchange):
                 )
 
         return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
+
+    def trade(
+        self,
+        *,
+        lots: float = 0,
+        stop_loss: float = 0,
+        take_profit: float = 0,
+        trailing_stop: float = 0,
+        positions: int = 0,
+        slippage: int = 0,
+    ) -> None:
+        """Execute a trade with specified parameters."""
+        # TODO: Implement actual trading logic using the client
+        pass
 
     # POSITION
     def open_position(self, side: str) -> bool:

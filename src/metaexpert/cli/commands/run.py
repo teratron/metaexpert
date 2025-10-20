@@ -63,7 +63,10 @@ def cmd_run(
                     stderr=subprocess.DEVNULL,
                     stdin=subprocess.DEVNULL,
                     close_fds=True,
-                    creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
+                    creationflags=(
+                        subprocess.DETACHED_PROCESS
+                        | subprocess.CREATE_NEW_PROCESS_GROUP
+                    ),
                 )
             else:  # Unix-like systems
                 process = subprocess.Popen(
