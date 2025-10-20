@@ -3,10 +3,10 @@ from typing import Self
 
 from metaexpert.exchanges import (
     ContractType,
-    MarginMode,
+    # MarginMode,
     MarketType,
     MetaExchange,
-    PositionMode,
+    # PositionMode,
 )
 from metaexpert.exchanges.binance.config import (
     FUTURES_MODULE_INVERSE,
@@ -25,23 +25,7 @@ class Adapter(MetaExchange):
 
     def __init__(self):
         """Initializes the Binance class."""
-        # Initialize with default values, actual values will be set by MetaExchange.create
-        super(MetaExchange).__init__(
-            # exchange="binance",
-            # api_key=None,
-            # api_secret=None,
-            # api_passphrase=None,
-            # subaccount=None,
-            # base_url=None,
-            # testnet=False,
-            # proxy=None,
-            # market_type=MarketType.SPOT,
-            # contract_type=ContractType.LINEAR,
-            # margin_mode=MarginMode.ISOLATED,
-            # position_mode=PositionMode.HEDGE,
-        )
-        # Only create the client if we have the necessary credentials or if we're in testnet mode
-        # Actual client creation will be deferred until credentials are set
+        super(MetaExchange).__init__()
         self.client = self._create_client()
 
     def _create_client(self) -> Self:
@@ -59,6 +43,7 @@ class Adapter(MetaExchange):
                 raise ValueError(
                     f"Unsupported market type for Binance: {self.market_type}"
                 )
+
     def _spot_client(self) -> Self:
         """Returns the Binance Spot client."""
         install_package(SPOT_PACKAGE)
@@ -92,6 +77,21 @@ class Adapter(MetaExchange):
                 f"Please install {FUTURES_PACKAGE}: pip install {FUTURES_PACKAGE}"
             ) from e
 
+    def get_websocket_url(self, symbol: str, timeframe: str) -> str:
+        """Constructs the WebSocket URL for a given symbol and timeframe."""
+        base_url: str = ""
+        match self.market_type:
+            case MarketType.SPOT:
+                base_url = SPOT_WS_BASE_URL
+            case MarketType.FUTURES:
+                base_url = FUTURES_WS_BASE_URL
+            case _:
+                raise ValueError(
+                    f"Unsupported market type for WebSocket: {self.market_type}"
+                )
+
+        return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
+
     def get_account(self) -> dict:
         """Retrieves account information from Binance."""
         if not self.client:
@@ -110,21 +110,6 @@ class Adapter(MetaExchange):
             if float(item["free"]) > 0
         }
         return balance
-
-    def get_websocket_url(self, symbol: str, timeframe: str) -> str:
-        """Constructs the WebSocket URL for a given symbol and timeframe."""
-        base_url: str = ""
-        match self.market_type:
-            case MarketType.SPOT:
-                base_url = SPOT_WS_BASE_URL
-            case MarketType.FUTURES:
-                base_url = FUTURES_WS_BASE_URL
-            case _:
-                raise ValueError(
-                    f"Unsupported market type for WebSocket: {self.market_type}"
-                )
-
-        return f"{base_url}/ws/{symbol.lower()}@kline_{timeframe}"
 
     def trade(
         self,

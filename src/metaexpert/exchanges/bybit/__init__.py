@@ -1,11 +1,11 @@
 from typing import Any
 
 from metaexpert.exchanges import (
-    ContractType,
-    MarginMode,
-    MarketType,
+    # ContractType,
+    # MarginMode,
+    # MarketType,
     MetaExchange,
-    PositionMode,
+    # PositionMode,
 )
 from metaexpert.exchanges.bybit.config import (
     INVERSE_WS_BASE_URL,
@@ -20,35 +20,12 @@ class Adapter(MetaExchange):
 
     def __init__(self) -> None:
         """Initializes the Bybit Stock class."""
-        super().__init__(
-            exchange="bybit",
-            api_key=None,
-            api_secret=None,
-            api_passphrase=None,
-            subaccount=None,
-            base_url=None,
-            testnet=False,
-            proxy=None,
-            market_type=MarketType.SPOT,
-            contract_type=ContractType.LINEAR,
-            margin_mode=MarginMode.ISOLATED,
-            position_mode=PositionMode.ONEWAY,
-        )
+        super(MetaExchange).__init__()
         self.client = self._create_client()
 
     def _create_client(self) -> Any:
         """Initializes and returns the Bybit client."""
         # TODO: Implement pybit client initialization
-        raise NotImplementedError
-
-    def get_balance(self) -> dict | float:
-        """Retrieves the account balance from Bybit."""
-        # TODO: Implement balance retrieval using self.client
-        raise NotImplementedError
-
-    def get_account(self) -> dict:
-        """Retrieves account information from Bybit."""
-        # TODO: Implement account info retrieval using self.client
         raise NotImplementedError
 
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:
@@ -76,6 +53,16 @@ class Adapter(MetaExchange):
         # Bybit kline interval mapping might be different from internal representation
         # e.g. '1h' -> '60'. Assuming direct mapping for now.
         return f"{base_url}/{timeframe}/{symbol}"
+
+    def get_balance(self) -> dict | float:
+        """Retrieves the account balance from Bybit."""
+        # TODO: Implement balance retrieval using self.client
+        raise NotImplementedError
+
+    def get_account(self) -> dict:
+        """Retrieves account information from Bybit."""
+        # TODO: Implement account info retrieval using self.client
+        raise NotImplementedError
 
     def trade(
         self,
