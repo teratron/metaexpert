@@ -1,6 +1,6 @@
 [project]
 name = "metaexpert"
-version = "0.3.1"
+version = "0.3.2"
 description = "MetaExpert is a Python library for cryptocurrency trading that provides a unified interface for multiple exchanges and trading types. The system is designed to be modular, extensible, and easy to use while maintaining high performance and reliability."
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
@@ -18,6 +18,8 @@ keywords = [
     "forex",
     "crypto",
     "binance",
+    "bybit",
+    "okx",
     "technical analysis",
     "finance",
     "investment",
@@ -111,7 +113,7 @@ ignore = [
     "E501",   # Line too long (handled by formatter)
     "B008",   # Do not perform function calls in argument defaults
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
-    "N805",   # First argument of a method should be named `self` (ignored for Pydantic validators)
+    #"N805",   # First argument of a method should be named `self` (ignored for Pydantic validators)
 ]
 
 [tool.ruff.lint.isort]

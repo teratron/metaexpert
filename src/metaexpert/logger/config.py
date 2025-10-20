@@ -65,6 +65,7 @@ class LoggerConfig(BaseModel):
     log_name: str = Field(default="MetaExpert", description="Name of the logger")
 
     @field_validator("log_level")
+    @classmethod
     def validate_log_level(cls, value):
         """Validate that log level is one of the allowed values."""
         allowed_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -73,6 +74,7 @@ class LoggerConfig(BaseModel):
         return value.upper()
 
     @field_validator("log_max_file_size")
+    @classmethod
     def validate_log_max_file_size(cls, value):
         """Validate that log file size is positive."""
         if value <= 0:
