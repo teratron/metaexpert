@@ -11,17 +11,17 @@ import sys
 from pathlib import Path
 from typing import Any, TypedDict
 
-from metaexpert.config import (
-    LOG_BACKUP_COUNT,
-    LOG_DETAILED_FORMAT,
-    LOG_DIRECTORY,
-    LOG_ERROR_LEVEL,
-    LOG_FALLBACK_FORMAT,
-    LOG_FORMAT,
-    LOG_MAX_FILE_SIZE,
-    LOG_NAME,
-    LOG_TRADE_LEVEL,
-)
+# from metaexpert.config import (
+#     LOG_BACKUP_COUNT,
+#     LOG_DETAILED_FORMAT,
+#     LOG_DIRECTORY,
+#     LOG_ERROR_LEVEL,
+#     LOG_FALLBACK_FORMAT,
+#     LOG_FORMAT,
+#     LOG_MAX_FILE_SIZE,
+#     LOG_NAME,
+#     LOG_TRADE_LEVEL,
+# )
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.config import LoggerConfig
 from metaexpert.logger.formatter import ErrorFormatter, MainFormatter, TradeFormatter
@@ -51,7 +51,7 @@ class MetaLogger(logging.Logger):
         log_file: str,
         trade_log_file: str,
         error_log_file: str,
-        log_to_console: bool,
+        console_logging: bool,
         structured_logging: bool,
         async_logging: bool,
     ) -> None:
@@ -62,60 +62,43 @@ class MetaLogger(logging.Logger):
             log_file: Main log file name
             trade_log_file: Trade-specific log file name
             error_log_file: Error-specific log file name
-            log_to_console: Whether to output logs to console
+            console_logging: Whether to output logs to console
             structured_logging: Whether to use JSON structured logging
             async_logging: Whether to use asynchronous logging
         """
-        # Configure the logging system
-        self.log_level = log_level.upper()
-        self.log_file = log_file
-        self.trade_log_file = trade_log_file
-        self.error_log_file = error_log_file
-        self.log_to_console = log_to_console
-        self.structured_logging = structured_logging
-        self.async_logging = async_logging
-        self._loggers: dict[str, logging.Logger] = {}
-        self._handlers: dict[str, logging.Handler] = {}
-        self._configured = False
-
-        config = LoggerConfig(
+        # Configure the logging system using the config object
+        self.config = LoggerConfig(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
             error_log_file=error_log_file,
-            log_console_logging=log_to_console,
-            log_structured_logging=structured_logging,
-            log_async_logging=async_logging,
+            console_logging=console_logging,
+            structured_logging=structured_logging,
+            async_logging=async_logging,
         )
+        self._loggers: dict[str, logging.Logger] = {}
+        self._handlers: dict[str, logging.Handler] = {}
+        self._configured = False
 
-        # Configure the logging system using the config object
-        self.log_level: str = config.log_level
-        self.log_file: str = config.log_file
-        self.trade_log_file: str = config.trade_log_file
-        self.error_log_file: str = config.error_log_file
-        self.log_to_console: bool = config.log_console_logging
-        self.structured_logging: bool = config.log_structured_logging
-        self.async_logging: bool = config.log_async_logging
-
-        super().__init__(config.log_name)
+        super().__init__(self.config.log_name)
 
         # Formatters
         self._main_formatter = (
             MainFormatter()
-            if self.structured_logging
-            else logging.Formatter(LOG_FORMAT)
+            if self.config.structured_logging
+            else logging.Formatter(self.config.log_format)
         )
         self._trade_formatter = (
-            TradeFormatter() if self.structured_logging else self._main_formatter
+            TradeFormatter() if self.config.structured_logging else self._main_formatter
         )
         self._error_formatter = (
             ErrorFormatter()
-            if self.structured_logging
-            else logging.Formatter(LOG_DETAILED_FORMAT)
+            if self.config.structured_logging
+            else logging.Formatter(self.config.log_detailed_format)
         )
 
         # Initialize the Logger with the application name
-        super().__init__(LOG_NAME, self.log_level)
+        super().__init__(self.config.log_name, self.config.log_level)
 
         _root_config: dict[str, Any] = self.configure()
 
@@ -134,7 +117,7 @@ class MetaLogger(logging.Logger):
                 _file_handler = self._create_file_handler(config)
 
             # Add console handler if requested
-            if self.log_to_console:
+            if self.config.console_logging:
                 _console_handler = self._create_console_handler()
 
             self._configured = True
@@ -147,8 +130,8 @@ class MetaLogger(logging.Logger):
         except Exception as e:
             # Fallback to basic logging
             logging.basicConfig(
-                level=self.log_level,
-                format=LOG_FALLBACK_FORMAT,
+                level=self.config.log_level,
+                format=self.config.log_fallback_format,
             )
             logging.error("Failed to configure enhanced logging: %s", e, exc_info=True)
             return {
@@ -177,8 +160,8 @@ class MetaLogger(logging.Logger):
             Logger instance
         """
         if self._configured:
-            return self._loggers.get(name, logging.getLogger(LOG_NAME))
-        return logging.getLogger(LOG_NAME)
+            return self._loggers.get(name, logging.getLogger(self.config.log_name))
+        return logging.getLogger(self.config.log_name)
 
     def get_main_logger(self) -> logging.Logger:
         """Get the main application logger."""
@@ -227,28 +210,28 @@ class MetaLogger(logging.Logger):
     def _configure_handlers(self) -> list[HandlerConfig]:
         """Create and configure handlers."""
         # Create logs directory if it doesn't exist
-        log_dir = Path(LOG_DIRECTORY)
+        log_dir = Path(self.config.log_directory)
         log_dir.mkdir(exist_ok=True)
         return [
             HandlerConfig(
                 name="main",
-                file=log_dir / self.log_file,
-                level=self.log_level,
-                logger_name=LOG_NAME,
+                file=log_dir / self.config.log_file,
+                level=self.config.log_level,
+                logger_name=self.config.log_name,
                 formatter=self._main_formatter,
             ),
             HandlerConfig(
                 name="trade",
-                file=log_dir / self.trade_log_file,
-                level=LOG_TRADE_LEVEL,
-                logger_name=f"{LOG_NAME}.trade",
+                file=log_dir / self.config.trade_log_file,
+                level=self.config.log_trade_level,
+                logger_name=f"{self.config.log_name}.trade",
                 formatter=self._trade_formatter,
             ),
             HandlerConfig(
                 name="error",
-                file=log_dir / self.error_log_file,
-                level=LOG_ERROR_LEVEL,
-                logger_name=f"{LOG_NAME}.error",
+                file=log_dir / self.config.error_log_file,
+                level=self.config.log_error_level,
+                logger_name=f"{self.config.log_name}.error",
                 formatter=self._error_formatter,
             ),
         ]
@@ -264,14 +247,14 @@ class MetaLogger(logging.Logger):
         """
         handler = logging.handlers.RotatingFileHandler(
             config["file"],
-            maxBytes=LOG_MAX_FILE_SIZE,
-            backupCount=LOG_BACKUP_COUNT,
+            maxBytes=self.config.log_max_file_size,
+            backupCount=self.config.log_backup_count,
             encoding="utf-8",
         )
         handler.setLevel(config["level"])
         handler.setFormatter(config["formatter"])
 
-        if self.async_logging:
+        if self.config.async_logging:
             handler = AsyncHandler(handler, max_queue_size=10000)
 
         # self._handlers[f"{config['name']}_file"] = handler
@@ -293,10 +276,10 @@ class MetaLogger(logging.Logger):
             Configured console handler
         """
         handler = logging.StreamHandler(stream=sys.stdout)
-        handler.setLevel(self.log_level)
+        handler.setLevel(self.config.log_level)
         handler.setFormatter(self._main_formatter)
 
-        if self.async_logging:
+        if self.config.async_logging:
             handler = AsyncHandler(handler, max_queue_size=10000)
 
         # self._handlers["console"] = handler
@@ -304,7 +287,19 @@ class MetaLogger(logging.Logger):
 
         # Create logger for this handler
         logger = logging.getLogger()
-        logger.setLevel(self.log_level)
+        logger.setLevel(self.config.log_level)
         logger.addHandler(handler)
         self._loggers.__setitem__("console", logger)
         return handler
+
+
+def get_logger(name: str = "main") -> logging.Logger:
+    """Get a specialized logger by name.
+
+    Args:
+        name: Logger name
+
+    Returns:
+        Logger instance
+    """
+    return logging.getLogger(name)

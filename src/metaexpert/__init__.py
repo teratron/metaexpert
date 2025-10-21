@@ -10,7 +10,6 @@ from metaexpert.config import (
     BACKTEST_END_DATE,
     BACKTEST_START_DATE,
     DEFAULT_CONTRACT_TYPE,
-    DEFAULT_LOG_LEVEL,
     DEFAULT_MARGIN_MODE,
     DEFAULT_MARKET_TYPE,
     DEFAULT_POSITION_MODE,
@@ -20,6 +19,7 @@ from metaexpert.config import (
     LOG_CONSOLE_LOGGING,
     LOG_ERROR_FILE,
     LOG_FILE,
+    LOG_LEVEL,
     LOG_STRUCTURED_LOGGING,
     LOG_TRADE_FILE,
 )
@@ -58,7 +58,7 @@ class MetaExpert(Events):
         position_mode: str = DEFAULT_POSITION_MODE,
         #
         # --- Logging Configuration ---
-        log_level: str = DEFAULT_LOG_LEVEL,
+        log_level: str = LOG_LEVEL,
         log_file: str = LOG_FILE,
         trade_log_file: str = LOG_TRADE_FILE,
         error_log_file: str = LOG_ERROR_FILE,
@@ -100,7 +100,7 @@ class MetaExpert(Events):
         #     log_structured_logging=structured_logging,
         #     log_async_logging=async_logging,
         # )
-        # self.logger: Logger = get_logger(logger_config)
+
         # Configure logging using the enhanced expert integration
         self.logger: Logger = MetaLogger(
             log_level=log_level,

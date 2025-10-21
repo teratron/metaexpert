@@ -2,7 +2,29 @@
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from metaexpert.config import LOG_NAME
+from metaexpert.config import (
+    LOG_ASYNC_LOGGING,
+    LOG_BACKUP_COUNT,
+    LOG_CONSOLE_LOGGING,
+    LOG_DETAILED_FORMAT,
+    LOG_DIRECTORY,
+    LOG_ERROR_FILE,
+    LOG_ERROR_LEVEL,
+    LOG_FALLBACK_FORMAT,
+    LOG_FILE,
+    LOG_FORMAT,
+    LOG_LEVEL,
+    LOG_LEVEL_CRITICAL,
+    LOG_LEVEL_DEBUG,
+    LOG_LEVEL_ERROR,
+    LOG_LEVEL_INFO,
+    LOG_LEVEL_WARNING,
+    LOG_MAX_FILE_SIZE,
+    LOG_NAME,
+    LOG_STRUCTURED_LOGGING,
+    LOG_TRADE_FILE,
+    LOG_TRADE_LEVEL,
+)
 
 
 class LoggerConfig(BaseModel):
@@ -10,57 +32,63 @@ class LoggerConfig(BaseModel):
 
     # Log levels
     log_level: str = Field(
-        default="DEBUG",
+        default=LOG_LEVEL,
         description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
     ).upper()
-    log_trade_level: str = Field(default="INFO", description="Trade-specific log level").upper()
+    log_trade_level: str = Field(
+        default=LOG_TRADE_LEVEL, description="Trade-specific log level"
+    ).upper()
     log_error_level: str = Field(
-        default="ERROR", description="Error-specific log level"
+        default=LOG_ERROR_LEVEL, description="Error-specific log level"
     ).upper()
 
     # File names
-    log_file: str = Field(default="expert.log", description="Main log file name")
+    log_file: str = Field(default=LOG_FILE, description="Main log file name")
     trade_log_file: str = Field(
-        default="trades.log", description="Trade-specific log file name"
+        default=LOG_TRADE_FILE, description="Trade-specific log file name"
     )
     error_log_file: str = Field(
-        default="errors.log", description="Error-specific log file name"
+        default=LOG_ERROR_FILE, description="Error-specific log file name"
     )
 
     # Directory configuration
-    log_directory: str = Field(default="logs", description="Directory for log files")
+    log_directory: str = Field(
+        default=LOG_DIRECTORY, description="Directory for log files"
+    )
 
     # File rotation settings
     log_max_file_size: int = Field(
-        default=10485760, description="Maximum log file size in bytes (default 10MB)"
+        default=LOG_MAX_FILE_SIZE,
+        description="Maximum log file size in bytes (default 10MB)",
     )
     log_backup_count: int = Field(
-        default=5, description="Number of backup log files to keep"
+        default=LOG_BACKUP_COUNT, description="Number of backup log files to keep"
     )
 
     # Format settings
     log_format: str = Field(
-        default="[%(asctime)s] %(levelname)s: %(name)s: %(message)s",
+        default=LOG_FORMAT,
         description="Standard log format",
     )
     log_detailed_format: str = Field(
-        default="[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s",
+        default=LOG_DETAILED_FORMAT,
         description="Detailed log format",
     )
     log_fallback_format: str = Field(
-        default="[%(asctime)s] %(levelname)s: (LOGGING-FALLBACK) %(message)s",
+        default=LOG_FALLBACK_FORMAT,
         description="Fallback log format",
     )
 
     # Enhanced configuration flags
-    log_console_logging: bool = Field(
-        default=True, description="Whether to output logs to console"
+    console_logging: bool = Field(
+        default=LOG_CONSOLE_LOGGING, description="Whether to output logs to console"
     )
-    log_structured_logging: bool = Field(
-        default=False, description="Whether to use JSON structured logging"
+    structured_logging: bool = Field(
+        default=LOG_STRUCTURED_LOGGING,
+        description="Whether to use JSON structured logging",
     )
-    log_async_logging: bool = Field(
-        default=False, description="Whether to use asynchronous logging"
+    async_logging: bool = Field(
+        default=LOG_ASYNC_LOGGING, description="Whether to use asynchronous logging"
     )
 
     # Logger name
@@ -70,7 +98,13 @@ class LoggerConfig(BaseModel):
     @classmethod
     def validate_log_level(cls, value):
         """Validate that log level is one of the allowed values."""
-        allowed_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        allowed_levels = {
+            LOG_LEVEL_DEBUG,
+            LOG_LEVEL_INFO,
+            LOG_LEVEL_WARNING,
+            LOG_LEVEL_ERROR,
+            LOG_LEVEL_CRITICAL,
+        }
         if value.upper() not in allowed_levels:
             raise ValueError(f"Log level must be one of: {', '.join(allowed_levels)}")
         return value.upper()
