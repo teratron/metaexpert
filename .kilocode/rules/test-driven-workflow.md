@@ -15,11 +15,11 @@ This document outlines the test-driven development (TDD) workflow for this Pytho
 
 The project uses a modern Python stack managed by `pyproject.toml`. Adhere strictly to the following commands for all operations:
 
-- **Environment Activation**: Before running any quality checks, activate the virtual environment: `.venv/Scripts/activate`
-- **Dependency Management**: Use `uv` for all package installation and management (e.g., `uv add <package>`).
+- **Environment Activation**: Before running any quality checks, activate the virtual environment: `.venv/Scripts/activate` or `source .venv/bin/activate`
+- **Dependency Management**: Use `uv` for all package installation and management (e.g., `uv add <package>`, `uv remove <package>`, `uv sync`, `uv lock`, `uv check`, `uv clean`, `uv build`, `uv run`, `uv format`, `uv version`, `uv help`).
 - **Code Quality & Verification (Run before every completion)**:
-    1. Format Code: `ruff format .`
-    2. Lint and Autofix: `ruff check . --fix`
-    3. Static Type Check: `pyright`
-    4. Run Automated Tests: `pytest`
+    1. Format Code: `uv run ruff format .`
+    2. Lint and Autofix: `uv run ruff check . --fix`
+    3. Static Type Check: `uv run pyright`
+    4. Run Automated Tests: `uv run pytest`
 - **Package Building**: When ready for distribution, build the package using `uv build`.

@@ -2,16 +2,17 @@ import asyncio
 import inspect
 from asyncio import Task
 from enum import Enum
-from logging import Logger
 from threading import Thread
 from types import ModuleType
 from typing import Self
+
+import structlog
 
 from metaexpert.core._event_handler import EventHandler
 from metaexpert.logger import get_logger
 from metaexpert.websocket import WebSocketClient
 
-logger: Logger = get_logger()
+logger: structlog.stdlib.BoundLogger = get_logger("event_type")
 
 
 class EventType(Enum):

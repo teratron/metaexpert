@@ -1,6 +1,7 @@
 from collections.abc import Callable, Coroutine
-from logging import Logger
 from typing import Any
+
+import structlog
 
 from metaexpert.config import (
     BREAKEVEN_PCT,
@@ -44,7 +45,7 @@ class Events(Expert):
     trading, transactions, ticks, bars, timers, and book events.
     """
 
-    logger: Logger = get_logger()
+    logger: structlog.stdlib.BoundLogger = get_logger("events")
 
     def on_init(
         self,

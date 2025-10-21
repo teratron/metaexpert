@@ -7,14 +7,12 @@ import threading
 
 
 class AsyncHandler(logging.Handler):
-    """
-    Asynchronous log handler that wraps a synchronous handler to prevent
+    """Asynchronous log handler that wraps a synchronous handler to prevent
     blocking the main thread.
     """
 
     def __init__(self, handler: logging.Handler, max_queue_size: int = 10000):
-        """
-        Initialize the async log handler.
+        """Initialize the async log handler.
 
         Args:
             handler: The synchronous handler to wrap (e.g., FileHandler).
@@ -50,8 +48,7 @@ class AsyncHandler(logging.Handler):
                 traceback.print_exc(file=sys.stderr)
 
     def emit(self, record: logging.LogRecord) -> None:
-        """
-        Emit a log record asynchronously by adding it to the queue.
+        """Emit a log record asynchronously by adding it to the queue.
         If the queue is full, the record is dropped.
         """
         if not self.shutdown_event.is_set():

@@ -1,12 +1,13 @@
 from datetime import datetime, timedelta
 from enum import Enum
-from logging import Logger
 from typing import Self
+
+import structlog
 
 from metaexpert.config import DEFAULT_TIMEFRAME
 from metaexpert.logger import get_logger
 
-logger: Logger = get_logger()
+logger: structlog.stdlib.BoundLogger = get_logger("timeframe")
 
 
 class Timeframe(Enum):

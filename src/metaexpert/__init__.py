@@ -1,9 +1,10 @@
 """MetaExpert: A Python-based Expert Trading System."""
 
 from datetime import datetime
-from logging import Logger
 from pathlib import Path
 from types import ModuleType
+
+from structlog.stdlib import BoundLogger
 
 # from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import (
@@ -90,7 +91,7 @@ class MetaExpert(Events):
             async_logging (bool): Whether to use asynchronous logging.
         """
         # Configure logging using the enhanced expert integration
-        self.logger: Logger = MetaLogger(
+        self.logger: BoundLogger = MetaLogger.create(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
