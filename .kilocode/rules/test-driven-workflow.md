@@ -22,4 +22,5 @@ The project uses a modern Python stack managed by `pyproject.toml`. Adhere stric
     2. Lint and Autofix: `uv run ruff check . --fix`
     3. Static Type Check: `uv run pyright`
     4. Run Automated Tests: `uv run pytest`
+    5. Treat Warnings as Errors: All warnings generated during testing must be treated as errors and resolved immediately.
 - **Package Building**: When ready for distribution, build the package using `uv build`.
