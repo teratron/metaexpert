@@ -2,6 +2,8 @@
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from metaexpert.config import LOG_NAME
+
 
 class LoggerConfig(BaseModel):
     """Configuration for MetaExpert logger."""
@@ -10,11 +12,11 @@ class LoggerConfig(BaseModel):
     log_level: str = Field(
         default="DEBUG",
         description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
-    )
-    log_trade_level: str = Field(default="INFO", description="Trade-specific log level")
+    ).upper()
+    log_trade_level: str = Field(default="INFO", description="Trade-specific log level").upper()
     log_error_level: str = Field(
         default="ERROR", description="Error-specific log level"
-    )
+    ).upper()
 
     # File names
     log_file: str = Field(default="expert.log", description="Main log file name")
@@ -62,7 +64,7 @@ class LoggerConfig(BaseModel):
     )
 
     # Logger name
-    log_name: str = Field(default="MetaExpert", description="Name of the logger")
+    log_name: str = Field(default=LOG_NAME, description="Name of the logger")
 
     @field_validator("log_level")
     @classmethod

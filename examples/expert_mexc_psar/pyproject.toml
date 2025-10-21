@@ -1,0 +1,18 @@
+[project]
+name = "expert-mexc-psar"
+version = "0.1.0"
+description = "Parabolic SAR expert for OKX"
+authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "metaexpert",
+    "python-dotenv",
+]
+
+[tool.uv.sources]
+metaexpert = { workspace = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

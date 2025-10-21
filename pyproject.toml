@@ -20,6 +20,7 @@ keywords = [
     "binance",
     "bybit",
     "okx",
+    "mexc",
     "technical analysis",
     "finance",
     "investment",
@@ -27,7 +28,7 @@ keywords = [
 dependencies = [
     "structlog>=25.4.0",
     "pydantic>=2.12.3",
-    "typer>=0.19.2",
+    "typer>=0.20.0",
     "websockets>=15.0.1",
 ]
 
@@ -78,6 +79,7 @@ members = [
     "examples/expert_binance_ema",
     "examples/expert_bybit_rsi",
     "examples/expert_okx_macd",
+    "examples/expert_mexc_psar",
 ]
 
 [tool.ruff]
