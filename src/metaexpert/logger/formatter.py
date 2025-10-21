@@ -21,32 +21,6 @@ class MainFormatter(logging.Formatter):
         self.include_extra = include_extra
         self.timestamp_format = timestamp_format
 
-        # Standard log record attributes to exclude from extra fields
-        self.reserved_attrs = {
-            "name",
-            "msg",
-            "args",
-            "levelname",
-            "levelno",
-            "pathname",
-            "filename",
-            "module",
-            "exc_info",
-            "exc_text",
-            "stack_info",
-            "lineno",
-            "funcName",
-            "created",
-            "msecs",
-            "relativeCreated",
-            "thread",
-            "threadName",
-            "processName",
-            "process",
-            "getMessage",
-            "message",
-        }
-
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record as structured JSON.
 
@@ -160,11 +134,36 @@ class MainFormatter(logging.Formatter):
         Returns:
             Dictionary of extra fields
         """
-        extra = {}
-        for key, value in record.__dict__.items():
-            if key not in self.reserved_attrs:
-                extra[key] = value
-        return extra
+        # Standard log record attributes to exclude from extra fields
+        reserved_attrs = {
+            "name",
+            "msg",
+            "args",
+            "levelname",
+            "levelno",
+            "pathname",
+            "filename",
+            "module",
+            "exc_info",
+            "exc_text",
+            "stack_info",
+            "lineno",
+            "funcName",
+            "created",
+            "msecs",
+            "relativeCreated",
+            "thread",
+            "threadName",
+            "processName",
+            "process",
+            "getMessage",
+            "message",
+        }
+        return {
+            key: value
+            for key, value in record.__dict__.items()
+            if key not in reserved_attrs
+        }
 
     @staticmethod
     def _json_serializer(obj: Any) -> str:

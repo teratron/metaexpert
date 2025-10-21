@@ -18,8 +18,8 @@ class AsyncHandler(logging.Handler):
 
         Args:
             handler: The synchronous handler to wrap (e.g., FileHandler).
-            max_queue_size: The maximum size of the log queue. If the queue
-                            is full, new log records will be dropped.
+            max_queue_size: The maximum size of the log queue.
+                            If the queue is full, new log records will be dropped.
         """
         super().__init__()
         self.queue: queue.Queue[logging.LogRecord | None] = queue.Queue(
