@@ -34,7 +34,7 @@ from metaexpert.core.event_type import EventType
 from metaexpert.core.expert import Expert
 from metaexpert.core.size_type import SizeType
 from metaexpert.core.timeframe import Timeframe
-from metaexpert.logger import get_logger
+from metaexpert.logger import BoundLogger, get_logger
 
 
 class Events(Expert):
@@ -45,7 +45,7 @@ class Events(Expert):
     trading, transactions, ticks, bars, timers, and book events.
     """
 
-    logger: structlog.stdlib.BoundLogger = get_logger("events")
+    logger: BoundLogger = get_logger("Events")
 
     def on_init(
         self,

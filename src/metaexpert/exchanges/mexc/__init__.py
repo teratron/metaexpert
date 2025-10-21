@@ -1,11 +1,11 @@
 from typing import Any
 
 from metaexpert.exchanges import (
-    # ContractType,
-    # MarginMode,
-    # MarketType,
+    #ContractType,
+    #MarginMode,
+    #MarketType,
     MetaExchange,
-    # PositionMode,
+    #PositionMode,
 )
 
 
@@ -14,7 +14,6 @@ class Adapter(MetaExchange):
 
     def __init__(self) -> None:
         """Initializes the MEXC class."""
-        super(MetaExchange).__init__()
         self.client = self._create_client()
 
     def _create_client(self) -> Any:

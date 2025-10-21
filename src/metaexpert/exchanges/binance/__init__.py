@@ -3,10 +3,10 @@ from typing import Self
 
 from metaexpert.exchanges import (
     ContractType,
-    # MarginMode,
+    #MarginMode,
     MarketType,
     MetaExchange,
-    # PositionMode,
+    #PositionMode,
 )
 from metaexpert.exchanges.binance.config import (
     FUTURES_MODULE_INVERSE,
@@ -23,9 +23,8 @@ from metaexpert.utils.package import install_package
 class Adapter(MetaExchange):
     """Implementation for the Binance exchange."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initializes the Binance class."""
-        super(MetaExchange).__init__()
         self.client = self._create_client()
 
     def _create_client(self) -> Self:

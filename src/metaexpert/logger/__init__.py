@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, TypedDict
 
 import structlog
+from structlog.stdlib import BoundLogger
 
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.config import LoggerConfig
@@ -27,7 +28,7 @@ class HandlerConfig(TypedDict):
     formatter: logging.Formatter
 
 
-class MetaLogger(structlog.stdlib.BoundLogger):
+class MetaLogger(BoundLogger):
     """MetaLogger class for enhanced logging functionality using structlog.
 
     This class extends the standard Python Logger to provide MetaExpert-specific

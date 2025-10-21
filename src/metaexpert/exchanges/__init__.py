@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from importlib import import_module
 from typing import Self
 
@@ -13,7 +12,6 @@ from metaexpert.core import (
 )
 
 
-@dataclass
 class MetaExchange(Trade, Market, ABC):
     """Abstract base class for stock exchanges."""
 

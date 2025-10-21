@@ -2,9 +2,7 @@ import asyncio
 import time
 from collections.abc import Callable
 
-import structlog.stdlib
-
-from metaexpert.logger import get_logger
+from metaexpert.logger import BoundLogger, get_logger
 
 
 class Timer:
@@ -14,7 +12,7 @@ class Timer:
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0
         self._is_running: bool = False
-        self.logger: structlog.stdlib.BoundLogger = get_logger("timer")
+        self.logger: BoundLogger = get_logger("Timer")
 
     async def start(self) -> None:
         self._is_running = True

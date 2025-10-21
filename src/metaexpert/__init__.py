@@ -184,7 +184,7 @@ class MetaExpert(Events):
             ws_url = self.client.get_websocket_url(
                 self.symbol, self.timeframe.get_name()
             )
-            print(f"Websocket URL: {ws_url}")
+            self.logger.info("Websocket URL: {ws_url}", ws_url=ws_url)
             EventType.processing(ws_url)
 
         except KeyboardInterrupt:

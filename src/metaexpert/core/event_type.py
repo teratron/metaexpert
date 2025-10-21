@@ -6,13 +6,9 @@ from threading import Thread
 from types import ModuleType
 from typing import Self
 
-import structlog
-
 from metaexpert.core._event_handler import EventHandler
-from metaexpert.logger import get_logger
+from metaexpert.logger import BoundLogger, get_logger
 from metaexpert.websocket import WebSocketClient
-
-logger: structlog.stdlib.BoundLogger = get_logger("event_type")
 
 
 class EventType(Enum):
@@ -124,6 +120,7 @@ class EventType(Enum):
     def __new__(cls, value: dict):
         """Create a new enum member with a copy of the provided value."""
         obj = object.__new__(cls)
+        cls.logger: BoundLogger = get_logger("EventType")
         # Create a copy of the dictionary and ensure mutable lists are independent
         obj._value_ = {
             k: v if not isinstance(v, list) else [] for k, v in value.items()
@@ -201,11 +198,13 @@ class EventType(Enum):
 
         if len(callback) < max_callbacks:
             callback.append(getattr(*args))
-            logger.debug(
+            cls.logger.debug(
                 "Registering callback for '%s:%s()'", event.value.get("name"), args[1]
             )
         else:
-            logger.warning("Too many callbacks for '%s': %d", name, max_callbacks + 1)
+            cls.logger.warning(
+                "Too many callbacks for '%s': %d", name, max_callbacks + 1
+            )
 
     def push_instance(self, instance: EventHandler) -> None:
         """Push an instance to the process.
@@ -214,11 +213,13 @@ class EventType(Enum):
         It is used to register instances that need to be notified when the event occurs.
         """
         if not isinstance(self.value.get("instance"), list):
-            logger.error("Instances for '%s' are not a list", self.value.get("name"))
+            self.logger.error(
+                "Instances for '%s' are not a list", self.value.get("name")
+            )
             return
 
         self.value["instance"].append(instance)
-        logger.debug("Instance added for '%s'", self.value.get("name"))
+        self.logger.debug("Instance added for '%s'", self.value.get("name"))
 
     def pop_instance(self) -> EventHandler | None:
         """Pop an instance from the process.
@@ -227,12 +228,14 @@ class EventType(Enum):
         It is used to unregister instances that no longer need to be notified when the event occurs.
         """
         if not isinstance(self.value.get("instance"), list):
-            logger.error("Instances for '%s' are not a list", self.value.get("name"))
+            self.logger.error(
+                "Instances for '%s' are not a list", self.value.get("name")
+            )
             return None
 
         if self.value["instance"]:
             instance = self.value["instance"].pop()
-            logger.debug(
+            self.logger.debug(
                 "Instance removed for '%s': %s", self.value.get("name"), instance
             )
             return instance
@@ -246,11 +249,13 @@ class EventType(Enum):
         It returns True if there are instances, otherwise False.
         """
         if not isinstance(self.value.get("instance"), list):
-            logger.error("Instances for '%s' are not a list", self.value.get("name"))
+            self.logger.error(
+                "Instances for '%s' are not a list", self.value.get("name")
+            )
             return False
 
         has_instances = bool(self.value["instance"])
-        logger.debug(
+        self.logger.debug(
             "Process '%s' has instances: %s", self.value.get("name"), has_instances
         )
         return has_instances
@@ -273,16 +278,18 @@ class EventType(Enum):
         """
         callback = self.value.get("callback")
         if not isinstance(callback, list):
-            logger.error("Callbacks for '%s' are not a list", self.value.get("name"))
+            self.logger.error(
+                "Callbacks for '%s' are not a list", self.value.get("name")
+            )
             return
 
         for func in callback:
             func()
-            logger.debug("Launch task for '%s'", self.value.get("name"))
+            self.logger.debug("Launch task for '%s'", self.value.get("name"))
 
         if "is_done" in self.value and not self.value.get("is_done"):
             self.value["is_done"] = True
-            logger.debug("Process '%s' is done", self.value.get("name"))
+            self.logger.debug("Process '%s' is done", self.value.get("name"))
 
     async def _run_async(self) -> None:
         """Run the process asynchronously.
@@ -291,10 +298,12 @@ class EventType(Enum):
         """
         callback = self.value.get("callback")
         if not isinstance(callback, list):
-            logger.error("Callbacks for '%s' are not a list", self.value.get("name"))
+            self.logger.error(
+                "Callbacks for '%s' are not a list", self.value.get("name")
+            )
             return
 
-        logger.debug("Launch task for '%s(s)'", self.value.get("name"))
+        self.logger.debug("Launch task for '%s(s)'", self.value.get("name"))
         tasks = self._get_tasks() or []
         await asyncio.gather(*tasks)
 
@@ -306,7 +315,9 @@ class EventType(Enum):
         """
         callback = self.value.get("callback")
         if not isinstance(callback, list):
-            logger.error("Callbacks for '%s' are not a list", self.value.get("name"))
+            self.logger.error(
+                "Callbacks for '%s' are not a list", self.value.get("name")
+            )
             return None
 
         tasks: list[Task] = []
@@ -355,7 +366,7 @@ class EventType(Enum):
                 if isinstance(task, list):
                     tasks.extend(task)
                 else:
-                    logger.error(
+                    cls.logger.error(
                         "Failed to gather tasks for '%s'", item.value.get("name")
                     )
                     return

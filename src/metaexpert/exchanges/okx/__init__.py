@@ -1,11 +1,11 @@
 from typing import Any
 
 from metaexpert.exchanges import (
-    # ContractType,
-    # MarginMode,
-    # MarketType,
+    ContractType,
+    MarginMode,
+    MarketType,
     MetaExchange,
-    # PositionMode,
+    PositionMode,
 )
 from metaexpert.exchanges.okx.config import (
     FUTURES_WS_BASE_URL,
@@ -20,7 +20,6 @@ class Adapter(MetaExchange):
 
     def __init__(self) -> None:
         """Initializes the OKX class."""
-        super(MetaExchange).__init__()
         self.client = self._create_client()
 
     def _create_client(self) -> Any:

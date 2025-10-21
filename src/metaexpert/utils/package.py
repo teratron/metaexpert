@@ -5,9 +5,9 @@ from pathlib import Path
 
 from packaging.version import parse as parse_version
 
-from metaexpert.logger import get_logger
+from metaexpert.logger import BoundLogger, get_logger
 
-logger = get_logger()
+logger: BoundLogger = get_logger(__name__)
 
 
 def get_python_path() -> str | None:
@@ -187,7 +187,7 @@ def is_package_installed(name: str) -> bool:
         return result.returncode == 0
     except Exception as e:
         logger.warning("Error checking if package '%s' is installed: %s", name, e)
-        print(traceback.format_exc())
+        logger.error("Exception occurred", traceback=traceback.format_exc())
         return False
 
 

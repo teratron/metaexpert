@@ -32,6 +32,7 @@ This procedure is executed as the final step after all development, feature inte
 
 5. **Create Annotated Git Tag**: Tag the release commit with the corresponding version number. The tag must be annotated with a release summary.
     * **Command:** `git tag -a vX.Y.Z -m "Release vX.Y.Z"`
+    * **Note:** The command `git tag -a vX.Y.Z -m "Release vX.Y.Z"` should be applied exclusively for MAJOR and MINOR version updates. For PATCH updates, creating an annotated Git tag is not required.
 
 6. **Push to Remote**: Push the release commit and the new tag to the `main` (or `master`) branch of the remote repository to finalize the release.
     * **Command:** `git push`

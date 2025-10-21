@@ -1,21 +1,26 @@
-""""""
+"""WebSocket client with MetaLogger integration."""
 
 import asyncio
 import json
-import logging
 
 import websockets
 
-logger = logging.getLogger(__name__)
+from metaexpert.logger import BoundLogger, get_logger
 
 
 class WebSocketClient:
-    def __init__(self, url: str, name: str = "ws", reconnect_delay: int = 5):
+    def __init__(
+        self,
+        url: str,
+        name: str = "ws",
+        reconnect_delay: int = 5,
+    ):
         self.url = url
         self.name = name
         self.reconnect_delay = reconnect_delay
         self.ws = None
         self.running = False
+        self.logger: BoundLogger = get_logger("WebSocketClient")
 
     async def connect(self):
         while True:
@@ -24,12 +29,12 @@ class WebSocketClient:
                     self.url, ping_interval=20, ping_timeout=10
                 ) as ws:
                     self.ws = ws
-                    logger.info(f"[{self.name}] Connected to {self.url}")
+                    self.logger.info("Connected to {url}", url=self.url, name=self.name)
                     await self.on_open()
                     async for message in ws:
                         await self.on_message(message)
             except Exception as e:
-                logger.error(f"[{self.name}] Connection error: {e}")
+                self.logger.error("Connection error", error=str(e), name=self.name)
                 await self.on_close()
                 await asyncio.sleep(self.reconnect_delay)
 

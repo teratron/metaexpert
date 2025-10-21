@@ -2,12 +2,8 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import Self
 
-import structlog
-
 from metaexpert.config import DEFAULT_TIMEFRAME
-from metaexpert.logger import get_logger
-
-logger: structlog.stdlib.BoundLogger = get_logger("timeframe")
+from metaexpert.logger import BoundLogger, get_logger
 
 
 class Timeframe(Enum):
@@ -112,6 +108,20 @@ class Timeframe(Enum):
         "delta": timedelta(weeks=1),
     }
 
+    def __new__(cls, value: dict):
+        """Create a new enum member with a copy of the provided value."""
+        obj = object.__new__(cls)
+        cls.logger: BoundLogger = get_logger("Timeframe")
+        # Create a copy of the dictionary and ensure mutable lists are independent
+        obj._value_ = {
+            k: v if not isinstance(v, list) else [] for k, v in value.items()
+        }
+        return obj
+
+    # def __init__(self, *args) -> None:
+    #     super().__init__()
+    #     self.logger: BoundLogger = get_logger("Timeframe")
+
     def get_name(self) -> str:
         """Get the string representation of the timeframe name."""
         name = self.value["name"]
@@ -179,14 +189,18 @@ class Timeframe(Enum):
         """Calculates the start of the next candle for m, h, d timeframes."""
         timeframe_delta = self.get_delta()
         if not isinstance(timeframe_delta, timedelta):
-            logger.error("Invalid timedelta value for timeframe: %s", self.get_name())
+            self.logger.error(
+                "Invalid timedelta value for timeframe: %s", self.get_name()
+            )
             raise ValueError(
                 f"Invalid timedelta value for timeframe: {self.get_name()}"
             )
 
         timeframe_seconds = timeframe_delta.total_seconds()
         if timeframe_seconds <= 0:
-            logger.error("Timeframe duration must be positive: %s", self.get_name())
+            self.logger.error(
+                "Timeframe duration must be positive: %s", self.get_name()
+            )
             raise ValueError(f"Timeframe duration must be positive: {self.get_name()}")
 
         now_timestamp = now.timestamp()

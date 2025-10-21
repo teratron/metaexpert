@@ -1,18 +1,16 @@
 """Trade"""
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
-from metaexpert.logger import get_logger
-
-logger = get_logger()
+from metaexpert.logger import BoundLogger, get_logger
 
 
-@dataclass
 class Trade(ABC):
     """Trade"""
 
-    # def __init__(self, symbol: str | None, **props: dict[str, Any]) -> None:
+    def __init__(self, symbol: str, **kwargs) -> None:
+        self.logger: BoundLogger = get_logger("Trade")
+
     #     # self.symbol: str = symbol if symbol else ""
     #     # self._lots: float = props.__getattribute__("lots")
     #     # self._stop_loss: float = props.get("stop_loss_pct", 0)
