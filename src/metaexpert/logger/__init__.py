@@ -9,7 +9,7 @@ import logging
 import logging.handlers
 import sys
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any, Self, TypedDict
 
 import structlog
 from structlog.stdlib import BoundLogger
@@ -32,8 +32,10 @@ class MetaLogger(BoundLogger):
     """MetaLogger class for enhanced logging functionality using structlog.
 
     This class extends the standard Python Logger to provide MetaExpert-specific
-    logging features including structured logging with structlog, asynchronous logging,
-    and specialized handlers for different types of log messages.
+    logging features, including structured logging with structlog, asynchronous logging,
+    and specialized handlers for different types of log messages. It streamlines
+    the configuration of structlog processors and logging handlers by centralizing
+    their creation and setup logic. It centralizes the configuration of structlog processors and logging handlers, ensuring consistent and efficient logging across the application.
     """
 
     def __init__(
@@ -76,9 +78,33 @@ class MetaLogger(BoundLogger):
 
         # Initialize the parent BoundLogger first
         # Configure structlog processors based on structured_logging setting
-        if self.config.structured_logging:
+        processors = self._get_structlog_processors(self.config.structured_logging)
+        super().__init__(logger, processors, context)
+        self._loggers: dict[str, BoundLogger] = {}
+        self._handlers: dict[str, logging.Handler] = {}
+        self._configured = False
+
+        # Initialize the logging system
+        _root_config: dict[str, Any] = self.configure()
+
+    @staticmethod
+    def _get_structlog_processors(structured_logging: bool) -> list[Any]:
+        """Return a list of structlog processors based on the structured_logging flag.
+
+        This static method centralizes the logic for selecting the appropriate
+        structlog processors depending on whether structured (JSON) or human-readable
+        logging is configured.
+
+        Args:
+            structured_logging: Flag indicating if structured logging should be used.
+
+        Returns:
+            A list of structlog processor functions configured for the specified
+            logging format (JSON or human-readable).
+        """
+        if structured_logging:
             # JSON structured logging processors
-            processors = [
+            return [
                 structlog.contextvars.merge_contextvars,
                 structlog.stdlib.filter_by_level,
                 structlog.stdlib.add_logger_name,
@@ -92,7 +118,7 @@ class MetaLogger(BoundLogger):
             ]
         else:
             # Human-readable logging processors
-            processors = [
+            return [
                 structlog.contextvars.merge_contextvars,
                 structlog.stdlib.filter_by_level,
                 structlog.stdlib.add_logger_name,
@@ -103,16 +129,6 @@ class MetaLogger(BoundLogger):
                 structlog.processors.format_exc_info,
                 structlog.dev.ConsoleRenderer(),
             ]
-        super().__init__(logger, processors, context)
-        self._loggers: dict[str, structlog.stdlib.BoundLogger] = {}
-        self._handlers: dict[str, logging.Handler] = {}
-        self._configured = False
-
-        # Configure structlog with appropriate processors based on structured_logging setting
-        self._configure_structlog_processors()
-
-        # Initialize the logging system
-        _root_config: dict[str, Any] = self.configure()
 
     @classmethod
     def create(
@@ -124,8 +140,11 @@ class MetaLogger(BoundLogger):
         console_logging: bool,
         structured_logging: bool,
         async_logging: bool,
-    ):
+    ) -> Self:
         """Factory method to create a MetaLogger instance with proper initialization.
+
+        This method handles the complete setup of structlog processors and the underlying
+        standard Python logger, then returns a configured MetaLogger instance.
 
         Args:
             log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -135,6 +154,9 @@ class MetaLogger(BoundLogger):
             console_logging: Whether to output logs to console
             structured_logging: Whether to use JSON structured logging
             async_logging: Whether to use asynchronous logging
+
+        Returns:
+            MetaLogger: A fully configured MetaLogger instance
         """
         # Create config first
         config = LoggerConfig(
@@ -148,33 +170,7 @@ class MetaLogger(BoundLogger):
         )
 
         # Configure structlog processors first
-        if structured_logging:
-            # JSON structured logging processors
-            processors = [
-                structlog.contextvars.merge_contextvars,
-                structlog.stdlib.filter_by_level,
-                structlog.stdlib.add_logger_name,
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.PositionalArgumentsFormatter(),
-                structlog.processors.TimeStamper(fmt="iso", utc=True),
-                structlog.processors.StackInfoRenderer(),
-                structlog.processors.format_exc_info,
-                structlog.processors.UnicodeDecoder(),
-                structlog.processors.JSONRenderer(),
-            ]
-        else:
-            # Human-readable logging processors
-            processors = [
-                structlog.contextvars.merge_contextvars,
-                structlog.stdlib.filter_by_level,
-                structlog.stdlib.add_logger_name,
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.PositionalArgumentsFormatter(),
-                structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=True),
-                structlog.processors.StackInfoRenderer(),
-                structlog.processors.format_exc_info,
-                structlog.dev.ConsoleRenderer(),
-            ]
+        processors = cls._get_structlog_processors(structured_logging)
 
         # Create the standard logger
         std_logger = logging.getLogger(config.log_name)
@@ -201,12 +197,6 @@ class MetaLogger(BoundLogger):
             structured_logging=structured_logging,
             async_logging=async_logging,
         )
-
-    def _configure_structlog_processors(self) -> None:
-        """Configure structlog processors based on configuration."""
-        # This method is kept for compatibility but structlog is already configured in the factory method
-        # The processors are already set during initialization
-        pass
 
     def configure(self) -> dict[str, Any]:
         """Configure the logging system with enhanced options.
@@ -271,20 +261,20 @@ class MetaLogger(BoundLogger):
                 std_logger = logging.getLogger(f"{self.config.log_name}.{name}")
                 self._loggers[name] = structlog.wrap_logger(
                     std_logger,
-                    wrapper_class=structlog.stdlib.BoundLogger,
+                    wrapper_class=BoundLogger,
                 )
             return self._loggers.get(name) or structlog.get_logger(self.config.log_name)
         return structlog.get_logger(self.config.log_name)
 
-    def get_main_logger(self) -> structlog.stdlib.BoundLogger:
+    def get_main_logger(self) -> BoundLogger:
         """Get the main application logger."""
         return self.get_logger("main")
 
-    def get_trade_logger(self) -> structlog.stdlib.BoundLogger:
+    def get_trade_logger(self) -> BoundLogger:
         """Get the trade-specific logger."""
         return self.get_logger("trade")
 
-    def get_error_logger(self) -> structlog.stdlib.BoundLogger:
+    def get_error_logger(self) -> BoundLogger:
         """Get the error-specific logger."""
         return self.get_logger("error")
 
@@ -352,6 +342,65 @@ class MetaLogger(BoundLogger):
             ),
         ]
 
+    def _setup_handler_and_logger(
+        self,
+        handler: logging.Handler,
+        name: str,
+        level: str,
+        logger_name: str | None = None,
+        is_console: bool = False,
+    ) -> logging.Handler:
+        """Set up a handler and its associated logger.
+
+        This method configures a logging handler with the specified parameters,
+        including level, formatter, and optional asynchronous processing. It then
+        creates or retrieves a standard Python logger, associates the handler with it,
+        and wraps it with structlog for enhanced logging capabilities.
+
+        Args:
+            handler: The logging handler to configure.
+            name: Name for the handler (e.g., "main_file", "console").
+            level: Logging level for the handler.
+            logger_name: Name for the logger to associate (defaults to name).
+            is_console: Flag indicating if the handler is a console handler.
+
+        Returns:
+            The configured logging handler.
+        """
+        # Determine the formatter based on structured_logging setting
+        if self.config.structured_logging:
+            formatter = logging.Formatter("%(message)s")
+        else:
+            formatter = logging.Formatter(self.config.log_format)
+
+        handler.setLevel(level)
+        handler.setFormatter(formatter)
+
+        if self.config.async_logging:
+            handler = AsyncHandler(handler, max_queue_size=10000)
+
+        self._handlers.__setitem__(name, handler)
+
+        # Create logger for this handler
+        if is_console:
+            std_logger = logging.getLogger()
+        else:
+            std_logger = logging.getLogger(logger_name or name)
+
+        std_logger.setLevel(level)
+        std_logger.addHandler(handler)
+        if not is_console:  # Only set propagate to False for non-root loggers
+            std_logger.propagate = False
+
+        self._loggers.__setitem__(
+            logger_name or name,
+            structlog.wrap_logger(
+                std_logger,
+                wrapper_class=BoundLogger,
+            ),
+        )
+        return handler
+
     def _create_file_handler(self, config: HandlerConfig) -> logging.Handler:
         """Create a rotating file handler.
 
@@ -361,35 +410,18 @@ class MetaLogger(BoundLogger):
         Returns:
             Configured file handler
         """
-        handler = logging.handlers.RotatingFileHandler(
+        file_handler = logging.handlers.RotatingFileHandler(
             config["file"],
             maxBytes=self.config.log_max_file_size,
             backupCount=self.config.log_backup_count,
             encoding="utf-8",
         )
-        handler.setLevel(config["level"])
-        handler.setFormatter(config["formatter"])
-
-        if self.config.async_logging:
-            handler = AsyncHandler(handler, max_queue_size=10000)
-
-        # self._handlers[f"{config['name']}_file"] = handler
-        self._handlers.__setitem__(f"{config['name']}_file", handler)
-
-        # Create logger for this handler
-        logger = logging.getLogger(config["logger_name"])
-        logger.setLevel(config["level"])
-        logger.addHandler(handler)
-        logger.propagate = False
-        # self._loggers[config["name"]] = logger
-        self._loggers.__setitem__(
-            config["name"],
-            structlog.wrap_logger(
-                logger,
-                wrapper_class=structlog.stdlib.BoundLogger,
-            ),
+        return self._setup_handler_and_logger(
+            file_handler,
+            f"{config['name']}_file",
+            config["level"],
+            config["logger_name"],
         )
-        return handler
 
     def _create_console_handler(self) -> logging.Handler:
         """Create a console handler.
@@ -397,39 +429,21 @@ class MetaLogger(BoundLogger):
         Returns:
             Configured console handler
         """
-        handler = logging.StreamHandler(stream=sys.stdout)
-        handler.setLevel(self.config.log_level)
-
-        # Determine the format based on structured_logging setting
-        if self.config.structured_logging:
-            formatter = logging.Formatter("%(message)s")
-        else:
-            formatter = logging.Formatter(self.config.log_format)
-
-        handler.setFormatter(formatter)
-
-        if self.config.async_logging:
-            handler = AsyncHandler(handler, max_queue_size=10000)
-
-        # self._handlers["console"] = handler
-        self._handlers.__setitem__("console", handler)
-
-        # Create logger for this handler
-        logger = logging.getLogger()
-        logger.setLevel(self.config.log_level)
-        logger.addHandler(handler)
-        self._loggers.__setitem__(
+        console_handler = logging.StreamHandler(stream=sys.stdout)
+        return self._setup_handler_and_logger(
+            console_handler,
             "console",
-            structlog.wrap_logger(
-                logger,
-                wrapper_class=structlog.stdlib.BoundLogger,
-            ),
+            self.config.log_level,
+            "console",
+            is_console=True,
         )
-        return handler
 
 
 def get_logger(name: str = "main") -> structlog.stdlib.BoundLogger:
     """Get a specialized logger by name.
+
+    This is a convenience function that wraps structlog.get_logger() to provide
+    a consistent interface for obtaining loggers within the MetaExpert framework.
 
     Args:
         name: Logger name

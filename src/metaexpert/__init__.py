@@ -88,7 +88,7 @@ class MetaExpert(Events):
             async_logging (bool): Whether to use asynchronous logging.
         """
         # Configure logging using the enhanced expert integration
-        self.logger: BoundLogger = MetaLogger.create(
+        self.logger: BoundLogger = MetaLogger(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
