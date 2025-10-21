@@ -62,9 +62,6 @@ class MetaLogger(structlog.stdlib.BoundLogger):
             structured_logging: Whether to use JSON structured logging
             async_logging: Whether to use asynchronous logging
         """
-        # Initialize the parent BoundLogger first
-        super().__init__(logger, processors, context)
-
         # Configure the logging system using the config object
         self.config = LoggerConfig(
             log_level=log_level,
@@ -75,6 +72,37 @@ class MetaLogger(structlog.stdlib.BoundLogger):
             structured_logging=structured_logging,
             async_logging=async_logging,
         )
+
+        # Initialize the parent BoundLogger first
+        # Configure structlog processors based on structured_logging setting
+        if self.config.structured_logging:
+            # JSON structured logging processors
+            processors = [
+                structlog.contextvars.merge_contextvars,
+                structlog.stdlib.filter_by_level,
+                structlog.stdlib.add_logger_name,
+                structlog.stdlib.add_log_level,
+                structlog.stdlib.PositionalArgumentsFormatter(),
+                structlog.processors.TimeStamper(fmt="iso", utc=True),
+                structlog.processors.StackInfoRenderer(),
+                structlog.processors.format_exc_info,
+                structlog.processors.UnicodeDecoder(),
+                structlog.processors.JSONRenderer(),
+            ]
+        else:
+            # Human-readable logging processors
+            processors = [
+                structlog.contextvars.merge_contextvars,
+                structlog.stdlib.filter_by_level,
+                structlog.stdlib.add_logger_name,
+                structlog.stdlib.add_log_level,
+                structlog.stdlib.PositionalArgumentsFormatter(),
+                structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S", utc=True),
+                structlog.processors.StackInfoRenderer(),
+                structlog.processors.format_exc_info,
+                structlog.dev.ConsoleRenderer(),
+            ]
+        super().__init__(logger, processors, context)
         self._loggers: dict[str, structlog.stdlib.BoundLogger] = {}
         self._handlers: dict[str, logging.Handler] = {}
         self._configured = False

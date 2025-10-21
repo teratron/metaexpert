@@ -35,8 +35,12 @@ class LoggerConfig(BaseModel):
         default=LOG_LEVEL,
         description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
     )
-    log_trade_level: str = Field(default=LOG_TRADE_LEVEL, description="Trade-specific log level")
-    log_error_level: str = Field(default=LOG_ERROR_LEVEL, description="Error-specific log level")
+    log_trade_level: str = Field(
+        default=LOG_TRADE_LEVEL, description="Trade-specific log level"
+    )
+    log_error_level: str = Field(
+        default=LOG_ERROR_LEVEL, description="Error-specific log level"
+    )
 
     # File names
     log_file: str = Field(default=LOG_FILE, description="Main log file name")
