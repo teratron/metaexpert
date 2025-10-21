@@ -79,6 +79,8 @@ class Adapter(MetaExchange):
 
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:
         """Constructs the WebSocket URL for a given symbol and timeframe."""
+        # MEXC uses different streams for different market types
+        # Docs:
         base_url: str = ""
         match self.market_type:
             case MarketType.SPOT:

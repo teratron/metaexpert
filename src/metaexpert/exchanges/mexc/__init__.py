@@ -7,54 +7,34 @@ from metaexpert.exchanges import (
     MetaExchange,
     # PositionMode,
 )
-from metaexpert.exchanges.okx.config import (
-    FUTURES_WS_BASE_URL,
-    OPTION_WS_BASE_URL,
-    SPOT_WS_BASE_URL,
-    SWAP_WS_BASE_URL,
-)
 
 
 class Adapter(MetaExchange):
-    """Implementation for the OKX exchange."""
+    """Implementation for the MEXC exchange."""
 
     def __init__(self) -> None:
-        """Initializes the OKX class."""
+        """Initializes the MEXC class."""
         super(MetaExchange).__init__()
         self.client = self._create_client()
 
     def _create_client(self) -> Any:
-        """Initializes and returns the OKX client."""
-        # TODO: Implement OKX client initialization
+        """Initializes and returns the MEXC client."""
+        # TODO: Implement MEXC client initialization
         raise NotImplementedError
 
     def get_websocket_url(self, symbol: str, timeframe: str) -> str:
         """Constructs the WebSocket URL for a given symbol and timeframe."""
-        # OKX uses different streams for different market types
-        # Docs: https://www.okx.com/docs-v5/en/#websocket-api-public-channel-candlesticks
-        if self.market_type == "spot":
-            base_url = SPOT_WS_BASE_URL
-        elif self.market_type == "futures":
-            base_url = FUTURES_WS_BASE_URL
-        elif self.market_type == "swap":
-            base_url = SWAP_WS_BASE_URL
-        elif self.market_type == "option":
-            base_url = OPTION_WS_BASE_URL
-        else:
-            raise ValueError(
-                f"Unsupported market type for OKX WebSocket: {self.market_type}"
-            )
-
-        # OKX has specific format for kline subscription
-        return f"{base_url}/candle{timeframe}@{symbol}"
+        # MEXC uses different streams for different market types
+        # Docs:
+        return ""
 
     def get_balance(self) -> dict | float:
-        """Retrieves the account balance from OKX."""
+        """Retrieves the account balance from MEXC."""
         # TODO: Implement balance retrieval using self.client
         raise NotImplementedError
 
     def get_account(self) -> dict:
-        """Retrieves account information from OKX."""
+        """Retrieves account information from MEXC."""
         # TODO: Implement account info retrieval using self.client
         raise NotImplementedError
 
