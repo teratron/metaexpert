@@ -11,17 +11,6 @@ import sys
 from pathlib import Path
 from typing import Any, TypedDict
 
-# from metaexpert.config import (
-#     LOG_BACKUP_COUNT,
-#     LOG_DETAILED_FORMAT,
-#     LOG_DIRECTORY,
-#     LOG_ERROR_LEVEL,
-#     LOG_FALLBACK_FORMAT,
-#     LOG_FORMAT,
-#     LOG_MAX_FILE_SIZE,
-#     LOG_NAME,
-#     LOG_TRADE_LEVEL,
-# )
 from metaexpert.logger.async_handler import AsyncHandler
 from metaexpert.logger.config import LoggerConfig
 from metaexpert.logger.formatter import ErrorFormatter, MainFormatter, TradeFormatter

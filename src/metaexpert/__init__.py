@@ -27,8 +27,8 @@ from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import MetaLogger
 
-#from metaexpert.logger import get_logger
-#from metaexpert.logger.config import LoggerConfig
+# from metaexpert.logger import get_logger
+# from metaexpert.logger.config import LoggerConfig
 
 
 class MetaExpert(Events):
@@ -107,7 +107,7 @@ class MetaExpert(Events):
             log_file=log_file,
             trade_log_file=trade_log_file,
             error_log_file=error_log_file,
-            log_to_console=log_to_console,
+            console_logging=log_to_console,
             structured_logging=structured_logging,
             async_logging=async_logging,
         )
