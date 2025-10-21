@@ -28,9 +28,6 @@ from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import MetaLogger
 
-# from metaexpert.logger import get_logger
-# from metaexpert.logger.config import LoggerConfig
-
 
 class MetaExpert(Events):
     """Expert trading system"""
