@@ -4,7 +4,7 @@ This module provides a production-ready logging system built on structlog,
 offering structured logging, context management, and specialized handlers.
 
 Quick Start:
-    >>> from metaexpert.logger import setup_logging, get_logger, LoggerConfig
+    >>> from metaexpert.logger2 import setup_logging, get_logger, LoggerConfig
     >>>
     >>> # Initialize logging system
     >>> config = LoggerConfig(log_level="INFO")
@@ -19,7 +19,7 @@ Quick Start:
     >>> logger.info("processing trade", price=50000)
 
 Context Management:
-    >>> from metaexpert.logger import log_context, get_logger
+    >>> from metaexpert.logger2 import log_context, get_logger
     >>>
     >>> logger = get_logger(__name__)
     >>> with log_context(strategy_id=1001, symbol="ETHUSDT"):
@@ -27,7 +27,7 @@ Context Management:
     >>>     # All logs in this block will include strategy_id and symbol
 
 Trade Logging:
-    >>> from metaexpert.logger import get_trade_logger, trade_context
+    >>> from metaexpert.logger2 import get_trade_logger, trade_context
     >>>
     >>> trade_logger = get_trade_logger(strategy_id=1001)
     >>> with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):

@@ -1,6 +1,6 @@
 """Custom formatters for MetaExpert logger."""
 
-from typing import Any
+from typing import Any, MutableMapping
 
 import structlog
 from structlog.dev import ConsoleRenderer
@@ -9,21 +9,9 @@ from structlog.dev import ConsoleRenderer
 class MetaExpertConsoleRenderer(ConsoleRenderer):
     """Enhanced console renderer with custom styling."""
 
-    def __init__(self, colors: bool = True, **kwargs):
-        """Initialize renderer with color support."""
-        super().__init__(colors=colors, **kwargs)
-
-        # Custom color scheme
-        if colors:
-            self._level_to_color.update(
-                {
-                    "trade": self._colorama.Fore.GREEN,
-                    "position": self._colorama.Fore.CYAN,
-                    "order": self._colorama.Fore.YELLOW,
-                }
-            )
-
-    def __call__(self, logger: Any, name: str, event_dict: dict[str, Any]) -> str:
+    def __call__(
+        self, logger: Any, name: str, event_dict: MutableMapping[str, Any]
+    ) -> str:
         """Render log entry with custom formatting."""
         # Extract trade-specific fields for special formatting
         if event_dict.get("event_type") == "trade":
@@ -31,7 +19,7 @@ class MetaExpertConsoleRenderer(ConsoleRenderer):
 
         return super().__call__(logger, name, event_dict)
 
-    def _format_trade_event(self, event_dict: dict[str, Any]) -> str:
+    def _format_trade_event(self, event_dict: MutableMapping[str, Any]) -> str:
         """Format trade events specially."""
         symbol = event_dict.get("symbol", "???")
         side = event_dict.get("side", "???")
@@ -40,16 +28,8 @@ class MetaExpertConsoleRenderer(ConsoleRenderer):
 
         timestamp = event_dict.get("timestamp", "")
 
-        if self._colors:
-            color = self._colorama.Fore.GREEN
-            reset = self._colorama.Style.RESET_ALL
-
-            return (
-                f"{timestamp} "
-                f"{color}[TRADE]{reset} "
-                f"{side.upper()} {quantity} {symbol} @ {price}"
-            )
-
+        # Simple format without trying to access internal color attributes
+        # that may not exist in the parent class
         return f"{timestamp} [TRADE] {side.upper()} {quantity} {symbol} @ {price}"
 
 
