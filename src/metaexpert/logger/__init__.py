@@ -84,6 +84,18 @@ class MetaLogger(BoundLogger):
         self._handlers: dict[str, logging.Handler] = {}
         self._configured = False
 
+        # Create the standard logger
+        std_logger = logging.getLogger(self.config.log_name)
+        std_logger.setLevel(self.config.log_level)
+
+        # Configure structlog
+        structlog.configure(
+            processors=processors,
+            wrapper_class=structlog.stdlib.BoundLogger,
+            logger_factory=structlog.stdlib.LoggerFactory(),
+            cache_logger_on_first_use=True,
+        )
+
         # Initialize the logging system
         _root_config: dict[str, Any] = self.configure()
 
@@ -158,8 +170,8 @@ class MetaLogger(BoundLogger):
         Returns:
             MetaLogger: A fully configured MetaLogger instance
         """
-        # Create config first
-        config = LoggerConfig(
+        # Configure the logging system using the config object
+        cls.config = LoggerConfig(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
@@ -173,8 +185,8 @@ class MetaLogger(BoundLogger):
         processors = cls._get_structlog_processors(structured_logging)
 
         # Create the standard logger
-        std_logger = logging.getLogger(config.log_name)
-        std_logger.setLevel(log_level)
+        std_logger = logging.getLogger(cls.config.log_name)
+        std_logger.setLevel(cls.config.log_level)
 
         # Configure structlog
         structlog.configure(
@@ -189,13 +201,13 @@ class MetaLogger(BoundLogger):
             logger=std_logger,
             processors=processors,
             context={},
-            log_level=log_level,
-            log_file=log_file,
-            trade_log_file=trade_log_file,
-            error_log_file=error_log_file,
-            console_logging=console_logging,
-            structured_logging=structured_logging,
-            async_logging=async_logging,
+            # log_level=cls.config.log_level,
+            # log_file=cls.config.log_file,
+            # trade_log_file=trade_log_file,
+            # error_log_file=error_log_file,
+            # console_logging=console_logging,
+            # structured_logging=structured_logging,
+            # async_logging=async_logging,
         )
 
     def configure(self) -> dict[str, Any]:

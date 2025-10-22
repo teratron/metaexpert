@@ -4,8 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from types import ModuleType
 
-from structlog.stdlib import BoundLogger
-
 # from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import (
     BACKTEST_END_DATE,
@@ -26,7 +24,7 @@ from metaexpert.config import (
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert.logger import MetaLogger
+from metaexpert.logger import BoundLogger, MetaLogger
 
 
 class MetaExpert(Events):
@@ -88,7 +86,7 @@ class MetaExpert(Events):
             async_logging (bool): Whether to use asynchronous logging.
         """
         # Configure logging using the enhanced expert integration
-        self.logger: BoundLogger = MetaLogger(
+        self.logger: BoundLogger = MetaLogger.create(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
