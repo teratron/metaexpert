@@ -18,7 +18,10 @@ class Bar:
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0
         self._is_running: bool = False
-        self.logger: BoundLogger = get_logger("Bar")
+        self.logger: BoundLogger = get_logger(__name__).bind(
+            component="Bar",
+            timeframe=timeframe
+        )
 
     async def start(self) -> None:
         self._is_running = True

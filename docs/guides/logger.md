@@ -1,10 +1,10 @@
-# Logger2 Guide
+# Logger Guide
 
-This guide covers the usage of the new MetaExpert structured logging system (logger2), built on structlog, offering structured logging, context management, and specialized handlers.
+This guide covers the usage of the new MetaExpert structured logging system (logger), built on structlog, offering structured logging, context management, and specialized handlers.
 
 ## Overview
 
-The logger2 module provides a production-ready logging system with the following features:
+The logger module provides a production-ready logging system with the following features:
 
 - **Structured Logging with `structlog`**: Leverages `structlog` to provide human-readable or JSON-formatted logs, making it easier to parse and analyze log data.
 - **Context Management**: Provides powerful context management capabilities with context managers and binding functionality.
@@ -85,7 +85,7 @@ with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
 
 ### Context Variables
 
-The logger2 module provides several context variables that can be used to maintain state across async operations:
+The logger module provides several context variables that can be used to maintain state across async operations:
 
 - `request_id_var`: For tracking request IDs
 - `trade_session_var`: For tracking trade sessions
@@ -105,7 +105,7 @@ for symbol in iterate_with_context(symbols, strategy_id=1001):
 
 ### Specialized Processors
 
-The logger2 module includes several custom processors:
+The logger module includes several custom processors:
 
 - `add_app_context`: Adds application-specific context to log entries
 - `filter_by_log_level`: Filters events based on logger's effective level
@@ -116,7 +116,7 @@ The logger2 module includes several custom processors:
 
 ## Formatters
 
-The logger2 module provides custom formatters:
+The logger module provides custom formatters:
 
 - `MetaExpertConsoleRenderer`: Enhanced console renderer with custom styling
 - `CompactJSONRenderer`: Compact JSON renderer for production logs
@@ -125,6 +125,6 @@ The logger2 module provides custom formatters:
 
 If you're migrating from the old logger system, note these key differences:
 
-- Import from `metaexpert.logger2` instead of `metaexpert.logger`
+- Import from `metaexpert.logger` instead of `metaexpert.logger`
 - Use `setup_logging()` and `get_logger()` instead of `MetaLogger.create()`
 - Context management is handled differently with `LogContext` and `bind_contextvars`

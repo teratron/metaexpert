@@ -58,11 +58,11 @@ class LogContext:
         unbind_contextvars(*self.bound_keys)
 
 
-class trade_context:
+class TradeContext:
     """Context manager for trade execution logging.
 
     Example:
-        with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
+        with TradeContext(symbol="BTCUSDT", side="BUY", quantity=0.01):
             logger.info("executing trade", price=50000)
             # Automatic trade event logging
     """

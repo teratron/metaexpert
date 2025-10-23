@@ -39,12 +39,12 @@ import structlog
 from .config import LoggerConfig
 from .context import (
     LogContext,
+    TradeContext,
     bind_contextvars,
     clear_contextvars,
     get_logger,
     get_trade_logger,
     iterate_with_context,
-    trade_context,
     unbind_contextvars,
 )
 from .setup import setup_logging
@@ -56,13 +56,13 @@ __all__ = [
     "BoundLogger",
     "LogContext",
     "LoggerConfig",
+    "TradeContext",
     "bind_contextvars",
     "clear_contextvars",
     "get_logger",
     "get_trade_logger",
     "iterate_with_context",
     "setup_logging",
-    "trade_context",
     "unbind_contextvars",
 ]
 
@@ -70,7 +70,7 @@ __all__ = [
 _logger = structlog.get_logger(__name__)
 
 
-def _initialize_logging_if_needed() -> None:
+def _initialize_logging() -> None:
     """Initialize logging with defaults if not already configured."""
     if not structlog.is_configured():
         _logger.warning(
@@ -81,4 +81,4 @@ def _initialize_logging_if_needed() -> None:
 
 
 # Auto-initialize with defaults if imported
-_initialize_logging_if_needed()
+_initialize_logging()
