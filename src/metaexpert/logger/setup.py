@@ -9,12 +9,11 @@ from typing import Any
 import structlog
 
 from .config import LoggerConfig
-from .formatters import get_console_renderer, get_file_renderer
+from .formatters import get_file_renderer
 from .processors import (
     ErrorEventEnricher,
     TradeEventFilter,
     add_app_context,
-    add_process_info,
     rename_event_key,
 )
 
@@ -78,7 +77,7 @@ class _TradeLogFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         """Check if record is a trade event."""
-        return hasattr(record, "_trade_event") and record._trade_event
+        return getattr(record, "_trade_event", False)
 
 
 def get_processors(config: LoggerConfig) -> list[Any]:
@@ -121,20 +120,6 @@ def get_processors(config: LoggerConfig) -> list[Any]:
         rename_event_key,
     ]
 
-    # Add final renderer based on destination
-    if config.log_to_console and not config.json_logs:
-        # Console with colors
-        processors.append(get_console_renderer(config.use_colors))
-    elif config.json_logs:
-        # JSON for structured logging
-        processors.append(structlog.processors.JSONRenderer())
-    else:
-        # Logfmt for files
-        processors.append(get_file_renderer(config.json_logs))
-
-    # Add ProcessorFormatter for stdlib integration
-    processors.append(structlog.stdlib.ProcessorFormatter.wrap_for_formatter)
-
     return processors
 
 
@@ -145,7 +130,10 @@ def setup_logging(config: LoggerConfig) -> None:
 
     # Configure structlog
     structlog.configure(
-        processors=get_processors(config),
+        processors=[
+            *get_processors(config),
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
         wrapper_class=structlog.stdlib.BoundLogger,
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -155,7 +143,10 @@ def setup_logging(config: LoggerConfig) -> None:
     # Configure stdlib formatter to use structlog processors
     formatter = structlog.stdlib.ProcessorFormatter(
         processor=get_file_renderer(config.json_logs),
-        foreign_pre_chain=get_processors(config),
+        foreign_pre_chain=[
+            *get_processors(config),
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
     )
 
     # Apply formatter to all handlers

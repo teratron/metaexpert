@@ -68,12 +68,12 @@ except Exception as e:
 ### Пример 2: Контекстное логирование
 
 ```python
-from metaexpert.logger import get_logger, log_context
+from metaexpert.logger import get_logger, LogContext
 
 logger = get_logger(__name__)
 
 # Временный контекст для блока кода
-with log_context(strategy_id=1001, symbol="ETHUSDT"):
+with LogContext(strategy_id=1001, symbol="ETHUSDT"):
     logger.info("strategy initialized")
     logger.info("executing trade")
     # Все логи включают strategy_id и symbol
@@ -409,17 +409,20 @@ logger.info(
     slippage_pct=0.02,
     timestamp=datetime.now().isoformat(),
 )
+```
 
-# Результат в JSON:
-# {
-#   "event": "trade_executed",
-#   "timestamp": "2025-10-22T15:30:00.123Z",
-#   "level": "info",
-#   "logger": "trading.executor",
-#   "symbol": "BTCUSDT",
-#   "side": "BUY",
-#   ...
-# }
+Результат в JSON:
+
+```json
+{
+    "event": "trade_executed",
+    "timestamp": "2025-10-22T15:30:00.123Z",
+    "level": "info",
+    "logger": "trading.executor",
+    "symbol": "BTCUSDT",
+    "side": "BUY",
+    //...
+}
 ```
 
 ---

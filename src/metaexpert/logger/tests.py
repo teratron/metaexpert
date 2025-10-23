@@ -1,15 +1,12 @@
-"""Tests for logger2 module."""
-
-import tempfile
-from pathlib import Path
+"""Tests for logger module."""
 
 import pytest
 
-from metaexpert.logger2 import (
+from metaexpert.logger import (
+    LogContext,
     LoggerConfig,
     get_logger,
     get_trade_logger,
-    log_context,
     setup_logging,
     trade_context,
 )
@@ -61,7 +58,7 @@ class TestLoggerConfig:
     def test_log_dir_creation(self, tmp_path):
         """Test that log directory is created."""
         log_dir = tmp_path / "new_logs"
-        config = LoggerConfig(log_dir=log_dir)
+        _config = LoggerConfig(log_dir=log_dir)
         assert log_dir.exists()
 
     def test_invalid_max_bytes(self):
@@ -81,9 +78,9 @@ class TestBasicLogging:
         setup_logging(test_config)
         logger = get_logger(__name__)
         assert logger is not None
-        
+
         logger.info("test message")
-        
+
         # Check log file was created
         log_file = test_config.log_dir / "expert.log"
         assert log_file.exists()
@@ -91,13 +88,10 @@ class TestBasicLogging:
     def test_log_with_context(self, test_config):
         """Test logging with context variables."""
         setup_logging(test_config)
-        logger = get_logger(__name__).bind(
-            exchange="binance",
-            symbol="BTCUSDT"
-        )
-        
+        logger = get_logger(__name__).bind(exchange="binance", symbol="BTCUSDT")
+
         logger.info("test with context")
-        
+
         log_file = test_config.log_dir / "expert.log"
         content = log_file.read_text()
         assert "binance" in content
@@ -107,16 +101,16 @@ class TestBasicLogging:
         """Test different log levels."""
         setup_logging(test_config)
         logger = get_logger(__name__)
-        
+
         logger.debug("debug message")
         logger.info("info message")
         logger.warning("warning message")
         logger.error("error message")
         logger.critical("critical message")
-        
+
         log_file = test_config.log_dir / "expert.log"
         content = log_file.read_text()
-        
+
         assert "debug message" in content
         assert "info message" in content
         assert "warning message" in content
@@ -127,19 +121,19 @@ class TestBasicLogging:
 class TestContextManagement:
     """Test context management features."""
 
-    def test_log_context(self, test_config):
-        """Test log_context context manager."""
+    def test_LogContext(self, test_config):
+        """Test LogContext context manager."""
         setup_logging(test_config)
         logger = get_logger(__name__)
-        
-        with log_context(strategy_id=1001, symbol="ETHUSDT"):
+
+        with LogContext(strategy_id=1001, symbol="ETHUSDT"):
             logger.info("inside context")
-        
+
         logger.info("outside context")
-        
+
         log_file = test_config.log_dir / "expert.log"
         content = log_file.read_text()
-        
+
         # Context should be in first message
         assert "strategy_id" in content
         assert "1001" in content
@@ -149,13 +143,13 @@ class TestContextManagement:
         """Test trade_context context manager."""
         setup_logging(test_config)
         trade_logger = get_trade_logger(strategy_id=1001)
-        
+
         with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
             trade_logger.info("trade executed", price=50000)
-        
+
         log_file = test_config.log_dir / "expert.log"
         content = log_file.read_text()
-        
+
         assert "trade" in content.lower()
         assert "BTCUSDT" in content
         assert "BUY" in content
@@ -169,18 +163,14 @@ class TestSpecializedLoggers:
         """Test trade logger."""
         setup_logging(test_config)
         trade_logger = get_trade_logger(strategy_id=1001)
-        
+
         trade_logger.info(
-            "trade executed",
-            symbol="BTCUSDT",
-            side="BUY",
-            price=50000,
-            quantity=0.01
+            "trade executed", symbol="BTCUSDT", side="BUY", price=50000, quantity=0.01
         )
-        
+
         trade_log_file = test_config.log_dir / "trades.log"
         assert trade_log_file.exists()
-        
+
         content = trade_log_file.read_text()
         assert "trade executed" in content
         assert "BTCUSDT" in content
@@ -189,15 +179,15 @@ class TestSpecializedLoggers:
         """Test error logging."""
         setup_logging(test_config)
         logger = get_logger(__name__)
-        
+
         try:
             raise ValueError("Test error")
         except ValueError:
             logger.error("error occurred", exc_info=True)
-        
+
         error_log_file = test_config.log_dir / "errors.log"
         assert error_log_file.exists()
-        
+
         content = error_log_file.read_text()
         assert "error occurred" in content
         assert "ValueError" in content
@@ -217,17 +207,18 @@ class TestJSONLogging:
             json_logs=True,
         )
         setup_logging(config)
-        
+
         logger = get_logger(__name__)
         logger.info("test json", key="value", number=123)
-        
+
         log_file = test_log_dir / "expert.log"
         content = log_file.read_text()
-        
+
         # Should be valid JSON
         import json
-        log_entry = json.loads(content.strip().split('\n')[0])
-        
+
+        log_entry = json.loads(content.strip().split("\n")[0])
+
         assert log_entry["message"] == "test json"
         assert log_entry["key"] == "value"
         assert log_entry["number"] == 123
@@ -240,10 +231,10 @@ class TestPerformance:
         """Benchmark logging performance."""
         setup_logging(test_config)
         logger = get_logger(__name__)
-        
+
         def log_message():
             logger.info("performance test", iteration=1, data="test")
-        
+
         # Should be fast (< 1ms per log call)
         result = benchmark(log_message)
         assert result < 0.001  # Less than 1ms
@@ -261,17 +252,17 @@ class TestFileRotation:
             backup_count=2,
         )
         setup_logging(config)
-        
+
         logger = get_logger(__name__)
-        
+
         # Write enough to trigger rotation
         for i in range(100):
             logger.info("test message " * 10, iteration=i)
-        
+
         # Check that rotation occurred
         log_file = test_log_dir / "expert.log"
-        backup_file = test_log_dir / "expert.log.1"
-        
+        _backup_file = test_log_dir / "expert.log.1"
+
         assert log_file.exists()
         # Backup file should exist if rotation happened
         # (may not exist if not enough data was written)

@@ -1,10 +1,10 @@
 """Context managers and utilities for MetaExpert logger."""
 
+from collections.abc import Iterator
 from contextvars import ContextVar
-from typing import Any, Iterator
+from typing import Any
 
 import structlog
-
 
 # Context variables for request-scoped data
 request_id_var: ContextVar[str | None] = ContextVar("request_id", default=None)
@@ -35,11 +35,11 @@ def clear_contextvars() -> None:
     structlog.contextvars.clear_contextvars()
 
 
-class log_context:
+class LogContext:
     """Context manager for temporary log context.
 
     Example:
-        with log_context(symbol="BTCUSDT", exchange="binance"):
+        with LogContext(symbol="BTCUSDT", exchange="binance"):
             logger.info("processing trade")
             # Logs will include symbol and exchange
     """
@@ -133,5 +133,5 @@ def iterate_with_context(items: list[Any], **context: Any) -> Iterator[Any]:
             logger.info("processing", symbol=symbol)
     """
     for item in items:
-        with log_context(**context):
+        with LogContext(**context):
             yield item

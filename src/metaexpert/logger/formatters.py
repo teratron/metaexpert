@@ -1,15 +1,18 @@
 """Custom formatters for MetaExpert logger."""
 
+from collections.abc import MutableMapping
 from typing import Any
 
 import structlog
 from structlog.dev import ConsoleRenderer
 
 
-class MetaExpertConsoleRenderer(ConsoleRenderer):
+class MetaConsoleRenderer(ConsoleRenderer):
     """Enhanced console renderer with custom styling."""
 
-    def __call__(self, logger: Any, name: str, event_dict: dict[str, Any]) -> str:
+    def __call__(
+        self, logger: Any, name: str, event_dict: MutableMapping[str, Any]
+    ) -> str:
         """Render log entry with custom formatting."""
         # Extract trade-specific fields for special formatting
         if event_dict.get("event_type") == "trade":
@@ -17,7 +20,7 @@ class MetaExpertConsoleRenderer(ConsoleRenderer):
 
         return super().__call__(logger, name, event_dict)
 
-    def _format_trade_event(self, event_dict: dict[str, Any]) -> str:
+    def _format_trade_event(self, event_dict: MutableMapping[str, Any]) -> str:
         """Format trade events specially."""
         symbol = event_dict.get("symbol", "???")
         side = event_dict.get("side", "???")
@@ -25,27 +28,9 @@ class MetaExpertConsoleRenderer(ConsoleRenderer):
         quantity = event_dict.get("quantity", "???")
         timestamp = event_dict.get("timestamp", "")
 
-        # Check if colors are available
-        if self._colors:
-            try:
-                # Try to use colorama if available
-                from colorama import Fore, Style
-                color = Fore.GREEN
-                reset = Style.RESET_ALL
-                return (
-                    f"{timestamp} "
-                    f"{color}[TRADE]{reset} "
-                    f"{side.upper()} {quantity} {symbol} @ {price}"
-                )
-            except (ImportError, AttributeError):
-                pass
-        
-        # Fallback to simple format
-        return (
-            f"{timestamp} "
-            f"[TRADE] "
-            f"{side.upper()} {quantity} {symbol} @ {price}"
-        )
+        # Simple format without trying to access internal color attributes
+        # that may not exist in the parent class
+        return f"{timestamp} [TRADE] {side.upper()} {quantity} {symbol} @ {price}"
 
 
 class CompactJSONRenderer:
@@ -63,12 +48,14 @@ class CompactJSONRenderer:
 
 def get_console_renderer(colors: bool = True) -> Any:
     """Get console renderer based on configuration."""
-    return MetaExpertConsoleRenderer(colors=colors)
+    return MetaConsoleRenderer(colors=colors)
 
 
 def get_file_renderer(json_format: bool = False) -> Any:
     """Get file renderer based on configuration."""
     if json_format:
+        # Return the JSON renderer as a processor (for use with ProcessorFormatter)
+        # This will be used by ProcessorFormatter to render the final output
         return structlog.processors.JSONRenderer()
 
     # Human-readable format for files

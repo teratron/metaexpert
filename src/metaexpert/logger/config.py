@@ -1,125 +1,88 @@
 """Configuration for MetaExpert logger using Pydantic."""
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pathlib import Path
+from typing import Literal
 
-from metaexpert.config import (
-    LOG_ASYNC_LOGGING,
-    LOG_BACKUP_COUNT,
-    LOG_CONSOLE_LOGGING,
-    LOG_DETAILED_FORMAT,
-    LOG_DIRECTORY,
-    LOG_ERROR_FILE,
-    LOG_ERROR_LEVEL,
-    LOG_FALLBACK_FORMAT,
-    LOG_FILE,
-    LOG_FORMAT,
-    LOG_LEVEL,
-    LOG_LEVEL_CRITICAL,
-    LOG_LEVEL_DEBUG,
-    LOG_LEVEL_ERROR,
-    LOG_LEVEL_INFO,
-    LOG_LEVEL_WARNING,
-    LOG_MAX_FILE_SIZE,
-    LOG_NAME,
-    LOG_STRUCTURED_LOGGING,
-    LOG_TRADE_FILE,
-    LOG_TRADE_LEVEL,
-)
+from pydantic import BaseModel, Field, field_validator
 
+# from metaexpert.config import (
+#     LOG_ASYNC_LOGGING,
+#     LOG_BACKUP_COUNT,
+#     LOG_CONSOLE_LOGGING,
+#     LOG_DETAILED_FORMAT,
+#     LOG_DIRECTORY,
+#     LOG_ERROR_FILE,
+#     LOG_ERROR_LEVEL,
+#     LOG_FALLBACK_FORMAT,
+#     LOG_FILE,
+#     LOG_FORMAT,
+#     LOG_LEVEL,
+#     LOG_LEVEL_CRITICAL,
+#     LOG_LEVEL_DEBUG,
+#     LOG_LEVEL_ERROR,
+#     LOG_LEVEL_INFO,
+#     LOG_LEVEL_WARNING,
+#     LOG_MAX_FILE_SIZE,
+#     LOG_NAME,
+#     LOG_STRUCTURED_LOGGING,
+#     LOG_TRADE_FILE,
+#     LOG_TRADE_LEVEL,
+# )
 
 class LoggerConfig(BaseModel):
-    """Configuration for MetaExpert logger."""
+    """Configuration for MetaExpert structured logger."""
 
-    # Log levels
-    log_level: str = Field(
-        default=LOG_LEVEL,
-        description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
-    )
-    log_trade_level: str = Field(
-        default=LOG_TRADE_LEVEL, description="Trade-specific log level"
-    )
-    log_error_level: str = Field(
-        default=LOG_ERROR_LEVEL, description="Error-specific log level"
+    # Core settings
+    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
+        default="INFO", description="Global logging level"
     )
 
-    # File names
-    log_file: str = Field(default=LOG_FILE, description="Main log file name")
+    # Output destinations
+    log_to_console: bool = Field(default=True, description="Enable console output")
+    log_to_file: bool = Field(default=True, description="Enable file output")
+
+    # File settings
+    log_dir: Path = Field(default=Path("logs"), description="Directory for log files")
+    log_file: str = Field(default="expert.log", description="Main log file name")
     trade_log_file: str = Field(
-        default=LOG_TRADE_FILE, description="Trade-specific log file name"
+        default="trades.log", description="Trade-specific log file"
     )
     error_log_file: str = Field(
-        default=LOG_ERROR_FILE, description="Error-specific log file name"
+        default="errors.log", description="Error-specific log file"
     )
 
-    # Directory configuration
-    log_directory: str = Field(
-        default=LOG_DIRECTORY, description="Directory for log files"
+    # Rotation settings
+    max_bytes: int = Field(
+        default=10 * 1024 * 1024,  # 10MB
+        description="Max file size before rotation",
     )
-
-    # File rotation settings
-    log_max_file_size: int = Field(
-        default=LOG_MAX_FILE_SIZE,
-        description="Maximum log file size in bytes (default 10MB)",
-    )
-    log_backup_count: int = Field(
-        default=LOG_BACKUP_COUNT, description="Number of backup log files to keep"
-    )
+    backup_count: int = Field(default=5, description="Number of backup files to keep")
 
     # Format settings
-    log_format: str = Field(
-        default=LOG_FORMAT,
-        description="Standard log format",
-    )
-    log_detailed_format: str = Field(
-        default=LOG_DETAILED_FORMAT,
-        description="Detailed log format",
-    )
-    log_fallback_format: str = Field(
-        default=LOG_FALLBACK_FORMAT,
-        description="Fallback log format",
+    use_colors: bool = Field(default=True, description="Use colored output in console")
+    json_logs: bool = Field(default=False, description="Output logs in JSON format")
+
+    # Performance settings
+    cache_logger_on_first_use: bool = Field(
+        default=True, description="Cache loggers for better performance"
     )
 
-    # Enhanced configuration flags
-    console_logging: bool = Field(
-        default=LOG_CONSOLE_LOGGING, description="Whether to output logs to console"
-    )
-    structured_logging: bool = Field(
-        default=LOG_STRUCTURED_LOGGING,
-        description="Whether to use JSON structured logging",
-    )
-    async_logging: bool = Field(
-        default=LOG_ASYNC_LOGGING, description="Whether to use asynchronous logging"
-    )
-
-    # Logger name
-    log_name: str = Field(default=LOG_NAME, description="Name of the logger")
-
-    @field_validator("log_level")
+    @field_validator("log_dir")
     @classmethod
-    def validate_log_level(cls, value):
-        """Validate that log level is one of the allowed values."""
-        allowed_levels = {
-            LOG_LEVEL_DEBUG,
-            LOG_LEVEL_INFO,
-            LOG_LEVEL_WARNING,
-            LOG_LEVEL_ERROR,
-            LOG_LEVEL_CRITICAL,
-        }
-        if value.upper() not in allowed_levels:
-            raise ValueError(f"Log level must be one of: {', '.join(allowed_levels)}")
-        return value.upper()
+    def ensure_log_dir_exists(cls, path: Path) -> Path:
+        """Create log directory if it doesn't exist."""
+        path.mkdir(parents=True, exist_ok=True)
+        return path
 
-    @field_validator("log_max_file_size")
+    @field_validator("max_bytes")
     @classmethod
-    def validate_log_max_file_size(cls, value):
-        """Validate that log file size is positive."""
+    def validate_max_bytes(cls, value: int) -> int:
+        """Validate file size limit."""
         if value <= 0:
-            raise ValueError("Log max file size must be positive")
+            raise ValueError("max_bytes must be positive")
         if value > 1024 * 1024 * 1024:  # 1GB
-            raise ValueError("Log max file size must not exceed 1GB")
+            raise ValueError("max_bytes must not exceed 1GB")
         return value
 
-    model_config = ConfigDict(
-        extra="forbid",  # Don't allow extra fields
-        str_strip_whitespace=True,  # Strip whitespace from string fields
-    )
+    class Config:
+        frozen = True  # Make config immutable after creation

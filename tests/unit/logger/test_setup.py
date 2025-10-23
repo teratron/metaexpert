@@ -2,17 +2,15 @@
 
 import logging
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
-import pytest
-
-from metaexpert.logger2.config import LoggerConfig
-from metaexpert.logger2.setup import (
-    configure_stdlib_logging,
+from metaexpert.logger.config import LoggerConfig
+from metaexpert.logger.setup import (
     _create_rotating_handler,
     _TradeLogFilter,
+    configure_stdlib_logging,
     get_processors,
-    setup_logging
+    setup_logging,
 )
 
 
@@ -25,17 +23,17 @@ def test_configure_stdlib_logging_basic():
         log_to_file=True,
         log_dir=Path("logs")
     )
-    
+
     # Clear any existing handlers from root logger
     root_logger = logging.getLogger()
     root_logger.handlers.clear()
-    
+
     # Configure logging
     configure_stdlib_logging(config)
-    
+
     # Check that root logger has the correct level
     assert root_logger.level == logging.INFO
-    
+
     # Just verify that configuration runs without error
     assert True
 
@@ -49,17 +47,17 @@ def test_configure_stdlib_logging_with_console():
         log_to_file=True,
         log_dir=Path("logs")
     )
-    
+
     # Clear any existing handlers from root logger
     root_logger = logging.getLogger()
     root_logger.handlers.clear()
-    
+
     # Configure logging
     configure_stdlib_logging(config)
-    
+
     # Check that root logger has the correct level
     assert root_logger.level == logging.DEBUG
-    
+
     # Just verify that configuration runs without error
     assert True
 
@@ -71,14 +69,14 @@ def test_configure_stdlib_logging_no_file_output():
         log_to_console=True,
         log_to_file=False
     )
-    
+
     # Clear any existing handlers from root logger
     root_logger = logging.getLogger()
     root_logger.handlers.clear()
-    
+
     # Configure logging
     configure_stdlib_logging(config)
-    
+
     # Check that root logger has the correct level
     assert root_logger.level == logging.WARNING
 
@@ -87,9 +85,9 @@ def test_create_rotating_handler():
     """Test creation of rotating file handler."""
     # Use a real directory to avoid Windows file locking issues
     log_file_path = Path("logs") / "test.log"
-    
+
     handler = _create_rotating_handler(log_file_path, 1024, 3)
-    
+
     # Check that handler is created correctly
     assert isinstance(handler, logging.handlers.RotatingFileHandler)
     assert handler.maxBytes == 1024
@@ -100,17 +98,17 @@ def test_create_rotating_handler():
 def test_trade_log_filter():
     """Test the _TradeLogFilter."""
     filter_obj = _TradeLogFilter()
-    
+
     # Create a mock LogRecord with _trade_event attribute
     record_with_trade = Mock(spec=logging.LogRecord)
     record_with_trade._trade_event = True
-    
+
     record_without_trade = Mock(spec=logging.LogRecord)
     record_without_trade._trade_event = False
-    
+
     # Test that trade records pass the filter
     assert filter_obj.filter(record_with_trade) is True
-    
+
     # Test that non-trade records don't pass the filter
     assert filter_obj.filter(record_without_trade) is False
 
@@ -118,9 +116,9 @@ def test_trade_log_filter():
 def test_get_processors_basic():
     """Test getting processors with basic configuration."""
     config = LoggerConfig()
-    
+
     processors = get_processors(config)
-    
+
     # Check that processors list is not empty
     assert len(processors) > 0
 
@@ -128,9 +126,9 @@ def test_get_processors_basic():
 def test_get_processors_json_format():
     """Test getting processors with JSON format."""
     config = LoggerConfig(json_logs=True)
-    
+
     processors = get_processors(config)
-    
+
     # When json_logs is True, JSON renderer should be included
     assert any("JSONRenderer" in str(proc) for proc in processors)
 
@@ -144,14 +142,14 @@ def test_setup_logging():
         log_to_file=True,
         log_dir=Path("logs")
     )
-    
+
     # Clear any existing configuration
     logging.getLogger().handlers.clear()
-    
+
     # This test is complex because setup_logging configures the entire logging system
     # We'll just call it and verify it doesn't raise an exception
     setup_logging(config)
-    
+
     # Verify that structlog is configured
     import structlog
     assert structlog.is_configured()
@@ -167,19 +165,19 @@ def test_setup_logging_with_json():
         json_logs=True,
         log_dir=Path("logs")
     )
-    
+
     # Clear any existing configuration
     logging.getLogger().handlers.clear()
-    
+
     # Call setup function
     setup_logging(config)
-    
+
     # Verify that structlog is configured
     import structlog
     assert structlog.is_configured()
 
 
-@patch('metaexpert.logger2.setup.structlog')
+@patch('metaexpert.logger.setup.structlog')
 def test_setup_logging_structlog_configuration(mock_structlog):
     """Test that setup_logging properly configures structlog."""
     # Mock the structlog.configure function
@@ -187,7 +185,7 @@ def test_setup_logging_structlog_configuration(mock_structlog):
     mock_structlog.stdlib.BoundLogger = Mock()
     mock_structlog.stdlib.LoggerFactory = Mock()
     mock_structlog.stdlib.ProcessorFormatter = Mock()
-    
+
     # Use a real directory to avoid Windows file locking issues
     config = LoggerConfig(
         log_level="INFO",
@@ -195,12 +193,12 @@ def test_setup_logging_structlog_configuration(mock_structlog):
         log_to_file=True,
         log_dir=Path("logs")
     )
-    
+
     # Clear any existing configuration
     logging.getLogger().handlers.clear()
-    
+
     # Call setup function
     setup_logging(config)
-    
+
     # Verify that structlog.configure was called
     assert mock_structlog.configure.called

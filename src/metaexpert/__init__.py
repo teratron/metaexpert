@@ -24,7 +24,7 @@ from metaexpert.config import (
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert.logger import BoundLogger, MetaLogger
+from metaexpert._logger import BoundLogger, MetaLogger
 
 
 class MetaExpert(Events):

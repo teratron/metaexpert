@@ -84,7 +84,7 @@ stats.print_stats(10)
 
 ```python
 import timeit
-from metaexpert.logger import get_logger, log_context
+from metaexpert.logger import get_logger, LogContext
 
 logger = get_logger(__name__)
 
@@ -105,16 +105,16 @@ time2 = timeit.timeit(
 # Тест 3: С контекстом
 time3 = timeit.timeit(
     '''
-with log_context(key1="value1", key2="value2"):
+with LogContext(key1="value1", key2="value2"):
     logger.info("message")
     ''',
-    globals={"logger": logger, "log_context": log_context},
+    globals={"logger": logger, "LogContext": LogContext},
     number=10000
 )
 
 print(f"Простое: {time1:.4f}s")
-print(f"С параметрами: {time2:.4f}s ({time2/time1:.2f}x)")
-print(f"С контекстом: {time3:.4f}s ({time3/time1:.2f}x)")
+print(f"С параметрами: {time2:.4f}s ({time2 / time1:.2f}x)")
+print(f"С контекстом: {time3:.4f}s ({time3 / time1:.2f}x)")
 ```
 
 ---

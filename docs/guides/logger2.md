@@ -15,7 +15,7 @@ The logger2 module provides a production-ready logging system with the following
 ## Quick Start
 
 ```python
-from metaexpert.logger2 import setup_logging, get_logger, LoggerConfig
+from metaexpert.logger import setup_logging, get_logger, LoggerConfig
 
 # Initialize logging system
 config = LoggerConfig(log_level="INFO")
@@ -35,7 +35,7 @@ logger.info("processing trade", price=50000)
 The logging behavior is dictated by the `LoggerConfig` object, which can be customized to your needs.
 
 ```python
-from metaexpert.logger2 import setup_logging, get_logger, LoggerConfig
+from metaexpert.logger import setup_logging, get_logger, LoggerConfig
 
 # Create custom configuration
 custom_config = LoggerConfig(
@@ -63,10 +63,10 @@ logger.debug("Debug message from custom config.")
 ## Context Management
 
 ```python
-from metaexpert.logger2 import log_context, get_logger
+from metaexpert.logger import LogContext, get_logger
 
 logger = get_logger(__name__)
-with log_context(strategy_id=101, symbol="ETHUSDT"):
+with LogContext(strategy_id=101, symbol="ETHUSDT"):
     logger.info("executing strategy")
     # All logs in this block will include strategy_id and symbol
 ```
@@ -74,7 +74,7 @@ with log_context(strategy_id=101, symbol="ETHUSDT"):
 ## Trade Logging
 
 ```python
-from metaexpert.logger2 import get_trade_logger, trade_context
+from metaexpert.logger import get_trade_logger, trade_context
 
 trade_logger = get_trade_logger(strategy_id=1001)
 with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
@@ -94,7 +94,7 @@ The logger2 module provides several context variables that can be used to mainta
 ### Iteration with Context
 
 ```python
-from metaexpert.logger2 import iterate_with_context
+from metaexpert.logger import iterate_with_context
 
 symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
 
@@ -127,4 +127,4 @@ If you're migrating from the old logger system, note these key differences:
 
 - Import from `metaexpert.logger2` instead of `metaexpert.logger`
 - Use `setup_logging()` and `get_logger()` instead of `MetaLogger.create()`
-- Context management is handled differently with `log_context` and `bind_contextvars`
+- Context management is handled differently with `LogContext` and `bind_contextvars`

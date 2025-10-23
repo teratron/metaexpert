@@ -3,11 +3,11 @@
 import json
 from unittest.mock import Mock
 
-from metaexpert.logger2.formatters import (
+from metaexpert.logger.formatters import (
     CompactJSONRenderer,
     MetaExpertConsoleRenderer,
     get_console_renderer,
-    get_file_renderer
+    get_file_renderer,
 )
 
 
@@ -16,7 +16,7 @@ def test_meta_expert_console_renderer_initialization():
     # Test that the renderer can be instantiated
     renderer_with_colors = MetaExpertConsoleRenderer(colors=True)
     assert renderer_with_colors is not None
-    
+
     # Test with colors disabled
     renderer_without_colors = MetaExpertConsoleRenderer(colors=False)
     assert renderer_without_colors is not None
@@ -25,7 +25,7 @@ def test_meta_expert_console_renderer_initialization():
 def test_meta_expert_console_renderer_custom_colors():
     """Test custom color scheme in MetaExpertConsoleRenderer."""
     renderer = MetaExpertConsoleRenderer(colors=True)
-    
+
     # Just verify that the renderer was created successfully
     # We can't easily test internal color attributes without knowing the exact implementation
     assert renderer is not None
@@ -34,7 +34,7 @@ def test_meta_expert_console_renderer_custom_colors():
 def test_meta_expert_console_renderer_trade_formatting_with_colors():
     """Test trade event formatting with colors."""
     renderer = MetaExpertConsoleRenderer(colors=True)
-    
+
     # Create a trade event dictionary
     event_dict = {
         "timestamp": "2023-01-01T12:00:00Z",
@@ -44,14 +44,14 @@ def test_meta_expert_console_renderer_trade_formatting_with_colors():
         "price": 50000,
         "quantity": 0.01
     }
-    
+
     # Mock logger and name for the call
     logger = Mock()
     name = "test_logger"
-    
+
     # Call the renderer
     result = renderer(logger, name, event_dict)
-    
+
     # Check that the result contains trade-specific formatting
     # Since colors are enabled, the output will contain color codes
     assert "[TRADE]" in result
@@ -64,7 +64,7 @@ def test_meta_expert_console_renderer_trade_formatting_with_colors():
 def test_meta_expert_console_renderer_trade_formatting_without_colors():
     """Test trade event formatting without colors."""
     renderer = MetaExpertConsoleRenderer(colors=False)
-    
+
     # Create a trade event dictionary
     event_dict = {
         "timestamp": "2023-01-01T12:00:00Z",
@@ -74,14 +74,14 @@ def test_meta_expert_console_renderer_trade_formatting_without_colors():
         "price": 50000,
         "quantity": 0.01
     }
-    
+
     # Mock logger and name for the call
     logger = Mock()
     name = "test_logger"
-    
+
     # Call the renderer
     result = renderer(logger, name, event_dict)
-    
+
     # Check that the result contains trade-specific formatting
     # Without colors, the output should be plain text
     assert "[TRADE]" in result
@@ -96,21 +96,21 @@ def test_meta_expert_console_renderer_trade_formatting_without_colors():
 def test_meta_expert_console_renderer_regular_formatting():
     """Test regular (non-trade) event formatting."""
     renderer = MetaExpertConsoleRenderer(colors=True)
-    
+
     # Create a regular event dictionary
     event_dict = {
         "timestamp": "2023-01-01T12:00:00Z",
         "event": "regular log message",
         "level": "info"
     }
-    
+
     # Mock logger and name for the call
     logger = Mock()
     name = "test_logger"
-    
+
     # Call the renderer
     result = renderer(logger, name, event_dict)
-    
+
     # Should use default console formatting, not trade formatting
     assert "regular log message" in result
     # Should not contain [TRADE] marker
@@ -120,7 +120,7 @@ def test_meta_expert_console_renderer_regular_formatting():
 def test_compact_json_renderer():
     """Test CompactJSONRenderer output."""
     renderer = CompactJSONRenderer()
-    
+
     # Create an event dictionary
     event_dict = {
         "timestamp": "2023-01-01T12:00:00Z",
@@ -129,17 +129,17 @@ def test_compact_json_renderer():
         "symbol": "BTCUSDT",
         "_internal_field": "should_be_removed"
     }
-    
+
     # Mock logger and name for the call
     logger = Mock()
     name = "test_logger"
-    
+
     # Call the renderer
     result = renderer(logger, name, event_dict)
-    
+
     # Parse the result as JSON
     parsed_result = json.loads(result)
-    
+
     # Check that internal fields are removed
     assert "_internal_field" not in parsed_result
     # Check that other fields are preserved
@@ -147,7 +147,7 @@ def test_compact_json_renderer():
     assert parsed_result["event"] == "test message"
     assert parsed_result["level"] == "info"
     assert parsed_result["symbol"] == "BTCUSDT"
-    
+
     # Check that the JSON is compact (no extra spaces)
     # The compact format means no spaces after separators
     # This checks for compact formatting (no spaces around colon)
@@ -159,7 +159,7 @@ def test_get_console_renderer():
     # Test with colors enabled
     renderer1 = get_console_renderer(colors=True)
     assert isinstance(renderer1, MetaExpertConsoleRenderer)
-    
+
     # Test with colors disabled
     renderer2 = get_console_renderer(colors=False)
     assert isinstance(renderer2, MetaExpertConsoleRenderer)
@@ -167,8 +167,8 @@ def test_get_console_renderer():
 
 def test_get_file_renderer_json():
     """Test get_file_renderer function with JSON format."""
-    from metaexpert.logger2.formatters import structlog
-    
+    from metaexpert.logger.formatters import structlog
+
     # Test with JSON format
     renderer = get_file_renderer(json_format=True)
     # Should return structlog.processors.JSONRenderer
@@ -177,8 +177,8 @@ def test_get_file_renderer_json():
 
 def test_get_file_renderer_logfmt():
     """Test get_file_renderer function with logfmt format."""
-    from metaexpert.logger2.formatters import structlog
-    
+    from metaexpert.logger.formatters import structlog
+
     # Test with non-JSON format
     renderer = get_file_renderer(json_format=False)
     # Should return structlog.processors.LogfmtRenderer
