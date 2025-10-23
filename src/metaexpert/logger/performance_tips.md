@@ -23,21 +23,43 @@ if logger.isEnabledFor(logging.DEBUG):
 ### 2. Кэширование логгеров
 
 ```python
-# ✅ ХОРОШО: Создаем логгер один раз на модуль
-logger = get_logger(__name__)
-
-class MyClass:
-    def method1(self):
-        # Используем кэшированный логгер
-        logger.info("method1 called")
-    
-    def method2(self):
-        logger.info("method2 called")
-
 # ❌ ПЛОХО: Создаем логгер каждый раз
 class BadClass:
     def method(self):
         get_logger(__name__).info("method called")  # Overhead!
+
+# ✅ ХОРОШО: Создаем логгер один раз на модуль
+class MyClass:
+    def __init__(self):
+        self.logger = get_logger(__name__)
+
+    def method1(self):
+        # Используем кэшированный логгер
+        self.logger.info("method1 called")
+
+    def method2(self):
+        self.logger.info("method2 called")
+
+```
+
+```python
+# ❌ ПЛОХО: Создаем логгер каждый раз
+def function1(self):
+    get_logger(__name__).info("function1 called")  # Overhead!
+
+def function2(self):
+    get_logger(__name__).info("function2 called")  # Overhead!
+
+# ✅ ХОРОШО: Создаем логгер один раз на модуль
+logger = get_logger(__name__)
+
+def function1(self):
+    # Используем кэшированный логгер
+    logger.info("function1 called")
+
+def function2(self):
+    logger.info("function2 called")
+
 ```
 
 ### 3. Минимизация строковых операций

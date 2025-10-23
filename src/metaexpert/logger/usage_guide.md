@@ -101,13 +101,13 @@ logger.info("subscribed to channel", channel="trades")
 ### Пример 4: Специализированное логирование торговли
 
 ```python
-from metaexpert.logger import get_trade_logger, trade_context
+from metaexpert.logger import get_trade_logger, TradeContext
 
 # Логгер для торговых событий
 trade_logger = get_trade_logger(strategy_id=1001)
 
 # Контекст торговли с автоматической маркировкой
-with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
+with TradeContext(symbol="BTCUSDT", side="BUY", quantity=0.01):
     trade_logger.info(
         "trade executed",
         price=50000,
@@ -480,7 +480,7 @@ logger.debug("processing item", item_id=123, step="validation")
 # INFO - важные события в нормальном потоке
 logger.info("user logged in", user_id=456, session_id="abc")
 
-# WARNING - что-то необычное, но не ошибка
+# WARNING - что-то необычное (предупреждение), но не ошибка
 logger.warning("cache miss", key="user:789", fallback="database")
 
 # ERROR - ошибка, требующая внимания
