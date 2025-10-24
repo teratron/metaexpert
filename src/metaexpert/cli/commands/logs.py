@@ -1,60 +1,87 @@
-"""CLI command to view expert logs."""
+# src/metaexpert/cli/commands/logs.py
+"""Command to view expert logs."""
 
-import re
 import time
 from pathlib import Path
+from typing import Annotated, Optional
 
 import typer
 
+from metaexpert.cli.app import get_config
+from metaexpert.cli.core.output import OutputFormatter, console
+
 
 def cmd_logs(
-    path: Path = typer.Argument(..., help="The path to the expert project directory."),
-    level: str = typer.Option(
-        None, "--level", "-l", help="Filter logs by level (e.g., INFO, WARNING, ERROR)."
-    ),
+    project_name: Annotated[
+        str,
+        typer.Argument(help="Name of the expert project"),
+    ],
+    follow: Annotated[
+        bool,
+        typer.Option("--follow", "-f", help="Follow log output (like tail -f)"),
+    ] = False,
+    lines: Annotated[
+        int,
+        typer.Option("--lines", "-n", help="Number of lines to show"),
+    ] = 50,
+    level: Annotated[
+        Optional[str],
+        typer.Option("--level", "-l", help="Filter by log level (DEBUG, INFO, etc)"),
+    ] = None,
 ) -> None:
-    """Views logs for a trading expert."""
-    if not path.is_dir():
-        typer.secho(
-            f"Error: Project directory '{path}' not found.", fg=typer.colors.RED
-        )
+    """
+    View logs for an expert.
+
+    Example:
+        metaexpert logs my-bot
+        metaexpert logs my-bot --follow
+        metaexpert logs my-bot --level ERROR
+    """
+    config = get_config()
+    output = OutputFormatter()
+
+    log_file = config.log_dir / project_name / "expert.log"
+
+    if not log_file.exists():
+        output.error(f"Log file not found: {log_file}")
+        output.info("Is the expert running?")
         raise typer.Exit(code=1)
-
-    log_file_path = path / "expert.log"
-
-    if not log_file_path.is_file():
-        typer.secho(
-            f"Error: Log file '{log_file_path}' not found. Is the expert running?",
-            fg=typer.colors.RED,
-        )
-        raise typer.Exit(code=1)
-
-    typer.secho(f"Tailing logs for expert at: {path}", fg=typer.colors.BLUE)
-    if level:
-        typer.secho(f"Filtering by level: {level}", fg=typer.colors.BLUE)
-
-    # Regex to match log level (e.g., INFO, WARNING, ERROR)
-    # Assumes log format like: [TIMESTAMP] [LEVEL] MESSAGE
-    level_pattern = re.compile(r"\[(INFO|WARNING|ERROR|DEBUG)]")
 
     try:
-        with open(log_file_path) as f:
-            # Seek to the end of the file
-            f.seek(0, 2)
-            while True:
-                line = f.readline()
-                if not line:
-                    time.sleep(0.1)  # Wait a bit before trying again
-                    continue
-
-                if level:
-                    match = level_pattern.search(line)
-                    if match and match.group(1).upper() == level.upper():
-                        typer.echo(line.strip())
-                else:
-                    typer.echo(line.strip())
+        if follow:
+            _tail_follow(log_file, level)
+        else:
+            _tail_lines(log_file, lines, level)
     except KeyboardInterrupt:
-        typer.secho("\nStopped tailing logs.", fg=typer.colors.YELLOW)
-    except Exception as e:
-        typer.secho(f"Error reading log file: {e}", fg=typer.colors.RED)
-        raise typer.Exit(code=1) from e
+        console.print("\n[yellow]Stopped tailing logs[/]")
+
+
+def _tail_lines(log_file: Path, lines: int, level: Optional[str]) -> None:
+    """Display last N lines of log file."""
+    with open(log_file) as f:
+        content = f.readlines()
+
+        if level:
+            content = [line for line in content if level.upper() in line]
+
+        for line in content[-lines:]:
+            console.print(line.rstrip())
+
+
+def _tail_follow(log_file: Path, level: Optional[str]) -> None:
+    """Follow log file in real-time."""
+    with open(log_file) as f:
+        # Seek to end
+        f.seek(0, 2)
+
+        while True:
+            line = f.readline()
+            if not line:
+                time.sleep(0.1)
+                continue
+
+            if level and level.upper() not in line:
+                continue
+
+            console.print(line.rstrip())
+

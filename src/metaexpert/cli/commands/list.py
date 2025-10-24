@@ -1,65 +1,67 @@
-"""CLI command to list running trading experts."""
+# src/metaexpert/cli/commands/list.py
+"""Command to list running experts."""
 
 from pathlib import Path
+from typing import Annotated, Optional
 
 import typer
 
-from metaexpert.cli.pid_lock import get_pid_from_file, is_process_running
+from metaexpert.cli.app import get_config
+from metaexpert.cli.core.output import OutputFormatter
+from metaexpert.cli.process.manager import ProcessManager
 
 
 def cmd_list(
-    path: Path = typer.Argument(
-        Path("."), help="The directory to search for expert projects."
-    ),
+    search_path: Annotated[
+        Optional[Path],
+        typer.Option("--path", "-p", help="Search path for experts"),
+    ] = None,
+    format: Annotated[
+        str,
+        typer.Option("--format", "-f", help="Output format (table, json, yaml)"),
+    ] = "table",
 ) -> None:
-    """Lists all running trading experts."""
-    typer.secho("Searching for trading experts...", fg=typer.colors.BLUE)
+    """
+    List all running experts.
 
-    found_experts = []
-    # Search in the specified directory for subdirectories that are expert projects
-    for project_path in path.iterdir():
-        if project_path.is_dir() and (project_path / "main.py").is_file():
-            pid_file_path = project_path / ".metaexpert.pid"
-            status = "Stopped"
-            pid = "N/A"
+    Example:
+        metaexpert list
+        metaexpert list --format json
+    """
+    config = get_config()
+    output = OutputFormatter()
 
-            if pid_file_path.is_file():
-                pid_val = get_pid_from_file(pid_file_path)
-                if pid_val:
-                    pid = str(pid_val)  # Ensure pid is a string for the table
-                    if is_process_running(pid_val):
-                        status = "Running"
-                    else:
-                        status = "Stale PID (Not Running)"
-                else:
-                    status = "Malformed PID File"
+    if search_path is None:
+        search_path = Path.cwd()
 
-            found_experts.append(
-                {
-                    "name": project_path.name,
-                    "path": project_path.resolve(),
-                    "pid": pid,
-                    "status": status,
-                }
-            )
+    manager = ProcessManager(config.pid_dir)
+    running = manager.list_running(search_path)
 
-    if not found_experts:
-        typer.secho(
-            "No trading experts found in the current directory.", fg=typer.colors.YELLOW
-        )
+    if not running:
+        output.info("No running experts found")
         return
 
-    # Print a formatted table
-    typer.secho("\n--- Found Trading Experts ---", fg=typer.colors.CYAN)
-    typer.secho(
-        f"{'Project Name':<25} {'Path':<40} {'PID':<10} {'Status':<20}",
-        fg=typer.colors.CYAN,
-    )
-    typer.secho(
-        f"{'-' * 25:<25} {'-' * 40:<40} {'-' * 10:<10} {'-' * 20:<20}",
-        fg=typer.colors.CYAN,
-    )
-    for expert in found_experts:
-        typer.secho(
-            f"{expert['name']:<25} {expert['path']!s:<40} {expert['pid']!s:<10} {expert['status']:<20}"
+    # Prepare data for display
+    data = [
+        {
+            "Name": info.name,
+            "PID": info.pid,
+            "Status": info.status,
+            "CPU %": f"{info.cpu_percent:.1f}",
+            "Memory (MB)": f"{info.memory_mb:.1f}",
+            "Started": info.started_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        for info in running
+    ]
+
+    # Display based on format
+    if format == "json":
+        output.display_json(data)
+    elif format == "yaml":
+        output.display_yaml(data)
+    else:
+        output.display_table(
+            data,
+            title="Running Experts",
+            columns=["Name", "PID", "Status", "CPU %", "Memory (MB)", "Started"],
         )

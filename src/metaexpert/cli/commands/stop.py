@@ -1,54 +1,56 @@
-"""CLI command to stop a running trading expert."""
+# src/metaexpert/cli/commands/stop.py
+"""Command to stop an expert."""
 
 from pathlib import Path
+from typing import Annotated
 
 import typer
 
-from metaexpert.cli.pid_lock import (
-    cleanup_pid_file,
-    get_pid_from_file,
-    terminate_process,
-)
+from metaexpert.cli.app import get_config
+from metaexpert.cli.core.exceptions import ProcessError
+from metaexpert.cli.core.output import OutputFormatter
+from metaexpert.cli.process.manager import ProcessManager
 
 
 def cmd_stop(
-    path: Path = typer.Argument(..., help="The path to the expert project directory."),
+    project_name: Annotated[
+        str,
+        typer.Argument(help="Name of the expert project to stop"),
+    ],
+    force: Annotated[
+        bool,
+        typer.Option("--force", "-f", help="Force kill the process"),
+    ] = False,
+    timeout: Annotated[
+        int,
+        typer.Option("--timeout", "-t", help="Shutdown timeout in seconds"),
+    ] = 30,
 ) -> None:
-    """Stops a running trading expert."""
-    if not path.is_dir():
-        typer.secho(
-            f"Error: Project directory '{path}' not found.", fg=typer.colors.RED
-        )
-        raise typer.Exit(code=1)
+    """
+    Stop a running expert.
 
-    pid_file_path = path / ".metaexpert.pid"
-    pid = get_pid_from_file(pid_file_path)
+    Example:
+        metaexpert stop my-bot
+        metaexpert stop my-bot --force
+    """
+    config = get_config()
+    output = OutputFormatter()
 
-    if pid is None:
-        typer.secho(
-            f"Error: PID file not found at '{pid_file_path}'. Is the expert running?",
-            fg=typer.colors.RED,
-        )
-        raise typer.Exit(code=1)
-
-    typer.secho(
-        f"Attempting to stop expert with PID {pid} at '{path}'...", fg=typer.colors.BLUE
-    )
+    project_path = Path.cwd() / project_name
 
     try:
-        terminate_process(pid)
-        typer.secho(
-            f"Successfully stopped process {pid}. PID file removed.",
-            fg=typer.colors.GREEN,
+        manager = ProcessManager(config.pid_dir)
+
+        output.info(f"Stopping expert: {project_name}")
+
+        manager.stop(
+            project_path=project_path,
+            timeout=timeout,
+            force=force,
         )
-    except ProcessLookupError:
-        typer.secho(
-            f"Warning: Process with PID {pid} not found. PID file was stale. Removing it.",
-            fg=typer.colors.YELLOW,
-        )
-    except OSError as e:
-        typer.secho(f"Error stopping expert with PID {pid}: {e}", fg=typer.colors.RED)
-        cleanup_pid_file(pid_file_path)
-        raise typer.Exit(code=1) from e
-    finally:
-        cleanup_pid_file(pid_file_path)
+
+        output.success(f"Expert stopped: {project_name}")
+
+    except ProcessError as e:
+        output.error(str(e))
+        raise typer.Exit(code=1)

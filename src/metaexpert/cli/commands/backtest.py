@@ -1,24 +1,43 @@
-"""CLI command to backtest a trading expert."""
+# src/metaexpert/cli/commands/backtest.py
+"""Command to backtest a strategy."""
 
 from pathlib import Path
+from typing import Annotated, Optional
 
 import typer
 
+from metaexpert.cli.core.output import OutputFormatter
+
 
 def cmd_backtest(
-    path: Path = typer.Argument(..., help="The path to the expert project directory."),
+    expert_path: Annotated[
+        Path,
+        typer.Argument(help="Path to expert file"),
+    ],
+    start_date: Annotated[
+        Optional[str],
+        typer.Option("--start-date", "-s", help="Start date (YYYY-MM-DD)"),
+    ] = None,
+    end_date: Annotated[
+        Optional[str],
+        typer.Option("--end-date", "-e", help="End date (YYYY-MM-DD)"),
+    ] = None,
+    initial_capital: Annotated[
+        float,
+        typer.Option("--capital", "-c", help="Initial capital"),
+    ] = 10000.0,
 ) -> None:
-    """Backtests a trading expert."""
-    if not path.is_dir():
-        typer.secho(
-            f"Error: Project directory '{path}' not found.", fg=typer.colors.RED
-        )
+    """
+    Backtest a trading strategy.
+
+    Example:
+        metaexpert backtest main.py --start-date 2024-01-01
+    """
+    output = OutputFormatter()
+
+    if not expert_path.exists():
+        output.error(f"Expert file not found: {expert_path}")
         raise typer.Exit(code=1)
 
-    main_script = path / "main.py"
-    if not main_script.is_file():
-        typer.secho(f"Error: 'main.py' not found in '{path}'.", fg=typer.colors.RED)
-        raise typer.Exit(code=1)
-
-    typer.secho(f"Attempting to backtest expert at: {path}", fg=typer.colors.BLUE)
-    typer.secho("Backtesting logic will be implemented here.", fg=typer.colors.YELLOW)
+    output.info("Backtesting functionality coming soon!")
+    # TODO: Implement backtesting logic

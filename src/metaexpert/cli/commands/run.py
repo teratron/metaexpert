@@ -1,105 +1,74 @@
-"""CLI command to run a trading expert."""
+# src/metaexpert/cli/commands/run.py
+"""Command to run an expert."""
 
-import os
-import subprocess
-import sys
 from pathlib import Path
+from typing import Annotated, Optional
 
 import typer
 
-from metaexpert.cli.pid_lock import (
-    PidFileLock,
-    cleanup_pid_file,
-    get_pid_from_file,
-    is_process_running,
-)
+from metaexpert.cli.app import get_config
+from metaexpert.cli.core.exceptions import ProcessError
+from metaexpert.cli.core.output import OutputFormatter, console
+from metaexpert.cli.process.manager import ProcessManager
 
 
 def cmd_run(
-    path: Path = typer.Argument(..., help="The path to the expert project directory."),
+    project_path: Annotated[
+        Optional[Path],
+        typer.Argument(help="Path to expert project (default: current directory)"),
+    ] = None,
+    detach: Annotated[
+        bool,
+        typer.Option("--detach", "-d", help="Run in background"),
+    ] = True,
+    script: Annotated[
+        str,
+        typer.Option("--script", help="Script to run"),
+    ] = "main.py",
 ) -> None:
-    """Runs a trading expert in a detached process."""
-    if not path.is_dir():
-        typer.secho(
-            f"Error: Project directory '{path}' not found.", fg=typer.colors.RED
-        )
+    """
+    Run a trading expert.
+
+    Example:
+        metaexpert run
+        metaexpert run my-bot --detach
+    """
+    config = get_config()
+    output = OutputFormatter()
+
+    # Default to current directory
+    if project_path is None:
+        project_path = Path.cwd()
+
+    # Validate project
+    if not project_path.is_dir():
+        output.error(f"Project directory not found: {project_path}")
         raise typer.Exit(code=1)
 
-    main_script = path / "main.py"
-    if not main_script.is_file():
-        typer.secho(f"Error: 'main.py' not found in '{path}'.", fg=typer.colors.RED)
+    script_path = project_path / script
+    if not script_path.exists():
+        output.error(f"Script not found: {script_path}")
         raise typer.Exit(code=1)
 
-    pid_file_path = path / ".metaexpert.pid"
-
-    pid_from_file = get_pid_from_file(pid_file_path)
-    if pid_from_file:
-        if is_process_running(pid_from_file):
-            typer.secho(
-                f"Error: Expert at '{path}' is already running with PID {pid_from_file}.",
-                fg=typer.colors.RED,
-            )
-            raise typer.Exit(code=1)
-        else:
-            typer.secho(
-                f"Warning: Stale PID file found for PID {pid_from_file}. Removing.",
-                fg=typer.colors.YELLOW,
-            )
-            cleanup_pid_file(pid_file_path)
-
+    # Start process
     try:
-        with PidFileLock(pid_file_path) as pid_lock:
-            typer.secho(f"Starting expert at '{path}'...", fg=typer.colors.BLUE)
+        manager = ProcessManager(config.pid_dir)
 
-            # Use sys.executable to ensure the correct Python interpreter is used
-            command = [sys.executable, str(main_script)]
+        console.print(f"[cyan]Starting expert:[/] {project_path.name}")
 
-            # Detach process
-            if sys.platform == "win32":
-                process = subprocess.Popen(
-                    command,
-                    cwd=path,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    stdin=subprocess.DEVNULL,
-                    close_fds=True,
-                    creationflags=(
-                        subprocess.DETACHED_PROCESS
-                        | subprocess.CREATE_NEW_PROCESS_GROUP
-                    ),
-                )
-            else:  # Unix-like systems
-                process = subprocess.Popen(
-                    command,
-                    cwd=path,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                    stdin=subprocess.DEVNULL,
-                    close_fds=True,
-                    preexec_fn=os.setsid,
-                )
+        pid = manager.start(
+            project_path=project_path,
+            script=script,
+            detach=detach,
+        )
 
-            pid = process.pid
-            # Write the actual child process PID to the locked file
-            with open(pid_file_path, "w") as f:
-                f.write(str(pid))
+        output.success(f"Expert started with PID {pid}")
 
-            pid_lock.keep_file = True  # Keep the PID file after successful startup
+        if detach:
+            console.print(f"\n[dim]Logs:[/] metaexpert logs {project_path.name}")
+            console.print(f"[dim]Stop:[/] metaexpert stop {project_path.name}")
+            console.print(f"[dim]Status:[/] metaexpert list\n")
 
-            typer.secho(
-                f"Expert started with PID {pid}. Log file: {path}/expert.log",
-                fg=typer.colors.GREEN,
-            )
-            typer.secho(
-                f"To stop the expert, use: metaexpert stop {path}",
-                fg=typer.colors.YELLOW,
-            )
-
-    except RuntimeError as e:  # PidFileLock raises RuntimeError if already locked
-        typer.secho(f"Error: {e}", fg=typer.colors.RED)
-        raise typer.Exit(code=1) from e
-    except Exception as e:
-        typer.secho(f"Error starting expert: {e}", fg=typer.colors.RED)
-        if pid_file_path.exists():
-            pid_file_path.unlink()  # Clean up PID file if creation failed
-        raise typer.Exit(code=1) from e
+    except ProcessError as e:
+        output.error(str(e))
+        raise typer.Exit(code=1)

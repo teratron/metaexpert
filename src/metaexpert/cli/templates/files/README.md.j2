@@ -1,0 +1,133 @@
+# src/metaexpert/cli/templates/files/README.md.j2
+# {{ project_name }}
+
+Trading expert built with [MetaExpert](https://github.com/teratron/metaexpert) framework.
+
+## Configuration
+
+**Exchange:** {{ exchange }}  
+**Strategy:** {{ strategy }}  
+**Market Type:** {{ market_type }}
+
+### Setup
+
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Configure your API credentials in `.env`
+
+3. Install dependencies:
+   ```bash
+   uv sync
+   ```
+
+## Usage
+
+### Paper Trading (Demo)
+```bash
+metaexpert run
+```
+
+### Live Trading (Real Money)
+```bash
+metaexpert run --trade-mode live
+```
+
+### Backtesting
+```bash
+metaexpert backtest main.py --start-date 2024-01-01
+```
+
+## Project Structure
+
+```
+{{ project_name }}/
+├── main.py              # Main expert implementation
+├── .env.example         # Environment template
+├── .env                 # Your configuration (not in git)
+├── .gitignore          # Git ignore rules
+├── README.md           # This file
+└── pyproject.toml      # Project dependencies
+```
+
+## Strategy Details
+
+{% if strategy == "ema" -%}
+### EMA (Exponential Moving Average) Strategy
+
+This strategy uses two EMAs to generate trading signals:
+- **Fast EMA**: Short-term trend (e.g., 12 periods)
+- **Slow EMA**: Long-term trend (e.g., 26 periods)
+
+**Signals:**
+- Buy when fast EMA crosses above slow EMA
+- Sell when fast EMA crosses below slow EMA
+
+{% elif strategy == "rsi" -%}
+### RSI (Relative Strength Index) Strategy
+
+Uses RSI indicator to identify overbought/oversold conditions:
+- **RSI Period**: 14 (default)
+- **Oversold**: RSI < 30
+- **Overbought**: RSI > 70
+
+**Signals:**
+- Buy when RSI crosses above 30 (oversold)
+- Sell when RSI crosses below 70 (overbought)
+
+{% elif strategy == "macd" -%}
+### MACD Strategy
+
+Moving Average Convergence Divergence strategy:
+- **Fast EMA**: 12 periods
+- **Slow EMA**: 26 periods
+- **Signal Line**: 9 periods
+
+**Signals:**
+- Buy when MACD crosses above signal line
+- Sell when MACD crosses below signal line
+
+{% else -%}
+### Custom Strategy
+
+This is a template project. Implement your strategy logic in `main.py`.
+
+{% endif -%}
+
+## Risk Management
+
+- **Leverage**: {{ leverage | default(10) }}x
+- **Stop Loss**: {{ stop_loss_pct | default(2.0) }}%
+- **Take Profit**: {{ take_profit_pct | default(4.0) }}%
+- **Position Sizing**: Risk-based ({{ size_value | default(1.5) }}% per trade)
+
+## Commands
+
+```bash
+# Start expert
+metaexpert run
+
+# Stop expert
+metaexpert stop {{ project_name }}
+
+# View logs
+metaexpert logs {{ project_name }}
+
+# Check status
+metaexpert list
+```
+
+## Documentation
+
+- [MetaExpert Docs](https://teratron.github.io/metaexpert)
+- [API Reference](https://teratron.github.io/metaexpert/api)
+- [Strategy Guide](https://teratron.github.io/metaexpert/strategies)
+
+## Support
+
+For issues and questions:
+- GitHub: https://github.com/teratron/metaexpert
+- Documentation: https://teratron.github.io/metaexpert
+

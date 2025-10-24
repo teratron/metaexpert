@@ -1,0 +1,29 @@
+# src/metaexpert/cli/templates/files/pyproject.toml.j2
+[project]
+name = "{{ project_name }}"
+version = "0.1.0"
+description = "Trading expert built with MetaExpert"
+requires-python = ">=3.12"
+dependencies = [
+    "metaexpert>=0.3.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP"]
+ignore = ["E501"]
