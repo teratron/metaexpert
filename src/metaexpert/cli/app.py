@@ -81,14 +81,6 @@ app.command(name="stop")(stop.cmd_stop)
 app.command(name="logs")(logs.cmd_logs)
 
 
-# Error handler
-@app.command(hidden=True)
-def _handle_error(error: Exception) -> None:
-    """Internal error handler."""
-    if isinstance(error, CLIError):
-        error_console.print(f"[red]Error:[/] {error}")
-        raise typer.Exit(code=1)
-    raise
 
 
 if __name__ == "__main__":

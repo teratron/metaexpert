@@ -1,7 +1,7 @@
 # src/metaexpert/cli/process/pid_lock.py
 """PID file locking implementation."""
 
-import fcntl
+# import fcntl  # Only available on Unix-like systems
 import os
 import sys
 from pathlib import Path
@@ -52,10 +52,12 @@ class PIDFileLock:
 
     def _lock_unix(self) -> None:
         """Acquire lock on Unix systems."""
+        import fcntl
         fcntl.flock(self.fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 
     def _unlock_unix(self) -> None:
         """Release lock on Unix systems."""
+        import fcntl
         fcntl.flock(self.fd, fcntl.LOCK_UN)
 
     def _lock_windows(self) -> None:

@@ -3,6 +3,7 @@
 from datetime import datetime
 from pathlib import Path
 from types import ModuleType
+from typing import Literal
 
 # from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import (
@@ -24,7 +25,7 @@ from metaexpert.config import (
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert._logger import BoundLogger, MetaLogger
+from metaexpert.logger import BoundLogger, get_logger, setup_logging
 
 
 class MetaExpert(Events):
@@ -54,7 +55,7 @@ class MetaExpert(Events):
         position_mode: str = DEFAULT_POSITION_MODE,
         #
         # --- Logging Configuration ---
-        log_level: str = LOG_LEVEL,
+        log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = LOG_LEVEL,
         log_file: str = LOG_FILE,
         trade_log_file: str = LOG_TRADE_FILE,
         error_log_file: str = LOG_ERROR_FILE,
@@ -86,15 +87,35 @@ class MetaExpert(Events):
             async_logging (bool): Whether to use asynchronous logging.
         """
         # Configure logging using the enhanced expert integration
-        self.logger: BoundLogger = MetaLogger.create(
+        # Note: This setups global logging state. Only one MetaExpert instance should manage logging.
+        from .logger.config import LoggerConfig
+        # Create a config based on the provided parameters
+        # Note: LoggerConfig does not support structured_logging and async_logging directly.
+        # We will ignore these for now, or map them if possible (e.g. structured_logging -> json_logs).
+        # For this fix, we will pass only supported parameters.
+        # The specific file paths and settings are handled by the global config.
+        # This is a simplification and might require more complex logic to truly customize per instance.
+        # A better approach might be to have a dedicated logger for each expert, but that's a larger change.
+        # Let's adapt the call to setup_logging with supported params.
+        # LoggerConfig does not take structured_logging and async_logging.
+        # We'll map structured_logging to json_logs if True, otherwise False.
+        # async_logging is likely not supported directly in setup.py.
+        # We will pass supported params and ignore unsupported ones.
+        config = LoggerConfig(
             log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
             error_log_file=error_log_file,
-            console_logging=log_to_console,
-            structured_logging=structured_logging,
-            async_logging=async_logging,
+            log_to_console=log_to_console,
+            # structured_logging=structured_logging, # Not supported in LoggerConfig
+            # async_logging=async_logging, # Not supported in LoggerConfig
+            json_logs=structured_logging, # Map structured_logging to json_logs
+            # Other params like log_dir, max_bytes etc. use defaults from LoggerConfig
         )
+        # Setup logging with the new config. This affects global state.
+        setup_logging(config)
+        # Get the logger instance
+        self.logger: BoundLogger = get_logger(self.__class__.__name__)
 
         # Initialize stock exchange
         self.client: MetaExchange = MetaExchange.create(
