@@ -10,7 +10,7 @@ from metaexpert.logger.context import (
     iterate_with_context,
     request_id_var,
     strategy_id_var,
-    trade_context,
+    TradeContext,
     trade_session_var,
     unbind_contextvars,
 )
@@ -77,7 +77,7 @@ def test_trade_context_manager():
     clear_contextvars()
 
     # Use the trade context manager
-    with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01, strategy_id=1001):
+    with TradeContext(symbol="BTCUSDT", side="BUY", quantity=0.01, strategy_id=1001):
         # Context is bound within the block
         pass
 
@@ -95,12 +95,12 @@ def test_get_logger():
     assert logger1 is not None
 
     # Get a logger with initial context
-    logger2 = get_logger("test_module", exchange="binance", strategy_id=1001)
+    logger = get_logger("test_module", exchange="binance", strategy_id=1001)
 
     # The logger should be bound with the initial context
     # To test this, we'll need to check how structlog handles bound loggers
     # For now, just ensure it returns a logger instance
-    assert logger2 is not None
+    assert logger is not None
 
 
 def test_get_trade_logger():

@@ -26,6 +26,7 @@ from metaexpert.config import (
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import BoundLogger, get_logger, setup_logging
+from .logger.config import LoggerConfig
 
 
 class MetaExpert(Events):
@@ -55,7 +56,7 @@ class MetaExpert(Events):
         position_mode: str = DEFAULT_POSITION_MODE,
         #
         # --- Logging Configuration ---
-        log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = LOG_LEVEL,
+        log_level: str = LOG_LEVEL,
         log_file: str = LOG_FILE,
         trade_log_file: str = LOG_TRADE_FILE,
         error_log_file: str = LOG_ERROR_FILE,
@@ -88,7 +89,6 @@ class MetaExpert(Events):
         """
         # Configure logging using the enhanced expert integration
         # Note: This setups global logging state. Only one MetaExpert instance should manage logging.
-        from .logger.config import LoggerConfig
         # Create a config based on the provided parameters
         # Note: LoggerConfig does not support structured_logging and async_logging directly.
         # We will ignore these for now, or map them if possible (e.g. structured_logging -> json_logs).

@@ -22,7 +22,7 @@ logger.info("trade executed", symbol="BTCUSDT", price=50000)
 ## 📁 Структура модуля
 
 ```text
-logger2/
+logger/
 ├── __init__.py          # Публичный API
 ├── config.py            # Конфигурация (Pydantic)
 ├── setup.py             # Настройка structlog

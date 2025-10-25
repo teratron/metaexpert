@@ -16,7 +16,7 @@ from metaexpert.cli.core.output import OutputFormatter, console, error_console
 # Initialize Typer app with rich output
 app = typer.Typer(
     name="metaexpert",
-    help="CLI for managing MetaExpert trading bots",
+    help="MetaExpert CLI - Manage your trading bots with ease.",
     add_completion=True,
     rich_markup_mode="rich",
     pretty_exceptions_enable=True,

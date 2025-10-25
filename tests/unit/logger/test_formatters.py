@@ -5,26 +5,26 @@ from unittest.mock import Mock
 
 from metaexpert.logger.formatters import (
     CompactJSONRenderer,
-    MetaExpertConsoleRenderer,
+    MetaConsoleRenderer,
     get_console_renderer,
     get_file_renderer,
 )
 
 
 def test_meta_expert_console_renderer_initialization():
-    """Test initialization of MetaExpertConsoleRenderer."""
+    """Test initialization of MetaConsoleRenderer."""
     # Test that the renderer can be instantiated
-    renderer_with_colors = MetaExpertConsoleRenderer(colors=True)
+    renderer_with_colors = MetaConsoleRenderer(colors=True)
     assert renderer_with_colors is not None
 
     # Test with colors disabled
-    renderer_without_colors = MetaExpertConsoleRenderer(colors=False)
+    renderer_without_colors = MetaConsoleRenderer(colors=False)
     assert renderer_without_colors is not None
 
 
 def test_meta_expert_console_renderer_custom_colors():
-    """Test custom color scheme in MetaExpertConsoleRenderer."""
-    renderer = MetaExpertConsoleRenderer(colors=True)
+    """Test custom color scheme in MetaConsoleRenderer."""
+    renderer = MetaConsoleRenderer(colors=True)
 
     # Just verify that the renderer was created successfully
     # We can't easily test internal color attributes without knowing the exact implementation
@@ -33,7 +33,7 @@ def test_meta_expert_console_renderer_custom_colors():
 
 def test_meta_expert_console_renderer_trade_formatting_with_colors():
     """Test trade event formatting with colors."""
-    renderer = MetaExpertConsoleRenderer(colors=True)
+    renderer = MetaConsoleRenderer(colors=True)
 
     # Create a trade event dictionary
     event_dict = {
@@ -63,7 +63,7 @@ def test_meta_expert_console_renderer_trade_formatting_with_colors():
 
 def test_meta_expert_console_renderer_trade_formatting_without_colors():
     """Test trade event formatting without colors."""
-    renderer = MetaExpertConsoleRenderer(colors=False)
+    renderer = MetaConsoleRenderer(colors=False)
 
     # Create a trade event dictionary
     event_dict = {
@@ -95,7 +95,7 @@ def test_meta_expert_console_renderer_trade_formatting_without_colors():
 
 def test_meta_expert_console_renderer_regular_formatting():
     """Test regular (non-trade) event formatting."""
-    renderer = MetaExpertConsoleRenderer(colors=True)
+    renderer = MetaConsoleRenderer(colors=True)
 
     # Create a regular event dictionary
     event_dict = {
@@ -158,11 +158,11 @@ def test_get_console_renderer():
     """Test get_console_renderer function."""
     # Test with colors enabled
     renderer1 = get_console_renderer(colors=True)
-    assert isinstance(renderer1, MetaExpertConsoleRenderer)
+    assert isinstance(renderer1, MetaConsoleRenderer)
 
     # Test with colors disabled
     renderer2 = get_console_renderer(colors=False)
-    assert isinstance(renderer2, MetaExpertConsoleRenderer)
+    assert isinstance(renderer2, MetaConsoleRenderer)
 
 
 def test_get_file_renderer_json():

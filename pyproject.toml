@@ -48,13 +48,14 @@ metaexpert = "metaexpert:main"
 [dependency-groups]
 dev = [
     "python-dotenv>=1.1.1",
-    "pyright>=1.1.406",
+    "pyright>=1.1.407",
     "specify-cli",
 ]
 test = [
     "pytest>=8.3.4",
     "pytest-asyncio>=1.2.0",
     "pytest-cov>=7.0.0",
+    "pytest-mock>=3.14.0",
 ]
 lint = [
     "ruff>=0.14.2",

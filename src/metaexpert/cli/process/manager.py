@@ -118,13 +118,10 @@ class ProcessManager:
                 try:
                     process.wait(timeout=timeout)
                 except psutil.TimeoutExpired:
-                    if force:
-                        process.kill()
-                    else:
-                        raise ProcessError(
-                            f"Process {pid} did not terminate within {timeout}s. "
-                            "Use --force to kill it."
-                        )
+                    raise ProcessError(
+                        f"Process {pid} did not terminate within {timeout}s. "
+                        "Use --force to kill it."
+                    )
             else:
                 process.kill()
 

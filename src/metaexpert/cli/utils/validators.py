@@ -22,6 +22,12 @@ def validate_project_name(name: str) -> None:
     Raises:
         ValueError: If name is invalid
     """
+    # Check for Python keywords first
+    import keyword
+
+    if keyword.iskeyword(name):
+        raise ValueError(f"'{name}' is a Python keyword and cannot be used")
+
     # Check length
     if len(name) < 3:
         raise ValueError("Project name must be at least 3 characters long")
@@ -36,12 +42,6 @@ def validate_project_name(name: str) -> None:
             "Project name must start with a letter or underscore "
             "and contain only letters, numbers, hyphens, and underscores"
         )
-
-    # Check for Python keywords
-    import keyword
-
-    if keyword.iskeyword(name):
-        raise ValueError(f"'{name}' is a Python keyword and cannot be used")
 
     # Check for common reserved names
     reserved = {"test", "tests", "src", "lib", "bin", "build", "dist"}
@@ -100,14 +100,24 @@ def validate_date_format(date_str: str) -> None:
 def validate_path_exists(path: Path, file_type: str = "path") -> None:
     """Validate that path exists."""
     if not path.exists():
-        raise ValueError(f"{file_type.capitalize()} not found: {path}")
+        # Use forward slashes to ensure consistent output across platforms for testing
+        path_str = str(path).replace("\\", "/")
+        raise ValueError(f"{file_type.capitalize()} not found: {path_str}")
 
 
 def validate_positive_number(value: Any, name: str = "value") -> None:
     """Validate that number is positive."""
+    # First try to convert to float to check if it's a valid number
     try:
         num = float(value)
-        if num <= 0:
-            raise ValueError(f"{name} must be positive, got {num}")
-    except (ValueError, TypeError) as e:
-        raise ValueError(f"Invalid {name}: {value}. {e}")
+    except (ValueError, TypeError):
+        raise ValueError(f"Invalid {name}: {value}")
+    
+    # Check for special float values (inf, nan)
+    import math
+    if math.isnan(num) or math.isinf(num):
+        raise ValueError(f"Invalid {name}: {value}")
+    
+    # Then check if the number is positive
+    if num <= 0:
+        raise ValueError(f"{name} must be positive, got {num}")
