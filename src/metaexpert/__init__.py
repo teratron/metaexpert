@@ -3,7 +3,7 @@
 from datetime import datetime
 from pathlib import Path
 from types import ModuleType
-from typing import Literal
+from typing import Literal, cast
 
 # from metaexpert.cli.argument_parser import Namespace, parse_arguments
 from metaexpert.config import (
@@ -103,7 +103,9 @@ class MetaExpert(Events):
         # async_logging is likely not supported directly in setup.py.
         # We will pass supported params and ignore unsupported ones.
         config = LoggerConfig(
-            log_level=log_level,
+            log_level=cast(
+                Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], log_level
+            ),
             log_file=log_file,
             trade_log_file=trade_log_file,
             error_log_file=error_log_file,

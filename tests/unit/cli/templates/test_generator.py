@@ -9,7 +9,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import patch
 
-from src.metaexpert.cli.templates.generator import TemplateGenerator
+from metaexpert.cli.templates.generator import TemplateGenerator
 
 
 class TestTemplateGenerator:

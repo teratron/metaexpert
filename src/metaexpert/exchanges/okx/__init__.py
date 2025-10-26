@@ -1,11 +1,7 @@
 from typing import Any
 
 from metaexpert.exchanges import (
-    ContractType,
-    MarginMode,
-    MarketType,
     MetaExchange,
-    PositionMode,
 )
 from metaexpert.exchanges.okx.config import (
     FUTURES_WS_BASE_URL,

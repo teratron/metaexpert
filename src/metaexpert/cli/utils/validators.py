@@ -10,7 +10,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from src.metaexpert.cli.core.exceptions import ValidationError
+from metaexpert.cli.core.exceptions import ValidationError
 
 
 def validate_project_name(name: str, max_length: int = 50) -> bool:
@@ -173,7 +173,9 @@ def validate_positive_number(value: int | float | str) -> bool:
             raise ValidationError(f"Value must be a positive number, got: {value}")
         return True
     except (ValueError, TypeError):
-        raise ValidationError(f"Value must be a number, got: {type(value).__name__}") from None
+        raise ValidationError(
+            f"Value must be a number, got: {type(value).__name__}"
+        ) from None
 
 
 def validate_numeric_range(
@@ -198,7 +200,9 @@ def validate_numeric_range(
     try:
         num_value = float(value)
     except (ValueError, TypeError):
-        raise ValidationError(f"Value must be a number, got: {type(value).__name__}") from None
+        raise ValidationError(
+            f"Value must be a number, got: {type(value).__name__}"
+        ) from None
 
     if min_val is not None and num_value < min_val:
         raise ValidationError(

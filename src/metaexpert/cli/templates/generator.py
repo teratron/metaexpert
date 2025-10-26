@@ -35,8 +35,9 @@ class TemplateGenerator:
     def generate_project(
         self,
         project_name: str,
-        output_dir: str,
+        output_dir: Path,
         context: dict[str, Any] | None = None,
+        force: bool = False,
     ) -> bool:
         """
         Generate a new project from templates.
@@ -45,6 +46,7 @@ class TemplateGenerator:
             project_name: Name of the project to create.
             output_dir: Directory where the project will be created.
             context: Context data to render the templates with.
+            force: Whether to overwrite existing directory.
 
         Returns:
             True if project generation was successful, False otherwise.
@@ -55,7 +57,7 @@ class TemplateGenerator:
         # Add project name to context
         context["project_name"] = project_name
 
-        output_path = Path(output_dir) / project_name
+        output_path = output_dir / project_name
 
         try:
             self.logger.info(
@@ -65,6 +67,10 @@ class TemplateGenerator:
             )
 
             # Create output directory
+            if force and output_path.exists():
+                import shutil
+
+                shutil.rmtree(output_path)
             output_path.mkdir(parents=True, exist_ok=True)
 
             # Process template files

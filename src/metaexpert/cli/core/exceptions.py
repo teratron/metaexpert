@@ -2,7 +2,6 @@
 """CLI-specific exceptions."""
 
 
-
 class CLIError(Exception):
     """Base exception for CLI errors."""
 

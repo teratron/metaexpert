@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 # from metaexpert.config import (
 #     LOG_ASYNC_LOGGING,
@@ -85,5 +85,4 @@ class LoggerConfig(BaseModel):
             raise ValueError("max_bytes must not exceed 1GB")
         return value
 
-    class Config:
-        frozen = True  # Make config immutable after creation
+    model_config = ConfigDict(frozen=True)  # Make config immutable after creation

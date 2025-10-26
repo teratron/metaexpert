@@ -7,6 +7,7 @@ with rich text, tables, JSON, trees, and progress indicators.
 
 from typing import Any
 
+import yaml
 from rich.box import ROUNDED
 from rich.console import Console
 from rich.json import JSON
@@ -19,6 +20,7 @@ from rich.progress import (
     TextColumn,
     TimeRemainingColumn,
 )
+from rich.syntax import Syntax
 from rich.table import Table
 from rich.text import Text
 from rich.tree import Tree
@@ -136,9 +138,7 @@ class OutputFormatter:
 
         self.console.print(table)
 
-    def json_output(
-        self, data: dict | list | Any, title: str | None = None
-    ) -> None:
+    def json_output(self, data: dict | list | Any, title: str | None = None) -> None:
         """
         Display JSON data in a formatted way.
 
@@ -248,6 +248,43 @@ class OutputFormatter:
 
         self.console.print(table)
 
+    def display_table(
+        self,
+        data: list[dict[str, Any]],
+        columns: list[str] | None = None,
+        title: str | None = None,
+    ) -> None:
+        """
+        Display data as table using custom_table method.
+
+        Args:
+            data: List of dictionaries representing rows
+            columns: Optional list of columns to display
+            title: Optional title for the table
+        """
+        self.custom_table(data, columns=columns, title=title)
+
+    def display_json(self, data: Any, title: str | None = None) -> None:
+        """
+        Display data as JSON using json_output method.
+
+        Args:
+            data: The data to display as JSON
+            title: Optional title for the JSON panel
+        """
+        self.json_output(data, title=title)
+
+    def display_yaml(self, data: Any) -> None:
+        """
+        Display data as YAML.
+
+        Args:
+            data: The data to display as YAML
+        """
+        yaml_str = yaml.dump(data, default_flow_style=False, allow_unicode=True)
+        syntax = Syntax(yaml_str, "yaml", theme="monokai")
+        self.console.print(syntax)
+
 
 # Global instance for convenience
 _default_formatter = OutputFormatter()
@@ -273,30 +310,32 @@ def info(message: str, title: str | None = None) -> None:
     _default_formatter.info(message, title)
 
 
-def table(
-    headers: list[str], rows: list[list[Any]], title: str | None = None
-) -> None:
+def table(headers: list[str], rows: list[list[Any]], title: str | None = None) -> None:
     """Display data in a table format using the default formatter."""
     _default_formatter.table(headers, rows, title)
 
 
-def json_output(data: dict | list | Any) -> None:
+def json_output(data: dict | list | Any, title: str | None = None) -> None:
     """Display JSON data in a formatted way using the default formatter."""
-    _default_formatter.json_output(data)
+    _default_formatter.json_output(data, title=title)
 
 
-def tree(root_label: str, children: list[str | dict[str, Any]]) -> None:
+def tree(
+    root_label: str, children: list[str | dict[str, Any]], title: str | None = None
+) -> None:
     """Display data in a tree format using the default formatter."""
-    _default_formatter.tree(root_label, children)
+    _default_formatter.tree(root_label, children, title=title)
 
 
 def progress(tasks: list[dict[str, Any]], description: str = "Processing...") -> None:
     """Display a progress indicator using the default formatter."""
-    _default_formatter.progress(tasks, description)
+    _default_formatter.progress(tasks, description=description)
 
 
 def custom_table(
-    data: list[dict[str, Any]], columns: list[str] | None = None
+    data: list[dict[str, Any]],
+    columns: list[str] | None = None,
+    title: str | None = None,
 ) -> None:
     """Display a custom table from a list of dictionaries using the default formatter."""
-    _default_formatter.custom_table(data, columns)
+    _default_formatter.custom_table(data, columns=columns, title=title)

@@ -39,7 +39,7 @@ def cmd_stop(
     project_path = Path.cwd() / project_name
 
     try:
-        manager = ProcessManager(config.pid_dir)
+        manager = ProcessManager(pid_dir=config.pid_dir)
 
         output.info(f"Stopping expert: {project_name}")
 
@@ -53,4 +53,4 @@ def cmd_stop(
 
     except ProcessError as e:
         output.error(str(e))
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e

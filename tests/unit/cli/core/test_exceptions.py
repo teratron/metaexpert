@@ -1,7 +1,6 @@
 """Tests for CLI-specific exceptions."""
 
-
-from src.metaexpert.cli.core.exceptions import (
+from metaexpert.cli.core.exceptions import (
     ArgumentError,
     CLIError,
     CommandError,
@@ -313,4 +312,6 @@ def test_all_exceptions_are_catchable_as_base_exception() -> None:
         except Exception:
             pass  # Successfully caught as base Exception
         else:
-            raise AssertionError(f"{error_class.__name__} was not caught as base Exception")
+            raise AssertionError(
+                f"{error_class.__name__} was not caught as base Exception"
+            )

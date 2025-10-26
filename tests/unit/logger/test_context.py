@@ -56,7 +56,7 @@ def test_clear_contextvars():
     assert True
 
 
-def test_LogContext_manager():
+def test_logcontext_manager():
     """Test the LogContext context manager."""
     # Clear any existing context
     clear_contextvars()

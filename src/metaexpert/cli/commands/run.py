@@ -52,7 +52,7 @@ def cmd_run(
 
     # Start process
     try:
-        manager = ProcessManager(config.pid_dir)
+        manager = ProcessManager(pid_dir=config.pid_dir)
 
         console.print(f"[cyan]Starting expert:[/] {project_path.name}")
 
@@ -71,4 +71,4 @@ def cmd_run(
 
     except ProcessError as e:
         output.error(str(e))
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e

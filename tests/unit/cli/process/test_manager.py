@@ -33,9 +33,11 @@ class TestProcessInfo:
     def test_process_info_creation(self):
         """Test creating a ProcessInfo instance."""
         process_info = ProcessInfo(
+            name="test_process",
             pid=1234,
             command="python script.py",
             start_time=time.time(),
+            started_at=datetime.datetime.now(),
             status="running",
             working_directory="/tmp",
             environment={"VAR": "value"},
@@ -71,7 +73,7 @@ class TestProcessManager:
         if process_info.pid in manager._process_handles:
             try:
                 manager.stop_process(process_info.pid)
-            except:
+            except Exception:
                 pass  # Process might have already finished
 
     def test_start_process_with_working_directory(self):
@@ -95,7 +97,7 @@ class TestProcessManager:
             if process_info and process_info.pid in manager._process_handles:
                 try:
                     manager.stop_process(process_info.pid)
-                except:
+                except Exception:
                     pass  # Process might have already finished
 
     def test_start_process_with_environment(self):
@@ -120,7 +122,7 @@ class TestProcessManager:
         if process_info and process_info.pid in manager._process_handles:
             try:
                 manager.stop_process(process_info.pid)
-            except:
+            except Exception:
                 pass  # Process might have already finished
 
     def test_start_process_nonexistent_directory(self):
@@ -166,7 +168,7 @@ class TestProcessManager:
             time.sleep(0.5)
 
             # Try to stop the already finished process
-            result = manager.stop_process(process_info.pid)
+            manager.stop_process(process_info.pid)
             # On Windows, trying to kill an already terminated process might raise an error
             # The important thing is that the process info is cleaned up properly eventually
             # We check that the process is marked as stopped in the manager
@@ -283,7 +285,7 @@ class TestProcessManager:
         assert len(manager.processes) == 2
 
         # Stop all processes
-        result = manager.stop_all_processes()
+        manager.stop_all_processes()
         # On Windows, stopping processes might not always return True due to permission issues
         # The important thing is that all processes are marked as stopped eventually
         manager.cleanup_stopped_processes()  # Clean up any stopped processes

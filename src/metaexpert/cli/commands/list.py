@@ -34,7 +34,7 @@ def cmd_list(
     if search_path is None:
         search_path = Path.cwd()
 
-    manager = ProcessManager(config.pid_dir)
+    manager = ProcessManager(pid_dir=config.pid_dir)
     running = manager.list_running(search_path)
 
     if not running:

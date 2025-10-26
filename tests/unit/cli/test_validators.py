@@ -3,8 +3,9 @@
 from unittest.mock import patch
 
 import pytest
-from src.metaexpert.cli.core.exceptions import ValidationError
-from src.metaexpert.cli.utils.validators import (
+
+from metaexpert.cli.core.exceptions import ValidationError
+from metaexpert.cli.utils.validators import (
     validate_date_format,
     validate_datetime_format,
     validate_directory_path,

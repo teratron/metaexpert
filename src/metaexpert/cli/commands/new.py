@@ -6,7 +6,6 @@ from typing import Annotated
 
 import typer
 
-from metaexpert.cli.app import get_config
 from metaexpert.cli.core.exceptions import TemplateError, ValidationError
 from metaexpert.cli.core.output import OutputFormatter, console
 from metaexpert.cli.templates.generator import TemplateGenerator
@@ -47,20 +46,22 @@ def cmd_new(
     Example:
         metaexpert new my-bot --exchange binance --strategy ema
     """
-    config = get_config()
     output = OutputFormatter()
 
     # Validate project name
     try:
         validate_project_name(project_name)
-    except ValueError as e:
-        raise ValidationError(str(e))
+    except ValidationError as e:
+        output.error(f"Invalid project name: {e}")
+        raise typer.Exit(code=1) from e
 
     # Set output directory
     if output_dir is None:
         output_dir = Path.cwd()
 
     # Prepare template context
+    import os
+
     context = {
         "exchange": exchange.lower(),
         "strategy": strategy.lower(),
@@ -73,6 +74,11 @@ def cmd_new(
         "stop_loss_pct": 2.0,
         "take_profit_pct": 4.0,
         "size_value": 1.5,
+        "version": "0.1.0",
+        "author_name": os.getenv("GIT_AUTHOR_NAME", "Unknown"),
+        "author_email": os.getenv("GIT_AUTHOR_EMAIL", "user@example.com"),
+        "description": f"{strategy.upper()} strategy on {exchange.upper()}",
+        "additional_dependencies": [],
     }
 
     # Generate project
@@ -85,8 +91,8 @@ def cmd_new(
         console.print(f"[dim]Market:[/] {market_type}\n")
 
         generator.generate_project(
-            output_dir=output_dir,
             project_name=project_name,
+            output_dir=output_dir,
             context=context,
             force=force,
         )
@@ -99,12 +105,15 @@ def cmd_new(
         # Show next steps
         console.print("\n[bold green]Next Steps:[/]\n")
         console.print(f"  1. [cyan]cd {project_name}[/]")
-        console.print("  2. [cyan]cp .env.example .env[/]  # Configure API keys")
-        console.print("  3. [cyan]uv sync[/]  # Install dependencies")
+        console.print(" 2. [cyan]cp .env.example .env[/] # Configure API keys")
+        console.print(" 3. [cyan]uv sync[/]  # Install dependencies")
         console.print("  4. [cyan]metaexpert run[/]  # Start in paper mode\n")
 
         console.print("[dim]Documentation: https://teratron.github.io/metaexpert[/]\n")
 
+    except ValidationError as e:
+        output.error(f"Validation error: {e}")
+        raise typer.Exit(code=1) from e
     except TemplateError as e:
         output.error(str(e))
-        raise typer.Exit(code=1)
+        raise typer.Exit(code=1) from e

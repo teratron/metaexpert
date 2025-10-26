@@ -3,10 +3,12 @@
 from unittest.mock import Mock, patch
 
 from rich.console import Console
+from rich.json import JSON
 from rich.panel import Panel
 from rich.table import Table
 from rich.tree import Tree
-from src.metaexpert.cli.core.output import (
+
+from metaexpert.cli.core.output import (
     OutputFormatter,
     custom_table,
     error,
@@ -46,7 +48,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the expected style
-        assert "Success" in str(call_arg)
+        assert call_arg.title == "Success"
+        assert call_arg.border_style == "green"
 
     def test_success_message_with_title(self, mocker):
         """Test success message output with custom title."""
@@ -60,7 +63,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the custom title
-        assert "Custom Success" in str(call_arg)
+        assert call_arg.title == "Custom Success"
+        assert call_arg.border_style == "green"
 
     def test_error_message(self, mocker):
         """Test error message output."""
@@ -74,7 +78,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the expected style
-        assert "Error" in str(call_arg)
+        assert call_arg.title == "Error"
+        assert call_arg.border_style == "red"
 
     def test_error_message_with_title(self, mocker):
         """Test error message output with custom title."""
@@ -88,7 +93,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the custom title
-        assert "Custom Error" in str(call_arg)
+        assert call_arg.title == "Custom Error"
+        assert call_arg.border_style == "red"
 
     def test_warning_message(self, mocker):
         """Test warning message output."""
@@ -102,7 +108,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the expected style
-        assert "Warning" in str(call_arg)
+        assert call_arg.title == "Warning"
+        assert call_arg.border_style == "yellow"
 
     def test_warning_message_with_title(self, mocker):
         """Test warning message output with custom title."""
@@ -116,7 +123,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the custom title
-        assert "Custom Warning" in str(call_arg)
+        assert call_arg.title == "Custom Warning"
+        assert call_arg.border_style == "yellow"
 
     def test_info_message(self, mocker):
         """Test info message output."""
@@ -130,7 +138,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the expected style
-        assert "Info" in str(call_arg)
+        assert call_arg.title == "Info"
+        assert call_arg.border_style == "blue"
 
     def test_info_message_with_title(self, mocker):
         """Test info message output with custom title."""
@@ -144,7 +153,8 @@ class TestOutputFormatter:
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Panel)
         # Check that the panel has the custom title
-        assert "Custom Info" in str(call_arg)
+        assert call_arg.title == "Custom Info"
+        assert call_arg.border_style == "blue"
 
     def test_table_with_data(self, mocker):
         """Test displaying a table with data."""
@@ -160,6 +170,24 @@ class TestOutputFormatter:
         assert mock_console_print.call_count == 1
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Table)
+        # Check that the table has the expected headers
+        assert call_arg.columns[0].header == "Name"
+        assert call_arg.columns[1].header == "Age"
+        # Check that the table has the expected rows
+        assert len(call_arg.rows) == 2
+        assert call_arg.rows[0][0] == "Alice"
+        assert call_arg.rows[0][1] == "30"
+        assert call_arg.rows[1][0] == "Bob"
+        assert call_arg.rows[1][1] == "25"
+        # Check that the table has the expected headers
+        assert call_arg.columns[0].header == "Name"
+        assert call_arg.columns[1].header == "Age"
+        # Check that the table has the expected rows
+        assert len(call_arg.rows) == 2
+        assert call_arg.rows[0][0] == "Alice"
+        assert call_arg.rows[0][1] == "30"
+        assert call_arg.rows[1][0] == "Bob"
+        assert call_arg.rows[1][1] == "25"
 
     def test_table_with_title(self, mocker):
         """Test displaying a table with a title."""
@@ -177,6 +205,17 @@ class TestOutputFormatter:
         assert isinstance(call_arg, Table)
         # Check that the table has the title
         assert call_arg.title == "Users"
+        # Check that the table has the expected headers
+        assert call_arg.columns[0].header == "Name"
+        assert call_arg.columns[1].header == "Age"
+        # Check that the table has the expected rows
+        assert len(call_arg.rows) == 2
+        # In newer versions of Rich, Row objects are not subscriptable
+        # We need to access cells differently
+        assert str(call_arg.rows[0].cells[0]) == "Alice"
+        assert str(call_arg.rows[0].cells[1]) == "30"
+        assert str(call_arg.rows[1].cells[0]) == "Bob"
+        assert str(call_arg.rows[1].cells[1]) == "25"
 
     def test_table_with_custom_header_style(self, mocker):
         """Test displaying a table with custom header style."""
@@ -192,6 +231,19 @@ class TestOutputFormatter:
         assert mock_console_print.call_count == 1
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Table)
+        # Check that the table has the expected headers
+        assert call_arg.columns[0].header == "Name"
+        assert call_arg.columns[1].header == "Age"
+        # Check that the table has the expected header style
+        assert call_arg.header_style == "bold blue"
+        # Check that the table has the expected rows
+        assert len(call_arg.rows) == 2
+        # In newer versions of Rich, Row objects are not subscriptable
+        # We need to access cells differently
+        assert str(call_arg.rows[0].cells[0]) == "Alice"
+        assert str(call_arg.rows[0].cells[1]) == "30"
+        assert str(call_arg.rows[1].cells[0]) == "Bob"
+        assert str(call_arg.rows[1].cells[1]) == "25"
 
     def test_json_output_with_dict(self, mocker):
         """Test displaying data as JSON."""
@@ -204,6 +256,17 @@ class TestOutputFormatter:
 
         # Check that print was called
         assert mock_console_print.call_count == 1
+        call_arg = mock_console_print.call_args[0][0]
+        # Check that print was called
+        assert mock_console_print.call_count == 1
+        call_arg = mock_console_print.call_args[0][0]
+        # Check that print was called
+        assert mock_console_print.call_count == 1
+        call_arg = mock_console_print.call_args[0][0]
+        # Check that the argument is a JSON object
+        assert isinstance(call_arg, JSON)
+        # Check that the JSON object contains the expected data
+        assert call_arg.text == '{\n  "name": "Alice",\n  "age": 30\n}'
 
     def test_json_output_with_dict_and_title(self, mocker):
         """Test displaying data as JSON with title."""
@@ -247,6 +310,14 @@ class TestOutputFormatter:
         assert mock_console_print.call_count == 1
         call_arg = mock_console_print.call_args[0][0]
         assert isinstance(call_arg, Tree)
+        # Check that the tree has the expected root label
+        assert call_arg.label == "Root"
+        # Check that the tree has the expected children
+        assert len(call_arg.children) == 1
+        assert isinstance(call_arg.children[0], Tree)
+        assert call_arg.children[0].label == "key1"
+        assert len(call_arg.children[0].children) == 1
+        assert call_arg.children[0].children[0].label == "value1"
 
     def test_tree_with_strings(self, mocker):
         """Test displaying a tree with string children."""
@@ -281,7 +352,7 @@ class TestOutputFormatter:
     def test_progress_with_tasks(self, mocker):
         """Test progress indicator with tasks."""
         # Mock the Progress context manager
-        with patch("src.metaexpert.cli.core.output.Progress") as mock_progress_class:
+        with patch("metaexpert.cli.core.output.Progress") as mock_progress_class:
             mock_progress_instance = Mock()
             mock_progress_class.return_value.__enter__ = Mock(
                 return_value=mock_progress_instance
@@ -362,10 +433,9 @@ class TestOutputFormatter:
 
 def test_global_success_function(mocker):
     """Test the global success function."""
-    mock_success = mocker.patch(
-        "src.metaexpert.cli.core.output._default_formatter.success"
-    )
+    mock_success = mocker.patch("metaexpert.cli.core.output._default_formatter.success")
 
+    from metaexpert.cli.core.output import success
     success("Test message", title="Test Title")
 
     mock_success.assert_called_once_with("Test message", title="Test Title")
@@ -373,8 +443,9 @@ def test_global_success_function(mocker):
 
 def test_global_error_function(mocker):
     """Test the global error function."""
-    mock_error = mocker.patch("src.metaexpert.cli.core.output._default_formatter.error")
+    mock_error = mocker.patch("metaexpert.cli.core.output._default_formatter.error")
 
+    from metaexpert.cli.core.output import error
     error("Test message", title="Test Title")
 
     mock_error.assert_called_once_with("Test message", title="Test Title")
@@ -382,10 +453,9 @@ def test_global_error_function(mocker):
 
 def test_global_warning_function(mocker):
     """Test the global warning function."""
-    mock_warning = mocker.patch(
-        "src.metaexpert.cli.core.output._default_formatter.warning"
-    )
+    mock_warning = mocker.patch("metaexpert.cli.core.output._default_formatter.warning")
 
+    from metaexpert.cli.core.output import warning
     warning("Test message", title="Test Title")
 
     mock_warning.assert_called_once_with("Test message", title="Test Title")
@@ -393,8 +463,9 @@ def test_global_warning_function(mocker):
 
 def test_global_info_function(mocker):
     """Test the global info function."""
-    mock_info = mocker.patch("src.metaexpert.cli.core.output._default_formatter.info")
+    mock_info = mocker.patch("metaexpert.cli.core.output._default_formatter.info")
 
+    from metaexpert.cli.core.output import info
     info("Test message", title="Test Title")
 
     mock_info.assert_called_once_with("Test message", title="Test Title")
@@ -402,12 +473,13 @@ def test_global_info_function(mocker):
 
 def test_global_table_function(mocker):
     """Test the global table function."""
-    mock_table = mocker.patch("src.metaexpert.cli.core.output._default_formatter.table")
+    mock_table = mocker.patch("metaexpert.cli.core.output._default_formatter.table")
 
     headers = ["Name", "Age"]
     rows = [["Alice", 30]]
     title = "Test Table"
 
+    from metaexpert.cli.core.output import table
     table(headers, rows, title=title)
 
     mock_table.assert_called_once_with(headers, rows, title=title)
@@ -416,7 +488,7 @@ def test_global_table_function(mocker):
 def test_global_json_output_function(mocker):
     """Test the global json_output function."""
     mock_json_output = mocker.patch(
-        "src.metaexpert.cli.core.output._default_formatter.json_output"
+        "metaexpert.cli.core.output._default_formatter.json_output"
     )
 
     data = {"test": "data"}
@@ -429,7 +501,7 @@ def test_global_json_output_function(mocker):
 
 def test_global_tree_function(mocker):
     """Test the global tree function."""
-    mock_tree = mocker.patch("src.metaexpert.cli.core.output._default_formatter.tree")
+    mock_tree = mocker.patch("metaexpert.cli.core.output._default_formatter.tree")
 
     root_label = "Root"
     children = [{"key": "value"}]
@@ -443,7 +515,7 @@ def test_global_tree_function(mocker):
 def test_global_progress_function(mocker):
     """Test the global progress function."""
     mock_progress = mocker.patch(
-        "src.metaexpert.cli.core.output._default_formatter.progress"
+        "metaexpert.cli.core.output._default_formatter.progress"
     )
 
     tasks = [{"name": "task1", "work": lambda p: None}]
@@ -457,7 +529,7 @@ def test_global_progress_function(mocker):
 def test_global_custom_table_function(mocker):
     """Test the global custom_table function."""
     mock_custom_table = mocker.patch(
-        "src.metaexpert.cli.core.output._default_formatter.custom_table"
+        "metaexpert.cli.core.output._default_formatter.custom_table"
     )
 
     data = [{"name": "test"}]

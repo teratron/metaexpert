@@ -1,6 +1,7 @@
 # src/metaexpert/cli/core/config.py
 """CLI configuration management."""
 
+import os
 from pathlib import Path
 
 from pydantic import Field, field_validator
@@ -16,6 +17,8 @@ class CLIConfig(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    profile: str = Field(default="default", description="Configuration profile name")
 
     # Debug and logging settings
     debug: bool = Field(default=False, description="Enable debug mode")
@@ -85,8 +88,44 @@ class CLIConfig(BaseSettings):
         return v.upper()
 
     @classmethod
-    def load(cls) -> "CLIConfig":
+    def load(cls, profile: str | None = None) -> "CLIConfig":
         """Load configuration from environment and config file."""
+        profile_name = profile or os.getenv("METAEXPERT_PROFILE", "default")
+        config_file = Path.home() / ".metaexpert" / f"{profile_name}.env"
+
+        if config_file.exists():
+            # Create a temporary class with the specific config file
+            temp_cls = type(
+                "TempConfig",
+                (BaseSettings,),
+                {
+                    "__module__": __name__,
+                    "model_config": SettingsConfigDict(
+                        env_prefix="METAEXPERT_CLI_",
+                        env_file=config_file,
+                        env_file_encoding="utf-8",
+                        extra="ignore",
+                    ),
+                },
+            )
+
+            # Add all fields from the original class to the temporary class
+            for field_name, field_info in cls.model_fields.items():
+                setattr(temp_cls, field_name, field_info)
+
+            temp_config = temp_cls()
+
+            # Create the actual CLIConfig instance with values from temp config
+            config_values = {}
+            for field_name in cls.model_fields:
+                if hasattr(temp_config, field_name):
+                    config_values[field_name] = getattr(temp_config, field_name)
+
+            # Ensure profile is set correctly
+            config_values["profile"] = profile_name
+
+            return cls(**config_values)
+
         return cls()
 
     def save(self, path: Path | None = None) -> None:

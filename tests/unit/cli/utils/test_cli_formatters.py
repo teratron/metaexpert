@@ -3,7 +3,7 @@
 import datetime
 from unittest.mock import MagicMock, patch
 
-from src.metaexpert.cli.utils.formatters import (
+from metaexpert.cli.utils.formatters import (
     format_boolean,
     format_bytes,
     format_currency,
@@ -211,8 +211,8 @@ class TestFormatMessageFunctions:
 class TestFormatSystemInfo:
     """Test cases for format_system_info function."""
 
-    @patch("src.metaexpert.cli.utils.formatters.psutil.Process")
-    @patch("src.metaexpert.cli.utils.formatters.os.getpid")
+    @patch("metaexpert.cli.utils.formatters.psutil.Process")
+    @patch("metaexpert.cli.utils.formatters.os.getpid")
     def test_format_system_info(self, mock_getpid, mock_process_class):
         """Test system info formatting."""
         # Mock the process and its methods
@@ -249,7 +249,7 @@ class TestFormatSystemInfo:
 class TestFormatProcessStatus:
     """Test cases for format_process_status function."""
 
-    @patch("src.metaexpert.cli.utils.formatters.format_system_info")
+    @patch("metaexpert.cli.utils.formatters.format_system_info")
     def test_format_process_status(self, mock_format_system_info):
         """Test process status formatting."""
         mock_format_system_info.return_value = {

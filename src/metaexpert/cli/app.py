@@ -6,6 +6,7 @@ import typer
 
 from metaexpert.__version__ import __version__
 from metaexpert.cli.core.config import CLIConfig
+from metaexpert.cli.core.dependencies import check_dependencies
 from metaexpert.cli.core.output import console
 
 # Initialize Typer app with rich output
@@ -61,19 +62,25 @@ def main(
 
     Use [bold]metaexpert COMMAND --help[/] for command-specific help.
     """
+    # Check dependencies first
+    check_dependencies()
+
     config = get_config()
     config.verbose = verbose
 
 
-# Import and register command modules
-from metaexpert.cli.commands import backtest, list, logs, new, run, stop
+# Register commands lazily to avoid circular imports
+def register_commands():
+    """Register all CLI commands with lazy loading to avoid circular imports."""
+    from metaexpert.cli.commands import backtest, init, list, logs, new, run, stop
 
-app.command(name="new")(new.cmd_new)
-app.command(name="run")(run.cmd_run)
-app.command(name="backtest")(backtest.cmd_backtest)
-app.command(name="list")(list.cmd_list)
-app.command(name="stop")(stop.cmd_stop)
-app.command(name="logs")(logs.cmd_logs)
+    app.command(name="new")(new.cmd_new)
+    app.command(name="run")(run.cmd_run)
+    app.command(name="backtest")(backtest.cmd_backtest)
+    app.command(name="list")(list.cmd_list)
+    app.command(name="stop")(stop.cmd_stop)
+    app.command(name="logs")(logs.cmd_logs)
+    app.command(name="init")(init.cmd_init)
 
 
 if __name__ == "__main__":

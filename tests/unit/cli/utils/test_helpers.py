@@ -7,7 +7,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
 import yaml
-from src.metaexpert.cli.utils.helpers import (
+
+from metaexpert.cli.utils.helpers import (
     clear_directory,
     convert_to_bool,
     convert_to_type,
@@ -29,7 +30,7 @@ from src.metaexpert.cli.utils.helpers import (
 class TestGetConfigFilePath:
     """Test cases for get_config_file_path function."""
 
-    @patch("src.metaexpert.cli.utils.helpers.Path.home")
+    @patch("metaexpert.cli.utils.helpers.Path.home")
     def test_get_config_file_path(self, mock_home):
         """Test getting config file path."""
         mock_home.return_value = Path("/home/user")

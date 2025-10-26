@@ -64,7 +64,7 @@ def test_logger_config_log_dir_creation():
     if test_dir.exists():
         test_dir.rmdir()
 
-    config = LoggerConfig(log_dir=test_dir)
+    LoggerConfig(log_dir=test_dir)
 
     # The directory should now exist
     assert test_dir.exists()
@@ -106,11 +106,15 @@ def test_logger_config_max_bytes_validation_too_large():
 
 def test_logger_config_immutability():
     """Test that configuration is immutable after creation."""
-    config = LoggerConfig()
+    LoggerConfig()
 
     # Attempting to modify should raise ValidationError due to Pydantic
-    with pytest.raises(Exception):  # Could be ValidationError or TypeError
-        config.log_level = "DEBUG"
+    with pytest.raises(
+        (ValueError, TypeError)
+    ):  # Could be ValidationError or TypeError
+        LoggerConfig().log_level = "DEBUG"
 
-    with pytest.raises(Exception):  # Could be ValidationError or TypeError
-        config.log_to_console = False
+    with pytest.raises(
+        (ValueError, TypeError)
+    ):  # Could be ValidationError or TypeError
+        LoggerConfig().log_to_console = False

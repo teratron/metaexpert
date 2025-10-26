@@ -117,7 +117,7 @@ def test_get_processors_json_format():
     """Test getting processors with JSON format."""
     config = LoggerConfig(json_logs=True)
 
-    processors = get_processors(config)
+    get_processors(config)
 
     # When json_logs is True, JSON renderer should be used in the formatter setup
     # The JSON renderer is actually applied in the ProcessorFormatter in setup.py

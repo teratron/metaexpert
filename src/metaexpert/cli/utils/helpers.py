@@ -121,6 +121,51 @@ def convert_to_bool(value: str | int | bool) -> bool:
     return bool(value)
 
 
+def _convert_to_bool(value: Any) -> bool:
+    """Convert a value to boolean."""
+    return convert_to_bool(value)
+
+
+def _convert_to_int(value: Any) -> int:
+    """Convert a value to int."""
+    try:
+        return int(value)
+    except ValueError:
+        return 0
+
+
+def _convert_to_float(value: Any) -> float:
+    """Convert a value to float."""
+    try:
+        return float(value)
+    except ValueError:
+        return 0.0
+
+
+def _convert_to_str(value: Any) -> str:
+    """Convert a value to str."""
+    return str(value)
+
+
+def _convert_to_list(value: Any) -> list:
+    """Convert a value to list."""
+    if isinstance(value, str):
+        # Handle comma-separated values
+        return [item.strip() for item in value.split(",")]
+    return list(value)
+
+
+def _convert_to_dict(value: Any) -> dict:
+    """Convert a value to dict."""
+    if isinstance(value, str):
+        # Try to parse as JSON
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return {}
+    return dict(value)
+
+
 def convert_to_type(value: Any, target_type: type) -> Any:
     """
     Convert a value to a specified type.
@@ -135,38 +180,20 @@ def convert_to_type(value: Any, target_type: type) -> Any:
     if value is None:
         return None
 
-    if target_type is bool:
-        return convert_to_bool(value)
+    # Mapping of types to conversion functions
+    conversion_map = {
+        bool: _convert_to_bool,
+        int: _convert_to_int,
+        float: _convert_to_float,
+        str: _convert_to_str,
+        list: _convert_to_list,
+        dict: _convert_to_dict,
+    }
 
-    if target_type is int:
-        try:
-            return int(value)
-        except ValueError:
-            return 0
-
-    if target_type is float:
-        try:
-            return float(value)
-        except ValueError:
-            return 0.0
-
-    if target_type is str:
-        return str(value)
-
-    if target_type is list:
-        if isinstance(value, str):
-            # Handle comma-separated values
-            return [item.strip() for item in value.split(",")]
-        return list(value)
-
-    if target_type is dict:
-        if isinstance(value, str):
-            # Try to parse as JSON
-            try:
-                return json.loads(value)
-            except json.JSONDecodeError:
-                return {}
-        return dict(value)
+    # Check if target_type has a specific conversion function
+    if target_type in conversion_map:
+        conversion_func = conversion_map[target_type]
+        return conversion_func(value)
 
     # For other types, try direct conversion
     try:
