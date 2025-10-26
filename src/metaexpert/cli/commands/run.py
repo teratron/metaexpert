@@ -2,7 +2,7 @@
 """Command to run an expert."""
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -14,7 +14,7 @@ from metaexpert.cli.process.manager import ProcessManager
 
 def cmd_run(
     project_path: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Argument(help="Path to expert project (default: current directory)"),
     ] = None,
     detach: Annotated[
@@ -67,7 +67,7 @@ def cmd_run(
         if detach:
             console.print(f"\n[dim]Logs:[/] metaexpert logs {project_path.name}")
             console.print(f"[dim]Stop:[/] metaexpert stop {project_path.name}")
-            console.print(f"[dim]Status:[/] metaexpert list\n")
+            console.print("[dim]Status:[/] metaexpert list\n")
 
     except ProcessError as e:
         output.error(str(e))

@@ -18,10 +18,7 @@ def test_configure_stdlib_logging_basic():
     """Test basic configuration of stdlib logging."""
     # Use a real directory to avoid Windows file locking issues
     config = LoggerConfig(
-        log_level="INFO",
-        log_to_console=False,
-        log_to_file=True,
-        log_dir=Path("logs")
+        log_level="INFO", log_to_console=False, log_to_file=True, log_dir=Path("logs")
     )
 
     # Clear any existing handlers from root logger
@@ -42,10 +39,7 @@ def test_configure_stdlib_logging_with_console():
     """Test configuration with console output enabled."""
     # Use a real directory to avoid Windows file locking issues
     config = LoggerConfig(
-        log_level="DEBUG",
-        log_to_console=True,
-        log_to_file=True,
-        log_dir=Path("logs")
+        log_level="DEBUG", log_to_console=True, log_to_file=True, log_dir=Path("logs")
     )
 
     # Clear any existing handlers from root logger
@@ -64,11 +58,7 @@ def test_configure_stdlib_logging_with_console():
 
 def test_configure_stdlib_logging_no_file_output():
     """Test configuration with file output disabled."""
-    config = LoggerConfig(
-        log_level="WARNING",
-        log_to_console=True,
-        log_to_file=False
-    )
+    config = LoggerConfig(log_level="WARNING", log_to_console=True, log_to_file=False)
 
     # Clear any existing handlers from root logger
     root_logger = logging.getLogger()
@@ -132,23 +122,21 @@ def test_get_processors_json_format():
     # When json_logs is True, JSON renderer should be used in the formatter setup
     # The JSON renderer is actually applied in the ProcessorFormatter in setup.py
     # So we check if JSON-related functionality is present
-    from structlog.processors import JSONRenderer
+
     # The processors list itself doesn't contain JSONRenderer directly,
     # but when json_logs=True, the renderer in ProcessorFormatter will be JSONRenderer
     # We can verify this by checking the configuration or the get_file_renderer function
     from metaexpert.logger.formatters import get_file_renderer
+
     renderer = get_file_renderer(json_format=True)
-    assert 'JSONRenderer' in str(renderer) or 'json' in str(renderer).lower()
+    assert "JSONRenderer" in str(renderer) or "json" in str(renderer).lower()
 
 
 def test_setup_logging():
     """Test the complete setup_logging function."""
     # Use a real directory to avoid Windows file locking issues
     config = LoggerConfig(
-        log_level="INFO",
-        log_to_console=False,
-        log_to_file=True,
-        log_dir=Path("logs")
+        log_level="INFO", log_to_console=False, log_to_file=True, log_dir=Path("logs")
     )
 
     # Clear any existing configuration
@@ -160,6 +148,7 @@ def test_setup_logging():
 
     # Verify that structlog is configured
     import structlog
+
     assert structlog.is_configured()
 
 
@@ -171,7 +160,7 @@ def test_setup_logging_with_json():
         log_to_console=False,
         log_to_file=True,
         json_logs=True,
-        log_dir=Path("logs")
+        log_dir=Path("logs"),
     )
 
     # Clear any existing configuration
@@ -182,10 +171,11 @@ def test_setup_logging_with_json():
 
     # Verify that structlog is configured
     import structlog
+
     assert structlog.is_configured()
 
 
-@patch('metaexpert.logger.setup.structlog')
+@patch("metaexpert.logger.setup.structlog")
 def test_setup_logging_structlog_configuration(mock_structlog):
     """Test that setup_logging properly configures structlog."""
     # Mock the structlog.configure function
@@ -196,10 +186,7 @@ def test_setup_logging_structlog_configuration(mock_structlog):
 
     # Use a real directory to avoid Windows file locking issues
     config = LoggerConfig(
-        log_level="INFO",
-        log_to_console=False,
-        log_to_file=True,
-        log_dir=Path("logs")
+        log_level="INFO", log_to_console=False, log_to_file=True, log_dir=Path("logs")
     )
 
     # Clear any existing configuration

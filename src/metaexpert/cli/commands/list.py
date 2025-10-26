@@ -2,7 +2,7 @@
 """Command to list running experts."""
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -13,7 +13,7 @@ from metaexpert.cli.process.manager import ProcessManager
 
 def cmd_list(
     search_path: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--path", "-p", help="Search path for experts"),
     ] = None,
     format: Annotated[

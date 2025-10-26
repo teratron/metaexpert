@@ -1,17 +1,12 @@
 """Main Typer application with proper structure."""
 
-import sys
-from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
-from rich.console import Console
-from rich.table import Table
 
 from metaexpert.__version__ import __version__
 from metaexpert.cli.core.config import CLIConfig
-from metaexpert.cli.core.exceptions import CLIError
-from metaexpert.cli.core.output import OutputFormatter, console, error_console
+from metaexpert.cli.core.output import console
 
 # Initialize Typer app with rich output
 app = typer.Typer(
@@ -23,7 +18,7 @@ app = typer.Typer(
 )
 
 # Global state for CLI configuration
-_config: Optional[CLIConfig] = None
+_config: CLIConfig | None = None
 
 
 def get_config() -> CLIConfig:
@@ -44,7 +39,7 @@ def version_callback(value: bool) -> None:
 @app.callback()
 def main(
     version: Annotated[
-        Optional[bool],
+        bool | None,
         typer.Option(
             "--version",
             "-v",
@@ -79,8 +74,6 @@ app.command(name="backtest")(backtest.cmd_backtest)
 app.command(name="list")(list.cmd_list)
 app.command(name="stop")(stop.cmd_stop)
 app.command(name="logs")(logs.cmd_logs)
-
-
 
 
 if __name__ == "__main__":

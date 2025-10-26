@@ -2,7 +2,7 @@
 """Command to backtest a strategy."""
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -15,11 +15,11 @@ def cmd_backtest(
         typer.Argument(help="Path to expert file"),
     ],
     start_date: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--start-date", "-s", help="Start date (YYYY-MM-DD)"),
     ] = None,
     end_date: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--end-date", "-e", help="End date (YYYY-MM-DD)"),
     ] = None,
     initial_capital: Annotated[

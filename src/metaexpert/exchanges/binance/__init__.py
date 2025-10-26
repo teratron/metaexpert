@@ -3,10 +3,10 @@ from typing import Self
 
 from metaexpert.exchanges import (
     ContractType,
-    #MarginMode,
+    # MarginMode,
     MarketType,
     MetaExchange,
-    #PositionMode,
+    # PositionMode,
 )
 from metaexpert.exchanges.binance.config import (
     FUTURES_MODULE_INVERSE,

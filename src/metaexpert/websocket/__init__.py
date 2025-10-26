@@ -21,9 +21,7 @@ class WebSocketClient:
         self.ws = None
         self.running = False
         self.logger: BoundLogger = get_logger(__name__).bind(
-            component="WebSocketClient",
-            ws_name=name,
-            ws_url=url
+            component="WebSocketClient", ws_name=name, ws_url=url
         )
 
     async def connect(self):

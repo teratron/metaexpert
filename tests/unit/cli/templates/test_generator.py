@@ -1,484 +1,313 @@
-"""Tests for TemplateGenerator class."""
+"""Unit tests for TemplateGenerator class.
 
-import shutil
+Note: The TemplateGenerator class does not have a '_get_default_dir()' method as mentioned
+in the original task. The class uses 'template_dir' parameter in initialization to set
+the template directory path. All tests have been created accordingly.
+"""
+
+import tempfile
 from pathlib import Path
-from unittest.mock import Mock, call, patch, MagicMock
+from unittest.mock import patch
 
-import pytest
-
-from metaexpert.cli.core.exceptions import TemplateError
-from metaexpert.cli.templates.generator import TemplateGenerator
+from src.metaexpert.cli.templates.generator import TemplateGenerator
 
 
 class TestTemplateGenerator:
-    """Test suite for TemplateGenerator class."""
+    """Test cases for TemplateGenerator class."""
 
-    def test_init_default_template_dir(self):
-        """Test initialization with default template directory."""
-        # Mock Path.exists to return True so initialization doesn't fail
-        with patch.object(Path, 'exists', return_value=True):
-            generator = TemplateGenerator()
-        
-        # Check that default template directory is set correctly
-        # Use the actual path where the TemplateGenerator gets its default from
-        expected_dir = Path(__file__).parent.parent.parent.parent / "src" / "metaexpert" / "cli" / "templates" / "files"
-        expected_dir = expected_dir.resolve()
-        
-        # The generator uses Path(__file__) from its own file, so we need to match that behavior
-        actual_dir = generator.template_dir.resolve()
-        
-        # Check that the actual directory exists and contains the expected files directory
-        assert actual_dir.exists()
-        assert actual_dir.name == "files"
-        assert (actual_dir.parent / "generator.py").exists()  # Verify it's in the right location
-        assert generator.env is not None
-
-    def test_init_custom_template_dir(self):
-        """Test initialization with custom template directory."""
-        custom_dir = Path("/custom/templates")
-        with patch.object(Path, 'exists', return_value=True):
-            generator = TemplateGenerator(template_dir=custom_dir)
-            
-        assert generator.template_dir == custom_dir
-
-    def test_init_template_dir_not_found(self):
-        """Test initialization raises error when template directory doesn't exist."""
-        non_existent_dir = Path("/non/existent/dir")
-        with patch.object(Path, 'exists', return_value=False):
-            with pytest.raises(TemplateError, match=r"Template directory not found: .*"):
-                TemplateGenerator(template_dir=non_existent_dir)
-
-    def test_generate_project_creates_directory(self, tmp_path):
-        """Test that generate_project creates the project directory."""
+    def test_initialization(self):
+        """Test TemplateGenerator initialization."""
         generator = TemplateGenerator()
-        output_dir = tmp_path / "output"
-        project_name = "test_project"
-        context = {"exchange": "binance", "strategy": "template", "market_type": "spot"}
-        
-        # Mock the template rendering to avoid actual file operations
-        with patch.object(generator, '_generate_main_file') as mock_main, \
-             patch.object(generator, '_generate_env_file') as mock_env, \
-             patch.object(generator, '_generate_gitignore') as mock_gitignore, \
-             patch.object(generator, '_generate_readme') as mock_readme, \
-             patch.object(generator, '_generate_pyproject_toml') as mock_pyproject:
-            
-            generator.generate_project(output_dir, project_name, context)
-            
-            project_path = output_dir / project_name
+        assert generator.template_dir == Path("src/metaexpert/cli/templates/files")
+        assert generator.environment is not None
+
+        # Test with custom template directory
+        custom_dir = "custom/templates"
+        generator = TemplateGenerator(template_dir=custom_dir)
+        assert generator.template_dir == Path(custom_dir)
+
+    def test_generate_project_success(self):
+        """Test successful project generation."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            generator = TemplateGenerator()
+            project_name = "test_project"
+            context = {
+                "project_name": project_name,
+                "exchange": "binance",
+                "strategy": "ema",
+                "market_type": "spot",
+                "symbol": "BTCUSDT",
+                "version": "0.1.0",
+                "description": "Test project",
+                "author_name": "Test Author",
+                "author_email": "test@example.com",
+            }
+
+            success = generator.generate_project(project_name, temp_dir, context)
+            assert success is True
+
+            # Check that project directory was created
+            project_path = Path(temp_dir) / project_name
             assert project_path.exists()
             assert project_path.is_dir()
 
-    def test_generate_project_with_existing_dir_and_force_false_raises_error(self, tmp_path):
-        """Test that generate_project raises error when directory exists and force=False."""
-        generator = TemplateGenerator()
-        output_dir = tmp_path / "output"
-        project_name = "existing_project"
-        context = {"exchange": "binance", "strategy": "template", "market_type": "spot"}
-        
-        # Create the project directory beforehand
-        project_path = output_dir / project_name
-        project_path.mkdir(parents=True)
-        
-        with pytest.raises(TemplateError, match=f"Directory '{project_name}' already exists. Use --force to overwrite."):
-            generator.generate_project(output_dir, project_name, context, force=False)
+            # Check that expected files were generated
+            expected_files = ["main.py", "README.md", ".env", "pyproject.toml"]
+            for file_name in expected_files:
+                file_path = project_path / file_name
+                assert file_path.exists()
+                assert file_path.is_file()
 
-    def test_generate_project_with_existing_dir_and_force_true_overwrites(self, tmp_path):
-        """Test that generate_project overwrites existing directory when force=True."""
-        generator = TemplateGenerator()
-        output_dir = tmp_path / "output"
-        project_name = "existing_project"
-        context = {"exchange": "binance", "strategy": "template", "market_type": "spot"}
-        
-        # Create the project directory beforehand with some content
-        project_path = output_dir / project_name
-        project_path.mkdir(parents=True)
-        (project_path / "old_file.txt").write_text("old content")
-        
-        # Mock the template rendering to avoid actual file operations
-        with patch.object(generator, '_generate_main_file') as mock_main, \
-             patch.object(generator, '_generate_env_file') as mock_env, \
-             patch.object(generator, '_generate_gitignore') as mock_gitignore, \
-             patch.object(generator, '_generate_readme') as mock_readme, \
-             patch.object(generator, '_generate_pyproject_toml') as mock_pyproject:
-            
-            generator.generate_project(output_dir, project_name, context, force=True)
-            
-            # Check that the old directory was removed and new one created
-            assert project_path.exists()
-            assert not (project_path / "old_file.txt").exists()
+            # Verify content was rendered with context
+            main_py_path = project_path / "main.py"
+            with open(main_py_path, encoding="utf-8") as f:
+                content = f.read()
+                assert f'"""{project_name} - Trading Expert' in content
+                assert 'exchange="binance"' in content
+                assert "# EMA (Exponential Moving Average) Strategy" in content
 
-    def test_generate_project_calls_all_generation_methods(self, tmp_path):
-        """Test that generate_project calls all expected generation methods."""
-        generator = TemplateGenerator()
-        output_dir = tmp_path / "output"
-        project_name = "test_project"
-        context = {"exchange": "binance", "strategy": "template", "market_type": "spot"}
-        
-        # Mock the template rendering to avoid actual file operations
-        with patch.object(generator, '_generate_main_file') as mock_main, \
-             patch.object(generator, '_generate_env_file') as mock_env, \
-             patch.object(generator, '_generate_gitignore') as mock_gitignore, \
-             patch.object(generator, '_generate_readme') as mock_readme, \
-             patch.object(generator, '_generate_pyproject_toml') as mock_pyproject:
-            
-            generator.generate_project(output_dir, project_name, context)
-            
-            # Verify all generation methods were called
-            project_path = output_dir / project_name
-            expected_context = context.copy()
-            expected_context.update({
-                "project_name": project_name,
-                "project_path": project_path,
-            })
-            
-            mock_main.assert_called_once_with(project_path, expected_context)
-            mock_env.assert_called_once_with(project_path, expected_context)
-            mock_gitignore.assert_called_once_with(project_path)
-            mock_readme.assert_called_once_with(project_path, expected_context)
-            mock_pyproject.assert_called_once_with(project_path, expected_context)
-
-    def test_generate_project_cleanup_on_failure(self, tmp_path):
-        """Test that generate_project cleans up on failure."""
-        generator = TemplateGenerator()
-        output_dir = tmp_path / "output"
-        project_name = "test_project"
-        context = {"exchange": "binance", "strategy": "template", "market_type": "spot"}
-        
-        # Mock one of the generation methods to raise an exception
-        with patch.object(generator, '_generate_main_file') as mock_main, \
-             patch.object(generator, '_generate_env_file') as mock_env, \
-             patch.object(generator, '_generate_gitignore') as mock_gitignore, \
-             patch.object(generator, '_generate_readme') as mock_readme, \
-             patch.object(generator, '_generate_pyproject_toml') as mock_pyproject, \
-             patch('shutil.rmtree') as mock_rmtree:
-            
-            mock_main.side_effect = Exception("Generation failed")
-            
-            with pytest.raises(TemplateError, match="Failed to generate project: Generation failed"):
-                generator.generate_project(output_dir, project_name, context)
-            
-            # Verify that rmtree was called to clean up
-            project_path = output_dir / project_name
-            mock_rmtree.assert_called_once_with(project_path)
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_generate_main_file(self, mock_env_class, tmp_path):
-        """Test _generate_main_file method."""
-        generator = TemplateGenerator()
-        generator.env = mock_env_class.return_value
-        
-        # Mock template and its render method
-        mock_template = Mock()
-        mock_env_class.return_value.get_template.return_value = mock_template
-        mock_template.render.return_value = "mocked content"
-        
-        project_path = tmp_path / "project"
-        project_path.mkdir()
-        context = {"exchange": "binance", "strategy": "template"}
-        
-        generator._generate_main_file(project_path, context)
-        
-        # Verify template was retrieved and rendered
-        mock_env_class.return_value.get_template.assert_called_once_with("main.py.j2")
-        mock_template.render.assert_called_once_with(**context)
-        
-        # Check that the file was written
-        main_file = project_path / "main.py"
-        assert main_file.exists()
-        assert main_file.read_text(encoding="utf-8") == "mocked content"
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_generate_env_file(self, mock_env_class, tmp_path):
-        """Test _generate_env_file method."""
-        generator = TemplateGenerator()
-        generator.env = mock_env_class.return_value
-        
-        # Mock template and its render method
-        mock_template = Mock()
-        mock_env_class.return_value.get_template.return_value = mock_template
-        mock_template.render.return_value = "mocked content"
-        
-        project_path = tmp_path / "project"
-        project_path.mkdir()
-        context = {"exchange": "binance", "strategy": "template"}
-        
-        generator._generate_env_file(project_path, context)
-        
-        # Verify template was retrieved and rendered
-        mock_env_class.return_value.get_template.assert_called_once_with("env.j2")
-        mock_template.render.assert_called_once_with(**context)
-        
-        # Check that the file was written
-        env_file = project_path / ".env.example"
-        assert env_file.exists()
-        assert env_file.read_text(encoding="utf-8") == "mocked content"
-
-    def test_generate_gitignore(self, tmp_path):
-        """Test _generate_gitignore method."""
-        generator = TemplateGenerator()
-        
-        project_path = tmp_path / "project"
-        project_path.mkdir()
-        
-        generator._generate_gitignore(project_path)
-        
-        # Check that the file was written with expected content
-        gitignore_file = project_path / ".gitignore"
-        assert gitignore_file.exists()
-        
-        content = gitignore_file.read_text(encoding="utf-8")
-        expected_content = """# Environment
-.env
-.env.local
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-.venv/
-
-# Logs
-*.log
-logs/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Tests
-.pytest_cache/
-.coverage
-htmlcov/
-
-# Data
-data/
-*.csv
-*.db
-
-# PID files
-*.pid
-"""
-        assert content == expected_content
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_generate_readme(self, mock_env_class, tmp_path):
-        """Test _generate_readme method."""
-        generator = TemplateGenerator()
-        generator.env = mock_env_class.return_value
-        
-        # Mock template and its render method
-        mock_template = Mock()
-        mock_env_class.return_value.get_template.return_value = mock_template
-        mock_template.render.return_value = "mocked content"
-        
-        project_path = tmp_path / "project"
-        project_path.mkdir()
-        context = {"exchange": "binance", "strategy": "template"}
-        
-        generator._generate_readme(project_path, context)
-        
-        # Verify template was retrieved and rendered
-        mock_env_class.return_value.get_template.assert_called_once_with("README.md.j2")
-        mock_template.render.assert_called_once_with(**context)
-        
-        # Check that the file was written
-        readme_file = project_path / "README.md"
-        assert readme_file.exists()
-        assert readme_file.read_text(encoding="utf-8") == "mocked content"
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_generate_pyproject_toml(self, mock_env_class, tmp_path):
-        """Test _generate_pyproject_toml method."""
-        generator = TemplateGenerator()
-        generator.env = mock_env_class.return_value
-        
-        # Mock template and its render method
-        mock_template = Mock()
-        mock_env_class.return_value.get_template.return_value = mock_template
-        mock_template.render.return_value = "mocked content"
-        
-        project_path = tmp_path / "project"
-        project_path.mkdir()
-        context = {"exchange": "binance", "strategy": "template"}
-        
-        generator._generate_pyproject_toml(project_path, context)
-        
-        # Verify template was retrieved and rendered
-        mock_env_class.return_value.get_template.assert_called_once_with("pyproject.toml.j2")
-        mock_template.render.assert_called_once_with(**context)
-        
-        # Check that the file was written
-        toml_file = project_path / "pyproject.toml"
-        assert toml_file.exists()
-        assert toml_file.read_text(encoding="utf-8") == "mocked content"
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_list_strategies_with_existing_strategies_dir(self, mock_env_class):
-        """Test list_strategies method when strategies directory exists."""
-        generator = TemplateGenerator()
-        
-        # Mock template directory structure
-        mock_template_dir = MagicMock(spec=Path)
-        generator.template_dir = mock_template_dir
-        
-        # Create mock strategies directory with template files
-        mock_strategies_dir = MagicMock(spec=Path)
-        mock_template_dir.__truediv__.return_value = mock_strategies_dir
-        mock_strategies_dir.exists.return_value = True
-        
-        # Mock glob to return some strategy files
-        mock_strategy_files = [
-            MagicMock(spec=Path, stem="ema"),
-            MagicMock(spec=Path, stem="rsi"),
-            MagicMock(spec=Path, stem="macd")
-        ]
-        mock_strategies_dir.glob.return_value = mock_strategy_files
-        
-        strategies = generator.list_strategies()
-        
-        # Should return the stem of each .j2 file
-        expected_strategies = ["ema", "rsi", "macd"]
-        assert strategies == expected_strategies
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_list_strategies_with_nonexistent_strategies_dir(self, mock_env_class):
-        """Test list_strategies method when strategies directory doesn't exist."""
-        generator = TemplateGenerator()
-        
-        # Mock template directory structure
-        mock_template_dir = MagicMock(spec=Path)
-        generator.template_dir = mock_template_dir
-        
-        # Create mock strategies directory that doesn't exist
-        mock_strategies_dir = MagicMock(spec=Path)
-        mock_template_dir.__truediv__.return_value = mock_strategies_dir
-        mock_strategies_dir.exists.return_value = False
-        
-        strategies = generator.list_strategies()
-        
-        # Should return default ["template"]
-        assert strategies == ["template"]
-
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_generate_project_with_different_context_parameters(self, mock_env_class, tmp_path):
-        """Test generate_project with various context parameters."""
-        generator = TemplateGenerator()
-        generator.env = mock_env_class
-        
-        # Mock all template rendering methods
-        with patch.object(generator, '_generate_main_file'), \
-             patch.object(generator, '_generate_env_file'), \
-             patch.object(generator, '_generate_gitignore'), \
-             patch.object(generator, '_generate_readme'), \
-             patch.object(generator, '_generate_pyproject_toml'):
-            
-            output_dir = tmp_path / "output"
+    def test_generate_project_with_existing_directory_and_force(self):
+        """Test project generation with existing directory and force option."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            generator = TemplateGenerator()
             project_name = "test_project"
-            
-            # Test with different context parameters
             context = {
+                "project_name": project_name,
                 "exchange": "bybit",
-                "strategy": "ema",
+                "strategy": "rsi",
                 "market_type": "futures",
+                "symbol": "ETHUSDT",
+                "version": "0.1.0",
+                "description": "Test project",
+                "author_name": "Test Author",
+                "author_email": "test@example.com",
+            }
+
+            # Create the project directory first
+            project_path = Path(temp_dir) / project_name
+            project_path.mkdir(parents=True, exist_ok=True)
+
+            # Add a file to the existing directory
+            existing_file = project_path / "existing_file.txt"
+            with open(existing_file, "w", encoding="utf-8") as f:
+                f.write("This file already exists")
+
+            # Generate project (should succeed since directory will be recreated)
+            success = generator.generate_project(project_name, temp_dir, context)
+            assert success is True
+
+            # Verify the project was recreated with template files
+            expected_files = ["main.py", "README.md", ".env", "pyproject.toml"]
+            for file_name in expected_files:
+                file_path = project_path / file_name
+                assert file_path.exists()
+                assert file_path.is_file()
+
+            # The existing file should be gone (directory was recreated)
+            assert not existing_file.exists()
+
+    def test_validate_template_exists(self):
+        """Test template existence validation."""
+        generator = TemplateGenerator()
+
+        # Check that a known template exists
+        assert generator.validate_template_exists("main.py.j2") is True
+        assert generator.validate_template_exists("nonexistent.j2") is False
+
+    def test_list_available_templates(self):
+        """Test listing available templates."""
+        generator = TemplateGenerator()
+
+        templates = generator.list_available_templates()
+
+        # Check that expected templates are in the list
+        expected_templates = [
+            "main.py.j2",
+            "env.j2",
+            "README.md.j2",
+            "pyproject.toml.j2",
+            ".gitignore.j2",
+        ]
+        for template in expected_templates:
+            assert template in templates
+
+    def test_render_template_with_undefined_variable(self):
+        """Test handling of undefined variables in templates."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a custom template with an undefined variable
+            custom_template_dir = Path(temp_dir) / "custom_templates"
+            custom_template_dir.mkdir()
+
+            # Create a simple template with undefined variable
+            template_content = "{{ undefined_variable }}"
+            template_path = custom_template_dir / "test.py.j2"
+            with open(template_path, "w", encoding="utf-8") as f:
+                f.write(template_content)
+
+            generator = TemplateGenerator(str(custom_template_dir))
+
+            # Try to generate project - should handle undefined variable gracefully
+            success = generator.generate_project("test_project", temp_dir, {})
+            # This should fail gracefully, not raise an exception
+            assert success is False
+
+    def test_generate_project_with_special_context_values(self):
+        """Test project generation with special context values like conditionals."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            generator = TemplateGenerator()
+            project_name = "test_project"
+            context = {
+                "project_name": project_name,
+                "exchange": "okx",
+                "strategy": "macd",
+                "market_type": "futures",
+                "symbol": "BTCUSDT",
+                "version": "0.1.0",
+                "description": "Test project with futures",
+                "author_name": "Test Author",
+                "author_email": "test@example.com",
+                "requires_passphrase": True,  # This should trigger conditional in template
                 "contract_type": "linear",
                 "margin_mode": "cross",
                 "position_mode": "hedge",
-                "symbol": "BTCUSDT",
-                "timeframe": "5m",
-                "lookback_bars": 200,
-                "strategy_id": 2002,
-                "strategy_name": "EMA Strategy",
-                "leverage": 20,
+                "leverage": 5,
                 "size_value": 2.0,
                 "stop_loss_pct": 3.0,
                 "take_profit_pct": 6.0,
-                "requires_passphrase": True
             }
-            
-            generator.generate_project(output_dir, project_name, context)
-            
-            # Verify that context was updated with project metadata
-            project_path = output_dir / project_name
-            expected_context = context.copy()
-            expected_context.update({
-                "project_name": project_name,
-                "project_path": project_path,
-            })
 
-    @patch('metaexpert.cli.templates.generator.Environment')
-    def test_generate_project_creates_expected_files(self, mock_env_class, tmp_path):
-        """Test that generate_project creates all expected files."""
-        # Mock Path.exists to return True for template directory only
-        def custom_exists(self):
-            # Return True only for the template directory path
-            if "templates" in str(self) and "files" in str(self):
-                return True
-            # For all other paths, use the original behavior
-            # But make sure the project path doesn't exist initially
-            project_path_str = str(tmp_path / "output" / "test_project")
-            if str(self) == project_path_str or str(self).startswith(project_path_str):
-                return self.name == ".gitignore"  # Only return True for .gitignore after creation
-            return self.name == ".gitignore"  # For the _generate_gitignore call
-        
-        with patch.object(Path, 'exists', custom_exists):
+            success = generator.generate_project(project_name, temp_dir, context)
+            assert success is True
+
+            # Check that project directory was created
+            project_path = Path(temp_dir) / project_name
+            assert project_path.exists()
+            assert project_path.is_dir()
+
+            # Check that .env file contains passphrase (because requires_passphrase=True)
+            env_path = project_path / ".env"
+            with open(env_path, encoding="utf-8") as f:
+                env_content = f.read()
+                assert "OKX_API_PASSPHRASE" in env_content
+
+            # Check that main.py contains futures-specific configuration
+            main_py_path = project_path / "main.py"
+            with open(main_py_path, encoding="utf-8") as f:
+                main_content = f.read()
+                assert 'contract_type="linear"' in main_content
+                assert 'margin_mode="cross"' in main_content
+                assert 'position_mode="hedge"' in main_content
+                # Check MACD strategy section
+                assert "MACD Strategy" in main_content
+
+    def test_generate_project_empty_context(self):
+        """Test project generation with minimal context."""
+        with tempfile.TemporaryDirectory() as temp_dir:
             generator = TemplateGenerator()
-        
-        # Mock templates to return some content
-        mock_main_template = Mock()
-        mock_env_template = Mock()
-        mock_readme_template = Mock()
-        mock_pyproject_template = Mock()
-        
-        def get_template_side_effect(template_name):
-            if template_name == "main.py.j2":
-                return mock_main_template
-            elif template_name == "env.j2":
-                return mock_env_template
-            elif template_name == "README.md.j2":
-                return mock_readme_template
-            elif template_name == "pyproject.toml.j2":
-                return mock_pyproject_template
-            else:
-                raise Exception(f"Unexpected template: {template_name}")
-        
-        mock_env_class.return_value.get_template.side_effect = get_template_side_effect
-        mock_main_template.render.return_value = "# Main file content"
-        mock_env_template.render.return_value = "# Env file content"
-        mock_readme_template.render.return_value = "# README content"
-        mock_pyproject_template.render.return_value = "# TOML content"
-        
-        # Replace the generator's environment with the mock
-        generator.env = mock_env_class.return_value
-        
-        output_dir = tmp_path / "output"
-        project_name = "test_project"
-        context = {"exchange": "binance", "strategy": "template", "market_type": "spot"}
-        
-        generator.generate_project(output_dir, project_name, context)
-        
-        project_path = output_dir / project_name
-        
-        # Check that all expected files were created
-        assert (project_path / "main.py").exists()
-        assert (project_path / ".env.example").exists()
-        assert (project_path / ".gitignore").exists()
-        assert (project_path / "README.md").exists()
-        assert (project_path / "pyproject.toml").exists()
-        
-        # Check file contents
-        assert (project_path / "main.py").read_text(encoding="utf-8") == "# Main file content"
-        assert (project_path / ".env.example").read_text(encoding="utf-8") == "# Env file content"
-        assert (project_path / "README.md").read_text(encoding="utf-8") == "# README content"
-        assert (project_path / "pyproject.toml").read_text(encoding="utf-8") == "# TOML content"
-        
-        # Check gitignore content specifically
-        gitignore_content = (project_path / ".gitignore").read_text(encoding="utf-8")
-        assert "# Environment" in gitignore_content
-        assert "# Python" in gitignore_content
-        assert "__pycache__/" in gitignore_content
+            project_name = "minimal_project"
+            # Using minimal context - template should use defaults
+            context = {
+                "project_name": project_name,
+                "exchange": "binance",
+                "strategy": "template",  # Use template strategy which has default handling
+                "market_type": "spot",
+                "version": "0.1.0",
+                "description": "Minimal project",
+                "author_name": "Test Author",
+                "author_email": "test@example.com",
+            }
+
+            success = generator.generate_project(project_name, temp_dir, context)
+            assert success is True
+
+            # Check that project directory was created
+            project_path = Path(temp_dir) / project_name
+            assert project_path.exists()
+            assert project_path.is_dir()
+
+            # Check that expected files were generated
+            expected_files = ["main.py", "README.md", ".env", "pyproject.toml"]
+            for file_name in expected_files:
+                file_path = project_path / file_name
+                assert file_path.exists()
+                assert file_path.is_file()
+
+            # Verify content was rendered with defaults
+            main_py_path = project_path / "main.py"
+            with open(main_py_path, encoding="utf-8") as f:
+                content = f.read()
+                assert f'"""{project_name} - Trading Expert' in content
+                # Should have default values where not provided
+                assert 'symbol="BTCUSDT"' in content  # Default value
+                assert 'timeframe="1h"' in content  # Default value
+
+    def test_generate_project_template_not_found(self):
+        """Test project generation when a template is not found."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a custom template directory without required templates
+            custom_template_dir = Path(temp_dir) / "missing_templates"
+            custom_template_dir.mkdir()
+
+            generator = TemplateGenerator(str(custom_template_dir))
+
+            # Try to generate project - should fail because templates are missing
+            success = generator.generate_project(
+                "test_project",
+                temp_dir,
+                {
+                    "project_name": "test_project",
+                    "exchange": "binance",
+                    "strategy": "ema",
+                    "market_type": "spot",
+                    "version": "0.1.0",
+                    "description": "Test project",
+                    "author_name": "Test Author",
+                    "author_email": "test@example.com",
+                },
+            )
+            # This should fail because required templates are missing
+            assert success is False
+
+    def test_render_template_to_file_error_handling(self):
+        """Test error handling in _render_template_to_file method."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Create a custom template with syntax error
+            custom_template_dir = Path(temp_dir) / "bad_templates"
+            custom_template_dir.mkdir()
+
+            # Create a template with Jinja2 syntax error
+            template_content = "{{ invalid syntax here"
+            template_path = custom_template_dir / "bad.py.j2"
+            with open(template_path, "w", encoding="utf-8") as f:
+                f.write(template_content)
+
+            generator = TemplateGenerator(str(custom_template_dir))
+
+            # Try to generate project - should handle syntax error gracefully
+            success = generator.generate_project("test_project", temp_dir, {})
+            # This should fail gracefully, not raise an exception
+            assert success is False
+
+    def test_process_templates_exception_handling(self):
+        """Test exception handling in _process_templates method."""
+        with patch("pathlib.Path.glob", side_effect=OSError("Permission denied")):
+            generator = TemplateGenerator()
+
+            success = generator._process_templates(Path("/fake/path"), {})
+            assert success is False
+
+    def test_copy_static_files_exception_handling(self):
+        """Test exception handling in _copy_static_files method."""
+        with patch("pathlib.Path.iterdir", side_effect=OSError("Permission denied")):
+            generator = TemplateGenerator()
+
+            success = generator._copy_static_files(Path("/fake/path"))
+            assert success is False
+
+    def test_list_available_templates_exception_handling(self):
+        """Test exception handling in list_available_templates method."""
+        with patch("pathlib.Path.glob", side_effect=OSError("Permission denied")):
+            generator = TemplateGenerator()
+
+            templates = generator.list_available_templates()
+            assert templates == []

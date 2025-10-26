@@ -1,7 +1,6 @@
 """Integration tests for CLI commands using typer.testing.CliRunner."""
 
 import json
-import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -9,7 +8,7 @@ import pytest
 from typer.testing import CliRunner
 
 from metaexpert.cli.app import app
-from metaexpert.cli.core.exceptions import CLIError, ProcessError, TemplateError
+from metaexpert.cli.core.exceptions import ProcessError, TemplateError
 from metaexpert.cli.process.manager import ProcessInfo
 
 
@@ -93,7 +92,9 @@ class TestNewCommand:
             if mock_generator.return_value.generate_project.called:
                 mock_generator.return_value.generate_project.assert_called_once()
                 assert (
-                    mock_generator.return_value.generate_project.call_args.kwargs["force"]
+                    mock_generator.return_value.generate_project.call_args.kwargs[
+                        "force"
+                    ]
                     is True
                 )
 

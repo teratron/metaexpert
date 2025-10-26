@@ -3,7 +3,7 @@
 
 import time
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -25,7 +25,7 @@ def cmd_logs(
         typer.Option("--lines", "-n", help="Number of lines to show"),
     ] = 50,
     level: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--level", "-l", help="Filter by log level (DEBUG, INFO, etc)"),
     ] = None,
 ) -> None:
@@ -56,7 +56,7 @@ def cmd_logs(
         console.print("\n[yellow]Stopped tailing logs[/]")
 
 
-def _tail_lines(log_file: Path, lines: int, level: Optional[str]) -> None:
+def _tail_lines(log_file: Path, lines: int, level: str | None) -> None:
     """Display last N lines of log file."""
     with open(log_file) as f:
         content = f.readlines()
@@ -68,7 +68,7 @@ def _tail_lines(log_file: Path, lines: int, level: Optional[str]) -> None:
             console.print(line.rstrip())
 
 
-def _tail_follow(log_file: Path, level: Optional[str]) -> None:
+def _tail_follow(log_file: Path, level: str | None) -> None:
     """Follow log file in real-time."""
     with open(log_file) as f:
         # Seek to end
@@ -84,4 +84,3 @@ def _tail_follow(log_file: Path, level: Optional[str]) -> None:
                 continue
 
             console.print(line.rstrip())
-

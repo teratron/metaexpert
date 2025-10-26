@@ -26,6 +26,7 @@ from metaexpert.config import (
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
 from metaexpert.logger import BoundLogger, get_logger, setup_logging
+
 from .logger.config import LoggerConfig
 
 
@@ -109,7 +110,7 @@ class MetaExpert(Events):
             log_to_console=log_to_console,
             # structured_logging=structured_logging, # Not supported in LoggerConfig
             # async_logging=async_logging, # Not supported in LoggerConfig
-            json_logs=structured_logging, # Map structured_logging to json_logs
+            json_logs=structured_logging,  # Map structured_logging to json_logs
             # Other params like log_dir, max_bytes etc. use defaults from LoggerConfig
         )
         # Setup logging with the new config. This affects global state.

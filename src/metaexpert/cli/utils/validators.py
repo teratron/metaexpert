@@ -1,123 +1,360 @@
-# src/metaexpert/cli/utils/validators.py
-"""Input validation utilities."""
+"""Validator functions for CLI input validation.
 
+This module contains a collection of validation functions for various types of
+CLI inputs including project names, exchange names, strategy names, dates,
+numeric values, and file paths.
+"""
+
+import os
 import re
+from datetime import datetime
 from pathlib import Path
-from typing import Any
+
+from src.metaexpert.cli.core.exceptions import ValidationError
 
 
-def validate_project_name(name: str) -> None:
-    """
-    Validate project name.
-
-    Rules:
-    - Must start with letter or underscore
-    - Can contain letters, numbers, hyphens, underscores
-    - Length 3-50 characters
-    - Cannot be Python keywords
+def validate_project_name(name: str, max_length: int = 50) -> bool:
+    """Validate project name format and constraints.
 
     Args:
         name: Project name to validate
+        max_length: Maximum allowed length for the project name
+
+    Returns:
+        True if valid
 
     Raises:
-        ValueError: If name is invalid
+        ValidationError: If the project name is invalid
     """
-    # Check for Python keywords first
-    import keyword
+    if not name or not isinstance(name, str):
+        raise ValidationError("Project name must be a non-empty string")
 
-    if keyword.iskeyword(name):
-        raise ValueError(f"'{name}' is a Python keyword and cannot be used")
+    if len(name) > max_length:
+        raise ValidationError(
+            f"Project name exceeds maximum length of {max_length} characters"
+        )
 
-    # Check length
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", name):
+        raise ValidationError(
+            "Project name must start with a letter and contain only letters, numbers, underscores, and hyphens"
+        )
+
+    if name.startswith("_") or name.startswith("-"):
+        raise ValidationError("Project name cannot start with underscore or hyphen")
+
+    if name.endswith("_") or name.endswith("-"):
+        raise ValidationError("Project name cannot end with underscore or hyphen")
+
+    return True
+
+
+def validate_exchange_name(name: str) -> bool:
+    """Validate exchange name format.
+
+    Args:
+        name: Exchange name to validate
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the exchange name is invalid
+    """
+    if not name or not isinstance(name, str):
+        raise ValidationError("Exchange name must be a non-empty string")
+
+    # Common exchange names used in the project
+    valid_exchanges = {"binance", "bybit", "okx", "kucoin", "mexc", "bitget"}
+
+    if name.lower() not in valid_exchanges:
+        raise ValidationError(
+            f"Invalid exchange name: '{name}'. Valid options are: {', '.join(valid_exchanges)}"
+        )
+
+    return True
+
+
+def validate_strategy_name(name: str) -> bool:
+    """Validate strategy name format.
+
+    Args:
+        name: Strategy name to validate
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the strategy name is invalid
+    """
+    if not name or not isinstance(name, str):
+        raise ValidationError("Strategy name must be a non-empty string")
+
     if len(name) < 3:
-        raise ValueError("Project name must be at least 3 characters long")
+        raise ValidationError("Strategy name must be at least 3 characters long")
 
     if len(name) > 50:
-        raise ValueError("Project name must not exceed 50 characters")
+        raise ValidationError("Strategy name cannot exceed 50 characters")
 
-    # Check pattern
-    pattern = r"^[a-zA-Z_][a-zA-Z0-9_-]*$"
-    if not re.match(pattern, name):
-        raise ValueError(
-            "Project name must start with a letter or underscore "
-            "and contain only letters, numbers, hyphens, and underscores"
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9_-]*$", name):
+        raise ValidationError(
+            "Strategy name must start with a letter and contain only letters, numbers, underscores, and hyphens"
         )
 
-    # Check for common reserved names
-    reserved = {"test", "tests", "src", "lib", "bin", "build", "dist"}
-    if name.lower() in reserved:
-        raise ValueError(f"'{name}' is a reserved name")
+    return True
 
 
-def validate_exchange(exchange: str) -> None:
-    """Validate exchange name."""
-    supported = {"binance", "bybit", "okx", "mexc", "kucoin", "bitget"}
+def validate_datetime_format(
+    date_string: str, date_format: str = "%Y-%m-%d %H:%M:%S"
+) -> bool:
+    """Validate date and time format.
 
-    if exchange.lower() not in supported:
-        raise ValueError(
-            f"Unsupported exchange: {exchange}. "
-            f"Supported: {', '.join(sorted(supported))}"
-        )
+    Args:
+        date_string: Date string to validate
+        date_format: Expected date format (default: "%Y-%m-%d %H:%M:%S")
 
+    Returns:
+        True if valid
 
-def validate_strategy(strategy: str) -> None:
-    """Validate strategy name."""
-    supported = {"template", "ema", "rsi", "macd", "bollinger", "custom"}
-
-    if strategy.lower() not in supported:
-        raise ValueError(
-            f"Unknown strategy: {strategy}. Available: {', '.join(sorted(supported))}"
-        )
-
-
-def validate_market_type(market_type: str) -> None:
-    """Validate market type."""
-    supported = {"spot", "futures", "options"}
-
-    if market_type.lower() not in supported:
-        raise ValueError(
-            f"Invalid market type: {market_type}. "
-            f"Supported: {', '.join(sorted(supported))}"
-        )
-
-
-def validate_date_format(date_str: str) -> None:
-    """Validate date format (YYYY-MM-DD)."""
-    pattern = r"^\d{4}-\d{2}-\d{2}$"
-
-    if not re.match(pattern, date_str):
-        raise ValueError(f"Invalid date format: {date_str}. Expected: YYYY-MM-DD")
-
-    # Additional validation with datetime
-    from datetime import datetime
+    Raises:
+        ValidationError: If the date format is invalid
+    """
+    if not date_string or not isinstance(date_string, str):
+        raise ValidationError("Date must be a non-empty string")
 
     try:
-        datetime.strptime(date_str, "%Y-%m-%d")
-    except ValueError as e:
-        raise ValueError(f"Invalid date: {date_str}. {e}")
+        datetime.strptime(date_string, date_format)
+        return True
+    except ValueError:
+        raise ValidationError(
+            f"Date format invalid. Expected format: {date_format}. Received: {date_string}"
+        ) from None
 
 
-def validate_path_exists(path: Path, file_type: str = "path") -> None:
-    """Validate that path exists."""
-    if not path.exists():
-        # Use forward slashes to ensure consistent output across platforms for testing
-        path_str = str(path).replace("\\", "/")
-        raise ValueError(f"{file_type.capitalize()} not found: {path_str}")
+def validate_date_format(date_string: str, date_format: str = "%Y-%m-%d") -> bool:
+    """Validate date format.
 
+    Args:
+        date_string: Date string to validate
+        date_format: Expected date format (default: "%Y-%m-%d")
 
-def validate_positive_number(value: Any, name: str = "value") -> None:
-    """Validate that number is positive."""
-    # First try to convert to float to check if it's a valid number
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the date format is invalid
+    """
+    if not date_string or not isinstance(date_string, str):
+        raise ValidationError("Date must be a non-empty string")
+
     try:
-        num = float(value)
+        datetime.strptime(date_string, date_format)
+        return True
+    except ValueError:
+        raise ValidationError(
+            f"Date format invalid. Expected format: {date_format}. Received: {date_string}"
+        ) from None
+
+
+def validate_positive_number(value: int | float | str) -> bool:
+    """Validate that a value is a positive number.
+
+    Args:
+        value: Value to validate
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the value is not a positive number
+    """
+    try:
+        num_value = float(value)
+        if num_value <= 0:
+            raise ValidationError(f"Value must be a positive number, got: {value}")
+        return True
     except (ValueError, TypeError):
-        raise ValueError(f"Invalid {name}: {value}")
-    
-    # Check for special float values (inf, nan)
-    import math
-    if math.isnan(num) or math.isinf(num):
-        raise ValueError(f"Invalid {name}: {value}")
-    
-    # Then check if the number is positive
-    if num <= 0:
-        raise ValueError(f"{name} must be positive, got {num}")
+        raise ValidationError(f"Value must be a number, got: {type(value).__name__}") from None
+
+
+def validate_numeric_range(
+    value: int | float | str,
+    min_val: int | float | None = None,
+    max_val: int | float | None = None,
+) -> bool:
+    """Validate that a numeric value is within a specified range.
+
+
+    Args:
+        value: Value to validate
+        min_val: Minimum allowed value (optional)
+        max_val: Maximum allowed value (optional)
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the value is outside the specified range
+    """
+    try:
+        num_value = float(value)
+    except (ValueError, TypeError):
+        raise ValidationError(f"Value must be a number, got: {type(value).__name__}") from None
+
+    if min_val is not None and num_value < min_val:
+        raise ValidationError(
+            f"Value {num_value} is less than minimum allowed value {min_val}"
+        )
+
+    if max_val is not None and num_value > max_val:
+        raise ValidationError(
+            f"Value {num_value} is greater than maximum allowed value {max_val}"
+        )
+
+    return True
+
+
+def validate_percentage(value: int | float | str) -> bool:
+    """Validate that a value is a valid percentage (0-100).
+
+    Args:
+        value: Percentage value to validate
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the value is not a valid percentage
+    """
+    return validate_numeric_range(value, min_val=0, max_val=100)
+
+
+def validate_file_path(
+    path: str, must_exist: bool = True, must_be_file: bool = True
+) -> bool:
+    """Validate file path.
+
+    Args:
+        path: File path to validate
+        must_exist: Whether the path must exist (default: True)
+        must_be_file: Whether the path must be a file (vs directory) (default: True)
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the path is invalid
+    """
+    if not path or not isinstance(path, str):
+        raise ValidationError("Path must be a non-empty string")
+
+    path_obj = Path(path)
+
+    # Check if path contains invalid characters
+    invalid_chars = '<>:"|?*'
+    if any(char in invalid_chars for char in path):
+        raise ValidationError(f"Path contains invalid characters: {invalid_chars}")
+
+    # Check if path is absolute and potentially unsafe
+    if os.path.isabs(path):
+        # For security, we might want to restrict absolute paths depending on use case
+        # For now, just warn if it's outside expected directories
+        if not str(path_obj).startswith((".", os.getcwd(), os.path.expanduser("~"))):
+            raise ValidationError("Path is outside allowed directories")
+
+    if must_exist and not path_obj.exists():
+        raise ValidationError(f"Path does not exist: {path}")
+
+    if must_exist and must_be_file and path_obj.is_dir():
+        raise ValidationError(f"Path exists but is a directory, expected file: {path}")
+
+    if must_exist and not must_be_file and path_obj.is_file():
+        raise ValidationError(f"Path exists but is a file, expected directory: {path}")
+
+    # Check for path traversal attacks
+    if ".." in path.split(os.sep) or ".." in path.split("/"):
+        raise ValidationError(
+            "Path contains directory traversal ('..') which is not allowed"
+        )
+
+    return True
+
+
+def validate_directory_path(path: str, must_exist: bool = True) -> bool:
+    """Validate directory path.
+
+    Args:
+        path: Directory path to validate
+        must_exist: Whether the directory must exist (default: True)
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the directory path is invalid
+    """
+    return validate_file_path(path, must_exist=must_exist, must_be_file=False)
+
+
+def validate_timeframe(timeframe: str) -> bool:
+    """Validate trading timeframe format.
+
+    Args:
+        timeframe: Timeframe to validate (e.g., '1m', '5m', '1h', '1d')
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the timeframe is invalid
+    """
+    if not timeframe or not isinstance(timeframe, str):
+        raise ValidationError("Timeframe must be a non-empty string")
+
+    # Common timeframe patterns in trading
+    valid_patterns = [
+        r"^\d+s$",  # seconds
+        r"^\d+m$",  # minutes
+        r"^\d+h$",  # hours
+        r"^\d+d$",  # days
+        r"^\d+w$",  # weeks
+        r"^\d+M$",  # months
+    ]
+
+    if not any(re.match(pattern, timeframe) for pattern in valid_patterns):
+        raise ValidationError(
+            f"Invalid timeframe format: {timeframe}. Valid formats include: 1m, 5m, 1h, 1d, 1w, 1M, etc."
+        )
+
+    # Extract numeric value and validate it's reasonable
+    number_part = re.match(r"^(\d+)", timeframe)
+    if number_part:
+        num = int(number_part.group(1))
+        if num <= 0:
+            raise ValidationError(f"Timeframe value must be positive, got: {num}")
+
+    return True
+
+
+def validate_symbol(symbol: str) -> bool:
+    """Validate trading symbol format.
+
+    Args:
+        symbol: Trading symbol to validate (e.g., 'BTCUSDT', 'ETH/USDT')
+
+    Returns:
+        True if valid
+
+    Raises:
+        ValidationError: If the symbol is invalid
+    """
+    if not symbol or not isinstance(symbol, str):
+        raise ValidationError("Symbol must be a non-empty string")
+
+    # Common symbol formats: BTCUSDT, ETH/USDT, BTC-USDT, etc.
+    pattern = r"^[A-Z0-9]+[/\-]?[A-Z0-9]+$"
+    if not re.match(pattern, symbol):
+        raise ValidationError(
+            f"Invalid symbol format: {symbol}. Valid format is base/quote currency pair (e.g., BTCUSDT, ETH/USDT)"
+        )
+
+    return True

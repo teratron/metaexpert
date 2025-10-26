@@ -39,7 +39,7 @@ def test_logger_config_custom_values():
         backup_count=10,
         use_colors=False,
         json_logs=True,
-        cache_logger_on_first_use=False
+        cache_logger_on_first_use=False,
     )
 
     assert custom_config.log_level == "DEBUG"
@@ -94,7 +94,10 @@ def test_logger_config_max_bytes_validation_negative():
 def test_logger_config_max_bytes_validation_too_large():
     """Test validation of max_bytes field with values exceeding 1GB."""
     # Values larger than 1GB should raise ValueError
-    too_large_values = [1024 * 1024 * 1024 + 1, 2 * 1024 * 1024 * 1024]  # 1GB + 1 byte, 2GB
+    too_large_values = [
+        1024 * 1024 * 1024 + 1,
+        2 * 1024 * 1024 * 1024,
+    ]  # 1GB + 1 byte, 2GB
 
     for value in too_large_values:
         with pytest.raises(ValueError, match="max_bytes must not exceed 1GB"):

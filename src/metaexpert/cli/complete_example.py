@@ -83,12 +83,13 @@ This shows how all components work together:
 """
 
 from pathlib import Path
+
 from metaexpert.cli import (
     CLIConfig,
     ProcessManager,
     TemplateGenerator,
 )
-from metaexpert.logger import setup_logging, get_logger, LoggerConfig
+from metaexpert.logger import LoggerConfig, get_logger, setup_logging
 
 
 def main():
@@ -174,11 +175,10 @@ if __name__ == "__main__":
 Complete integration test for CLI workflow.
 """
 
-import pytest
 import time
-from pathlib import Path
+
 from typer.testing import CliRunner
-from metaexpert.cli.app import app
+
 from metaexpert.cli.process.manager import ProcessManager
 
 runner = CliRunner()
@@ -335,8 +335,8 @@ Benchmark CLI performance.
 """
 
 import timeit
-from pathlib import Path
-from metaexpert.cli import TemplateGenerator, ProcessManager
+
+from metaexpert.cli import ProcessManager
 
 
 def benchmark_template_generation(tmp_path: Path):

@@ -13,8 +13,7 @@ class Timer:
         self._elapsed_time: float = 0.0
         self._is_running: bool = False
         self.logger: BoundLogger = get_logger(__name__).bind(
-            component="Timer",
-            interval=interval
+            component="Timer", interval=interval
         )
 
     async def start(self) -> None:

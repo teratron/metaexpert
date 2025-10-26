@@ -137,7 +137,7 @@ def test_error_event_enricher_with_error():
     error_event_dict = {
         "level": "error",
         "message": "An error occurred",
-        "exception": test_exception
+        "exception": test_exception,
     }
     result = enricher(logger, method_name, error_event_dict)
 
@@ -157,10 +157,7 @@ def test_error_event_enricher_with_non_error():
     method_name = "info"
 
     # Test with a non-error event
-    info_event_dict = {
-        "level": "info",
-        "message": "Regular info message"
-    }
+    info_event_dict = {"level": "info", "message": "Regular info message"}
     result = enricher(logger, method_name, info_event_dict)
 
     # Check that no error-specific metadata is added
@@ -184,7 +181,7 @@ def test_error_event_enricher_with_critical():
     critical_event_dict = {
         "level": "critical",
         "message": "A critical error occurred",
-        "exception": test_exception
+        "exception": test_exception,
     }
     result = enricher(logger, method_name, critical_event_dict)
 

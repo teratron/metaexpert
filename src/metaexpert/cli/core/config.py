@@ -2,9 +2,8 @@
 """CLI configuration management."""
 
 from pathlib import Path
-from typing import Any, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,43 +17,98 @@ class CLIConfig(BaseSettings):
         extra="ignore",
     )
 
-    # Output settings
+    # Debug and logging settings
+    debug: bool = Field(default=False, description="Enable debug mode")
     verbose: bool = Field(default=False, description="Verbose output")
+    quiet: bool = Field(default=False, description="Suppress non-critical output")
+    log_level: str = Field(
+        default="INFO",
+        description="Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
+    )
+    log_file: Path | None = Field(default=None, description="Path to log file")
+    log_max_size: str = Field(default="10MB", description="Maximum log file size")
+    log_backup_count: int = Field(
+        default=5, description="Number of log backups to keep"
+    )
+
+    # Output settings
     no_color: bool = Field(default=False, description="Disable colored output")
-    output_format: str = Field(default="table", description="Default output format")
+    output_format: str = Field(
+        default="table", description="Default output format (table, json, csv)"
+    )
 
     # Project settings
     default_exchange: str = Field(default="binance", description="Default exchange")
     default_strategy: str = Field(default="template", description="Default strategy")
+    default_timeout: int = Field(
+        default=30, description="Default timeout for operations in seconds"
+    )
 
     # Process management
     pid_dir: Path = Field(default=Path.cwd(), description="PID files directory")
+    pid_file_suffix: str = Field(default=".pid", description="PID file suffix")
     log_dir: Path = Field(default=Path("logs"), description="Logs directory")
 
     # Template settings
-    template_dir: Optional[Path] = Field(
+    template_dir: Path | None = Field(
         default=None, description="Custom template directory"
     )
 
-    @field_validator("pid_dir", "log_dir")
+    # Performance and caching
+    cache_enabled: bool = Field(default=True, description="Enable caching")
+    cache_ttl: int = Field(default=300, description="Cache TTL in seconds")
+    max_workers: int = Field(default=4, description="Maximum number of worker threads")
+
+    # API and network settings
+    api_timeout: int = Field(default=10, description="API request timeout in seconds")
+    api_retries: int = Field(default=3, description="Number of API request retries")
+    api_delay: float = Field(
+        default=0.1, description="Delay between API requests in seconds"
+    )
+
+    @field_validator("pid_dir", "log_file", "template_dir")
     @classmethod
-    def ensure_dir_exists(cls, v: Path) -> Path:
+    def ensure_dir_exists(cls, v: Path | None) -> Path | None:
         """Ensure directory exists."""
-        v.mkdir(parents=True, exist_ok=True)
+        if v is not None:
+            parent = v if v.suffix == "" else v.parent
+            parent.mkdir(parents=True, exist_ok=True)
         return v
+
+    @field_validator("log_level")
+    @classmethod
+    def validate_log_level(cls, v: str) -> str:
+        """Validate log level."""
+        valid_levels = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+        if v.upper() not in valid_levels:
+            raise ValueError(f"log_level must be one of {valid_levels}")
+        return v.upper()
 
     @classmethod
     def load(cls) -> "CLIConfig":
         """Load configuration from environment and config file."""
         return cls()
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save configuration to file."""
         if path is None:
             path = Path.cwd() / ".metaexpert"
 
         with open(path, "w") as f:
             for field, value in self.model_dump().items():
-                if value is not None:
-                    f.write(f"METAEXPERT_CLI_{field.upper()}={value}\n")
+                # Convert Path objects to strings for saving
+                if isinstance(value, Path):
+                    value = (
+                        value.as_posix()
+                    )  # Use POSIX format for paths (with forward slashes)
+                f.write(f"METAEXPERT_CLI_{field.upper()}={value}\n")
 
+    def get_pid_file_path(self, project_name: str) -> Path:
+        """Get PID file path for a specific project."""
+        return self.pid_dir / f"{project_name}{self.pid_file_suffix}"
+
+    def get_log_file_path(self, project_name: str) -> Path:
+        """Get log file path for a specific project."""
+        if self.log_file:
+            return self.log_file
+        return self.log_dir / f"{project_name}.log"

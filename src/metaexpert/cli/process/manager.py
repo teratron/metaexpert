@@ -1,233 +1,289 @@
-# src/metaexpert/cli/process/manager.py
-"""Process lifecycle management."""
+"""Process manager for CLI applications.
+
+This module provides a ProcessManager class for managing the lifecycle of CLI processes,
+including starting, stopping, checking status, and retrieving process information.
+"""
 
 import os
 import signal
 import subprocess
-import sys
-from dataclasses import dataclass
-from datetime import datetime
+import time
 from pathlib import Path
-from typing import List, Optional
 
-import psutil
+from pydantic import BaseModel, Field
 
-from metaexpert.cli.core.exceptions import ProcessError
-from metaexpert.cli.process.pid_lock import PIDFileLock
+from metaexpert.logger import get_logger
 
 
-@dataclass
-class ProcessInfo:
-    """Information about a running process."""
+class ProcessInfo(BaseModel):
+    """Pydantic model for representing process information."""
 
-    pid: int
-    name: str
-    project_path: Path
-    started_at: datetime
-    status: str
-    memory_mb: float
-    cpu_percent: float
+    pid: int = Field(..., description="Process ID")
+    command: str = Field(..., description="Command that started the process")
+    start_time: float = Field(..., description="Timestamp when process started")
+    status: str = Field(..., description="Current status of the process")
+    working_directory: str = Field(..., description="Working directory of the process")
+    environment: dict[str, str] = Field(
+        default_factory=dict, description="Environment variables"
+    )
+
+    class Config:
+        """Pydantic configuration for ProcessInfo."""
+
+        arbitrary_types_allowed = True
 
 
 class ProcessManager:
-    """Manages expert process lifecycle."""
+    """Manages the lifecycle of CLI processes."""
 
-    def __init__(self, pid_dir: Path):
-        self.pid_dir = pid_dir
-        self.pid_dir.mkdir(parents=True, exist_ok=True)
-
-    def start(
-        self,
-        project_path: Path,
-        script: str = "main.py",
-        detach: bool = True,
-    ) -> int:
-        """
-        Start an expert process.
+    def __init__(self, logger_name: str | None = None):
+        """Initialize the ProcessManager.
 
         Args:
-            project_path: Path to the project directory
-            script: Script to run (default: main.py)
-            detach: Run in background
+            logger_name: Optional name for the logger. If not provided, uses default logger.
+        """
+        self.logger = get_logger(logger_name or __name__)
+        self.processes: dict[int, ProcessInfo] = {}
+        self._process_handles: dict[int, subprocess.Popen] = {}
+
+    def start_process(
+        self,
+        command: list[str],
+        working_directory: str | None = None,
+        environment: dict[str, str] | None = None,
+        wait_for_start: bool = True,
+        check_interval: float = 0.1,
+        max_wait_time: float = 10.0,
+    ) -> ProcessInfo | None:
+        """Start a new process.
+
+        Args:
+            command: Command to execute as a list of arguments
+            working_directory: Working directory for the process (defaults to current)
+            environment: Environment variables for the process (defaults to current)
+            wait_for_start: Whether to wait for the process to start before returning
+            check_interval: Interval to check if process has started (in seconds)
+            max_wait_time: Maximum time to wait for process to start (in seconds)
 
         Returns:
-            Process PID
-
-        Raises:
-            ProcessError: If process is already running or fails to start
+            ProcessInfo object if successful, None otherwise
         """
-        pid_file = self._get_pid_file(project_path)
+        try:
+            # Prepare working directory
+            cwd = working_directory or os.getcwd()
+            if isinstance(cwd, str):
+                cwd = Path(cwd)
+            if not cwd.exists():
+                raise FileNotFoundError(f"Working directory does not exist: {cwd}")
 
-        # Check if already running
-        if self.is_running(project_path):
-            existing_pid = self._read_pid(pid_file)
-            raise ProcessError(
-                f"Expert already running with PID {existing_pid}. "
-                f"Use 'metaexpert stop {project_path.name}' to stop it first."
+            # Prepare environment
+            env = environment or os.environ.copy()
+
+            # Start the process
+            process = subprocess.Popen(
+                command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=cwd,
+                env=env,
+                text=True,
             )
 
-        script_path = project_path / script
-        if not script_path.exists():
-            raise ProcessError(f"Script not found: {script_path}")
+            # Create process info
+            process_info = ProcessInfo(
+                pid=process.pid,
+                command=" ".join(command),
+                start_time=time.time(),
+                status="running",
+                working_directory=str(cwd),
+                environment=env,
+            )
 
-        # Prepare command
-        python_exe = sys.executable
-        command = [python_exe, str(script_path)]
+            # Store process info and handle
+            self.processes[process.pid] = process_info
+            self._process_handles[process.pid] = process
 
-        # Start process
-        try:
-            if detach:
-                pid = self._start_detached(command, project_path)
-            else:
-                pid = self._start_attached(command, project_path)
+            self.logger.info(
+                f"Started process {process.pid} with command: {' '.join(command)}",
+                extra={"process_id": process.pid, "command": process_info.command},
+            )
 
-            # Write PID file
-            with PIDFileLock(pid_file):
-                pid_file.write_text(str(pid))
+            # Optionally wait for the process to be confirmed as running
+            if wait_for_start:
+                start_time = time.time()
+                while time.time() - start_time < max_wait_time:
+                    if self.is_running(process.pid):
+                        break
+                    time.sleep(check_interval)
+                else:
+                    self.logger.warning(
+                        f"Process {process.pid} did not start within {max_wait_time} seconds",
+                        extra={"process_id": process.pid},
+                    )
+                    return None
 
-            return pid
+            return process_info
 
         except Exception as e:
-            raise ProcessError(f"Failed to start process: {e}") from e
+            self.logger.error(
+                f"Failed to start process with command: {' '.join(command)} - Error: {e!s}",
+                extra={"command": " ".join(command), "error": str(e)},
+            )
+            return None
 
-    def stop(self, project_path: Path, timeout: int = 30, force: bool = False) -> None:
-        """
-        Stop an expert process.
+    def stop_process(self, pid: int, timeout: int = 5) -> bool:
+        """Stop a running process.
 
         Args:
-            project_path: Path to the project directory
-            timeout: Graceful shutdown timeout in seconds
-            force: Force kill if graceful shutdown fails
+            pid: Process ID to stop
+            timeout: Timeout in seconds to wait for graceful termination
 
-        Raises:
-            ProcessError: If process is not running or cannot be stopped
+        Returns:
+            True if process was stopped successfully, False otherwise
         """
-        pid_file = self._get_pid_file(project_path)
-
-        if not self.is_running(project_path):
-            raise ProcessError(f"No running expert found for {project_path.name}")
-
-        pid = self._read_pid(pid_file)
+        if pid not in self.processes:
+            self.logger.warning(
+                f"Process {pid} not found in managed processes",
+                extra={"process_id": pid},
+            )
+            return False
 
         try:
-            process = psutil.Process(pid)
+            process_handle = self._process_handles.get(pid)
+            if not process_handle:
+                self.logger.warning(
+                    f"No process handle found for PID {pid}", extra={"process_id": pid}
+                )
+                return False
 
-            # Try graceful shutdown
-            if not force:
-                process.terminate()
-                try:
-                    process.wait(timeout=timeout)
-                except psutil.TimeoutExpired:
-                    raise ProcessError(
-                        f"Process {pid} did not terminate within {timeout}s. "
-                        "Use --force to kill it."
-                    )
-            else:
-                process.kill()
+            # Check if process is still running
+            if not self.is_running(pid):
+                self.logger.info(
+                    f"Process {pid} is already stopped", extra={"process_id": pid}
+                )
+                self._cleanup_process(pid)
+                return True
 
-            # Clean up PID file
-            pid_file.unlink(missing_ok=True)
+            # Try graceful termination first
+            self.logger.info(
+                f"Stopping process {pid} gracefully", extra={"process_id": pid}
+            )
+            os.kill(pid, signal.SIGTERM)
 
-        except psutil.NoSuchProcess:
-            # Process already dead, clean up PID file
-            pid_file.unlink(missing_ok=True)
+            # Wait for process to terminate
+            try:
+                process_handle.wait(timeout=timeout)
+            except subprocess.TimeoutExpired:
+                # Force kill if graceful termination failed
+                self.logger.warning(
+                    f"Graceful termination failed for process {pid}, force killing",
+                    extra={"process_id": pid},
+                )
+                os.kill(pid, signal.SIGKILL)
+                process_handle.wait()  # Wait for force kill to complete
+
+            # Clean up process info
+            self._cleanup_process(pid)
+            self.logger.info(
+                f"Successfully stopped process {pid}", extra={"process_id": pid}
+            )
+            return True
+
+        except ProcessLookupError:
+            # Process already terminated
+            self._cleanup_process(pid)
+            self.logger.info(
+                f"Process {pid} was already terminated", extra={"process_id": pid}
+            )
+            return True
         except Exception as e:
-            raise ProcessError(f"Failed to stop process {pid}: {e}") from e
-
-    def is_running(self, project_path: Path) -> bool:
-        """Check if an expert process is running."""
-        pid_file = self._get_pid_file(project_path)
-
-        if not pid_file.exists():
-            return False
-
-        pid = self._read_pid(pid_file)
-        if pid is None:
-            return False
-
-        try:
-            process = psutil.Process(pid)
-            return process.is_running() and process.status() != psutil.STATUS_ZOMBIE
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            return False
-
-    def get_info(self, project_path: Path) -> Optional[ProcessInfo]:
-        """Get information about a running process."""
-        if not self.is_running(project_path):
-            return None
-
-        pid_file = self._get_pid_file(project_path)
-        pid = self._read_pid(pid_file)
-
-        if pid is None:
-            return None
-
-        try:
-            process = psutil.Process(pid)
-
-            return ProcessInfo(
-                pid=pid,
-                name=project_path.name,
-                project_path=project_path,
-                started_at=datetime.fromtimestamp(process.create_time()),
-                status=process.status(),
-                memory_mb=process.memory_info().rss / 1024 / 1024,
-                cpu_percent=process.cpu_percent(interval=0.1),
+            self.logger.error(
+                f"Failed to stop process {pid} - Error: {e!s}",
+                extra={"process_id": pid, "error": str(e)},
             )
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            return None
+            return False
 
-    def list_running(self, search_path: Path = Path.cwd()) -> List[ProcessInfo]:
-        """List all running experts."""
-        running = []
+    def is_running(self, pid: int) -> bool:
+        """Check if a process is currently running.
 
-        # Search for PID files
-        for pid_file in self.pid_dir.glob("*.pid"):
-            project_name = pid_file.stem
-            project_path = search_path / project_name
+        Args:
+            pid: Process ID to check
 
-            if project_path.exists() and self.is_running(project_path):
-                info = self.get_info(project_path)
-                if info:
-                    running.append(info)
-
-        return running
-
-    def _start_detached(self, command: List[str], cwd: Path) -> int:
-        """Start process detached from terminal."""
-        kwargs = {
-            "cwd": str(cwd),
-            "stdout": subprocess.DEVNULL,
-            "stderr": subprocess.DEVNULL,
-            "stdin": subprocess.DEVNULL,
-        }
-
-        if sys.platform == "win32":
-            kwargs["creationflags"] = (
-                subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
-            )
-        else:
-            kwargs["start_new_session"] = True
-
-        process = subprocess.Popen(command, **kwargs)
-        return process.pid
-
-    def _start_attached(self, command: List[str], cwd: Path) -> int:
-        """Start process attached to terminal."""
-        process = subprocess.Popen(
-            command,
-            cwd=str(cwd),
-        )
-        return process.pid
-
-    def _get_pid_file(self, project_path: Path) -> Path:
-        """Get PID file path for a project."""
-        return self.pid_dir / f"{project_path.name}.pid"
-
-    def _read_pid(self, pid_file: Path) -> Optional[int]:
-        """Read PID from file."""
+        Returns:
+            True if process is running, False otherwise
+        """
         try:
-            return int(pid_file.read_text().strip())
-        except (ValueError, FileNotFoundError):
-            return None
+            os.kill(pid, 0)  # Signal 0 checks if process exists without affecting it
+            return True
+        except OSError:
+            # Process doesn't exist
+            return False
 
+    def get_process_info(self, pid: int) -> ProcessInfo | None:
+        """Get information about a specific process.
+
+        Args:
+            pid: Process ID to get info for
+
+        Returns:
+            ProcessInfo object if process exists, None otherwise
+        """
+        if pid in self.processes:
+            # Update status if needed
+            current_status = "running" if self.is_running(pid) else "stopped"
+            self.processes[pid].status = current_status
+            return self.processes[pid]
+        return None
+
+    def list_processes(self) -> list[ProcessInfo]:
+        """Get information about all managed processes.
+
+        Returns:
+            List of ProcessInfo objects for all managed processes
+        """
+        # Update statuses for all processes
+        for pid in list(self.processes.keys()):
+            current_status = "running" if self.is_running(pid) else "stopped"
+            self.processes[pid].status = current_status
+
+        return list(self.processes.values())
+
+    def stop_all_processes(self, timeout: int = 5) -> bool:
+        """Stop all managed processes.
+
+        Args:
+            timeout: Timeout in seconds to wait for graceful termination of each process
+
+        Returns:
+            True if all processes were stopped successfully, False otherwise
+        """
+        success = True
+        pids = list(self.processes.keys())
+
+        for pid in pids:
+            if not self.stop_process(pid, timeout):
+                success = False
+
+        return success
+
+    def cleanup_stopped_processes(self) -> None:
+        """Remove information about processes that have stopped."""
+        stopped_pids = [
+            pid for pid in self.processes.keys() if not self.is_running(pid)
+        ]
+        for pid in stopped_pids:
+            self._cleanup_process(pid)
+            self.logger.debug(
+                f"Cleaned up stopped process {pid}", extra={"process_id": pid}
+            )
+
+    def _cleanup_process(self, pid: int) -> None:
+        """Internal method to clean up process information.
+
+        Args:
+            pid: Process ID to clean up
+        """
+        if pid in self.processes:
+            del self.processes[pid]
+        if pid in self._process_handles:
+            del self._process_handles[pid]

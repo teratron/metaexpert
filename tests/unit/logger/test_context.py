@@ -1,8 +1,8 @@
 """Tests for MetaExpert logger context utilities."""
 
-
 from metaexpert.logger.context import (
     LogContext,
+    TradeContext,
     bind_contextvars,
     clear_contextvars,
     get_logger,
@@ -10,7 +10,6 @@ from metaexpert.logger.context import (
     iterate_with_context,
     request_id_var,
     strategy_id_var,
-    TradeContext,
     trade_session_var,
     unbind_contextvars,
 )

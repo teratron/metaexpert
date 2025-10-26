@@ -2,7 +2,7 @@
 """Command to create new expert project."""
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -33,7 +33,7 @@ def cmd_new(
         typer.Option("--market-type", help="Market type (spot, futures, options)"),
     ] = "futures",
     output_dir: Annotated[
-        Optional[Path],
+        Path | None,
         typer.Option("--output-dir", "-o", help="Output directory"),
     ] = None,
     force: Annotated[
@@ -99,9 +99,9 @@ def cmd_new(
         # Show next steps
         console.print("\n[bold green]Next Steps:[/]\n")
         console.print(f"  1. [cyan]cd {project_name}[/]")
-        console.print(f"  2. [cyan]cp .env.example .env[/]  # Configure API keys")
-        console.print(f"  3. [cyan]uv sync[/]  # Install dependencies")
-        console.print(f"  4. [cyan]metaexpert run[/]  # Start in paper mode\n")
+        console.print("  2. [cyan]cp .env.example .env[/]  # Configure API keys")
+        console.print("  3. [cyan]uv sync[/]  # Install dependencies")
+        console.print("  4. [cyan]metaexpert run[/]  # Start in paper mode\n")
 
         console.print("[dim]Documentation: https://teratron.github.io/metaexpert[/]\n")
 

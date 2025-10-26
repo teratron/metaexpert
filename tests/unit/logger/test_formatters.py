@@ -42,7 +42,7 @@ def test_meta_expert_console_renderer_trade_formatting_with_colors():
         "symbol": "BTCUSDT",
         "side": "BUY",
         "price": 50000,
-        "quantity": 0.01
+        "quantity": 0.01,
     }
 
     # Mock logger and name for the call
@@ -72,7 +72,7 @@ def test_meta_expert_console_renderer_trade_formatting_without_colors():
         "symbol": "BTCUSDT",
         "side": "BUY",
         "price": 50000,
-        "quantity": 0.01
+        "quantity": 0.01,
     }
 
     # Mock logger and name for the call
@@ -101,7 +101,7 @@ def test_meta_expert_console_renderer_regular_formatting():
     event_dict = {
         "timestamp": "2023-01-01T12:00:00Z",
         "event": "regular log message",
-        "level": "info"
+        "level": "info",
     }
 
     # Mock logger and name for the call
@@ -127,7 +127,7 @@ def test_compact_json_renderer():
         "event": "test message",
         "level": "info",
         "symbol": "BTCUSDT",
-        "_internal_field": "should_be_removed"
+        "_internal_field": "should_be_removed",
     }
 
     # Mock logger and name for the call

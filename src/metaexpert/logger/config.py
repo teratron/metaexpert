@@ -29,6 +29,7 @@ from pydantic import BaseModel, Field, field_validator
 #     LOG_TRADE_LEVEL,
 # )
 
+
 class LoggerConfig(BaseModel):
     """Configuration for MetaExpert structured logger."""
 
