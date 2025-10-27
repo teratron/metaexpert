@@ -16,12 +16,14 @@ from metaexpert.cli.process.manager import ProcessInfo
 
 # Register commands before running tests
 from metaexpert.cli.app import register_commands
+
 register_commands()
 
 
 @pytest.fixture
 def runner():
     return CliRunner()
+
 
 # Remove the app fixture as we'll use the original_app with mocked dependencies
 
@@ -83,7 +85,8 @@ class TestNewCommand:
         ) as mock_generator:
             with patch("metaexpert.cli.app.check_dependencies"):
                 result = runner.invoke(
-                    original_app, ["new", project_name, "--output-dir", str(tmp_path), "--force"]
+                    original_app,
+                    ["new", project_name, "--output-dir", str(tmp_path), "--force"],
                 )
 
             assert result.exit_code == 0
@@ -158,14 +161,14 @@ class TestRunCommand:
         project_path.mkdir()
         (project_path / "main.py").touch()  # Create main.py
 
-        with patch(
-            "metaexpert.cli.process.manager.ProcessManager.start"
-        ) as mock_start:
+        with patch("metaexpert.cli.process.manager.ProcessManager.start") as mock_start:
             mock_start.return_value = 12345  # Mock PID
 
             with runner.isolated_filesystem(temp_dir=tmp_path):
                 with patch("metaexpert.cli.core.dependencies.check_dependencies"):
-                    result = runner.invoke(original_app, ["run", str(project_path), "--detach"])
+                    result = runner.invoke(
+                        original_app, ["run", str(project_path), "--detach"]
+                    )
 
                 # Check that the command completed successfully
                 if result.exit_code == 0:
@@ -184,9 +187,7 @@ class TestRunCommand:
         project_path.mkdir()
         (project_path / "main.py").touch()  # Create main.py
 
-        with patch(
-            "metaexpert.cli.process.manager.ProcessManager.start"
-        ) as mock_start:
+        with patch("metaexpert.cli.process.manager.ProcessManager.start") as mock_start:
             mock_start.return_value = 12345  # Mock PID
 
             with runner.isolated_filesystem(temp_dir=tmp_path):
@@ -213,12 +214,8 @@ class TestRunCommand:
         project_path.mkdir()
         (project_path / "main.py").touch()  # Create main.py
 
-        with patch(
-            "metaexpert.cli.process.manager.ProcessManager.start"
-        ) as mock_start:
-            mock_start.side_effect = ProcessError(
-                "Project is already running"
-            )
+        with patch("metaexpert.cli.process.manager.ProcessManager.start") as mock_start:
+            mock_start.side_effect = ProcessError("Project is already running")
 
             with runner.isolated_filesystem(temp_dir=tmp_path):
                 with patch("metaexpert.cli.core.dependencies.check_dependencies"):
@@ -280,12 +277,8 @@ class TestStopCommand:
         """Test error when trying to stop a non-running project."""
         project_name = "test_project"
 
-        with patch(
-            "metaexpert.cli.process.manager.ProcessManager.stop"
-        ) as mock_stop:
-            mock_stop.side_effect = ProcessError(
-                "Project is not running"
-            )
+        with patch("metaexpert.cli.process.manager.ProcessManager.stop") as mock_stop:
+            mock_stop.side_effect = ProcessError("Project is not running")
 
             with runner.isolated_filesystem(temp_dir=tmp_path):
                 with patch("metaexpert.cli.core.dependencies.check_dependencies"):
@@ -301,7 +294,9 @@ class TestStopCommand:
         with patch("metaexpert.cli.process.manager.ProcessManager") as mock_manager:
             with runner.isolated_filesystem(temp_dir=tmp_path):
                 with patch("metaexpert.cli.core.dependencies.check_dependencies"):
-                    result = runner.invoke(original_app, ["stop", project_name, "--force"])
+                    result = runner.invoke(
+                        original_app, ["stop", project_name, "--force"]
+                    )
 
                 # Check that the command completed successfully
                 if result.exit_code == 0:
@@ -322,6 +317,7 @@ class TestListCommand:
         with patch("metaexpert.cli.process.manager.ProcessManager") as mock_manager:
             # Create mock process info
             import datetime
+
             mock_process_info = ProcessInfo(
                 name="test_project",
                 pid=12345,
@@ -352,6 +348,7 @@ class TestListCommand:
         with patch("metaexpert.cli.process.manager.ProcessManager") as mock_manager:
             # Create mock process info
             import datetime
+
             mock_process_info = ProcessInfo(
                 name="test_project",
                 pid=12345,
@@ -474,7 +471,9 @@ class TestLogsCommand:
             with patch("metaexpert.cli.commands.logs._tail_follow") as mock_tail_follow:
                 with runner.isolated_filesystem(temp_dir=tmp_path):
                     with patch("metaexpert.cli.core.dependencies.check_dependencies"):
-                        result = runner.invoke(original_app, ["logs", project_name, "--follow"])
+                        result = runner.invoke(
+                            original_app, ["logs", project_name, "--follow"]
+                        )
 
                     # Check that the command completed successfully
                     if result.exit_code == 0:
@@ -506,7 +505,9 @@ class TestBacktestCommand:
 
         with runner.isolated_filesystem(temp_dir=tmp_path):
             with patch("metaexpert.cli.core.dependencies.check_dependencies"):
-                result = runner.invoke(original_app, ["backtest", str(nonexistent_file)])
+                result = runner.invoke(
+                    original_app, ["backtest", str(nonexistent_file)]
+                )
 
         assert result.exit_code == 1
         assert (

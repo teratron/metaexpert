@@ -1,4 +1,3 @@
-# src/metaexpert/cli/commands/init.py
 """Command to initialize MetaExpert CLI environment."""
 
 from pathlib import Path

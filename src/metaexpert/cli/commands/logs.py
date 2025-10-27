@@ -1,4 +1,3 @@
-# src/metaexpert/cli/commands/logs.py
 """Command to view expert logs."""
 
 import time

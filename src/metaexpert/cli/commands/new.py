@@ -1,4 +1,3 @@
-# src/metaexpert/cli/commands/new.py
 """Command to create new expert project."""
 
 from pathlib import Path
@@ -84,6 +83,12 @@ def cmd_new(
     # Generate project
     try:
         generator = TemplateGenerator()
+
+        # Check if templates exist
+        templates = generator.list_available_templates()
+        if not templates:
+            output.error("No templates found. Please reinstall MetaExpert.")
+            raise typer.Exit(code=1)
 
         console.print(f"\n[bold cyan]Creating project:[/] {project_name}")
         console.print(f"[dim]Exchange:[/] {exchange}")

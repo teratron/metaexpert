@@ -612,3 +612,62 @@ class ProcessManager:
                 extra={"pid_file": str(pid_file), "error": str(e)},
             )
             return False
+
+    def list_pid_files(self, search_path: str | Path | None = None) -> list[Path]:
+        """
+        List all PID files in a directory.
+
+        Args:
+            search_path: Directory to search in. If None, uses the default pid_dir.
+
+        Returns:
+            List of Path objects representing the found PID files.
+        """
+        search_path = Path(search_path) if search_path is not None else self.pid_dir
+        if not search_path.exists() or not search_path.is_dir():
+            return []
+
+        pid_files = list(search_path.glob("*.pid"))
+        return pid_files
+
+    def cleanup_stale_pid_files(self, search_path: str | Path | None = None) -> int:
+        """
+        Remove PID files that do not correspond to running processes.
+
+        Args:
+            search_path: Directory to search in. If None, uses the default pid_dir.
+
+        Returns:
+            Number of stale PID files removed.
+        """
+        search_path = Path(search_path) if search_path is not None else self.pid_dir
+        if not search_path.exists() or not search_path.is_dir():
+            return 0
+
+        stale_files = []
+        for pid_file in search_path.glob("*.pid"):
+            try:
+                with open(pid_file) as f:
+                    pid_str = f.read().strip()
+                    if pid_str:
+                        pid = int(pid_str)
+                        if not self.is_running(pid):
+                            stale_files.append(pid_file)
+            except (OSError, ValueError):
+                # If the file is malformed, consider it stale
+                stale_files.append(pid_file)
+
+        for stale_pid_file in stale_files:
+            try:
+                stale_pid_file.unlink()
+                self.logger.info(
+                    f"Removed stale PID file: {stale_pid_file}",
+                    extra={"pid_file": str(stale_pid_file)},
+                )
+            except OSError as e:
+                self.logger.error(
+                    f"Failed to remove stale PID file {stale_pid_file}: {e!s}",
+                    extra={"pid_file": str(stale_pid_file), "error": str(e)},
+                )
+
+        return len(stale_files)

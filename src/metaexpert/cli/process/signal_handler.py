@@ -1,107 +1,82 @@
-"""Signal handler for graceful shutdown of MetaExpert CLI processes.
-
-This module provides a SignalHandler class that allows for proper handling
-of system signals like SIGINT and SIGTERM to ensure clean shutdowns and
-resource cleanup in CLI applications.
-"""
+"""Signal handler for graceful shutdown of CLI processes."""
 
 import signal
 import sys
-from collections.abc import Callable
+import threading
+from typing import Callable, Dict, List
 
 from metaexpert.logger import get_logger
 
 
 class SignalHandler:
-    """Handle system signals gracefully.
-
-    This class manages signal handlers for SIGINT and SIGTERM, allowing
-    multiple handlers to be registered for each signal. When a signal is
-    received, all registered handlers are called in sequence.
-    """
+    """Handle system signals gracefully."""
 
     def __init__(self):
-        """Initialize the signal handler and set up default signal handling."""
-        self.handlers: dict[int, list[Callable]] = {}
         self.logger = get_logger(__name__)
-        self._original_handlers = {}
+        self.handlers: Dict[int, List[Callable]] = {}
+        self._lock = threading.Lock()
         self._setup_handlers()
 
     def _setup_handlers(self) -> None:
-        """Setup signal handlers for SIGINT and SIGTERM."""
-        # Store original handlers to restore them later if needed
-        self._original_handlers[signal.SIGINT] = signal.signal(
-            signal.SIGINT, self._handle_signal
-        )
-        self._original_handlers[signal.SIGTERM] = signal.signal(
-            signal.SIGTERM, self._handle_signal
-        )
+        """Setup signal handlers."""
+        # Handle SIGINT (Ctrl+C) and SIGTERM (termination request)
+        signal.signal(signal.SIGINT, self._handle_signal)
+        signal.signal(signal.SIGTERM, self._handle_signal)
+
+        # On Windows, SIGQUIT is not available, so we only handle SIGINT and SIGTERM
+        # On Unix-like systems, we could also handle SIGQUIT
+        if hasattr(signal, 'SIGQUIT'):
+            signal.signal(signal.SIGQUIT, self._handle_signal)
+
+        self.logger.info("Signal handlers registered for SIGINT, SIGTERM")
 
     def _handle_signal(self, signum: int, frame) -> None:
-        """Handle received signal by executing all registered handlers.
+        """
+        Handle received signal.
 
         Args:
-            signum: The signal number received
-            frame: The current stack frame (unused)
+            signum: Signal number received
+            frame: Current stack frame (unused)
         """
-        self.logger.warning(
-            "signal received, initiating graceful shutdown",
-            signal=signal.Signals(signum).name,
-        )
+        # Log the received signal
+        signal_name = signal.Signals(signum).name if isinstance(signum, int) else f"Signal {signum}"
+        self.logger.warning(f"Signal received: {signal_name}")
 
-        # Execute all registered handlers for this signal
-        for handler in self.handlers.get(signum, []):
-            try:
-                handler()
-            except Exception as e:
-                self.logger.error(
-                    "error in signal handler",
-                    error=str(e),
-                    signal=signal.Signals(signum).name,
-                )
+        # Execute registered handlers for this signal
+        with self._lock:
+            handlers_for_signal = self.handlers.get(signum, [])
+            for handler in handlers_for_signal:
+                try:
+                    handler()
+                except Exception as e:
+                    self.logger.error(f"Error in signal handler: {e}")
 
-        # Exit the process after handling all signals
-        self.logger.info("signal handling completed, exiting")
+        # Exit the program gracefully after handling signals
+        # This is a basic approach; in a more complex application,
+        # you might want to initiate a graceful shutdown sequence.
+        self.logger.info("Exiting gracefully...")
         sys.exit(0)
 
     def register(self, signum: int, handler: Callable) -> None:
-        """Register a handler for a specific signal.
+        """
+        Register handler for signal.
 
         Args:
-            signum: The signal number to register handler for
-            handler: The callable to execute when signal is received
+            signum: Signal number to handle (e.g., signal.SIGINT)
+            handler: Callable to execute when signal is received
         """
-        if signum not in self.handlers:
-            self.handlers[signum] = []
-        self.handlers[signum].append(handler)
-        self.logger.debug(
-            "signal handler registered",
-            signal=signal.Signals(signum).name,
-            handler=str(handler),
-        )
+        with self._lock:
+            if signum not in self.handlers:
+                self.handlers[signum] = []
+            self.handlers[signum].append(handler)
 
-    def unregister(self, signum: int, handler: Callable) -> bool:
-        """Unregister a handler for a specific signal.
+        self.logger.debug(f"Registered handler for signal {signum}")
 
-        Args:
-            signum: The signal number to unregister handler for
-            handler: The callable to remove from handlers
 
-        Returns:
-            True if handler was found and removed, False otherwise
-        """
-        if signum in self.handlers and handler in self.handlers[signum]:
-            self.handlers[signum].remove(handler)
-            self.logger.debug(
-                "signal handler unregistered",
-                signal=signal.Signals(signum).name,
-                handler=str(handler),
-            )
-            return True
-        return False
+# Global instance for convenience
+_signal_handler = SignalHandler()
 
-    def restore_original_handlers(self) -> None:
-        """Restore the original signal handlers."""
-        for signum, original_handler in self._original_handlers.items():
-            signal.signal(signum, original_handler)
-        self.logger.debug("original signal handlers restored")
+
+def get_signal_handler() -> SignalHandler:
+    """Get the global signal handler instance."""
+    return _signal_handler

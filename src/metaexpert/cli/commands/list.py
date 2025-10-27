@@ -1,4 +1,3 @@
-# src/metaexpert/cli/commands/list.py
 """Command to list running experts."""
 
 from pathlib import Path

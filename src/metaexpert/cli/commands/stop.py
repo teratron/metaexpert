@@ -1,4 +1,3 @@
-# src/metaexpert/cli/commands/stop.py
 """Command to stop an expert."""
 
 from pathlib import Path

@@ -33,7 +33,22 @@ __all__ = [
 
 def register_commands() -> None:
     """Register all CLI commands."""
-    from metaexpert.cli.commands import backtest, init, list, logs, new, run, stop
+    from metaexpert.cli.commands import (
+        backtest,
+        clean,
+        config,
+        doctor,
+        export,
+        import_,
+        init,
+        list,
+        logs,
+        new,
+        run,
+        status,
+        stop,
+        version,
+    )
 
     app.command(name="new")(new.cmd_new)
     app.command(name="run")(run.cmd_run)
@@ -42,6 +57,13 @@ def register_commands() -> None:
     app.command(name="stop")(stop.cmd_stop)
     app.command(name="logs")(logs.cmd_logs)
     app.command(name="init")(init.cmd_init)
+    app.command(name="status")(status.cmd_status)
+    app.command(name="config")(config.cmd_config)
+    app.command(name="doctor")(doctor.cmd_doctor)
+    app.command(name="version")(version.cmd_version)
+    app.command(name="clean")(clean.cmd_clean)
+    app.command(name="export")(export.cmd_export)
+    app.command(name="import")(import_.cmd_import)
 
 
 def main() -> None:

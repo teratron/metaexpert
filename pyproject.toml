@@ -43,6 +43,7 @@ repository = "https://github.com/teratron/metaexpert.git"
 
 [project.scripts]
 metaexpert = "metaexpert:main"
+generate-docs = "scripts.generate_docs:main"
 # example-binance = "examples/example_binance_ema:main"
 # example-bybit = "examples/example_bybit_rsi:main"
 # example-okx = "examples/example_okx_macd:main"
