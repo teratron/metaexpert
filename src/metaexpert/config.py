@@ -1,6 +1,7 @@
 """Configuration file for Expert Trading Bot"""
 
 from datetime import datetime
+from typing import Literal
 
 # -----------------------------------------------------------------------------
 # APPLICATION CONFIGURATION
@@ -20,16 +21,12 @@ LIB_NAME: str = "metaexpert"
 LOG_NAME: str = APP_NAME
 
 # Log levels
-LOG_LEVEL_DEBUG: str = "DEBUG"
-LOG_LEVEL_INFO: str = "INFO"
-LOG_LEVEL_WARNING: str = "WARNING"
-LOG_LEVEL_ERROR: str = "ERROR"
-LOG_LEVEL_CRITICAL: str = "CRITICAL"
+LOG_LEVEL_TYPE = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 # Default log levels
-LOG_LEVEL: str = LOG_LEVEL_DEBUG
-LOG_TRADE_LEVEL: str = LOG_LEVEL_INFO
-LOG_ERROR_LEVEL: str = LOG_LEVEL_ERROR
+LOG_LEVEL: LOG_LEVEL_TYPE = "DEBUG"
+LOG_TRADE_LEVEL: LOG_LEVEL_TYPE = "INFO"
+LOG_ERROR_LEVEL: LOG_LEVEL_TYPE = "ERROR"
 
 # Default file names
 LOG_FILE: str = "expert.log"

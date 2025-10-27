@@ -1,42 +1,35 @@
 """Configuration for MetaExpert logger using Pydantic."""
 
 from pathlib import Path
-from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-# from metaexpert.config import (
-#     LOG_ASYNC_LOGGING,
-#     LOG_BACKUP_COUNT,
-#     LOG_CONSOLE_LOGGING,
-#     LOG_DETAILED_FORMAT,
-#     LOG_DIRECTORY,
-#     LOG_ERROR_FILE,
-#     LOG_ERROR_LEVEL,
-#     LOG_FALLBACK_FORMAT,
-#     LOG_FILE,
-#     LOG_FORMAT,
-#     LOG_LEVEL,
-#     LOG_LEVEL_CRITICAL,
-#     LOG_LEVEL_DEBUG,
-#     LOG_LEVEL_ERROR,
-#     LOG_LEVEL_INFO,
-#     LOG_LEVEL_WARNING,
-#     LOG_MAX_FILE_SIZE,
-#     LOG_NAME,
-#     LOG_STRUCTURED_LOGGING,
-#     LOG_TRADE_FILE,
-#     LOG_TRADE_LEVEL,
-# )
+from metaexpert.config import (
+    LOG_ASYNC_LOGGING,
+    LOG_BACKUP_COUNT,
+    LOG_CONSOLE_LOGGING,
+    LOG_DETAILED_FORMAT,
+    LOG_DIRECTORY,
+    LOG_ERROR_FILE,
+    LOG_ERROR_LEVEL,
+    LOG_FALLBACK_FORMAT,
+    LOG_FILE,
+    LOG_FORMAT,
+    LOG_LEVEL,
+    LOG_LEVEL_TYPE,
+    LOG_MAX_FILE_SIZE,
+    LOG_NAME,
+    LOG_STRUCTURED_LOGGING,
+    LOG_TRADE_FILE,
+    LOG_TRADE_LEVEL,
+)
 
 
 class LoggerConfig(BaseModel):
     """Configuration for MetaExpert structured logger."""
 
     # Core settings
-    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = Field(
-        default="INFO", description="Global logging level"
-    )
+    log_level: LOG_LEVEL_TYPE = Field(default=LOG_LEVEL, description="Global logging level")
 
     # Output destinations
     log_to_console: bool = Field(default=True, description="Enable console output")
@@ -54,10 +47,10 @@ class LoggerConfig(BaseModel):
 
     # Rotation settings
     max_bytes: int = Field(
-        default=10 * 1024 * 1024,  # 10MB
+        default=LOG_MAX_FILE_SIZE,  #10 * 1024 * 1024 = 10MB
         description="Max file size before rotation",
     )
-    backup_count: int = Field(default=5, description="Number of backup files to keep")
+    backup_count: int = Field(default=LOG_BACKUP_COUNT, description="Number of backup files to keep")
 
     # Format settings
     use_colors: bool = Field(default=True, description="Use colored output in console")

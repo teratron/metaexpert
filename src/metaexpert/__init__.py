@@ -22,6 +22,7 @@ from metaexpert.config import (
     LOG_LEVEL,
     LOG_STRUCTURED_LOGGING,
     LOG_TRADE_FILE,
+    LOG_LEVEL_TYPE,
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
@@ -57,7 +58,7 @@ class MetaExpert(Events):
         position_mode: str = DEFAULT_POSITION_MODE,
         #
         # --- Logging Configuration ---
-        log_level: str = LOG_LEVEL,
+        log_level: LOG_LEVEL_TYPE = LOG_LEVEL,
         log_file: str = LOG_FILE,
         trade_log_file: str = LOG_TRADE_FILE,
         error_log_file: str = LOG_ERROR_FILE,
@@ -103,9 +104,7 @@ class MetaExpert(Events):
         # async_logging is likely not supported directly in setup.py.
         # We will pass supported params and ignore unsupported ones.
         config = LoggerConfig(
-            log_level=cast(
-                Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"], log_level
-            ),
+            log_level=log_level,
             log_file=log_file,
             trade_log_file=trade_log_file,
             error_log_file=error_log_file,
