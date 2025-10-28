@@ -15,7 +15,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.h
 
 ## [Unreleased]
 
-## [0.3.3] - 2025-10-21
+## [0.4.0] - 2025-10-28
+
+### Added
+
+- New configuration presets for logging system (development, production, backtesting)
+- Enhanced security filtering to automatically mask sensitive data in logs
+- Improved validation for logger configuration parameters
+- Context management utilities for correlated logging events
+- Performance monitoring capabilities for operation durations
+
+### Fixed
+
+- Critical bugs in logging module
+- Improved consistency and flexibility of logging configuration
+- Replaced direct 'print' statements with 'MetaLogger' calls across the project
+
+## [0.3.13] - 2025-10-21
 
 ### Changed
 
