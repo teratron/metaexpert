@@ -5,23 +5,12 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from metaexpert.config import (
-    LOG_ASYNC_LOGGING,
     LOG_BACKUP_COUNT,
     LOG_CONSOLE_LOGGING,
-    LOG_DETAILED_FORMAT,
-    LOG_DIRECTORY,
-    LOG_ERROR_FILE,
-    LOG_ERROR_LEVEL,
-    LOG_FALLBACK_FORMAT,
-    LOG_FILE,
-    LOG_FORMAT,
+    LOG_FILE_LOGGING,
     LOG_LEVEL,
     LOG_LEVEL_TYPE,
     LOG_MAX_FILE_SIZE,
-    LOG_NAME,
-    LOG_STRUCTURED_LOGGING,
-    LOG_TRADE_FILE,
-    LOG_TRADE_LEVEL,
 )
 
 
@@ -32,8 +21,8 @@ class LoggerConfig(BaseModel):
     log_level: LOG_LEVEL_TYPE = Field(default=LOG_LEVEL, description="Global logging level")
 
     # Output destinations
-    log_to_console: bool = Field(default=True, description="Enable console output")
-    log_to_file: bool = Field(default=True, description="Enable file output")
+    log_to_console: bool = Field(default=LOG_CONSOLE_LOGGING, description="Enable console output")
+    log_to_file: bool = Field(default=LOG_FILE_LOGGING, description="Enable file output")
 
     # File settings
     log_dir: Path = Field(default=Path("logs"), description="Directory for log files")
@@ -47,7 +36,7 @@ class LoggerConfig(BaseModel):
 
     # Rotation settings
     max_bytes: int = Field(
-        default=LOG_MAX_FILE_SIZE,  #10 * 1024 * 1024 = 10MB
+        default=LOG_MAX_FILE_SIZE,  # 10 * 1024 * 1024 = 10MB
         description="Max file size before rotation",
     )
     backup_count: int = Field(default=LOG_BACKUP_COUNT, description="Number of backup files to keep")

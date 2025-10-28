@@ -49,6 +49,7 @@ LOG_FALLBACK_FORMAT: str = "[%(asctime)s] %(levelname)s: (LOGGING-FALLBACK) %(me
 
 # Enhanced configuration flags
 LOG_CONSOLE_LOGGING: bool = True
+LOG_FILE_LOGGING: bool = True
 LOG_STRUCTURED_LOGGING: bool = False
 LOG_ASYNC_LOGGING: bool = False
 
