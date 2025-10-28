@@ -224,11 +224,11 @@ class TimedOperation:
     """
 
     def __init__(
-            self,
-            logger: structlog.stdlib.BoundLogger,
-            operation: str,
-            threshold_ms: float | None = None,
-            **context: Any,
+        self,
+        logger: structlog.stdlib.BoundLogger,
+        operation: str,
+        threshold_ms: float | None = None,
+        **context: Any,
     ):
         """
         Args:

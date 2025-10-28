@@ -28,13 +28,13 @@ LOG_LEVEL: LOG_LEVEL_TYPE = "DEBUG"
 LOG_TRADE_LEVEL: LOG_LEVEL_TYPE = "INFO"
 LOG_ERROR_LEVEL: LOG_LEVEL_TYPE = "ERROR"
 
+# Directory configuration
+LOG_DIRECTORY: str = "logs"
+
 # Default file names
 LOG_FILE: str = "expert.log"
 LOG_TRADE_FILE: str = "trades.log"
 LOG_ERROR_FILE: str = "errors.log"
-
-# Directory configuration
-LOG_DIRECTORY: str = "logs"
 
 # File rotation settings
 LOG_MAX_FILE_SIZE: int = 10485760  # 10 * 1024 * 1024 (10MB)

@@ -7,10 +7,14 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
     LOG_CONSOLE_LOGGING,
+    LOG_DIRECTORY,
+    LOG_ERROR_FILE,
+    LOG_FILE,
     LOG_FILE_LOGGING,
     LOG_LEVEL,
     LOG_LEVEL_TYPE,
     LOG_MAX_FILE_SIZE,
+    LOG_TRADE_FILE,
 )
 
 
@@ -25,13 +29,13 @@ class LoggerConfig(BaseModel):
     log_to_file: bool = Field(default=LOG_FILE_LOGGING, description="Enable file output")
 
     # File settings
-    log_dir: Path = Field(default=Path("logs"), description="Directory for log files")
-    log_file: str = Field(default="expert.log", description="Main log file name")
+    log_dir: Path = Field(default=Path(LOG_DIRECTORY), description="Directory for log files")
+    log_file: str = Field(default=LOG_FILE, description="Main log file name")
     trade_log_file: str = Field(
-        default="trades.log", description="Trade-specific log file"
+        default=LOG_TRADE_FILE, description="Trade-specific log file"
     )
     error_log_file: str = Field(
-        default="errors.log", description="Error-specific log file"
+        default=LOG_ERROR_FILE, description="Error-specific log file"
     )
 
     # Rotation settings

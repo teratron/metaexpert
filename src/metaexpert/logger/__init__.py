@@ -36,8 +36,8 @@ Trade Logging:
 
 import structlog
 
-from .config import LoggerConfig
-from .context import (
+from metaexpert.logger.config import LoggerConfig
+from metaexpert.logger.context import (
     LogContext,
     TradeContext,
     bind_contextvars,
@@ -47,7 +47,7 @@ from .context import (
     iterate_with_context,
     unbind_contextvars,
 )
-from .setup import setup_logging
+from metaexpert.logger.setup import setup_logging
 
 # Type alias for convenience
 BoundLogger = structlog.stdlib.BoundLogger
