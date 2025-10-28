@@ -23,7 +23,8 @@ def filter_by_log_level(
     numeric_level = getattr(logging, log_level.upper(), logging.INFO)
     if numeric_level < logger.getEffectiveLevel():
         # Skip logging if below logger's effective level
-        return event_dict
+        from structlog import DropEvent
+        raise DropEvent
 
     return event_dict
 
@@ -48,6 +49,7 @@ def rename_event_key(
     """Rename 'event' to 'message' for better readability."""
     if "event" in event_dict:
         event_dict["message"] = event_dict.pop("event")
+
     return event_dict
 
 

@@ -177,6 +177,7 @@ logger.info("connect", password="mypass")       # В логе: password="***"
 ```
 
 Автоматически фильтруемые ключи данных:
+
 - `password`, `token`, `api_key`, `secret`, `private_key`
 - `apikey`, `api_secret`, `access_token`, `refresh_token`
 
@@ -197,6 +198,7 @@ with TimedOperation(logger, "fetch_data", threshold_ms=1000):
 ```
 
 Это позволяет:
+
 - Автоматически измерять время выполнения операций
 - Выдавать предупреждения для операций, превышающих пороговое значение
 - Записывать время выполнения в логи для анализа

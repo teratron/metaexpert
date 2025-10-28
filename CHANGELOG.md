@@ -5,15 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.html).
 
-## [0.3.4] - 2025-10-21
+## [Unreleased]
+
+## [0.4.1] - 2025-10-28
 
 ### Fixed
 
-- Updated logging module integration across the project
-- Replaced direct 'print' statements with 'MetaLogger' calls
-- Enhanced consistency and flexibility of logging configuration
-
-## [Unreleased]
+- Critical bug in filter_by_log_level function that could potentially cause incorrect log filtering by level
 
 ## [0.4.0] - 2025-10-28
 
@@ -47,3 +45,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.h
 ### Fixed
 
 - Various code improvements following SOLID, DRY, KISS, and YAGNI principles
+
+## [0.3.4] - 2025-10-21
+
+### Fixed
+
+- Updated logging module integration across the project
+- Replaced direct 'print' statements with 'MetaLogger' calls
+- Enhanced consistency and flexibility of logging configuration

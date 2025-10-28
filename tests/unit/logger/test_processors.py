@@ -44,6 +44,21 @@ def test_filter_by_log_level_below_threshold():
         filter_by_log_level(logger, method_name, event_dict)
 
 
+def test_filter_by_log_level_below_threshold_multiple_levels():
+    """Test filter_by_log_level with various levels below the threshold."""
+    logger = Mock(spec=logging.Logger)
+    logger.getEffectiveLevel.return_value = logging.ERROR  # Set to ERROR level
+
+    method_name = "info"
+
+    # Test multiple levels below ERROR level
+    below_levels = ["debug", "info", "warning"]
+    for level in below_levels:
+        event_dict = {"level": level, "message": f"test {level} message"}
+        with pytest.raises(DropEvent):
+            filter_by_log_level(logger, method_name, event_dict)
+
+
 def test_filter_by_log_level_above_threshold():
     """Test filter_by_log_level when event level is above or equal to logger level."""
     logger = Mock(spec=logging.Logger)
@@ -57,6 +72,63 @@ def test_filter_by_log_level_above_threshold():
     # Since ERROR >= WARNING, the event should pass through
     assert result["level"] == "error"
     assert result["message"] == "test message"
+
+
+def test_filter_by_log_level_equal_threshold():
+    """Test filter_by_log_level when event level is equal to logger level."""
+    logger = Mock(spec=logging.Logger)
+    logger.getEffectiveLevel.return_value = logging.WARNING
+    method_name = "warning"
+    event_dict = {"level": "warning", "message": "test message"}
+
+    # Call the processor - event should pass through since level equals threshold
+    result = filter_by_log_level(logger, method_name, event_dict)
+
+    assert result["level"] == "warning"
+    assert result["message"] == "test message"
+
+
+def test_filter_by_log_level_above_threshold_multiple_levels():
+    """Test filter_by_log_level with various levels above the threshold."""
+    logger = Mock(spec=logging.Logger)
+    logger.getEffectiveLevel.return_value = logging.DEBUG  # Set to lowest level
+
+    method_name = "info"
+
+    # Test multiple levels that should all pass through
+    above_levels = ["debug", "info", "warning", "error", "critical"]
+    for level in above_levels:
+        event_dict = {"level": level, "message": f"test {level} message"}
+        result = filter_by_log_level(logger, method_name, event_dict)
+
+        assert result["level"] == level
+        assert result["message"] == f"test {level} message"
+
+
+def test_filter_by_log_level_no_level_in_event():
+    """Test filter_by_log_level when no level is specified in event_dict."""
+    logger = Mock(spec=logging.Logger)
+    logger.getEffectiveLevel.return_value = logging.WARNING
+    method_name = "info"
+    event_dict = {"message": "test message without level"}
+
+    # Call the processor - should pass through unchanged since no level to compare
+    result = filter_by_log_level(logger, method_name, event_dict)
+
+    assert result["message"] == "test message without level"
+
+
+def test_filter_by_log_level_invalid_level():
+    """Test filter_by_log_level with an invalid/unknown level."""
+    logger = Mock(spec=logging.Logger)
+    logger.getEffectiveLevel.return_value = logging.WARNING
+    method_name = "info"
+    event_dict = {"level": "invalid_level", "message": "test message"}
+
+    # Call the processor - should default to INFO level and be filtered out
+    # since INFO < WARNING
+    with pytest.raises(DropEvent):
+        filter_by_log_level(logger, method_name, event_dict)
 
 
 def test_add_process_info():
