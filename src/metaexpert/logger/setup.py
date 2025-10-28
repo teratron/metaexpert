@@ -12,6 +12,8 @@ from metaexpert.logger.config import LoggerConfig
 from metaexpert.logger.formatters import get_console_renderer, get_file_renderer
 from metaexpert.logger.processors import (
     ErrorEventEnricher,
+    PerformanceMonitor,
+    SensitiveDataFilter,
     TradeEventFilter,
     add_app_context,
     rename_event_key,
@@ -43,7 +45,6 @@ def configure_stdlib_logging(config: LoggerConfig) -> None:
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(config.log_level)
 
-        # FIX: Added ProcessorFormatter for console
         console_formatter = structlog.stdlib.ProcessorFormatter(
             processor=get_console_renderer(colors=config.use_colors),
             foreign_pre_chain=processors,
@@ -104,6 +105,8 @@ def get_processors(config: LoggerConfig) -> list[Any]:
     processors = [
         # Add contextvars for context management
         structlog.contextvars.merge_contextvars,
+        # Добавляем SensitiveDataFilter ПЕРВЫМ для безопасности
+        SensitiveDataFilter(),
         # Add custom context
         add_app_context,
         # Add log level filtering
@@ -114,7 +117,7 @@ def get_processors(config: LoggerConfig) -> list[Any]:
         structlog.stdlib.add_log_level,
         # Add timestamp
         structlog.processors.TimeStamper(fmt="iso", utc=True),
-        # Add call site info (file, line, function) - using correct API for new version
+        # Add call site info (file, line, function)
         structlog.processors.CallsiteParameterAdder(
             frozenset(
                 [
@@ -127,6 +130,8 @@ def get_processors(config: LoggerConfig) -> list[Any]:
         # Add custom processors
         TradeEventFilter(),
         ErrorEventEnricher(),
+        # Добавляем PerformanceMonitor
+        PerformanceMonitor(threshold_ms=100.0),
         # Stack info renderer
         structlog.processors.StackInfoRenderer(),
         # Format exceptions
@@ -141,7 +146,11 @@ def get_processors(config: LoggerConfig) -> list[Any]:
 
 
 def setup_logging(config: LoggerConfig) -> None:
-    """Setup complete logging system with structlog."""
+    """Setup complete logging system with structlog.
+
+    Thread-safe and can be called multiple times safely.
+    First call configures structlog, subsequent calls only update handlers.
+    """
     # Reconfiguration protection
     if structlog.is_configured():
         # Recreate stdlib handlers, but don't reconfigure structlog

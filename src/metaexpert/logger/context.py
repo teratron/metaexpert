@@ -21,7 +21,7 @@ def bind_contextvars(**kwargs: Any) -> None:
     """
     structlog.contextvars.bind_contextvars(**kwargs)
 
-    # Also save to typed context vars for type-safe access
+    # Также сохраняем в typed context vars для type-safe доступа
     if "request_id" in kwargs:
         request_id_var.set(kwargs["request_id"])
     if "trade_session" in kwargs:
@@ -38,7 +38,7 @@ def unbind_contextvars(*keys: str) -> None:
     """
     structlog.contextvars.unbind_contextvars(*keys)
 
-    # Clear typed context vars
+    # Очищаем typed context vars
     for key in keys:
         if key == "request_id":
             request_id_var.set(None)
@@ -52,7 +52,7 @@ def clear_contextvars() -> None:
     """Clear all context variables."""
     structlog.contextvars.clear_contextvars()
 
-    # Clear typed context vars
+    # Очищаем typed context vars
     request_id_var.set(None)
     trade_session_var.set(None)
     strategy_id_var.set(None)
@@ -62,7 +62,7 @@ def get_current_context() -> dict[str, Any]:
     """Получить текущий контекст логирования.
 
     Returns:
-        Dict с текущими context variables
+        Dict of context variables.
 
     Example:
         context = get_current_context()
@@ -164,7 +164,9 @@ class TradeContext:
         self.logger.debug("trade_note", note=message, **extra)
 
 
-def get_logger(name: str | None = None, **initial_values: Any) -> Any:
+def get_logger(
+    name: str | None = None, **initial_values: Any
+) -> structlog.stdlib.BoundLogger:
     """Get a logger instance with optional initial context.
 
     Args:
@@ -172,13 +174,14 @@ def get_logger(name: str | None = None, **initial_values: Any) -> Any:
         **initial_values: Initial context to bind
 
     Returns:
-        Configured logger instance
+        Configured BoundLogger instance
 
     Example:
         logger = get_logger(__name__, exchange="binance")
         logger.info("connected to exchange")
     """
-    logger = structlog.stdlib.get_logger(name)
+    # Используем structlog.get_logger вместо structlog.stdlib.get_logger
+    logger = structlog.get_logger(name)
 
     if initial_values:
         logger = logger.bind(**initial_values)
@@ -186,18 +189,18 @@ def get_logger(name: str | None = None, **initial_values: Any) -> Any:
     return logger
 
 
-def get_trade_logger(**initial_values: Any) -> Any:
+def get_trade_logger(**initial_values: Any) -> structlog.stdlib.BoundLogger:
     """Get logger specialized for trade events.
 
     Args:
         **initial_values: Initial context (e.g., symbol, strategy_id)
 
     Returns:
-        Logger configured for trades
+        BoundLogger configured for trades
 
     Example:
-        trade_logger = get_trade_logger(symbol="BTCUSDT", strategy_id=101)
-        trade_logger.info("trade executed", side="BUY", price=5000)
+        trade_logger = get_trade_logger(symbol="BTCUSDT", strategy_id=1001)
+        trade_logger.info("trade executed", side="BUY", price=50000)
     """
     return get_logger("trade", event_type="trade", **initial_values)
 
