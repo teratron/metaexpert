@@ -1,42 +1,42 @@
 # MetaExpert Logger Module
 
-Производственная система логирования на основе `structlog` с поддержкой структурированных логов, управления контекстом и специализированных обработчиков.
+Production logging system based on `structlog` with support for structured logging, context management, and specialized handlers.
 
-## 🚀 Быстрый старт
+## 🚀 Quick Start
 
 ```python
 from metaexpert.logger import setup_logging, get_logger, LoggerConfig
 
-# 1. Инициализация (один раз при старте приложения)
+# 1. Initialization (once at application startup)
 config = LoggerConfig(log_level="INFO")
 setup_logging(config)
 
-# 2. Получение логгера в модуле
+# 2. Get logger in module
 logger = get_logger(__name__)
 logger.info("application started")
 
-# 3. Логирование со структурированными данными
+# 3. Logging with structured data
 logger.info("trade executed", symbol="BTCUSDT", price=50000)
 ```
 
-## 📁 Структура модуля
+## 📁 Module Structure
 
 ```text
 logger/
-├── __init__.py          # Публичный API
-├── config.py            # Конфигурация (Pydantic)
-├── setup.py             # Настройка structlog
-├── processors.py        # Кастомные процессоры
-├── formatters.py        # Форматтеры вывода
-├── context.py           # Контекстные менеджеры
-├── usage_guide.md       # Подробное руководство
-├── migration_guide.md   # Руководство по миграции
-└── performance_tips.md  # Советы по оптимизации
+├── __init__.py          # Public API
+├── config.py            # Configuration (Pydantic)
+├── setup.py             # structlog setup
+├── processors.py        # Custom processors
+├── formatters.py        # Output formatters
+├── context.py           # Context managers
+├── usage_guide.md       # Detailed guide
+├── migration_guide.md   # Migration guide
+└── performance_tips.md  # Performance tips
 ```
 
-## 🎯 Основные возможности
+## 🎯 Main Features
 
-### Структурированное логирование
+### Structured Logging
 
 ```python
 logger.info(
@@ -48,17 +48,17 @@ logger.info(
 )
 ```
 
-### Управление контекстом
+### Context Management
 
 ```python
 from metaexpert.logger import LogContext
 
 with LogContext(strategy_id=1001, symbol="ETHUSDT"):
     logger.info("executing strategy")
-    # Все логи включают strategy_id и symbol
+    # All logs include strategy_id and symbol
 ```
 
-### Постоянная привязка контекста
+### Persistent Context Binding
 
 ```python
 logger = get_logger(__name__).bind(
@@ -66,10 +66,10 @@ logger = get_logger(__name__).bind(
     market_type="futures"
 )
 
-logger.info("connected")  # Автоматически включает exchange и market_type
+logger.info("connected")  # Automatically includes exchange and market_type
 ```
 
-### Специализированное логирование торговли
+### Specialized Trading Logging
 
 ```python
 from metaexpert.logger import get_trade_logger, trade_context
@@ -119,9 +119,9 @@ setup_logging(config)
 logger = get_logger(__name__)
 ```
 
-См. [migration_guide.md](migration_guide.md) для деталей.
+See [migration_guide.md](migration_guide.md) for details.
 
-## 🎨 Примеры для разных окружений
+## 🎨 Examples for Different Environments
 
 ### Development
 
@@ -154,10 +154,10 @@ config = LoggerConfig(
 )
 ```
 
-## 🐛 Проблемы и поддержка
+## 🐛 Issues and Support
 
-При возникновении проблем см. документацию или создайте issue в репозитории проекта.
+When encountering problems, see the documentation or create an issue in the project repository.
 
-## 📄 Лицензия
+## 📄 License
 
-См. LICENSE файл в корне проекта.
+See the LICENSE file in the root of the project.

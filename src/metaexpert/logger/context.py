@@ -21,7 +21,7 @@ def bind_contextvars(**kwargs: Any) -> None:
     """
     structlog.contextvars.bind_contextvars(**kwargs)
 
-    # Также сохраняем в typed context vars для type-safe доступа
+    # Also save to typed context vars for type-safe access
     if "request_id" in kwargs:
         request_id_var.set(kwargs["request_id"])
     if "trade_session" in kwargs:
@@ -38,7 +38,7 @@ def unbind_contextvars(*keys: str) -> None:
     """
     structlog.contextvars.unbind_contextvars(*keys)
 
-    # Очищаем typed context vars
+    # Clear typed context vars
     for key in keys:
         if key == "request_id":
             request_id_var.set(None)
@@ -52,7 +52,7 @@ def clear_contextvars() -> None:
     """Clear all context variables."""
     structlog.contextvars.clear_contextvars()
 
-    # Очищаем typed context vars
+    # Clear typed context vars
     request_id_var.set(None)
     trade_session_var.set(None)
     strategy_id_var.set(None)

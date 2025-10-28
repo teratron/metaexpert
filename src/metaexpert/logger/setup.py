@@ -43,7 +43,7 @@ def configure_stdlib_logging(config: LoggerConfig) -> None:
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(config.log_level)
 
-        # ИСПРАВЛЕНИЕ: Добавлен ProcessorFormatter для консоли
+        # FIX: Added ProcessorFormatter for console
         console_formatter = structlog.stdlib.ProcessorFormatter(
             processor=get_console_renderer(colors=config.use_colors),
             foreign_pre_chain=processors,

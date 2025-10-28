@@ -59,16 +59,16 @@ class TradeEventFilter:
     ) -> dict[str, Any]:
         """Mark trade-related events.
 
-        Процессор вызывается ДО ProcessorFormatter.wrap_for_formatter,
-        поэтому нужно установить маркер в event_dict, который затем
-        попадет в _record через wrap_for_formatter.
+        Processor is called BEFORE ProcessorFormatter.wrap_for_formatter,
+        so we need to set a marker in event_dict that will then
+        be passed to _record via wrap_for_formatter.
         """
         # Check if this is a trade event
         if event_dict.get("event_type") == "trade":
             event_dict["_trade_event"] = True
 
-            # ИСПРАВЛЕНИЕ: Также устанавливаем в _record если он существует
-            # Это нужно для ProcessorFormatter
+            # FIX: Also set in _record if it exists
+            # This is needed for ProcessorFormatter
             _record = event_dict.get("_record")
             if _record:
                 _record._trade_event = True
@@ -113,13 +113,13 @@ class ErrorEventEnricher:
 
 
 class PerformanceMonitor:
-    """Монитор производительности для trade операций."""
+    """Performance monitor for trade operations."""
 
     def __init__(self, threshold_ms: float = 100.0):
         """
 
         Args:
-            threshold_ms: Порог в миллисекундах для warning
+            threshold_ms: Threshold in milliseconds for warning
         """
         self.threshold_ms = threshold_ms
         self._timers: dict[str, float] = {}
@@ -129,11 +129,11 @@ class PerformanceMonitor:
     ) -> dict[str, Any]:
         """Add performance metrics for trade events."""
 
-        # Только для trade events
+        # Only for trade events
         if event_dict.get("event_type") != "trade":
             return event_dict
 
-        # Если есть duration, проверяем threshold
+        # If duration exists, check threshold
         duration_ms = event_dict.get("duration_ms")
         if duration_ms is not None and duration_ms > self.threshold_ms:
             event_dict["_slow_operation"] = True
@@ -143,7 +143,7 @@ class PerformanceMonitor:
 
 
 class SensitiveDataFilter:
-    """Фильтр для маскировки чувствительных данных."""
+    """Filter for masking sensitive data."""
 
     SENSITIVE_KEYS = {
         "password",
@@ -165,7 +165,7 @@ class SensitiveDataFilter:
             if any(sensitive in key.lower() for sensitive in self.SENSITIVE_KEYS):
                 value = event_dict[key]
                 if isinstance(value, str) and len(value) > 4:
-                    # Показываем только последние 4 символа
+                    # Show only last 4 characters
                     event_dict[key] = f"***{value[-4:]}"
                 else:
                     event_dict[key] = "***"
