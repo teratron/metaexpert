@@ -186,7 +186,7 @@ def get_logger(
     if initial_values:
         logger = logger.bind(**initial_values)
 
-    return logger
+    return logger  # type: ignore
 
 
 def get_trade_logger(**initial_values: Any) -> structlog.stdlib.BoundLogger:

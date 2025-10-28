@@ -1,130 +1,320 @@
-# Logger Guide
+# Логирование в MetaExpert
 
-This guide covers the usage of the new MetaExpert structured logging system (logger), built on structlog, offering structured logging, context management, and specialized handlers.
+## Обзор
 
-## Overview
+Система логирования MetaExpert основана на библиотеке `structlog` и предоставляет мощные возможности для структурированного логирования, управления контекстом и специализированные обработчики для трейдинга. Система обеспечивает надежное ведение журналов как для разработки, так и для продакшена, с акцентом на безопасность и производительность.
 
-The logger module provides a production-ready logging system with the following features:
+## Основные возможности
 
-- **Structured Logging with `structlog`**: Leverages `structlog` to provide human-readable or JSON-formatted logs, making it easier to parse and analyze log data.
-- **Context Management**: Provides powerful context management capabilities with context managers and binding functionality.
-- **Configurable Logger**: The `LoggerConfig` class allows for extensive customization of logging behavior, including log levels, file paths, console output, and structured logging preferences.
-- **Specialized Loggers**: Provides dedicated loggers for different purposes, allowing for granular control and easier filtering of log messages.
-- **Centralized Configuration**: The initialization of the logging system streamlines the setup of `structlog` processors and logging handlers by centralizing their creation and setup logic.
+### Структурированное логирование
 
-## Quick Start
+Система поддерживает структурированное логирование, позволяя добавлять произвольные данные к сообщениям:
 
 ```python
-from metaexpert.logger import setup_logging, get_logger, LoggerConfig
+from metaexpert.logger import get_logger
 
-# Initialize logging system
-config = LoggerConfig(log_level="INFO")
-setup_logging(config)
-
-# Get logger
 logger = get_logger(__name__)
-logger.info("application started")
-
-# With context
-logger = logger.bind(symbol="BTCUSDT", exchange="binance")
-logger.info("processing trade", price=50000)
-```
-
-## Configuration
-
-The logging behavior is dictated by the `LoggerConfig` object, which can be customized to your needs.
-
-```python
-from metaexpert.logger import setup_logging, get_logger, LoggerConfig
-
-# Create custom configuration
-custom_config = LoggerConfig(
-    log_level="DEBUG",
-    log_to_console=True,
-    log_to_file=True,
-    log_dir="logs",
-    log_file="custom.log",
-    trade_log_file="trades.log",
-    error_log_file="errors.log",
-    max_bytes=20 * 1024 * 1024,  # 20MB
-    backup_count=10,
-    use_colors=True,
-    json_logs=False
+logger.info(
+    "order placed",
+    order_id="ORD123",
+    symbol="BTCUSDT",
+    price=50000,
+    quantity=0.01,
+    exchange="binance"
 )
-
-# Initialize logging with custom configuration
-setup_logging(custom_config)
-
-# Get logger
-logger = get_logger(__name__)
-logger.debug("Debug message from custom config.")
 ```
 
-## Context Management
+### Управление контекстом
+
+Система предоставляет несколько способов управления контекстом логирования:
+
+#### Временный контекст с LogContext
 
 ```python
 from metaexpert.logger import LogContext, get_logger
 
 logger = get_logger(__name__)
-with LogContext(strategy_id=101, symbol="ETHUSDT"):
+
+with LogContext(strategy_id=1001, symbol="ETHUSDT"):
     logger.info("executing strategy")
-    # All logs in this block will include strategy_id and symbol
+    # Все логи в этом блоке будут содержать strategy_id и symbol
+    logger.info("position opened", side="BUY", price=2500)
 ```
 
-## Trade Logging
+#### Постоянное связывание контекста
 
 ```python
-from metaexpert.logger import get_trade_logger, trade_context
+logger = get_logger(__name__).bind(
+    exchange="binance",
+    market_type="futures"
+)
+
+logger.info("connected")  # Автоматически включает exchange и market_type
+```
+
+#### Специализированный логгер для трейдинга
+
+```python
+from metaexpert.logger import get_trade_logger
 
 trade_logger = get_trade_logger(strategy_id=1001)
+
 with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
     trade_logger.info("trade executed", price=50000)
 ```
 
-## Advanced Usage
+## Конфигурация логирования
 
-### Context Variables
+### Основные параметры конфигурации
 
-The logger module provides several context variables that can be used to maintain state across async operations:
+Класс `LoggerConfig` использует Pydantic для валидации конфигурации:
 
-- `request_id_var`: For tracking request IDs
-- `trade_session_var`: For tracking trade sessions
-- `strategy_id_var`: For tracking strategy IDs
+```python
+from metaexpert.logger import LoggerConfig
+from pathlib import Path
 
-### Iteration with Context
+config = LoggerConfig(
+    log_level="INFO",           # Уровень логирования
+    log_to_console=True,        # Вывод в консоль
+    log_to_file=True,           # Вывод в файлы
+    use_colors=True,            # Цветной вывод в консоли
+    json_logs=False,            # JSON формат (рекомендуется для продакшена)
+    log_dir=Path("logs"),       # Директория для файлов логов
+    log_file="metaexpert.log",  # Имя основного файла логов
+    trade_log_file="trades.log", # Имя файла для трейдинг логов
+    error_log_file="errors.log", # Имя файла для ошибок
+    max_bytes=10 * 1024 * 1024, # Максимальный размер файла до ротации (10MB)
+    backup_count=5,             # Количество файлов резервных копий
+    cache_logger_on_first_use=True # Кэширование логгеров для производительности
+)
+```
+
+### Пресеты конфигурации
+
+Для удобства система предоставляет предопределенные пресеты для разных сред:
+
+#### Development Preset
+
+```python
+from metaexpert.logger import LoggerConfig
+
+# Подробное логирование с цветами, удобное для разработки
+config = LoggerConfig.for_development()
+# Эквивалентно:
+# config = LoggerConfig(
+#     log_level="DEBUG",
+#     use_colors=True,
+#     json_logs=False,
+#     log_to_console=True,
+#     log_to_file=True
+# )
+```
+
+#### Production Preset
+
+```python
+# Минималистичное логирование, JSON формат, без цветов
+config = LoggerConfig.for_production()
+# Эквивалентно:
+# config = LoggerConfig(
+#     log_level="WARNING",
+#     use_colors=False,
+#     json_logs=True,
+#     log_to_console=False,
+#     log_to_file=True
+# )
+```
+
+#### Backtesting Preset
+
+```python
+# Оптимизированное логирование для симуляций
+config = LoggerConfig.for_backtesting()
+# Эквивалентно:
+# config = LoggerConfig(
+#     log_level="INFO",
+#     use_colors=False,
+#     json_logs=True,
+#     log_to_console=False,
+#     log_to_file=True
+# )
+```
+
+### Валидация конфигурации
+
+Конфигурация автоматически проверяется на корректность:
+
+- Максимальный размер файла не может превышать 1GB
+- Директория логов создается автоматически при необходимости
+- Должен быть включен хотя бы один метод вывода (консоль или файл)
+- Конфигурация неизменяема после создания (frozen=True)
+
+## Инициализация системы логирования
+
+```python
+from metaexpert.logger import setup_logging, get_logger, LoggerConfig
+
+# Инициализация (один раз при запуске приложения)
+config = LoggerConfig.for_production()
+setup_logging(config)
+
+# Получение логгера в модуле
+logger = get_logger(__name__)
+logger.info("application started")
+```
+
+## Безопасность
+
+### Фильтрация чувствительных данных
+
+Система автоматически фильтрует чувствительные данные, чтобы предотвратить их попадание в логи:
+
+```python
+# Эти данные будут автоматически замаскированы
+logger.info("api call", api_key="secret12345")  # В логе: api_key="***345"
+logger.info("auth", token="mytoken12345")       # В логе: token="***345"
+logger.info("connect", password="mypass")       # В логе: password="***"
+```
+
+Автоматически фильтруемые ключи данных:
+- `password`, `token`, `api_key`, `secret`, `private_key`
+- `apikey`, `api_secret`, `access_token`, `refresh_token`
+
+## Мониторинг производительности
+
+### Измерение времени операций
+
+Для мониторинга производительности используется контекстный менеджер `TimedOperation`:
+
+```python
+from metaexpert.logger import get_logger, TimedOperation
+
+logger = get_logger(__name__)
+
+# Измерение времени выполнения операции
+with TimedOperation(logger, "fetch_data", threshold_ms=1000):
+    data = fetch_expensive_data()  # Время выполнения будет залогировано
+```
+
+Это позволяет:
+- Автоматически измерять время выполнения операций
+- Выдавать предупреждения для операций, превышающих пороговое значение
+- Записывать время выполнения в логи для анализа
+
+### Мониторинг медленных операций
+
+Система включает в себя `PerformanceMonitor`, который отслеживает медленные операции и выдает предупреждения:
+
+```python
+# Медленные операции (превышающие порог) будут отмечены
+# Порог по умолчанию 100мс, можно настроить при создании
+```
+
+## Контекстные менеджеры
+
+### TradeContext
+
+Специализированный контекстный менеджер для трейдинга:
+
+```python
+from metaexpert.logger import TradeContext
+
+with TradeContext(symbol="BTCUSDT", side="BUY", quantity=0.01) as ctx:
+    # Автоматически логируется начало трейда
+    # Измеряется время выполнения
+    logger.info("executing trade", price=500)
+    
+    # Установка результата трейда
+    ctx.set_result(filled=0.01, avg_price=50123.45)
+    
+    # Добавление промежуточной заметки
+    ctx.add_note("order submitted", order_id="12345")
+```
+
+### IterateWithContext
+
+Итерация с привязкой контекста для каждого элемента:
 
 ```python
 from metaexpert.logger import iterate_with_context
 
-symbols = ["BTCUSDT", "ETHUSDT", "BNBUSDT"]
+symbols = ["BTCUSDT", "ETHUSDT", "SOLUSDT"]
 
 for symbol in iterate_with_context(symbols, strategy_id=1001):
     logger.info("processing", symbol=symbol)
-    # Each iteration has the strategy_id context
+    # Каждый лог будет содержать strategy_id=1001
 ```
 
-### Specialized Processors
+## Практические примеры
 
-The logger module includes several custom processors:
+### Пример использования в трейдинг-боте
 
-- `add_app_context`: Adds application-specific context to log entries
-- `filter_by_log_level`: Filters events based on logger's effective level
-- `add_process_info`: Adds process and thread information
-- `rename_event_key`: Renames 'event' to 'message' for better readability
-- `TradeEventFilter`: Filters to route trade events to specialized logger
-- `ErrorEventEnricher`: Enriches error events with additional context
+```python
+from metaexpert.logger import setup_logging, get_logger, LoggerConfig, LogContext
 
-## Formatters
+# Инициализация логирования
+config = LoggerConfig.for_production()
+setup_logging(config)
 
-The logger module provides custom formatters:
+class TradingBot:
+    def __init__(self, strategy_id: int):
+        self.logger = get_logger(self.__class__.__name__).bind(
+            strategy_id=strategy_id
+        )
+        self.strategy_id = strategy_id
+    
+    def execute_trade(self, symbol: str, side: str, quantity: float):
+        with LogContext(symbol=symbol, side=side, quantity=quantity) as ctx:
+            self.logger.info("starting trade execution")
+            
+            # Выполнение трейда
+            result = self._place_order(symbol, side, quantity)
+            
+            if result.success:
+                self.logger.info("trade executed", **result.data)
+            else:
+                self.logger.error("trade failed", error=result.error)
+            
+            return result
+    
+    def _place_order(self, symbol: str, side: str, quantity: float):
+        # Логика размещения ордера
+        pass
+```
 
-- `MetaExpertConsoleRenderer`: Enhanced console renderer with custom styling
-- `CompactJSONRenderer`: Compact JSON renderer for production logs
+### Пример использования в backtesting
 
-## Migration from Old Logger
+```python
+from metaexpert.logger import setup_logging, LoggerConfig
 
-If you're migrating from the old logger system, note these key differences:
+# Использование пресета для бэктестинга
+config = LoggerConfig.for_backtesting()
+setup_logging(config)
 
-- Import from `metaexpert.logger` instead of `metaexpert.logger`
-- Use `setup_logging()` and `get_logger()` instead of `MetaLogger.create()`
-- Context management is handled differently with `LogContext` and `bind_contextvars`
+def run_backtest(data, strategy):
+    logger = get_logger(__name__)
+    
+    logger.info("starting backtest", 
+                strategy=strategy.name, 
+                start_date=data.start_date, 
+                end_date=data.end_date)
+    
+    # Выполнение бэктеста
+    results = strategy.run(data)
+    
+    logger.info("backtest completed", 
+                total_trades=results.total_trades,
+                profit=results.total_profit,
+                max_drawdown=results.max_drawdown)
+    
+    return results
+```
+
+## Лучшие практики
+
+1. Используйте структурированное логирование с понятными ключами данных
+2. Применяйте контекстное управление для корреляции связанных событий
+3. Используйте соответствующие пресеты конфигурации для разных сред
+4. Не логируйте чувствительные данные напрямую
+5. Используйте `TimedOperation` для измерения производительности критических операций
+6. Применяйте соответствующие уровни логирования (DEBUG, INFO, WARNING, ERROR, CRITICAL)

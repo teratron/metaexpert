@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
@@ -70,5 +70,45 @@ class LoggerConfig(BaseModel):
         if value > 1024 * 1024 * 1024:  # 1GB
             raise ValueError("max_bytes must not exceed 1GB")
         return value
+
+    @model_validator(mode='after')
+    def validate_config(self) -> 'LoggerConfig':
+        """Validate that at least one output (console or file) is enabled."""
+        if not self.log_to_console and not self.log_to_file:
+            raise ValueError("At least one output must be enabled: console or file")
+        return self
+
+    @classmethod
+    def for_development(cls) -> 'LoggerConfig':
+        """Create a configuration preset for development: DEBUG level, colors enabled, JSON logs disabled."""
+        return cls(
+            log_level="DEBUG",
+            use_colors=True,
+            json_logs=False,
+            log_to_console=True,
+            log_to_file=True
+        )
+
+    @classmethod
+    def for_production(cls) -> 'LoggerConfig':
+        """Create a configuration preset for production: WARNING level, colors disabled, JSON logs enabled."""
+        return cls(
+            log_level="WARNING",
+            use_colors=False,
+            json_logs=True,
+            log_to_console=False,
+            log_to_file=True
+        )
+
+    @classmethod
+    def for_backtesting(cls) -> 'LoggerConfig':
+        """Create a configuration preset for backtesting: INFO level, console output disabled, JSON logs enabled."""
+        return cls(
+            log_level="INFO",
+            use_colors=False,
+            json_logs=True,
+            log_to_console=False,
+            log_to_file=True
+        )
 
     model_config = ConfigDict(frozen=True)  # Make config immutable after creation

@@ -103,10 +103,10 @@ def _create_rotating_handler(
 def get_processors(config: LoggerConfig) -> list[Any]:
     """Get list of processors based on configuration."""
     processors = [
-        # Add contextvars for context management
-        structlog.contextvars.merge_contextvars,
         # Добавляем SensitiveDataFilter ПЕРВЫМ для безопасности
         SensitiveDataFilter(),
+        # Add contextvars for context management
+        structlog.contextvars.merge_contextvars,
         # Add custom context
         add_app_context,
         # Add log level filtering
@@ -168,5 +168,6 @@ def setup_logging(config: LoggerConfig) -> None:
         ],
         context_class=dict,
         logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=config.cache_logger_on_first_use,
     )

@@ -82,6 +82,10 @@ with trade_context(symbol="BTCUSDT", side="BUY", quantity=0.01):
 
 ## 🔧 Конфигурация
 
+### Configuration Validation
+
+The `LoggerConfig` class uses Pydantic for validation, ensuring that all configuration parameters are correct before logging is set up:
+
 ```python
 from metaexpert.logger import LoggerConfig
 
@@ -93,9 +97,108 @@ config = LoggerConfig(
     json_logs=False,  # JSON формат (для production)
     log_dir=Path("logs"),  # Директория логов
     max_bytes=10 * 1024 * 1024,  # Размер файла перед ротацией
-    backup_count=5,  # Количество backup файлов
+    backup_count=5,  # Количество backup файлов,
 )
 ```
+
+Validation includes:
+
+- File size limits (max 1GB)
+- Directory creation if it doesn't exist
+- At least one output method (console or file) required
+- Immutable configuration after creation
+
+### Configuration Presets
+
+The logger provides pre-configured presets for different environments:
+
+```python
+from metaexpert.logger import LoggerConfig
+
+# Development preset: verbose logging with colors
+dev_config = LoggerConfig.for_development()
+
+# Production preset: minimal logging, JSON format, no colors
+prod_config = LoggerConfig.for_production()
+
+# Backtesting preset: optimized for backtesting scenarios
+backtest_config = LoggerConfig.for_backtesting()
+```
+
+### Configuration Preset Details
+
+#### Development Preset
+
+```python
+config = LoggerConfig.for_development()
+# Equivalent to:
+# log_level="DEBUG"
+# use_colors=True
+# json_logs=False
+# log_to_console=True
+# log_to_file=True
+```
+
+#### Production Preset
+
+```python
+config = LoggerConfig.for_production()
+# Equivalent to:
+# log_level="WARNING"
+# use_colors=False
+# json_logs=True
+# log_to_console=False
+# log_to_file=True
+```
+
+#### Backtesting Preset
+
+```python
+config = LoggerConfig.for_backtesting()
+# Equivalent to:
+# log_level="INFO"
+# use_colors=False
+# json_logs=True
+# log_to_console=False
+# log_to_file=True
+```
+
+## 🛡️ Security Features
+
+### Sensitive Data Filtering
+
+The logging system includes automatic filtering of sensitive data to prevent API keys, passwords, and other confidential information from being logged:
+
+```python
+# This will automatically mask sensitive data
+logger.info("api call", api_key="secret12345")  # Logs as api_key="***345"
+logger.info("auth", token="mytoken12345")       # Logs as token="***345"
+```
+
+Sensitive keys that are automatically filtered include:
+
+- `password`, `token`, `api_key`, `secret`, `private_key`
+- `apikey`, `api_secret`, `access_token`, `refresh_token`
+
+## ⚡ Performance Monitoring
+
+### Performance Monitoring
+
+The system includes performance monitoring capabilities that can detect slow operations:
+
+```python
+from metaexpert.logger import TimedOperation
+
+logger = get_logger(__name__)
+with TimedOperation(logger, "fetch_data", threshold_ms=1000):
+    data = fetch_expensive_data()  # Operation timing will be logged
+```
+
+Performance monitoring features:
+
+- Automatic detection of slow operations based on threshold
+- Logging of operation duration
+- Warning for operations that exceed the defined threshold
 
 ## 📚 Документация
 
@@ -126,32 +229,39 @@ See [migration_guide.md](migration_guide.md) for details.
 ### Development
 
 ```python
-config = LoggerConfig(
-    log_level="DEBUG",
-    use_colors=True,
-    json_logs=False,
-)
+config = LoggerConfig.for_development()
+# Or customize:
+# config = LoggerConfig(
+#     log_level="DEBUG",
+#     use_colors=True,
+#     json_logs=False,
+# )
 ```
 
 ### Production
 
 ```python
-config = LoggerConfig(
-    log_level="WARNING",
-    log_to_console=False,
-    json_logs=True,
-    max_bytes=50 * 1024 * 1024,
-)
+config = LoggerConfig.for_production()
+# Or customize:
+# config = LoggerConfig(
+#     log_level="WARNING",
+#     log_to_console=False,
+#     json_logs=True,
+#     max_bytes=50 * 1024 * 1024,
+# )
 ```
 
-### Testing
+### Backtesting
 
 ```python
-config = LoggerConfig(
-    log_level="ERROR",
-    log_to_console=False,
-    log_dir=Path(tempfile.gettempdir()),
-)
+config = LoggerConfig.for_backtesting()
+# Or customize:
+# config = LoggerConfig(
+#     log_level="INFO",
+#     use_colors=False,
+#     json_logs=True,
+#     log_to_console=False,
+# )
 ```
 
 ## 🐛 Issues and Support
