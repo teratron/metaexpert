@@ -5,7 +5,7 @@ from typing import Any
 
 
 def add_app_context(
-    logger: Any, method_name: str, event_dict: dict[str, Any]
+    logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
 ) -> dict[str, Any]:
     """Add application-specific context to log entries."""
     event_dict["app"] = "metaexpert"
@@ -13,7 +13,7 @@ def add_app_context(
 
 
 def filter_by_log_level(
-    logger: Any, method_name: str, event_dict: dict[str, Any]
+    logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
 ) -> dict[str, Any]:
     """Filter events based on logger's effective level."""
     log_level = event_dict.get("level")
@@ -24,13 +24,14 @@ def filter_by_log_level(
     if numeric_level < logger.getEffectiveLevel():
         # Skip logging if below logger's effective level
         from structlog import DropEvent
+
         raise DropEvent
 
     return event_dict
 
 
 def add_process_info(
-    logger: Any, method_name: str, event_dict: dict[str, Any]
+    logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
 ) -> dict[str, Any]:
     """Add process and thread information."""
     import os
@@ -44,7 +45,7 @@ def add_process_info(
 
 
 def rename_event_key(
-    logger: Any, method_name: str, event_dict: dict[str, Any]
+    logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
 ) -> dict[str, Any]:
     """Rename 'event' to 'message' for better readability."""
     if "event" in event_dict:
@@ -57,7 +58,7 @@ class TradeEventFilter:
     """Filter to route trade events to specialized logger."""
 
     def __call__(
-        self, logger: Any, method_name: str, event_dict: dict[str, Any]
+        self, logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
     ) -> dict[str, Any]:
         """Mark trade-related events.
 
@@ -82,7 +83,7 @@ class ErrorEventEnricher:
     """Enrich error events with additional context."""
 
     def __call__(
-        self, logger: Any, method_name: str, event_dict: dict[str, Any]
+        self, logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
     ) -> dict[str, Any]:
         """Add extra context to error events."""
         level = event_dict.get("level")
@@ -127,7 +128,7 @@ class PerformanceMonitor:
         self._timers: dict[str, float] = {}
 
     def __call__(
-        self, logger: Any, method_name: str, event_dict: dict[str, Any]
+        self, logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
     ) -> dict[str, Any]:
         """Add performance metrics for trade events."""
 
@@ -160,7 +161,7 @@ class SensitiveDataFilter:
     }
 
     def __call__(
-        self, logger: Any, method_name: str, event_dict: dict[str, Any]
+        self, logger: logging.Logger, method_name: str, event_dict: dict[str, Any]
     ) -> dict[str, Any]:
         """Mask sensitive data in logs."""
         for key in list(event_dict.keys()):

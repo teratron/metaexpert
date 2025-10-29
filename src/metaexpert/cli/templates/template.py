@@ -41,7 +41,7 @@ expert = MetaExpert(
     error_log_file="errors.log",    # Error-specific log
     log_to_console=True,            # Print logs to console
     structured_logging=False,       # Use structured JSON logging
-    async_logging=False,            # Use asynchronous logging
+    #async_logging=False,            # Use asynchronous logging
 )
 
 # -----------------------------------------------------------------------------

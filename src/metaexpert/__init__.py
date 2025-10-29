@@ -64,7 +64,7 @@ class MetaExpert(Events):
             error_log_file: str = LOG_ERROR_FILE,
             log_to_console: bool = LOG_CONSOLE_LOGGING,
             structured_logging: bool = LOG_STRUCTURED_LOGGING,
-            async_logging: bool = LOG_ASYNC_LOGGING,
+            #async_logging: bool = LOG_ASYNC_LOGGING,
     ) -> None:
         """Initialize the expert trading system.
 
@@ -89,20 +89,7 @@ class MetaExpert(Events):
             structured_logging (bool): Whether to use structured JSON logging.
             async_logging (bool): Whether to use asynchronous logging.
         """
-        # Configure logging using the enhanced expert integration
-        # Note: This setups global logging state. Only one MetaExpert instance should manage logging.
-        # Create a config based on the provided parameters
-        # Note: LoggerConfig does not support structured_logging and async_logging directly.
-        # We will ignore these for now, or map them if possible (e.g. structured_logging -> json_logs).
-        # For this fix, we will pass only supported parameters.
-        # The specific file paths and settings are handled by the global config.
-        # This is a simplification and might require more complex logic to truly customize per instance.
-        # A better approach might be to have a dedicated logger for each expert, but that's a larger change.
-        # Let's adapt the call to setup_logging with supported params.
-        # LoggerConfig does not take structured_logging and async_logging.
-        # We'll map structured_logging to json_logs if True, otherwise False.
-        # async_logging is likely not supported directly in setup.py.
-        # We will pass supported params and ignore unsupported ones.
+        # Create a new LoggerConfig instance
         config = LoggerConfig(
             log_level=cast(LOG_LEVEL_TYPE, log_level),
             log_file=log_file,

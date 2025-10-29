@@ -130,7 +130,7 @@ def get_processors(config: LoggerConfig) -> list[Any]:
         # Add custom processors
         TradeEventFilter(),
         ErrorEventEnricher(),
-        # Добавляем PerformanceMonitor
+        # Add PerformanceMonitor
         PerformanceMonitor(threshold_ms=100.0),
         # Stack info renderer
         structlog.processors.StackInfoRenderer(),

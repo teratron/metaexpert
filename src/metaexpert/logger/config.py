@@ -1,6 +1,7 @@
 """Configuration for MetaExpert logger using Pydantic."""
 
 from pathlib import Path
+from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -72,14 +73,14 @@ class LoggerConfig(BaseModel):
         return value
 
     @model_validator(mode='after')
-    def validate_config(self) -> 'LoggerConfig':
+    def validate_config(self) -> Self:
         """Validate that at least one output (console or file) is enabled."""
         if not self.log_to_console and not self.log_to_file:
             raise ValueError("At least one output must be enabled: console or file")
         return self
 
     @classmethod
-    def for_development(cls) -> 'LoggerConfig':
+    def for_development(cls) -> Self:
         """Create a configuration preset for development: DEBUG level, colors enabled, JSON logs disabled."""
         return cls(
             log_level="DEBUG",
@@ -90,7 +91,7 @@ class LoggerConfig(BaseModel):
         )
 
     @classmethod
-    def for_production(cls) -> 'LoggerConfig':
+    def for_production(cls) -> Self:
         """Create a configuration preset for production: WARNING level, colors disabled, JSON logs enabled."""
         return cls(
             log_level="WARNING",
@@ -101,7 +102,7 @@ class LoggerConfig(BaseModel):
         )
 
     @classmethod
-    def for_backtesting(cls) -> 'LoggerConfig':
+    def for_backtesting(cls) -> Self:
         """Create a configuration preset for backtesting: INFO level, console output disabled, JSON logs enabled."""
         return cls(
             log_level="INFO",
