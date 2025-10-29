@@ -40,13 +40,6 @@ LOG_ERROR_FILE: str = "errors.log"
 LOG_MAX_FILE_SIZE: int = 10485760  # 10 * 1024 * 1024 (10MB)
 LOG_BACKUP_COUNT: int = 5
 
-# Format settings
-LOG_FORMAT: str = "[%(asctime)s] %(levelname)s: %(name)s: %(message)s"
-LOG_DETAILED_FORMAT: str = (
-    "[%(asctime)s] %(levelname)s: %(name)s:%(funcName)s:%(lineno)d: %(message)s"
-)
-LOG_FALLBACK_FORMAT: str = "[%(asctime)s] %(levelname)s: (LOGGING-FALLBACK) %(message)s"
-
 # Enhanced configuration flags
 LOG_CONSOLE_LOGGING: bool = True
 LOG_FILE_LOGGING: bool = True
@@ -66,8 +59,8 @@ MARKET_TYPE_OPTIONS: str = "options"
 DEFAULT_MARKET_TYPE: str = MARKET_TYPE_FUTURES
 
 # Contract types for futures trading
-CONTRACT_TYPE_LINEAR: str = "linear"  # USDT-M Futures /fapi/*
-CONTRACT_TYPE_INVERSE: str = "inverse"  # COIN-M Delivery /dapi/*
+CONTRACT_TYPE_LINEAR: str = "linear"  # USDT-M Futures
+CONTRACT_TYPE_INVERSE: str = "inverse"  # COIN-M Delivery
 
 # Default contract type for futures trading
 DEFAULT_CONTRACT_TYPE: str = CONTRACT_TYPE_LINEAR
