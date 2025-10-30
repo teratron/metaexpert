@@ -1,13 +1,13 @@
 [project]
 name = "metaexpert"
-version = "0.4.1"
+version = "0.5.0"
 description = "MetaExpert is a Python library for cryptocurrency trading that provides a unified interface for multiple exchanges and trading types. The system is designed to be modular, extensible, and easy to use while maintaining high performance and reliability."
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",

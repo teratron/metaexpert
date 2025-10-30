@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.h
 
 ## [Unreleased]
 
+## [0.5.0] - 2025-10-30
+
+### Added
+
+- New logger validators module with comprehensive event validation capabilities
+- New logger results module for structured logging result handling
+- New logger metrics module for performance and usage tracking
+- New logger constants module for centralized configuration constants
+- Enhanced thread-safe logging setup with proper reconfiguration support
+- Improved error handling and fallback mechanisms in logging system
+
+### Fixed
+
+- Critical thread-safety issues in setup_logging function
+- Race conditions in logging reconfiguration
+- Handler management conflicts with other components
+- Missing error handling in logging setup process
+- Improved consistency in logging configuration updates
+
+### Changed
+
+- Updated development status from Alpha to Beta in project metadata
+- Enhanced logging system architecture for better modularity
+- Improved test coverage for logger components
+
 ## [0.4.1] - 2025-10-28
 
 ### Fixed
