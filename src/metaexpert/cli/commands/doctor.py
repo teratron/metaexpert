@@ -1,6 +1,5 @@
 """Doctor command for CLI."""
 
-from typing import Annotated, List, Tuple
 
 import typer
 
@@ -58,7 +57,7 @@ def cmd_doctor() -> None:
     )
 
     # Collect all checks
-    checks: List[Tuple[str, bool, str]] = [
+    checks: list[tuple[str, bool, str]] = [
         ("Dependencies", deps_ok, "Check dependencies" if not deps_ok else "OK"),
         ("Configuration", config_ok, config_msg),
         ("PID Directory", pid_dir_ok, pid_dir_msg),

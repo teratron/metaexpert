@@ -435,7 +435,7 @@ def test_global_success_function(mocker):
     """Test the global success function."""
     mock_success = mocker.patch("metaexpert.cli.core.output._default_formatter.success")
 
-    from metaexpert.cli.core.output import success
+
     success("Test message", title="Test Title")
 
     mock_success.assert_called_once_with("Test message", title="Test Title")
@@ -445,7 +445,7 @@ def test_global_error_function(mocker):
     """Test the global error function."""
     mock_error = mocker.patch("metaexpert.cli.core.output._default_formatter.error")
 
-    from metaexpert.cli.core.output import error
+
     error("Test message", title="Test Title")
 
     mock_error.assert_called_once_with("Test message", title="Test Title")
@@ -455,7 +455,7 @@ def test_global_warning_function(mocker):
     """Test the global warning function."""
     mock_warning = mocker.patch("metaexpert.cli.core.output._default_formatter.warning")
 
-    from metaexpert.cli.core.output import warning
+
     warning("Test message", title="Test Title")
 
     mock_warning.assert_called_once_with("Test message", title="Test Title")
@@ -465,7 +465,7 @@ def test_global_info_function(mocker):
     """Test the global info function."""
     mock_info = mocker.patch("metaexpert.cli.core.output._default_formatter.info")
 
-    from metaexpert.cli.core.output import info
+
     info("Test message", title="Test Title")
 
     mock_info.assert_called_once_with("Test message", title="Test Title")
@@ -479,7 +479,7 @@ def test_global_table_function(mocker):
     rows = [["Alice", 30]]
     title = "Test Table"
 
-    from metaexpert.cli.core.output import table
+
     table(headers, rows, title=title)
 
     mock_table.assert_called_once_with(headers, rows, title=title)

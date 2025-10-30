@@ -1,8 +1,9 @@
 """Event bus for CLI applications."""
 
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 from metaexpert.logger import get_logger
 
@@ -23,14 +24,14 @@ class Event:
     """CLI event."""
 
     type: EventType
-    data: Dict[str, Any]
+    data: dict[str, Any]
 
 
 class EventBus:
     """Central event bus for CLI."""
 
     def __init__(self):
-        self._subscribers: Dict[EventType, List[Callable]] = {}
+        self._subscribers: dict[EventType, list[Callable]] = {}
         self.logger = get_logger(__name__)
 
     def subscribe(self, event_type: EventType, handler: Callable) -> None:

@@ -7,15 +7,13 @@ from unittest.mock import Mock, patch
 import pytest
 from typer.testing import CliRunner
 
-import typer
-
 from metaexpert.cli import app as original_app
-from metaexpert.cli.commands import backtest, init, list, logs, new, run, stop
-from metaexpert.cli.core.exceptions import ProcessError, TemplateError
-from metaexpert.cli.process.manager import ProcessInfo
 
 # Register commands before running tests
 from metaexpert.cli.app import register_commands
+from metaexpert.cli.commands import list
+from metaexpert.cli.core.exceptions import ProcessError, TemplateError
+from metaexpert.cli.process.manager import ProcessInfo
 
 register_commands()
 

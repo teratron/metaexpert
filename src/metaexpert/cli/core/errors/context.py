@@ -2,48 +2,48 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 from uuid import UUID, uuid4
 
 
 @dataclass
 class ErrorContext:
     """Contextual information about an error."""
-    
+
     # Unique identifier for this error instance
     id: UUID = field(default_factory=uuid4)
-    
+
     # Timestamp when the error occurred
     timestamp: datetime = field(default_factory=datetime.now)
-    
+
     # Command that was being executed
-    command: Optional[str] = None
-    
+    command: str | None = None
+
     # Arguments passed to the command
-    arguments: Dict[str, Any] = field(default_factory=dict)
-    
+    arguments: dict[str, Any] = field(default_factory=dict)
+
     # Working directory
-    working_directory: Optional[str] = None
-    
+    working_directory: str | None = None
+
     # Environment variables (filtered for security)
-    environment: Dict[str, str] = field(default_factory=dict)
-    
+    environment: dict[str, str] = field(default_factory=dict)
+
     # Stack trace
-    stack_trace: Optional[List[str]] = None
-    
+    stack_trace: list[str] | None = None
+
     # Additional metadata
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    
+    metadata: dict[str, Any] = field(default_factory=dict)
+
     def add_metadata(self, key: str, value: Any) -> None:
         """
         Add metadata to the error context.
-        
+
         Args:
             key: Metadata key.
             value: Metadata value.
         """
         self.metadata[key] = value
-    
+
     def filter_sensitive_data(self) -> None:
         """Filter sensitive data from environment variables."""
         sensitive_keys = {
@@ -53,15 +53,15 @@ class ErrorContext:
             "SECRET",
             "TOKEN",
         }
-        
+
         for key in list(self.environment.keys()):
             if any(sensitive_key in key.upper() for sensitive_key in sensitive_keys):
                 self.environment[key] = "***FILTERED***"
-    
-    def to_dict(self) -> Dict[str, Any]:
+
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert error context to dictionary.
-        
+
         Returns:
             Dictionary representation of the error context.
         """

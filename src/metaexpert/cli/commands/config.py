@@ -1,7 +1,7 @@
 """Config command for CLI."""
 
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -11,15 +11,15 @@ from metaexpert.cli.core.output import OutputFormatter
 
 def cmd_config(
     key: Annotated[
-        Optional[str],
+        str | None,
         typer.Argument(help="Configuration key to get/set"),
     ] = None,
     value: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--set", "-s", help="Value to set for the key"),
     ] = None,
     profile: Annotated[
-        Optional[str],
+        str | None,
         typer.Option("--profile", "-p", help="Profile to use"),
     ] = None,
 ) -> None:

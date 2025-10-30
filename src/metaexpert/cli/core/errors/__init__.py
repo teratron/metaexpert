@@ -4,6 +4,15 @@
 # We import types first, then other modules that depend on them
 
 # Import types
+# Import dataclasses
+from metaexpert.cli.core.errors.context import ErrorContext
+from metaexpert.cli.core.errors.handler import ErrorHandler
+
+# Import classes
+from metaexpert.cli.core.errors.recovery import RecoveryStrategy
+
+# Import enums
+from metaexpert.cli.core.errors.severity import ErrorSeverity
 from metaexpert.cli.core.errors.types import (
     CLIError,
     ProcessError,
@@ -11,16 +20,6 @@ from metaexpert.cli.core.errors.types import (
     TemplateError,
     ValidationError,
 )
-
-# Import enums
-from metaexpert.cli.core.errors.severity import ErrorSeverity
-
-# Import dataclasses
-from metaexpert.cli.core.errors.context import ErrorContext
-
-# Import classes
-from metaexpert.cli.core.errors.recovery import RecoveryStrategy
-from metaexpert.cli.core.errors.handler import ErrorHandler
 
 __all__ = [
     "CLIError",

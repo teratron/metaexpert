@@ -2,7 +2,6 @@
 
 import importlib
 import sys
-from typing import Dict, List, Tuple
 
 
 def check_dependencies() -> bool:
@@ -23,8 +22,10 @@ def check_dependencies() -> bool:
         "python-dotenv": ">=1.0.0",  # Added dotenv as it's used in ProcessManager
     }
 
-    missing: List[str] = []
-    version_issues: List[Tuple[str, str, str]] = []  # (package, required_version, installed_version)
+    missing: list[str] = []
+    version_issues: list[
+        tuple[str, str, str]
+    ] = []  # (package, required_version, installed_version)
 
     for package, version_spec in required.items():
         try:
@@ -36,14 +37,14 @@ def check_dependencies() -> bool:
 
             mod = importlib.import_module(import_name)
             # Get the version attribute if available
-            installed_version = getattr(mod, '__version__', 'unknown')
+            installed_version = getattr(mod, "__version__", "unknown")
 
             # For now, just check if the module can be imported
             # A more robust version check would parse the version string
             # and compare it against the spec (e.g., using packaging.version)
             # For this implementation, we'll just check importability
             # and note if version can't be determined.
-            if installed_version == 'unknown':
+            if installed_version == "unknown":
                 # Log or print a warning that version couldn't be determined
                 # For now, we'll just continue if importable
                 pass

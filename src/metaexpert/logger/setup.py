@@ -3,6 +3,8 @@
 import logging
 import logging.handlers
 import sys
+import threading
+import weakref
 from pathlib import Path
 from typing import Any
 
@@ -145,22 +147,139 @@ def get_processors(config: LoggerConfig) -> list[Any]:
     return processors
 
 
+# Global state for thread-safe reconfiguration
+_setup_lock = threading.Lock()
+_current_config: LoggerConfig | None = None
+# Track our handlers using WeakSet to avoid memory leaks
+_our_handlers = weakref.WeakSet()
+
+
 def setup_logging(config: LoggerConfig) -> None:
     """Setup complete logging system with structlog.
 
     Thread-safe and can be called multiple times safely.
     First call configures structlog, subsequent calls only update handlers.
     """
-    # Reconfiguration protection
-    if structlog.is_configured():
-        # Recreate stdlib handlers, but don't reconfigure structlog
-        configure_stdlib_logging(config)
-        return
+    global _current_config
 
-    # Configure stdlib logging first
-    configure_stdlib_logging(config)
+    with _setup_lock:  # Thread-safety protection
+        try:
+            # Always configure stdlib logging first (avoids duplication)
+            _configure_stdlib_logging_safely(config)
 
-    # Configure structlog
+            # Check if structlog is already configured
+            if structlog.is_configured():
+                # If config changed, reconfigure structlog completely
+                if _current_config is not None and _current_config != config:
+                    _reconfigure_structlog(config)
+                return
+
+            # Initial structlog configuration
+            structlog.configure(
+                processors=[
+                    *get_processors(config),
+                    structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+                ],
+                context_class=dict,
+                logger_factory=structlog.stdlib.LoggerFactory(),
+                wrapper_class=structlog.stdlib.BoundLogger,
+                cache_logger_on_first_use=config.cache_logger_on_first_use,
+            )
+
+            _current_config = config
+
+        except Exception as e:
+            # Log error but don't crash - setup basic logging as fallback
+            logging.error(f"Failed to setup advanced logging: {e}")
+            _setup_basic_logging()
+
+
+def _configure_stdlib_logging_safely(config: LoggerConfig) -> None:
+    """Configure stdlib logging while preserving other components' handlers."""
+    root_logger = logging.getLogger()
+    root_logger.setLevel(config.log_level)
+
+    # Preserve handlers from other components
+    existing_handlers = [
+        handler for handler in root_logger.handlers if handler not in _our_handlers
+    ]
+
+    # Remove only our handlers
+    root_logger.handlers = [
+        handler for handler in root_logger.handlers if handler in _our_handlers
+    ]
+
+    # Add our handlers
+    _add_handlers(config)
+
+    # Restore other components' handlers
+    root_logger.handlers.extend(existing_handlers)
+
+
+def _add_handlers(config: LoggerConfig) -> None:
+    """Add MetaExpert handlers and track them in WeakSet."""
+    processors = get_processors(config)
+
+    # Console handler
+    if config.log_to_console:
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(config.log_level)
+
+        console_formatter = structlog.stdlib.ProcessorFormatter(
+            processor=get_console_renderer(colors=config.use_colors),
+            foreign_pre_chain=processors,
+        )
+        console_handler.setFormatter(console_formatter)
+        logging.getLogger().addHandler(console_handler)
+        _our_handlers.add(console_handler)  # Track our handler
+
+    # File handlers
+    if config.log_to_file:
+        # File formatter (shared)
+        file_formatter = structlog.stdlib.ProcessorFormatter(
+            processor=get_file_renderer(config.json_logs),
+            foreign_pre_chain=processors,
+        )
+
+        # Main log file
+        main_handler = _create_rotating_handler(
+            config.log_dir / config.log_file, config.max_bytes, config.backup_count
+        )
+        main_handler.setLevel(config.log_level)
+        main_handler.setFormatter(file_formatter)
+        logging.getLogger().addHandler(main_handler)
+        _our_handlers.add(main_handler)
+
+        # Trade log file (INFO and above)
+        trade_handler = _create_rotating_handler(
+            config.log_dir / config.trade_log_file,
+            config.max_bytes,
+            config.backup_count,
+        )
+        trade_handler.setLevel(logging.INFO)
+        trade_handler.addFilter(_TradeLogFilter())
+        trade_handler.setFormatter(file_formatter)
+        logging.getLogger().addHandler(trade_handler)
+        _our_handlers.add(trade_handler)
+
+        # Error log file (ERROR and above)
+        error_handler = _create_rotating_handler(
+            config.log_dir / config.error_log_file,
+            config.max_bytes,
+            config.backup_count,
+        )
+        error_handler.setLevel(logging.ERROR)
+        error_handler.setFormatter(file_formatter)
+        logging.getLogger().addHandler(error_handler)
+        _our_handlers.add(error_handler)
+
+
+def _reconfigure_structlog(config: LoggerConfig) -> None:
+    """Reconfigure structlog when config changes."""
+    # Reset structlog to allow reconfiguration
+    structlog.reset_defaults()
+
+    # Reconfigure with new settings
     structlog.configure(
         processors=[
             *get_processors(config),
@@ -171,3 +290,8 @@ def setup_logging(config: LoggerConfig) -> None:
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=config.cache_logger_on_first_use,
     )
+
+
+def _setup_basic_logging() -> None:
+    """Setup basic logging as fallback when advanced setup fails."""
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s - %(message)s")

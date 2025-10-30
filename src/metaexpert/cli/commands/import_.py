@@ -87,7 +87,7 @@ def cmd_import(
         # Process imported data
         if isinstance(imported_data, dict):
             # Handle dictionary data (JSON, YAML)
-            if "config" in imported_data and imported_data["config"]:
+            if imported_data.get("config"):
                 config_file = project_path / ".env"
                 if config_file.exists() and not overwrite:
                     output.warning(
@@ -98,7 +98,7 @@ def cmd_import(
                         f.write(imported_data["config"])
                     output.success(f"Config imported to {config_file}")
 
-            if "logs" in imported_data and imported_data["logs"]:
+            if imported_data.get("logs"):
                 log_dir = project_path / "logs"
                 log_dir.mkdir(exist_ok=True)
                 for log_name, log_content in imported_data["logs"].items():

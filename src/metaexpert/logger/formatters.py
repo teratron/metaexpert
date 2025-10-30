@@ -11,10 +11,7 @@ class MetaConsoleRenderer(ConsoleRenderer):
     """Enhanced console renderer with custom styling."""
 
     def __call__(
-        self,
-        logger: Any,
-        method_name: str,
-        event_dict: MutableMapping[str, Any]
+        self, logger: Any, method_name: str, event_dict: MutableMapping[str, Any]
     ) -> str:
         """Render log entry with custom formatting."""
         # Extract trade-specific fields for special formatting

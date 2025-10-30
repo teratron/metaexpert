@@ -1,9 +1,7 @@
 """Error display with recommendations for MetaExpert CLI."""
 
-from typing import Any, Dict, List, Optional
 
 from metaexpert.cli.core.errors.context import ErrorContext
-from metaexpert.cli.core.errors.handler import ErrorHandler
 from metaexpert.cli.core.errors.severity import ErrorSeverity
 from metaexpert.cli.core.errors.types import CLIError
 from metaexpert.cli.core.output import OutputFormatter
@@ -87,7 +85,7 @@ class ErrorDisplay:
 
     def _generate_suggestions(
         self, error: CLIError, context: ErrorContext
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Generate suggestions for resolving the error.
 
@@ -134,12 +132,12 @@ class ErrorDisplay:
         # Add general suggestions
         suggestions.append("Run with --debug flag for more info")
         suggestions.append(
-            f"Report issue at https://github.com/teratron/metaexpert/issues"
+            "Report issue at https://github.com/teratron/metaexpert/issues"
         )
 
         return suggestions
 
-    def _display_suggestions(self, suggestions: List[str]) -> None:
+    def _display_suggestions(self, suggestions: list[str]) -> None:
         """
         Display suggestions for resolving the error.
 
@@ -156,7 +154,7 @@ class ErrorDisplay:
 
     def _get_recovery_actions(
         self, error: CLIError, context: ErrorContext
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Get recovery actions for the error.
 
@@ -181,7 +179,7 @@ class ErrorDisplay:
 
         return recovery_actions
 
-    def _display_recovery_actions(self, recovery_actions: List[str]) -> None:
+    def _display_recovery_actions(self, recovery_actions: list[str]) -> None:
         """
         Display recovery actions for the error.
 

@@ -31,7 +31,9 @@ def cmd_backtest(
     ] = False,
     optimize_params: Annotated[
         str | None,
-        typer.Option("--optimize-params", help="Parameters to optimize (comma-separated)"),
+        typer.Option(
+            "--optimize-params", help="Parameters to optimize (comma-separated)"
+        ),
     ] = None,
     compare: Annotated[
         bool,
@@ -64,7 +66,7 @@ def cmd_backtest(
     try:
         # Placeholder for backtesting logic
         output.info("Starting backtest...")
-        
+
         # If optimization is requested
         if optimize:
             output.info("Optimizing parameters...")
@@ -72,15 +74,16 @@ def cmd_backtest(
                 output.info(f"Optimizing: {', '.join(params)}")
             else:
                 output.info("No parameters specified for optimization.")
-        
+
         # If comparison is requested
         if compare:
             output.info("Comparing strategies...")
-        
+
         # Simulate backtest execution
         import time
+
         time.sleep(2)  # Simulate processing time
-        
+
         # Generate report
         if report_format == "html":
             output.success("Backtest completed. Report saved as backtest_report.html")
@@ -89,9 +92,11 @@ def cmd_backtest(
         elif report_format == "csv":
             output.success("Backtest completed. Report saved as backtest_report.csv")
         else:
-            output.warning(f"Unknown report format: {report_format}. Defaulting to HTML.")
+            output.warning(
+                f"Unknown report format: {report_format}. Defaulting to HTML."
+            )
             output.success("Backtest completed. Report saved as backtest_report.html")
-            
+
     except Exception as e:
         output.error(f"Backtest failed: {e}")
         raise typer.Exit(code=1)

@@ -1,15 +1,16 @@
 """Custom exception types for MetaExpert CLI."""
 
-from typing import Optional
 
 
 class CLIError(Exception):
     """Base exception for CLI errors."""
-    
-    def __init__(self, message: str, exit_code: int = 1, cause: Optional[Exception] = None):
+
+    def __init__(
+        self, message: str, exit_code: int = 1, cause: Exception | None = None
+    ):
         """
         Initialize CLIError.
-        
+
         Args:
             message: Error message.
             exit_code: Exit code to use when exiting.
@@ -23,11 +24,11 @@ class CLIError(Exception):
 
 class ValidationError(CLIError):
     """Raised when validation fails."""
-    
-    def __init__(self, message: str, field: Optional[str] = None):
+
+    def __init__(self, message: str, field: str | None = None):
         """
         Initialize ValidationError.
-        
+
         Args:
             message: Error message.
             field: Field that failed validation.
@@ -38,11 +39,11 @@ class ValidationError(CLIError):
 
 class ProcessError(CLIError):
     """Raised when a process-related operation fails."""
-    
-    def __init__(self, message: str, pid: Optional[int] = None):
+
+    def __init__(self, message: str, pid: int | None = None):
         """
         Initialize ProcessError.
-        
+
         Args:
             message: Error message.
             pid: Process ID related to the error.
@@ -53,11 +54,11 @@ class ProcessError(CLIError):
 
 class ProjectError(CLIError):
     """Raised when a project-related operation fails."""
-    
-    def __init__(self, message: str, project_path: Optional[str] = None):
+
+    def __init__(self, message: str, project_path: str | None = None):
         """
         Initialize ProjectError.
-        
+
         Args:
             message: Error message.
             project_path: Path to the project related to the error.
@@ -68,11 +69,11 @@ class ProjectError(CLIError):
 
 class TemplateError(CLIError):
     """Raised when a template-related operation fails."""
-    
-    def __init__(self, message: str, template_name: Optional[str] = None):
+
+    def __init__(self, message: str, template_name: str | None = None):
         """
         Initialize TemplateError.
-        
+
         Args:
             message: Error message.
             template_name: Name of the template related to the error.

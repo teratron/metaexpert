@@ -1,7 +1,8 @@
 """Middleware system for CLI commands."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, List
+from collections.abc import Callable
+from typing import Any
 
 from metaexpert.logger import get_logger
 
@@ -82,7 +83,7 @@ class MiddlewareManager:
     """Manage middleware execution."""
 
     def __init__(self):
-        self.middlewares: List[Middleware] = []
+        self.middlewares: list[Middleware] = []
         self.logger = get_logger(__name__)
 
     def register(self, middleware: Middleware) -> None:
@@ -105,6 +106,7 @@ class MiddlewareManager:
         Returns:
             Decorator function
         """
+
         def decorator(func: Callable) -> Callable:
             def wrapper(*args, **kwargs):
                 # Execute 'before' for all middlewares

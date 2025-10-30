@@ -1,15 +1,15 @@
 """Plugin system for CLI applications."""
 
 import importlib
-import os
 import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from metaexpert.cli.core.middleware import MiddlewareManager
     from typer import Typer
+
+    from metaexpert.cli.core.middleware import MiddlewareManager
 
 from metaexpert.logger import get_logger
 
@@ -46,7 +46,7 @@ class PluginManager:
     """Manage CLI plugins."""
 
     def __init__(self):
-        self.plugins: Dict[str, CliPlugin] = {}
+        self.plugins: dict[str, CliPlugin] = {}
         self.logger = get_logger(__name__)
 
     def load_plugins(self, plugin_dir: Path) -> None:

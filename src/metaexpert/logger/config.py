@@ -23,14 +23,22 @@ class LoggerConfig(BaseModel):
     """Configuration for MetaExpert structured logger."""
 
     # Core settings
-    log_level: LOG_LEVEL_TYPE = Field(default=LOG_LEVEL, description="Global logging level")
+    log_level: LOG_LEVEL_TYPE = Field(
+        default=LOG_LEVEL, description="Global logging level"
+    )
 
     # Output destinations
-    log_to_console: bool = Field(default=LOG_CONSOLE_LOGGING, description="Enable console output")
-    log_to_file: bool = Field(default=LOG_FILE_LOGGING, description="Enable file output")
+    log_to_console: bool = Field(
+        default=LOG_CONSOLE_LOGGING, description="Enable console output"
+    )
+    log_to_file: bool = Field(
+        default=LOG_FILE_LOGGING, description="Enable file output"
+    )
 
     # File settings
-    log_dir: Path = Field(default=Path(LOG_DIRECTORY), description="Directory for log files")
+    log_dir: Path = Field(
+        default=Path(LOG_DIRECTORY), description="Directory for log files"
+    )
     log_file: str = Field(default=LOG_FILE, description="Main log file name")
     trade_log_file: str = Field(
         default=LOG_TRADE_FILE, description="Trade-specific log file"
@@ -44,7 +52,9 @@ class LoggerConfig(BaseModel):
         default=LOG_MAX_FILE_SIZE,  # 10 * 1024 * 1024 = 10MB
         description="Max file size before rotation",
     )
-    backup_count: int = Field(default=LOG_BACKUP_COUNT, description="Number of backup files to keep")
+    backup_count: int = Field(
+        default=LOG_BACKUP_COUNT, description="Number of backup files to keep"
+    )
 
     # Format settings
     use_colors: bool = Field(default=True, description="Use colored output in console")
@@ -72,7 +82,7 @@ class LoggerConfig(BaseModel):
             raise ValueError("max_bytes must not exceed 1GB")
         return value
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def validate_config(self) -> Self:
         """Validate that at least one output (console or file) is enabled."""
         if not self.log_to_console and not self.log_to_file:
@@ -87,7 +97,7 @@ class LoggerConfig(BaseModel):
             use_colors=True,
             json_logs=False,
             log_to_console=True,
-            log_to_file=True
+            log_to_file=True,
         )
 
     @classmethod
@@ -98,7 +108,7 @@ class LoggerConfig(BaseModel):
             use_colors=False,
             json_logs=True,
             log_to_console=False,
-            log_to_file=True
+            log_to_file=True,
         )
 
     @classmethod
@@ -109,7 +119,7 @@ class LoggerConfig(BaseModel):
             use_colors=False,
             json_logs=True,
             log_to_console=False,
-            log_to_file=True
+            log_to_file=True,
         )
 
     model_config = ConfigDict(frozen=True)  # Make config immutable after creation

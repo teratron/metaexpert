@@ -3,7 +3,7 @@
 import signal
 import sys
 import threading
-from typing import Callable, Dict, List
+from collections.abc import Callable
 
 from metaexpert.logger import get_logger
 
@@ -13,7 +13,7 @@ class SignalHandler:
 
     def __init__(self):
         self.logger = get_logger(__name__)
-        self.handlers: Dict[int, List[Callable]] = {}
+        self.handlers: dict[int, list[Callable]] = {}
         self._lock = threading.Lock()
         self._setup_handlers()
 
@@ -25,7 +25,7 @@ class SignalHandler:
 
         # On Windows, SIGQUIT is not available, so we only handle SIGINT and SIGTERM
         # On Unix-like systems, we could also handle SIGQUIT
-        if hasattr(signal, 'SIGQUIT'):
+        if hasattr(signal, "SIGQUIT"):
             signal.signal(signal.SIGQUIT, self._handle_signal)
 
         self.logger.info("Signal handlers registered for SIGINT, SIGTERM")
@@ -39,7 +39,11 @@ class SignalHandler:
             frame: Current stack frame (unused)
         """
         # Log the received signal
-        signal_name = signal.Signals(signum).name if isinstance(signum, int) else f"Signal {signum}"
+        signal_name = (
+            signal.Signals(signum).name
+            if isinstance(signum, int)
+            else f"Signal {signum}"
+        )
         self.logger.warning(f"Signal received: {signal_name}")
 
         # Execute registered handlers for this signal

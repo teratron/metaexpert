@@ -1,6 +1,7 @@
 """Dependency Injection container for CLI services."""
 
-from typing import Any, Callable, Dict, Generic, Type, TypeVar
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 T = TypeVar("T")
 
@@ -9,11 +10,13 @@ class DIContainer:
     """Simple DI container for CLI services."""
 
     def __init__(self):
-        self._services: Dict[Type, Any] = {}
-        self._factories: Dict[Type, Callable] = {}
-        self._singletons: Dict[Type, Any] = {}
+        self._services: dict[type, Any] = {}
+        self._factories: dict[type, Callable] = {}
+        self._singletons: dict[type, Any] = {}
 
-    def register(self, interface: Type[T], factory: Callable[..., T], singleton: bool = True) -> None:
+    def register(
+        self, interface: type[T], factory: Callable[..., T], singleton: bool = True
+    ) -> None:
         """
         Register service factory.
 
@@ -27,7 +30,7 @@ class DIContainer:
         else:
             self._services[interface] = factory
 
-    def get(self, interface: Type[T]) -> T:
+    def get(self, interface: type[T]) -> T:
         """
         Get service instance.
 

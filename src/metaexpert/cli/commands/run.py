@@ -56,9 +56,12 @@ def cmd_run(
     if env_file is not None:
         try:
             import dotenv
+
             dotenv.load_dotenv(env_file)
         except ImportError:
-            console.print("[yellow]Warning:[/] python-dotenv not installed, ignoring --env-file")
+            console.print(
+                "[yellow]Warning:[/] python-dotenv not installed, ignoring --env-file"
+            )
 
     # Handle Docker execution
     if docker:
@@ -104,24 +107,28 @@ def cmd_run(
                 console.print(f"\n[dim]Logs:[/] metaexpert logs {project_path.name}")
                 console.print(f"[dim]Stop:[/] metaexpert stop {project_path.name}")
                 console.print("[dim]Status:[/] metaexpert list\n")
-            
+
             # If not detached, wait for process to finish
             if not detach:
                 # Placeholder for waiting and monitoring logic
                 # This would involve checking if the process is still running
                 # and handling restarts if restart_on_error is True
                 pass
-            
+
             # Break the loop if we're not restarting or max restarts reached
             if not restart_on_error or restart_count >= max_restarts:
                 break
-                
+
             restart_count += 1
-            console.print(f"[yellow]Restarting expert (attempt {restart_count}/{max_restarts})...[/]")
+            console.print(
+                f"[yellow]Restarting expert (attempt {restart_count}/{max_restarts})...[/]"
+            )
 
     except ProcessError as e:
         output.error(str(e))
         if notify:
             # Placeholder for notification logic
-            console.print("[yellow]Notification:[/] Error notification would be sent here.")
+            console.print(
+                "[yellow]Notification:[/] Error notification would be sent here."
+            )
         raise typer.Exit(code=1) from e

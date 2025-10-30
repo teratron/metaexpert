@@ -7,9 +7,7 @@ from metaexpert.cli.core.output import OutputFormatter
 
 
 def cmd_version(
-    short: bool = typer.Option(
-        False, "--short", "-s", help="Show only version number"
-    ),
+    short: bool = typer.Option(False, "--short", "-s", help="Show only version number"),
 ) -> None:
     """
     Show CLI version.

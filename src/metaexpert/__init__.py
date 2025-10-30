@@ -15,7 +15,6 @@ from metaexpert.config import (
     DEFAULT_POSITION_MODE,
     DEFAULT_TRADE_MODE,
     INITIAL_CAPITAL,
-    LOG_ASYNC_LOGGING,
     LOG_CONSOLE_LOGGING,
     LOG_ERROR_FILE,
     LOG_FILE,
@@ -34,37 +33,35 @@ class MetaExpert(Events):
     """Expert trading system"""
 
     def __init__(
-            self,
-            #
-            # --- Required Parameters ---
-            exchange: str,
-            *,
-            # --- API Credentials (required for live mode) ---
-            api_key: str | None = None,
-            api_secret: str | None = None,
-            api_passphrase: str | None = None,
-            #
-            # --- Connection Settings ---
-            subaccount: str | None = None,
-            base_url: str | None = None,
-            testnet: bool = True,
-            proxy: dict[str, str] | None = None,
-            #
-            # --- Market & Trading Mode ---
-            market_type: str = DEFAULT_MARKET_TYPE,
-            contract_type: str = DEFAULT_CONTRACT_TYPE,
-            margin_mode: str = DEFAULT_MARGIN_MODE,
-            position_mode: str = DEFAULT_POSITION_MODE,
-            #
-            # --- Logging Configuration ---
-            # log_level: LOG_LEVEL_TYPE = LOG_LEVEL,
-            log_level: str = LOG_LEVEL,
-            log_file: str = LOG_FILE,
-            trade_log_file: str = LOG_TRADE_FILE,
-            error_log_file: str = LOG_ERROR_FILE,
-            log_to_console: bool = LOG_CONSOLE_LOGGING,
-            structured_logging: bool = LOG_STRUCTURED_LOGGING,
-            #async_logging: bool = LOG_ASYNC_LOGGING,
+        self,
+        #
+        # --- Required Parameters ---
+        exchange: str,
+        *,
+        # --- API Credentials (required for live mode) ---
+        api_key: str | None = None,
+        api_secret: str | None = None,
+        api_passphrase: str | None = None,
+        #
+        # --- Connection Settings ---
+        subaccount: str | None = None,
+        base_url: str | None = None,
+        testnet: bool = True,
+        proxy: dict[str, str] | None = None,
+        #
+        # --- Market & Trading Mode ---
+        market_type: str = DEFAULT_MARKET_TYPE,
+        contract_type: str = DEFAULT_CONTRACT_TYPE,
+        margin_mode: str = DEFAULT_MARGIN_MODE,
+        position_mode: str = DEFAULT_POSITION_MODE,
+        #
+        # --- Logging Configuration ---
+        log_level: str = LOG_LEVEL,
+        log_file: str = LOG_FILE,
+        trade_log_file: str = LOG_TRADE_FILE,
+        error_log_file: str = LOG_ERROR_FILE,
+        log_to_console: bool = LOG_CONSOLE_LOGGING,
+        structured_logging: bool = LOG_STRUCTURED_LOGGING,
     ) -> None:
         """Initialize the expert trading system.
 
@@ -87,7 +84,6 @@ class MetaExpert(Events):
             error_log_file (str): Error-specific log file.
             log_to_console (bool): Whether to print logs to console.
             structured_logging (bool): Whether to use structured JSON logging.
-            async_logging (bool): Whether to use asynchronous logging.
         """
         # Create a new LoggerConfig instance
         config = LoggerConfig(
@@ -96,10 +92,7 @@ class MetaExpert(Events):
             trade_log_file=trade_log_file,
             error_log_file=error_log_file,
             log_to_console=log_to_console,
-            # structured_logging=structured_logging, # Not supported in LoggerConfig
-            # async_logging=async_logging, # Not supported in LoggerConfig
-            json_logs=structured_logging,  # Map structured_logging to json_logs
-            # Other params like log_dir, max_bytes etc. use defaults from LoggerConfig
+            json_logs=structured_logging,
         )
         # Setup logging with the new config. This affects global state.
         setup_logging(config)
@@ -147,11 +140,11 @@ class MetaExpert(Events):
         return f"<{type(self).__name__} {self.strategy_name!r}>"
 
     def run(
-            self,
-            trade_mode: str = DEFAULT_TRADE_MODE,
-            backtest_start: str | datetime = BACKTEST_START_DATE,
-            backtest_end: str | datetime = BACKTEST_END_DATE,
-            initial_capital: float = INITIAL_CAPITAL,
+        self,
+        trade_mode: str = DEFAULT_TRADE_MODE,
+        backtest_start: str | datetime = BACKTEST_START_DATE,
+        backtest_end: str | datetime = BACKTEST_END_DATE,
+        initial_capital: float = INITIAL_CAPITAL,
     ) -> None:
         """Run the expert trading system.
 
