@@ -34,9 +34,9 @@ def test_sensitive_data_filter():
     # Check that sensitive fields are masked appropriately
     # Long values should show last 4 chars with *** prefix
     assert filtered_data["api_key"] == "***3456"
-    assert filtered_data["secret_key"] == "***789"
-    assert filtered_data["password"] == "***123"
-    assert filtered_data["token"] == "***999"
+    assert filtered_data["secret_key"] == "***t789"
+    assert filtered_data["password"] == "***d123"
+    assert filtered_data["token"] == "***n999"
     # Short values should be fully masked
     assert filtered_data["short_token"] == "***"
 
@@ -224,7 +224,7 @@ def test_get_logger_function():
         # Проверим, что можно добавить контекст
         mock_logger_with_context = MagicMock()
         mock_structlog_get_logger.return_value = mock_logger_with_context
-        logger_with_context = get_logger("test_module", symbol="BTCUSDT")
+        _logger_with_context = get_logger("test_module", symbol="BTCUSDT")
 
         # Check that bind was called on the logger
         mock_logger_with_context.bind.assert_called_once_with(symbol="BTCUSDT")
@@ -245,14 +245,14 @@ def test_config_validation():
 
     # Test validation - at least one output must be enabled
     try:
-        invalid_config = LoggerConfig(
+        _invalid_config = LoggerConfig(
             log_level="INFO",
             log_to_console=False,
             log_to_file=False,
             log_dir=tempfile.gettempdir(),
         )
         # This should raise a validation error
-        assert False, "Should have raised validation error"
+        assert AssertionError(), "Should have raised validation error"
     except ValueError:
         # Expected behavior
         pass

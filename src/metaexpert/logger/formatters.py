@@ -1,17 +1,24 @@
 """Custom formatters for MetaExpert logger."""
 
+import logging
 from collections.abc import MutableMapping
 from typing import Any
 
 import structlog
-from structlog.dev import ConsoleRenderer
 
 
-class MetaConsoleRenderer(ConsoleRenderer):
+class ConsoleRenderer(structlog.dev.ConsoleRenderer):
     """Enhanced console renderer with custom styling."""
 
+    def __init__(self, colors: bool, **kwargs: Any) -> None:
+        """Initialize console renderer."""
+        super().__init__(colors=colors, **kwargs)
+
     def __call__(
-        self, logger: Any, method_name: str, event_dict: MutableMapping[str, Any]
+        self,
+        logger: logging.Logger,
+        method_name: str,
+        event_dict: MutableMapping[str, Any],
     ) -> str:
         """Render log entry with custom formatting."""
         # Extract trade-specific fields for special formatting
@@ -20,7 +27,8 @@ class MetaConsoleRenderer(ConsoleRenderer):
 
         return super().__call__(logger, method_name, event_dict)
 
-    def _format_trade_event(self, event_dict: MutableMapping[str, Any]) -> str:
+    @staticmethod
+    def _format_trade_event(event_dict: MutableMapping[str, Any]) -> str:
         """Format trade events specially."""
         symbol = event_dict.get("symbol", "???")
         side = event_dict.get("side", "???")
@@ -33,25 +41,14 @@ class MetaConsoleRenderer(ConsoleRenderer):
         return f"{timestamp} [TRADE] {side.upper()} {quantity} {symbol} @ {price}"
 
 
-class CompactJSONRenderer:
-    """Compact JSON renderer for production logs."""
-
-    def __call__(self, logger: Any, name: str, event_dict: dict[str, Any]) -> str:
-        """Render log entry as compact JSON."""
-        import json
-
-        # Remove internal fields
-        clean_dict = {k: v for k, v in event_dict.items() if not k.startswith("_")}
-
-        return json.dumps(clean_dict, separators=(",", ":"))
-
-
-def get_console_renderer(colors: bool = True) -> Any:
+def get_console_renderer(colors: bool = True) -> ConsoleRenderer:
     """Get console renderer based on configuration."""
-    return MetaConsoleRenderer(colors=colors)
+    return ConsoleRenderer(colors=colors)
 
 
-def get_file_renderer(json_format: bool = False) -> Any:
+def get_file_renderer(
+    json_format: bool = False,
+) -> structlog.processors.LogfmtRenderer | structlog.processors.JSONRenderer:
     """Get file renderer based on configuration."""
     if json_format:
         # Return the JSON renderer as a processor (for use with ProcessorFormatter)

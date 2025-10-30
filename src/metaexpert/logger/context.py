@@ -202,7 +202,9 @@ def get_trade_logger(**initial_values: Any) -> structlog.stdlib.BoundLogger:
         trade_logger = get_trade_logger(symbol="BTCUSDT", strategy_id=1001)
         trade_logger.info("trade executed", side="BUY", price=50000)
     """
-    return get_logger("trade", event_type="trade", **initial_values)
+    # Merge event_type="trade" with initial_values, avoiding conflicts
+    context = {"event_type": "trade", **initial_values}
+    return get_logger("trade", **context)
 
 
 def iterate_with_context(items: list[Any], **context: Any) -> Iterator[Any]:

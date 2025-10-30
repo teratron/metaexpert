@@ -105,9 +105,7 @@ def test_trade_log_filter():
 
 def test_get_processors_basic():
     """Test getting processors with basic configuration."""
-    config = LoggerConfig()
-
-    processors = get_processors(config)
+    processors = get_processors()
 
     # Check that processors list is not empty
     assert len(processors) > 0
@@ -115,9 +113,7 @@ def test_get_processors_basic():
 
 def test_get_processors_json_format():
     """Test getting processors with JSON format."""
-    config = LoggerConfig(json_logging=True)
-
-    get_processors(config)
+    get_processors()
 
     # When json_logging is True, JSON renderer should be used in the formatter setup
     # The JSON renderer is actually applied in the ProcessorFormatter in setup.py

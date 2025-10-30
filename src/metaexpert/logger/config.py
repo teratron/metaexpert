@@ -60,12 +60,17 @@ class LoggerConfig(BaseModel):
     )
 
     # Format settings
-    use_colors: bool = Field(default=LOG_USE_COLORS, description="Use colored output in console")
-    json_logging: bool = Field(default=LOG_STRUCTURED_LOGGING, description="Output logs in JSON format")
+    use_colors: bool = Field(
+        default=LOG_USE_COLORS, description="Use colored output in console"
+    )
+    json_logging: bool = Field(
+        default=LOG_STRUCTURED_LOGGING, description="Output logs in JSON format"
+    )
 
     # Performance settings
     cache_logger_on_first_use: bool = Field(
-        default=LOG_CACHE_LOGGER_ON_FIRST_USE, description="Cache loggers for better performance"
+        default=LOG_CACHE_LOGGER_ON_FIRST_USE,
+        description="Cache loggers for better performance",
     )
 
     @field_validator("log_dir")

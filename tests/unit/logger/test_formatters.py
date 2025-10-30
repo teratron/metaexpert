@@ -1,30 +1,28 @@
 """Tests for MetaExpert logger formatters."""
 
-import json
 from unittest.mock import Mock
 
 from metaexpert.logger.formatters import (
-    CompactJSONRenderer,
-    MetaConsoleRenderer,
+    ConsoleRenderer,
     get_console_renderer,
     get_file_renderer,
 )
 
 
 def test_meta_expert_console_renderer_initialization():
-    """Test initialization of MetaConsoleRenderer."""
+    """Test initialization of ConsoleRenderer."""
     # Test that the renderer can be instantiated
-    renderer_with_colors = MetaConsoleRenderer(colors=True)
+    renderer_with_colors = ConsoleRenderer(colors=True)
     assert renderer_with_colors is not None
 
     # Test with colors disabled
-    renderer_without_colors = MetaConsoleRenderer(colors=False)
+    renderer_without_colors = ConsoleRenderer(colors=False)
     assert renderer_without_colors is not None
 
 
 def test_meta_expert_console_renderer_custom_colors():
-    """Test custom color scheme in MetaConsoleRenderer."""
-    renderer = MetaConsoleRenderer(colors=True)
+    """Test custom color scheme in ConsoleRenderer."""
+    renderer = ConsoleRenderer(colors=True)
 
     # Just verify that the renderer was created successfully
     # We can't easily test internal color attributes without knowing the exact implementation
@@ -33,7 +31,7 @@ def test_meta_expert_console_renderer_custom_colors():
 
 def test_meta_expert_console_renderer_trade_formatting_with_colors():
     """Test trade event formatting with colors."""
-    renderer = MetaConsoleRenderer(colors=True)
+    renderer = ConsoleRenderer(colors=True)
 
     # Create a trade event dictionary
     event_dict = {
@@ -63,7 +61,7 @@ def test_meta_expert_console_renderer_trade_formatting_with_colors():
 
 def test_meta_expert_console_renderer_trade_formatting_without_colors():
     """Test trade event formatting without colors."""
-    renderer = MetaConsoleRenderer(colors=False)
+    renderer = ConsoleRenderer(colors=False)
 
     # Create a trade event dictionary
     event_dict = {
@@ -95,7 +93,7 @@ def test_meta_expert_console_renderer_trade_formatting_without_colors():
 
 def test_meta_expert_console_renderer_regular_formatting():
     """Test regular (non-trade) event formatting."""
-    renderer = MetaConsoleRenderer(colors=True)
+    renderer = ConsoleRenderer(colors=True)
 
     # Create a regular event dictionary
     event_dict = {
@@ -117,52 +115,15 @@ def test_meta_expert_console_renderer_regular_formatting():
     assert "[TRADE]" not in result
 
 
-def test_compact_json_renderer():
-    """Test CompactJSONRenderer output."""
-    renderer = CompactJSONRenderer()
-
-    # Create an event dictionary
-    event_dict = {
-        "timestamp": "2023-01-01T12:00:00Z",
-        "event": "test message",
-        "level": "info",
-        "symbol": "BTCUSDT",
-        "_internal_field": "should_be_removed",
-    }
-
-    # Mock logger and name for the call
-    logger = Mock()
-    name = "test_logger"
-
-    # Call the renderer
-    result = renderer(logger, name, event_dict)
-
-    # Parse the result as JSON
-    parsed_result = json.loads(result)
-
-    # Check that internal fields are removed
-    assert "_internal_field" not in parsed_result
-    # Check that other fields are preserved
-    assert parsed_result["timestamp"] == "2023-01-01T12:00:00Z"
-    assert parsed_result["event"] == "test message"
-    assert parsed_result["level"] == "info"
-    assert parsed_result["symbol"] == "BTCUSDT"
-
-    # Check that the JSON is compact (no extra spaces)
-    # The compact format means no spaces after separators
-    # This checks for compact formatting (no spaces around colon)
-    assert '":"' in result  # JSON compact format has no spaces around colon
-
-
 def test_get_console_renderer():
     """Test get_console_renderer function."""
     # Test with colors enabled
     renderer1 = get_console_renderer(colors=True)
-    assert isinstance(renderer1, MetaConsoleRenderer)
+    assert isinstance(renderer1, ConsoleRenderer)
 
     # Test with colors disabled
     renderer2 = get_console_renderer(colors=False)
-    assert isinstance(renderer2, MetaConsoleRenderer)
+    assert isinstance(renderer2, ConsoleRenderer)
 
 
 def test_get_file_renderer_json():

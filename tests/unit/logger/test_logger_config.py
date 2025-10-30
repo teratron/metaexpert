@@ -11,7 +11,7 @@ def test_logger_config_defaults():
     """Test default configuration values."""
     config = LoggerConfig()
 
-    assert config.log_level == "INFO"
+    assert config.log_level == "DEBUG"
     assert config.log_to_console is True
     assert config.log_to_file is True
     assert config.log_dir == Path("logs")

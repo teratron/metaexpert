@@ -26,9 +26,7 @@ from metaexpert.config import (
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert.logger import BoundLogger, MetaLogger  #, get_logger, setup_logging
-
-#from metaexpert.logger.config import LoggerConfig
+from metaexpert.logger import BoundLogger, MetaLogger
 
 
 class MetaExpert(Events):
@@ -89,20 +87,7 @@ class MetaExpert(Events):
             log_to_console (bool): Whether to print logs to console.
             json_logging (bool): Whether to use structured JSON logging.
         """
-        # Create a new LoggerConfig instance
-        # config = LoggerConfig(
-        #     log_level=cast(LOG_LEVEL_TYPE, log_level),
-        #     log_file=log_file,
-        #     log_trade_file=log_trade_file,
-        #     log_error_file=log_error_file,
-        #     log_to_console=log_to_console,
-        #     json_logging=json_logging,
-        # )
-        # # Setup logging with the new config. This affects global state.
-        # setup_logging(config)
-        # # Get the logger instance
-        # self.logger: BoundLogger = get_logger(self.__class__.__name__)
-
+        #
         self.logger: BoundLogger = MetaLogger.create(
             log_name=self.__class__.__name__,
             log_level=cast(LOG_LEVEL_TYPE, log_level),

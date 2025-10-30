@@ -30,6 +30,51 @@ class _TradeLogFilter(logging.Filter):
         return getattr(record, "_trade_event", False)
 
 
+def get_processors() -> list[Any]:
+    """Get list of processors based on configuration."""
+    processors = [
+        # Добавляем SensitiveDataFilter ПЕРВЫМ для безопасности
+        SensitiveDataFilter(),
+        # Add contextvars for context management
+        structlog.contextvars.merge_contextvars,
+        # Add custom context
+        add_app_context,
+        # Add log level filtering
+        structlog.stdlib.filter_by_level,
+        # Add logger name
+        structlog.stdlib.add_logger_name,
+        # Add log level
+        structlog.stdlib.add_log_level,
+        # Add timestamp
+        structlog.processors.TimeStamper(fmt="iso", utc=True),
+        # Add call site info (file, line, function)
+        structlog.processors.CallsiteParameterAdder(
+            frozenset(
+                [
+                    structlog.processors.CallsiteParameter.FILENAME,
+                    structlog.processors.CallsiteParameter.FUNC_NAME,
+                    structlog.processors.CallsiteParameter.LINENO,
+                ]
+            )
+        ),
+        # Add custom processors
+        TradeEventFilter(),
+        ErrorEventEnricher(),
+        # Add PerformanceMonitor
+        PerformanceMonitor(threshold_ms=100.0),
+        # Stack info renderer
+        structlog.processors.StackInfoRenderer(),
+        # Format exceptions
+        structlog.processors.format_exc_info,
+        # Unicode decoder
+        structlog.processors.UnicodeDecoder(),
+        # Rename event key
+        rename_event_key,
+    ]
+
+    return processors
+
+
 def configure_stdlib_logging(config: LoggerConfig) -> None:
     """Configure standard library logging."""
     # Get root logger
@@ -40,7 +85,7 @@ def configure_stdlib_logging(config: LoggerConfig) -> None:
     root_logger.handlers.clear()
 
     # Get processors once
-    processors = get_processors(config)
+    processors = get_processors()
 
     # Add console handler with proper formatting
     if config.log_to_console:
@@ -102,51 +147,6 @@ def _create_rotating_handler(
     return handler
 
 
-def get_processors(config: LoggerConfig) -> list[Any]:
-    """Get list of processors based on configuration."""
-    processors = [
-        # Добавляем SensitiveDataFilter ПЕРВЫМ для безопасности
-        SensitiveDataFilter(),
-        # Add contextvars for context management
-        structlog.contextvars.merge_contextvars,
-        # Add custom context
-        add_app_context,
-        # Add log level filtering
-        structlog.stdlib.filter_by_level,
-        # Add logger name
-        structlog.stdlib.add_logger_name,
-        # Add log level
-        structlog.stdlib.add_log_level,
-        # Add timestamp
-        structlog.processors.TimeStamper(fmt="iso", utc=True),
-        # Add call site info (file, line, function)
-        structlog.processors.CallsiteParameterAdder(
-            frozenset(
-                [
-                    structlog.processors.CallsiteParameter.FILENAME,
-                    structlog.processors.CallsiteParameter.FUNC_NAME,
-                    structlog.processors.CallsiteParameter.LINENO,
-                ]
-            )
-        ),
-        # Add custom processors
-        TradeEventFilter(),
-        ErrorEventEnricher(),
-        # Add PerformanceMonitor
-        PerformanceMonitor(threshold_ms=100.0),
-        # Stack info renderer
-        structlog.processors.StackInfoRenderer(),
-        # Format exceptions
-        structlog.processors.format_exc_info,
-        # Unicode decoder
-        structlog.processors.UnicodeDecoder(),
-        # Rename event key
-        rename_event_key,
-    ]
-
-    return processors
-
-
 # Global state for thread-safe reconfiguration
 _setup_lock = threading.Lock()
 _current_config: LoggerConfig | None = None
@@ -177,7 +177,7 @@ def setup_logging(config: LoggerConfig) -> None:
             # Initial structlog configuration
             structlog.configure(
                 processors=[
-                    *get_processors(config),
+                    *get_processors(),
                     structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
                 ],
                 context_class=dict,
@@ -191,7 +191,7 @@ def setup_logging(config: LoggerConfig) -> None:
         except Exception as e:
             # Log error but don't crash - setup basic logging as fallback
             logging.error(f"Failed to setup advanced logging: {e}")
-            _setup_basic_logging()
+            logging.basicConfig(level=logging.WARNING, format="%(levelname)s - %(message)s")
 
 
 def _configure_stdlib_logging_safely(config: LoggerConfig) -> None:
@@ -218,7 +218,7 @@ def _configure_stdlib_logging_safely(config: LoggerConfig) -> None:
 
 def _add_handlers(config: LoggerConfig) -> None:
     """Add MetaExpert handlers and track them in WeakSet."""
-    processors = get_processors(config)
+    processors = get_processors()
 
     # Console handler
     if config.log_to_console:
@@ -282,7 +282,7 @@ def _reconfigure_structlog(config: LoggerConfig) -> None:
     # Reconfigure with new settings
     structlog.configure(
         processors=[
-            *get_processors(config),
+            *get_processors(),
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         context_class=dict,
@@ -290,8 +290,3 @@ def _reconfigure_structlog(config: LoggerConfig) -> None:
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=config.cache_logger_on_first_use,
     )
-
-
-def _setup_basic_logging() -> None:
-    """Setup basic logging as fallback when advanced setup fails."""
-    logging.basicConfig(level=logging.WARNING, format="%(levelname)s - %(message)s")
