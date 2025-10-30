@@ -1,7 +1,6 @@
 """Custom exception types for MetaExpert CLI."""
 
 
-
 class CLIError(Exception):
     """Base exception for CLI errors."""
 

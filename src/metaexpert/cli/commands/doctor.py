@@ -1,6 +1,5 @@
 """Doctor command for CLI."""
 
-
 import typer
 
 from metaexpert.cli.core.dependencies import check_dependencies

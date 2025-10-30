@@ -95,7 +95,7 @@ class ErrorEventEnricher:
                 event_dict["error_type"] = type(exc).__name__
                 event_dict["error_module"] = type(exc).__module__
 
-            # контекст для отладки
+            # Debug context for error tracking
             if event_dict.get("exc_info"):
                 import traceback
 
@@ -103,7 +103,7 @@ class ErrorEventEnricher:
                 if isinstance(exc_info, tuple) and len(exc_info) == 3:
                     _exc_type, _exc_value, exc_tb = exc_info
                     if exc_tb:
-                        # Добавляем место возникновения ошибки
+                        # Add error location information
                         tb_summary = traceback.extract_tb(exc_tb)
                         if tb_summary:
                             last_frame = tb_summary[-1]

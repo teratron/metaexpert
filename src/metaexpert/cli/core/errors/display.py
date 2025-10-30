@@ -1,6 +1,5 @@
 """Error display with recommendations for MetaExpert CLI."""
 
-
 from metaexpert.cli.core.errors.context import ErrorContext
 from metaexpert.cli.core.errors.severity import ErrorSeverity
 from metaexpert.cli.core.errors.types import CLIError
