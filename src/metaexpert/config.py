@@ -40,11 +40,16 @@ LOG_ERROR_FILE: str = "errors.log"
 LOG_MAX_FILE_SIZE: int = 10485760  # 10 * 1024 * 1024 (10MB)
 LOG_BACKUP_COUNT: int = 5
 
+# Format settings
+LOG_USE_COLORS: bool = True
+LOG_STRUCTURED_LOGGING: bool = False  # Output logs in JSON format
+
+# Performance settings
+LOG_CACHE_LOGGER_ON_FIRST_USE: bool = True  # Cache loggers for better performance
+
 # Enhanced configuration flags
 LOG_CONSOLE_LOGGING: bool = True
 LOG_FILE_LOGGING: bool = True
-LOG_STRUCTURED_LOGGING: bool = False
-LOG_ASYNC_LOGGING: bool = False
 
 # -----------------------------------------------------------------------------
 # EXCHANGE-SPECIFIC CONFIGURATION

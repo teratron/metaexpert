@@ -30,8 +30,8 @@ expert = MetaExpert(
     # --- Logging Configuration ---
     log_level=os.getenv("LOG_LEVEL", "INFO"),  # 'DEBUG', 'INFO', 'WARNING', 'ERROR'
     log_file="expert.log",  # Main log file
-    trade_log_file="trades.log",  # Trade execution log
-    error_log_file="errors.log",  # Error-specific log
+    log_trade_file="trades.log",  # Trade execution log
+    log_error_file="errors.log",  # Error-specific log
     log_to_console=True,  # Print logs to console
 )
 

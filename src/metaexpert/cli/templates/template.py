@@ -37,11 +37,11 @@ expert = MetaExpert(
     # --- Logging Configuration ---
     log_level="INFO",               # 'DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL', 'TRADE'
     log_file="expert.log",          # Main log file
-    trade_log_file="trades.log",    # Trade execution log
-    error_log_file="errors.log",    # Error-specific log
+    log_trade_file="trades.log",    # Trade execution log
+    log_error_file="errors.log",    # Error-specific log
+    log_to_file=True,               # Save logs to file
     log_to_console=True,            # Print logs to console
-    structured_logging=False,       # Use structured JSON logging
-    #async_logging=False,            # Use asynchronous logging
+    json_logging=False,             # Use structured JSON logging
 )
 
 # -----------------------------------------------------------------------------

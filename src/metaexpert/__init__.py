@@ -18,6 +18,7 @@ from metaexpert.config import (
     LOG_CONSOLE_LOGGING,
     LOG_ERROR_FILE,
     LOG_FILE,
+    LOG_FILE_LOGGING,
     LOG_LEVEL,
     LOG_LEVEL_TYPE,
     LOG_STRUCTURED_LOGGING,
@@ -25,8 +26,9 @@ from metaexpert.config import (
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert.logger import BoundLogger, get_logger, setup_logging
-from metaexpert.logger.config import LoggerConfig
+from metaexpert.logger import BoundLogger, MetaLogger  #, get_logger, setup_logging
+
+#from metaexpert.logger.config import LoggerConfig
 
 
 class MetaExpert(Events):
@@ -58,10 +60,11 @@ class MetaExpert(Events):
         # --- Logging Configuration ---
         log_level: str = LOG_LEVEL,
         log_file: str = LOG_FILE,
-        trade_log_file: str = LOG_TRADE_FILE,
-        error_log_file: str = LOG_ERROR_FILE,
+        log_trade_file: str = LOG_TRADE_FILE,
+        log_error_file: str = LOG_ERROR_FILE,
+        log_to_file: bool = LOG_FILE_LOGGING,
         log_to_console: bool = LOG_CONSOLE_LOGGING,
-        structured_logging: bool = LOG_STRUCTURED_LOGGING,
+        json_logging: bool = LOG_STRUCTURED_LOGGING,
     ) -> None:
         """Initialize the expert trading system.
 
@@ -80,24 +83,36 @@ class MetaExpert(Events):
             position_mode (str | None): Position mode for futures (e.g., hedge, oneway).
             log_level (str): Logging level.
             log_file (str): Main log file.
-            trade_log_file (str): Trade execution log file.
-            error_log_file (str): Error-specific log file.
+            log_trade_file (str): Trade execution log file.
+            log_error_file (str): Error-specific log file.
+            log_to_file (bool): Whether to log to a file.
             log_to_console (bool): Whether to print logs to console.
-            structured_logging (bool): Whether to use structured JSON logging.
+            json_logging (bool): Whether to use structured JSON logging.
         """
         # Create a new LoggerConfig instance
-        config = LoggerConfig(
+        # config = LoggerConfig(
+        #     log_level=cast(LOG_LEVEL_TYPE, log_level),
+        #     log_file=log_file,
+        #     log_trade_file=log_trade_file,
+        #     log_error_file=log_error_file,
+        #     log_to_console=log_to_console,
+        #     json_logging=json_logging,
+        # )
+        # # Setup logging with the new config. This affects global state.
+        # setup_logging(config)
+        # # Get the logger instance
+        # self.logger: BoundLogger = get_logger(self.__class__.__name__)
+
+        self.logger: BoundLogger = MetaLogger.create(
+            log_name=self.__class__.__name__,
             log_level=cast(LOG_LEVEL_TYPE, log_level),
             log_file=log_file,
-            trade_log_file=trade_log_file,
-            error_log_file=error_log_file,
+            log_trade_file=log_trade_file,
+            log_error_file=log_error_file,
+            log_to_file=log_to_file,
             log_to_console=log_to_console,
-            json_logs=structured_logging,
+            json_logging=json_logging,
         )
-        # Setup logging with the new config. This affects global state.
-        setup_logging(config)
-        # Get the logger instance
-        self.logger: BoundLogger = get_logger(self.__class__.__name__)
 
         # Initialize stock exchange
         self.client: MetaExchange = MetaExchange.create(

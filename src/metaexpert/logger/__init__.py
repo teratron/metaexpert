@@ -36,6 +36,7 @@ Trade Logging:
 
 import structlog
 
+from metaexpert.config import LOG_LEVEL_TYPE
 from metaexpert.logger.config import LoggerConfig
 from metaexpert.logger.context import (
     LogContext,
@@ -56,6 +57,7 @@ __all__ = [
     "BoundLogger",
     "LogContext",
     "LoggerConfig",
+    "MetaLogger",
     "TradeContext",
     "bind_contextvars",
     "clear_contextvars",
@@ -82,3 +84,32 @@ def _initialize_logging() -> None:
 
 # Auto-initialize with defaults if imported
 _initialize_logging()
+
+
+class MetaLogger:
+    @classmethod
+    def create(
+        cls,
+        log_name: str,
+        log_level: LOG_LEVEL_TYPE,
+        log_file: str,
+        log_trade_file: str,
+        log_error_file: str,
+        log_to_file: bool,
+        log_to_console: bool,
+        json_logging: bool,
+    ) -> BoundLogger:
+        """Create a new MetaLogger instance."""
+        config = LoggerConfig(
+            log_level=log_level,
+            log_file=log_file,
+            log_trade_file=log_trade_file,
+            log_error_file=log_error_file,
+            log_to_file=log_to_file,
+            log_to_console=log_to_console,
+            json_logging=json_logging,
+        )
+        # Setup logging with the new config. This affects global state.
+        setup_logging(config)
+
+        return get_logger(log_name)

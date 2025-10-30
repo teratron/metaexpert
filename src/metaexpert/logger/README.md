@@ -94,7 +94,7 @@ config = LoggerConfig(
     log_to_console=True,  # Вывод в консоль
     log_to_file=True,  # Вывод в файлы
     use_colors=True,  # Цветной вывод
-    json_logs=False,  # JSON формат (для production)
+    json_logging=False,  # JSON формат (для production)
     log_dir=Path("logs"),  # Директория логов
     max_bytes=10 * 1024 * 1024,  # Размер файла перед ротацией
     backup_count=5,  # Количество backup файлов,
@@ -134,7 +134,7 @@ config = LoggerConfig.for_development()
 # Equivalent to:
 # log_level="DEBUG"
 # use_colors=True
-# json_logs=False
+# json_logging=False
 # log_to_console=True
 # log_to_file=True
 ```
@@ -146,7 +146,7 @@ config = LoggerConfig.for_production()
 # Equivalent to:
 # log_level="WARNING"
 # use_colors=False
-# json_logs=True
+# json_logging=True
 # log_to_console=False
 # log_to_file=True
 ```
@@ -158,7 +158,7 @@ config = LoggerConfig.for_backtesting()
 # Equivalent to:
 # log_level="INFO"
 # use_colors=False
-# json_logs=True
+# json_logging=True
 # log_to_console=False
 # log_to_file=True
 ```
@@ -234,7 +234,7 @@ config = LoggerConfig.for_development()
 # config = LoggerConfig(
 #     log_level="DEBUG",
 #     use_colors=True,
-#     json_logs=False,
+#     json_logging=False,
 # )
 ```
 
@@ -246,7 +246,7 @@ config = LoggerConfig.for_production()
 # config = LoggerConfig(
 #     log_level="WARNING",
 #     log_to_console=False,
-#     json_logs=True,
+#     json_logging=True,
 #     max_bytes=50 * 1024 * 1024,
 # )
 ```
@@ -259,7 +259,7 @@ config = LoggerConfig.for_backtesting()
 # config = LoggerConfig(
 #     log_level="INFO",
 #     use_colors=False,
-#     json_logs=True,
+#     json_logging=True,
 #     log_to_console=False,
 # )
 ```

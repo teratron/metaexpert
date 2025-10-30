@@ -122,7 +122,7 @@
 
    ```python
    config = LoggerConfig(
-       json_logs=False,  # Человекочитаемый формат
+       json_logging=False,  # Человекочитаемый формат
        use_colors=True   # Цветной вывод
    )
    ```
@@ -131,7 +131,7 @@
 
    ```python
    config = LoggerConfig(
-       json_logs=True,   # JSON формат для продакшена
+       json_logging=True,   # JSON формат для продакшена
        use_colors=False # Без цветов
    )
    ```

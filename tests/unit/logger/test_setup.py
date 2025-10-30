@@ -115,16 +115,16 @@ def test_get_processors_basic():
 
 def test_get_processors_json_format():
     """Test getting processors with JSON format."""
-    config = LoggerConfig(json_logs=True)
+    config = LoggerConfig(json_logging=True)
 
     get_processors(config)
 
-    # When json_logs is True, JSON renderer should be used in the formatter setup
+    # When json_logging is True, JSON renderer should be used in the formatter setup
     # The JSON renderer is actually applied in the ProcessorFormatter in setup.py
     # So we check if JSON-related functionality is present
 
     # The processors list itself doesn't contain JSONRenderer directly,
-    # but when json_logs=True, the renderer in ProcessorFormatter will be JSONRenderer
+    # but when json_logging=True, the renderer in ProcessorFormatter will be JSONRenderer
     # We can verify this by checking the configuration or the get_file_renderer function
     from metaexpert.logger.formatters import get_file_renderer
 
@@ -159,7 +159,7 @@ def test_setup_logging_with_json():
         log_level="DEBUG",
         log_to_console=False,
         log_to_file=True,
-        json_logs=True,
+        json_logging=True,
         log_dir=Path("logs"),
     )
 

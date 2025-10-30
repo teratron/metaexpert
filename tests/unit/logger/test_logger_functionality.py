@@ -114,21 +114,21 @@ def test_config_presets():
     dev_config = LoggerConfig.for_development()
     assert dev_config.log_level == "DEBUG"
     assert dev_config.use_colors is True
-    assert dev_config.json_logs is False
+    assert dev_config.json_logging is False
     assert dev_config.log_to_console is True
 
     # Test production preset
     prod_config = LoggerConfig.for_production()
     assert prod_config.log_level == "WARNING"
     assert prod_config.use_colors is False
-    assert prod_config.json_logs is True
+    assert prod_config.json_logging is True
     assert prod_config.log_to_console is False
 
     # Test backtesting preset
     backtest_config = LoggerConfig.for_backtesting()
     assert backtest_config.log_level == "INFO"
     assert backtest_config.use_colors is False
-    assert backtest_config.json_logs is True
+    assert backtest_config.json_logging is True
     assert backtest_config.log_to_console is False
 
 

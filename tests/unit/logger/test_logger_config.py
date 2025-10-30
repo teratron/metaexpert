@@ -16,12 +16,12 @@ def test_logger_config_defaults():
     assert config.log_to_file is True
     assert config.log_dir == Path("logs")
     assert config.log_file == "expert.log"
-    assert config.trade_log_file == "trades.log"
-    assert config.error_log_file == "errors.log"
+    assert config.log_trade_file == "trades.log"
+    assert config.log_error_file == "errors.log"
     assert config.max_bytes == 10 * 1024 * 1024  # 10MB
     assert config.backup_count == 5
     assert config.use_colors is True
-    assert config.json_logs is False
+    assert config.json_logging is False
     assert config.cache_logger_on_first_use is True
 
 
@@ -33,12 +33,12 @@ def test_logger_config_custom_values():
         log_to_file=True,
         log_dir=Path("/custom/logs"),
         log_file="custom.log",
-        trade_log_file="custom_trades.log",
-        error_log_file="custom_errors.log",
+        log_trade_file="custom_trades.log",
+        log_error_file="custom_errors.log",
         max_bytes=5 * 1024 * 1024,  # 5MB
         backup_count=10,
         use_colors=False,
-        json_logs=True,
+        json_logging=True,
         cache_logger_on_first_use=False,
     )
 
@@ -47,12 +47,12 @@ def test_logger_config_custom_values():
     assert custom_config.log_to_file is True
     assert custom_config.log_dir == Path("/custom/logs")
     assert custom_config.log_file == "custom.log"
-    assert custom_config.trade_log_file == "custom_trades.log"
-    assert custom_config.error_log_file == "custom_errors.log"
+    assert custom_config.log_trade_file == "custom_trades.log"
+    assert custom_config.log_error_file == "custom_errors.log"
     assert custom_config.max_bytes == 5 * 1024 * 1024
     assert custom_config.backup_count == 10
     assert custom_config.use_colors is False
-    assert custom_config.json_logs is True
+    assert custom_config.json_logging is True
     assert custom_config.cache_logger_on_first_use is False
 
 

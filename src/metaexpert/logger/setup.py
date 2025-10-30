@@ -58,7 +58,7 @@ def configure_stdlib_logging(config: LoggerConfig) -> None:
     if config.log_to_file:
         # File formatter (shared)
         file_formatter = structlog.stdlib.ProcessorFormatter(
-            processor=get_file_renderer(config.json_logs),
+            processor=get_file_renderer(config.json_logging),
             foreign_pre_chain=processors,
         )
 
@@ -72,7 +72,7 @@ def configure_stdlib_logging(config: LoggerConfig) -> None:
 
         # Trade log file (INFO and above)
         trade_handler = _create_rotating_handler(
-            config.log_dir / config.trade_log_file,
+            config.log_dir / config.log_trade_file,
             config.max_bytes,
             config.backup_count,
         )
@@ -83,7 +83,7 @@ def configure_stdlib_logging(config: LoggerConfig) -> None:
 
         # Error log file (ERROR and above)
         error_handler = _create_rotating_handler(
-            config.log_dir / config.error_log_file,
+            config.log_dir / config.log_error_file,
             config.max_bytes,
             config.backup_count,
         )
@@ -237,7 +237,7 @@ def _add_handlers(config: LoggerConfig) -> None:
     if config.log_to_file:
         # File formatter (shared)
         file_formatter = structlog.stdlib.ProcessorFormatter(
-            processor=get_file_renderer(config.json_logs),
+            processor=get_file_renderer(config.json_logging),
             foreign_pre_chain=processors,
         )
 
@@ -252,7 +252,7 @@ def _add_handlers(config: LoggerConfig) -> None:
 
         # Trade log file (INFO and above)
         trade_handler = _create_rotating_handler(
-            config.log_dir / config.trade_log_file,
+            config.log_dir / config.log_trade_file,
             config.max_bytes,
             config.backup_count,
         )
@@ -264,7 +264,7 @@ def _add_handlers(config: LoggerConfig) -> None:
 
         # Error log file (ERROR and above)
         error_handler = _create_rotating_handler(
-            config.log_dir / config.error_log_file,
+            config.log_dir / config.log_error_file,
             config.max_bytes,
             config.backup_count,
         )

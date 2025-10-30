@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 from metaexpert.config import (
     LOG_BACKUP_COUNT,
+    LOG_CACHE_LOGGER_ON_FIRST_USE,
     LOG_CONSOLE_LOGGING,
     LOG_DIRECTORY,
     LOG_ERROR_FILE,
@@ -15,7 +16,9 @@ from metaexpert.config import (
     LOG_LEVEL,
     LOG_LEVEL_TYPE,
     LOG_MAX_FILE_SIZE,
+    LOG_STRUCTURED_LOGGING,
     LOG_TRADE_FILE,
+    LOG_USE_COLORS,
 )
 
 
@@ -40,10 +43,10 @@ class LoggerConfig(BaseModel):
         default=Path(LOG_DIRECTORY), description="Directory for log files"
     )
     log_file: str = Field(default=LOG_FILE, description="Main log file name")
-    trade_log_file: str = Field(
+    log_trade_file: str = Field(
         default=LOG_TRADE_FILE, description="Trade-specific log file"
     )
-    error_log_file: str = Field(
+    log_error_file: str = Field(
         default=LOG_ERROR_FILE, description="Error-specific log file"
     )
 
@@ -57,12 +60,12 @@ class LoggerConfig(BaseModel):
     )
 
     # Format settings
-    use_colors: bool = Field(default=True, description="Use colored output in console")
-    json_logs: bool = Field(default=False, description="Output logs in JSON format")
+    use_colors: bool = Field(default=LOG_USE_COLORS, description="Use colored output in console")
+    json_logging: bool = Field(default=LOG_STRUCTURED_LOGGING, description="Output logs in JSON format")
 
     # Performance settings
     cache_logger_on_first_use: bool = Field(
-        default=True, description="Cache loggers for better performance"
+        default=LOG_CACHE_LOGGER_ON_FIRST_USE, description="Cache loggers for better performance"
     )
 
     @field_validator("log_dir")
@@ -95,7 +98,7 @@ class LoggerConfig(BaseModel):
         return cls(
             log_level="DEBUG",
             use_colors=True,
-            json_logs=False,
+            json_logging=False,
             log_to_console=True,
             log_to_file=True,
         )
@@ -106,7 +109,7 @@ class LoggerConfig(BaseModel):
         return cls(
             log_level="WARNING",
             use_colors=False,
-            json_logs=True,
+            json_logging=True,
             log_to_console=False,
             log_to_file=True,
         )
@@ -117,7 +120,7 @@ class LoggerConfig(BaseModel):
         return cls(
             log_level="INFO",
             use_colors=False,
-            json_logs=True,
+            json_logging=True,
             log_to_console=False,
             log_to_file=True,
         )
