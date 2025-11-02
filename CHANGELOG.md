@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.h
 
 ### Changed
 
-- Updated MetaLogger to inherit from `structlog.stdlib.BoundLogger` instead of logging.Logger
+- Updated MetaLogger to inherit from `structlog.stdlib.Logger` instead of logging.Logger
 - Removed unused formatter.py file from logger module
 - Added rule to treat warnings as errors in test-driven workflow
 

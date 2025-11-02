@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Self
 
 from metaexpert.config import DEFAULT_TIMEFRAME
-from metaexpert.logger import BoundLogger, get_logger
+from metaexpert.logger import Logger, get_logger
 
 
 class Timeframe(Enum):
@@ -111,7 +111,7 @@ class Timeframe(Enum):
     def __new__(cls, value: dict):
         """Create a new enum member with a copy of the provided value."""
         obj = object.__new__(cls)
-        cls.logger: BoundLogger = get_logger("Timeframe")
+        cls.logger: Logger = get_logger("Timeframe")
         # Create a copy of the dictionary and ensure mutable lists are independent
         obj._value_ = {
             k: v if not isinstance(v, list) else [] for k, v in value.items()
@@ -120,7 +120,7 @@ class Timeframe(Enum):
 
     # def __init__(self, *args) -> None:
     #     super().__init__()
-    #     self.logger: BoundLogger = get_logger("Timeframe")
+    #     self.logger: Logger = get_logger("Timeframe")
 
     def get_name(self) -> str:
         """Get the string representation of the timeframe name."""

@@ -2,7 +2,7 @@ import asyncio
 import time
 from collections.abc import Callable
 
-from metaexpert.logger import BoundLogger, get_logger
+from metaexpert.logger import Logger, get_logger
 
 
 class Ticker:
@@ -11,7 +11,7 @@ class Ticker:
         self._start_time: float = 0.0
         self._elapsed_time: float = 0.0
         self._is_running: bool = False
-        self.logger: BoundLogger = get_logger("Ticker")
+        self.logger: Logger = get_logger("Ticker")
 
     async def start(self) -> None:
         self._is_running = True

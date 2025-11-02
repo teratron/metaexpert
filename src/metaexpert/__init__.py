@@ -26,7 +26,7 @@ from metaexpert.config import (
 )
 from metaexpert.core import Events, EventType, TradeMode
 from metaexpert.exchanges import MetaExchange
-from metaexpert.logger import BoundLogger, MetaLogger
+from metaexpert.logger import Logger, MetaLogger
 
 
 class MetaExpert(Events):
@@ -88,7 +88,7 @@ class MetaExpert(Events):
             json_logging (bool): Whether to use structured JSON logging.
         """
         #
-        self.logger: BoundLogger = MetaLogger.create(
+        self.logger: Logger = MetaLogger(
             log_name=self.__class__.__name__,
             log_level=cast(LOG_LEVEL_TYPE, log_level),
             log_file=log_file,
@@ -97,7 +97,7 @@ class MetaExpert(Events):
             log_to_file=log_to_file,
             log_to_console=log_to_console,
             json_logging=json_logging,
-        )
+        ).create()
 
         # Initialize stock exchange
         self.client: MetaExchange = MetaExchange.create(

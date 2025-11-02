@@ -1,13 +1,13 @@
 [project]
 name = "metaexpert"
-version = "0.5.0"
+version = "0.5.1"
 description = "MetaExpert is a Python library for cryptocurrency trading that provides a unified interface for multiple exchanges and trading types. The system is designed to be modular, extensible, and easy to use while maintaining high performance and reliability."
 authors = [{ name = "Oleg Alexandrov", email = "alexandrovoleg.ru@gmail.com" }]
 license = { text = "MIT License" }
 readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -26,14 +26,8 @@ keywords = [
     "investment",
 ]
 dependencies = [
-    "structlog>=25.5.0",
-    "rich>=13.0.0",
     "pydantic>=2.12.3",
-    "pydantic-settings>=2.0.0",
-    "psutil>=7.1.2",
-    "typer>=0.20.0",
     "websockets>=15.0.1",
-    "jinja2>=3.1.0",
 ]
 
 [project.urls]
@@ -52,7 +46,6 @@ generate-docs = "scripts.generate_docs:main"
 dev = [
     "python-dotenv>=1.2.1",
     "pyright>=1.1.407",
-    "specify-cli",
 ]
 test = [
     "pytest>=8.3.4",
@@ -61,24 +54,15 @@ test = [
     "pytest-mock>=3.14.0",
 ]
 lint = [
-    "ruff>=0.14.2",
+    "ruff>=0.14.3",
 ]
 docs = [
-    "mkdocs-material>=9.6.22",
+    "mkdocs-material>=9.6.23",
 ]
 
 [tool.uv]
 package = true
 link-mode = "copy"
-default-groups = [
-    "dev",
-    "test",
-    "lint",
-    "docs",
-]
-
-[tool.uv.sources]
-specify-cli = { git = "git+https://github.com/github/spec-kit" }
 
 [tool.uv.workspace]
 members = [

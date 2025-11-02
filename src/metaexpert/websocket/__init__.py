@@ -5,7 +5,7 @@ import json
 
 import websockets
 
-from metaexpert.logger import BoundLogger, get_logger
+from metaexpert.logger import Logger, get_logger
 
 
 class WebSocketClient:
@@ -20,7 +20,7 @@ class WebSocketClient:
         self.reconnect_delay = reconnect_delay
         self.ws = None
         self.running = False
-        self.logger: BoundLogger = get_logger(__name__).bind(
+        self.logger: Logger = get_logger(__name__).bind(
             component="WebSocketClient", ws_name=name, ws_url=url
         )
 

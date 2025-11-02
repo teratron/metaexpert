@@ -32,7 +32,7 @@ from metaexpert.core.event_type import EventType
 from metaexpert.core.expert import Expert
 from metaexpert.core.size_type import SizeType
 from metaexpert.core.timeframe import Timeframe
-from metaexpert.logger import BoundLogger, get_logger
+from metaexpert.logger import Logger, get_logger
 
 
 class Events(Expert):
@@ -43,7 +43,7 @@ class Events(Expert):
     trading, transactions, ticks, bars, timers, and book events.
     """
 
-    logger: BoundLogger = get_logger("Events")
+    logger: Logger = get_logger("Events")
 
     def on_init(
         self,

@@ -25,6 +25,8 @@ from metaexpert.config import (
 class LoggerConfig(BaseModel):
     """Configuration for MetaExpert structured logger."""
 
+    log_name: str = Field(default="metaexpert", description="Name of the logger")
+
     # Core settings
     log_level: LOG_LEVEL_TYPE = Field(
         default=LOG_LEVEL, description="Global logging level"

@@ -2,14 +2,14 @@
 
 from abc import ABC, abstractmethod
 
-from metaexpert.logger import BoundLogger, get_logger
+from metaexpert.logger import Logger, get_logger
 
 
 class Trade(ABC):
     """Trade"""
 
     def __init__(self, symbol: str, **kwargs) -> None:
-        self.logger: BoundLogger = get_logger("Trade")
+        self.logger: Logger = get_logger("Trade")
 
     #     # self.symbol: str = symbol if symbol else ""
     #     # self._lots: float = props.__getattribute__("lots")

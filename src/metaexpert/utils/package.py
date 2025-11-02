@@ -5,9 +5,9 @@ from pathlib import Path
 
 from packaging.version import parse as parse_version
 
-from metaexpert.logger import BoundLogger, get_logger
+from metaexpert.logger import Logger, get_logger
 
-logger: BoundLogger = get_logger(__name__)
+logger: Logger = get_logger(__name__)
 
 
 def get_python_path() -> str | None:
