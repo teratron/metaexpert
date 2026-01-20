@@ -4,9 +4,9 @@ This plan outlines the phases and tasks required to integrate the Kraken exchang
 
 ## Phase 1: Core API and Configuration
 
-- [ ] **Task:** Create the directory structure for the Kraken integration at `src/metaexpert/exchanges/kraken`.
-- [ ] **Task:** Implement the `KrakenConfig` class in `src/metaexpert/exchanges/kraken/config.py` to manage API credentials.
-- [ ] **Task:** Implement the basic `KrakenAPIClient` in `src/metaexpert/exchanges/kraken/__init__.py` for handling API requests and authentication.
+- [x] **Task:** Create the directory structure for the Kraken integration at `src/metaexpert/exchanges/kraken`. (fb77296)
+- [x] **Task:** Implement the `KrakenConfig` class in `src/metaexpert/exchanges/kraken/config.py` to manage API credentials. (fb77296)
+- [x] **Task:** Implement the basic `KrakenAPIClient` in `src/metaexpert/exchanges/kraken/__init__.py` for handling API requests and authentication. (fb77296)
 - [ ] **Task:** Conductor - User Manual Verification 'Core API and Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Market Data Integration
