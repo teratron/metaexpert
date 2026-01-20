@@ -2,7 +2,7 @@ import asyncio
 import time
 from collections.abc import Callable
 
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger, get_logger
 
 
 class Ticker:

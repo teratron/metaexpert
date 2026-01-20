@@ -5,7 +5,8 @@ from pathlib import Path
 
 from packaging.version import parse as parse_version
 
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger
+from metaexpert.logger import get_logger
 
 logger: Logger = get_logger(__name__)
 

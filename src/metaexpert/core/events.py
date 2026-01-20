@@ -32,7 +32,7 @@ from metaexpert.core.event_type import EventType
 from metaexpert.core.expert import Expert
 from metaexpert.core.size_type import SizeType
 from metaexpert.core.timeframe import Timeframe
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger, get_logger
 
 
 class Events(Expert):

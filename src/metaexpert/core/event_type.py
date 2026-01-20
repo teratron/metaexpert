@@ -7,7 +7,7 @@ from types import ModuleType
 from typing import Self
 
 from metaexpert.core._event_handler import EventHandler
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger, get_logger
 from metaexpert.websocket import WebSocketClient
 
 

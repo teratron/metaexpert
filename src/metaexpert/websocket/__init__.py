@@ -5,7 +5,7 @@ import json
 
 import websockets
 
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger, get_logger
 
 
 class WebSocketClient:

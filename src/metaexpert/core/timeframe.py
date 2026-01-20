@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Self
 
 from metaexpert.config import DEFAULT_TIMEFRAME
-from metaexpert.logger import Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger, get_logger
 
 
 class Timeframe(Enum):
