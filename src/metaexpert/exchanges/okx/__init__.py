@@ -68,7 +68,7 @@ class Adapter(MetaExchange):
         pass
 
     # POSITION
-    def open_position(self, side: str) -> bool:
+    def open_position(self, side: str, fee: float) -> bool:
         """Open a position."""
         # TODO: Implement position opening logic
         return False

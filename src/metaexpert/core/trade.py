@@ -10,6 +10,7 @@ class Trade(ABC):
 
     def __init__(self, symbol: str, **kwargs) -> None:
         self.logger: Logger = get_logger("Trade")
+        self._fee: float = 0
 
     #     # self.symbol: str = symbol if symbol else ""
     #     # self._lots: float = props.__getattribute__("lots")
@@ -19,6 +20,15 @@ class Trade(ABC):
     #     # self._positions: int = props.get("positions", 0)
     #     # self._slippage: int = props.get("slippage", 0)
     #     pass
+
+    @property
+    def fee(self) -> float:
+        """Fee"""
+        return self._fee
+
+    @fee.setter
+    def fee(self, fee: float) -> None:
+        self._fee = fee
 
     @abstractmethod
     def trade(
@@ -30,6 +40,7 @@ class Trade(ABC):
         trailing_stop: float = 0,
         positions: int = 0,
         slippage: int = 0,
+        fee: float = 0,
     ) -> None:
         # self._lots = lots
         # self._stop_loss = stop_loss
@@ -37,11 +48,12 @@ class Trade(ABC):
         # self._trailing_stop = trailing_stop
         # self._positions = positions
         # self._slippage = slippage
+        self._fee = fee
         pass
 
     # POSITION
     @abstractmethod
-    def open_position(self, side: str) -> bool:
+    def open_position(self, side: str, fee: float) -> bool:
         return False
 
     @abstractmethod
