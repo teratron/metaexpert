@@ -1,0 +1,8 @@
+{
+"track_id": "kraken_integration_20260120",
+"type": "feature",
+"status": "new",
+"created_at": "2026-01-20T10:56:00Z",
+"updated_at": "2026-01-20T10:56:00Z",
+"description": "Implement a new exchange integration for 'Kraken' to expand MetaExpert's supported platforms."
+}
