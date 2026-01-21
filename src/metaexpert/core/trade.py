@@ -2,7 +2,8 @@
 
 from abc import ABC, abstractmethod
 
-from metaexpert.logger import MetaLogger as Logger, get_logger
+from metaexpert.logger import MetaLogger as Logger
+from metaexpert.logger import get_logger
 
 
 class Trade(ABC):

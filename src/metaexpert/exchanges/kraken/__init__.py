@@ -58,6 +58,7 @@ class Adapter(MetaExchange):
         trailing_stop: float = 0,
         positions: int = 0,
         slippage: int = 0,
+        fee: float = 0,
     ) -> None:
         """Execute a trade with specified parameters."""
         if not self.client:
