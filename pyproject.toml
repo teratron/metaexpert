@@ -45,7 +45,7 @@ generate-docs = "scripts.generate_docs:main"
 [dependency-groups]
 dev = [
     "python-dotenv>=1.2.1",
-    "pyright>=1.1.407",
+	"pyrefly>=0.57.1"
 ]
 test = [
     "pytest>=8.3.4",
@@ -99,7 +99,7 @@ select = [
     "N",      # flake8-noqa
     "C4",     # flake8-comprehensions
     "UP",     # pyupgrade
-    "RUF",    # Ruff-specific rules
+    "RUF",    # ruff-specific rules
 ]
 ignore = [
     "E501",   # Line too long (handled by formatter)
@@ -116,50 +116,9 @@ quote-style = "double"
 indent-style = "space"
 line-ending = "lf"
 
-[tool.pyright]
-pythonVersion = "3.12"
-venvPath = "."
-venv = ".venv"
-pythonPlatform = "Darwin"
-include = [
+[tool.pyrefly]
+project-includes = [
     "src/metaexpert",
     "examples",
     "tests",
 ]
-exclude = [
-    "**/node_modules",
-    "**/__pycache__",
-    "*.egg-info",
-    ".venv",
-    "build",
-    "dist",
-]
-ignore = [
-    "tests/**",
-]
-defineConstant = { "DEBUG" = true }
-typeshedPath = ""
-stubPath = ""
-useLibraryCodeForTypes = true
-typeCheckingMode = "basic"
-strictListInference = true
-strictDictionaryInference = true
-strictSetInference = true
-enableTypeIgnoreComments = true
-reportMissingImports = "error"
-reportMissingTypeStubs = "warning"
-reportIncompatibleMethodOverride = "error"
-reportIncompatibleVariableOverride = "error"
-reportMissingSuperCall = "none"
-reportUninitializedInstanceVariable = "error"
-reportInvalidTypeVarUse = "error"
-reportCallInDefaultInitializer = "none"
-reportPropertyTypeMismatch = "error"
-reportUntypedFunctionDecorator = "warning"
-reportUntypedClassDecorator = "warning"
-reportUntypedBaseClass = "error"
-reportUntypedNamedTuple = "error"
-reportPrivateUsage = "warning"
-reportConstantRedefinition = "error"
-reportDeprecated = "warning"
-reportInconsistentConstructor = "error"
