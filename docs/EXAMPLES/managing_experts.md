@@ -19,7 +19,7 @@ This command will display a table of all running experts:
 
 ```
 ┌────────────────────┬───────────┬──────────┬──────────┬──────────────┬─────────────────────┐
-│ Name               │ PID       │ Status   │ CPU %    │ Memory (MB)   │ Started             │
+│ Name               │ PID       │ Status   │ CPU %    │ Memory (MB)  │ Started             │
 ├────────────────────┼───────────┼──────────┼──────────┼──────────────┼─────────────────────┤
 │ my-trading-expert  │ 12345     │ running  │ 2.5      │ 45.6         │ 2024-10-27 10:00:00 │
 │ another-expert     │ 12346     │ running  │ 1.8      │ 32.1         │ 2024-10-27 10:05:00 │

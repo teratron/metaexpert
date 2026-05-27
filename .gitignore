@@ -1,27 +1,11 @@
 ### JetBrains
 .idea/
-.idea_modules/
-cmake-build-*/
-*.iws
-out/
-atlassian-ide-plugin.xml
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
 
 ### GigaIDE
 .gigaide/
 
 ### VisualStudioCode template
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
-.history/
-*.vsix
+.vscode/
 
 ### Git template
 *.orig
@@ -158,7 +142,6 @@ venv.bak/
 [Ll]ib
 [Ll]ib64
 [Ll]ocal
-[Ss]cripts
 pyvenv.cfg
 pip-selfcheck.json
 .flaskenv*
@@ -175,14 +158,3 @@ env.bak/
 !.env.project
 !.env.vault
 !.env.example
-
-### Spec Kit
-.github/prompts/
-.codex/prompts/
-.claude/commands/
-.gemini/commands/
-.cursor/commands/
-.qwen/commands/
-.kilocode/workflows/
-#.specify/scripts/
-#.specify/templates/

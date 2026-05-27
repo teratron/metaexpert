@@ -44,6 +44,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 - **Method**: `GET`
 - **Description**: Retrieve account information.
 - **Response**:
+
   ```json
   {
     "account_id": "123456789",
@@ -69,6 +70,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 - **Parameters**:
   - `symbol` (required): Trading pair symbol (e.g., BTCUSDT).
 - **Response**:
+
   ```json
   {
     "symbol": "BTCUSDT",
@@ -86,6 +88,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
   - `symbol` (required): Trading pair symbol (e.g., BTCUSDT).
   - `depth` (optional): Depth of the order book (default: 10).
 - **Response**:
+
   ```json
   {
     "symbol": "BTCUSDT",
@@ -108,6 +111,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 - **Method**: `POST`
 - **Description**: Place a new order.
 - **Request Body**:
+
   ```json
   {
     "symbol": "BTCUSDT",
@@ -117,7 +121,9 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
     "quantity": 0.1
   }
   ```
+
 - **Response**:
+
   ```json
   {
     "order_id": "987654321",
@@ -131,6 +137,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 - **Method**: `GET`
 - **Description**: Get order details by ID.
 - **Response**:
+
   ```json
   {
     "order_id": "987654321",
@@ -151,6 +158,7 @@ curl -H "Authorization: Bearer YOUR_API_KEY" \
 - **Method**: `DELETE`
 - **Description**: Cancel an order by ID.
 - **Response**:
+
   ```json
   {
     "order_id": "987654321",

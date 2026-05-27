@@ -27,7 +27,7 @@ keywords = [
 ]
 dependencies = [
     "pydantic>=2.12.3",
-    "websockets>=15.0.1",
+    "websockets>=16.0.0",
 ]
 
 [project.urls]

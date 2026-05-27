@@ -21,27 +21,27 @@ This document provides solutions to common issues you might encounter while usin
 
 1. Ensure you have Python 3.12 or later installed:
 
-```bash
-python --version
-```
+    ```bash
+    python --version
+    ```
 
 2. Upgrade pip:
 
-```bash
-pip install --upgrade pip
-```
+    ```bash
+    pip install --upgrade pip
+    ```
 
 3. Try installing with `--user` flag:
 
-```bash
-pip install --user metaexpert[cli]
-```
+    ```bash
+    pip install --user metaexpert[cli]
+    ```
 
 4. If you're behind a proxy, configure pip:
 
-```bash
-pip install --proxy http://user:password@proxyserver:port metaexpert[cli]
-```
+    ```bash
+    pip install --proxy http://user:password@proxyserver:port metaexpert[cli]
+    ```
 
 ### Problem: Command not found after installation
 
@@ -49,9 +49,9 @@ pip install --proxy http://user:password@proxyserver:port metaexpert[cli]
 
 1. Check if the installation path is in your `PATH`:
 
-```bash
-pip show -f metaexpert
-```
+    ```bash
+    pip show -f metaexpert
+    ```
 
 2. Add the installation path to your `PATH` environment variable.
 
@@ -70,23 +70,23 @@ set PATH=%PATH%;C:\Users\YourUsername\AppData\Local\Programs\Python\Python312\Sc
 
 1. Use `--user` flag to install for the current user only:
 
-```bash
-pip install --user metaexpert[cli]
-```
+    ```bash
+    pip install --user metaexpert[cli]
+    ```
 
 2. On Linux/macOS, use `sudo` (not recommended):
 
-```bash
-sudo pip install metaexpert[cli]
-```
+    ```bash
+    sudo pip install metaexpert[cli]
+    ```
 
 3. Use a virtual environment (recommended):
 
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install metaexpert[cli]
-```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    pip install metaexpert[cli]
+    ```
 
 ## Command Execution Issues
 
@@ -98,16 +98,16 @@ pip install metaexpert[cli]
 
 2. Check if all dependencies are installed:
 
-```bash
-metaexpert doctor
-```
+    ```bash
+    metaexpert doctor
+    ```
 
 3. Reinstall MetaExpert:
 
-```bash
-pip uninstall metaexpert
-pip install metaexpert[cli]
-```
+    ```bash
+    pip uninstall metaexpert
+    pip install metaexpert[cli]
+    ```
 
 ### Problem: Command hangs or takes too long
 

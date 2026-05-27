@@ -43,7 +43,7 @@ def cmd_my_command(
     output.info(f"Option: {option}")
 ```
 
-3. Register the command in `src/metaexpert/cli/__init__.py`:
+1. Register the command in `src/metaexpert/cli/__init__.py`:
 
 ```python
 # src/metaexpert/cli/__init__.py
@@ -103,7 +103,7 @@ class MyMiddleware(Middleware):
         print(f"After executing {command_name}")
 ```
 
-2. Register the middleware in your application's startup code:
+1. Register the middleware in your application's startup code:
 
 ```python
 # In your app initialization code
@@ -165,9 +165,9 @@ class MyPlugin(CliPlugin):
         pass
 ```
 
-2. Place the plugin file in the `plugins` directory (you may need to create this directory).
+1. Place the plugin file in the `plugins` directory (you may need to create this directory).
 
-3. The plugin will be automatically loaded when the CLI starts.
+2. The plugin will be automatically loaded when the CLI starts.
 
 ### Plugin Structure
 

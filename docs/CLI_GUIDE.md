@@ -32,31 +32,31 @@ uv pip install metaexpert[cli]
 metaexpert init
 ```
 
-2. Create a new expert project:
+1. Create a new expert project:
 
 ```bash
 metaexpert new my-first-expert --exchange binance --strategy ema
 ```
 
-3. Navigate to your project directory:
+1. Navigate to your project directory:
 
 ```bash
 cd my-first-expert
 ```
 
-4. Run your expert:
+1. Run your expert:
 
 ```bash
 metaexpert run
 ```
 
-5. Check the status of your expert:
+1. Check the status of your expert:
 
 ```bash
 metaexpert status
 ```
 
-6. Stop your expert:
+1. Stop your expert:
 
 ```bash
 metaexpert stop
