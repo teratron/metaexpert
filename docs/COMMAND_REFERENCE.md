@@ -387,7 +387,7 @@ metaexpert export PROJECT_PATH [OPTIONS]
 
 ### Options
 
-- `-o, --output PATH`: Output file path (default: project_name_export.<format>).
+- `-o, --output PATH`: Output file path (default: `project_name_export.<format>`).
 - `-f, --format [json|csv|yaml]`: Export format (default: json).
 - `-l, --include-logs`: Include log files.
 - `-c, --include-config`: Include config files (default: True).

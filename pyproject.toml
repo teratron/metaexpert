@@ -45,10 +45,10 @@ generate-docs = "scripts.generate_docs:main"
 [dependency-groups]
 dev = [
     "python-dotenv>=1.2.1",
-	"pyrefly>=0.57.1"
+	"pyrefly>=1.0.0"
 ]
 test = [
-    "pytest>=8.3.4",
+    "pytest>=9.0.3",
     "pytest-asyncio>=1.2.0",
     "pytest-cov>=7.0.0",
     "pytest-mock>=3.14.0",

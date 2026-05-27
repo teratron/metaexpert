@@ -36,22 +36,6 @@ Security must be a primary consideration in all components: Implement proper aut
 
 ## Development Conventions
 
-### Language Requirements
-
-Code and documentation language:
-
-- All code, comments, documentation, variable names, function names, class names, method names, attribute names, and technical terms must be in English
-- Maintain English as the primary language for all technical elements including error messages, log entries, configuration keys, and API responses to ensure readability and maintainability
-- Technical documentation, inline comments, docstrings, and README files must be written in English
-- All commit messages, pull request descriptions, and issue titles related to code changes should be in English
-
-Communication style:
-
-- Explanations and discussions in the chat interface should be in Russian
-- Use Russian for conversational responses, clarifications, project planning, and non-technical interactions
-- Project management communications, feature discussions, and strategic decisions should be conducted in Russian
-- Code review comments and technical discussions during development can be in Russian unless collaborating with English-speaking developers
-
 ### Performance Benchmarks
 
 All components must meet defined performance benchmarks: Maximum response times for user interactions (sub-200ms for simple operations), Efficient resource utilization (memory, CPU, network), Scalability under expected load conditions, Optimized algorithms and data structures for performance-critical paths.
